@@ -2,7 +2,7 @@
 #define _STLP_PTRS_SPECIALIZE_H
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) || \
-   (defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && !defined (_STLP_NO_ARROW_OPERATOR))
+   (defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS))
 #  define _STLP_POINTERS_SPECIALIZE( _TpP )
 #  define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
 #else
@@ -11,11 +11,6 @@
 #    include <stl/type_traits.h>
 #  endif
 
-// the following is a workaround for arrow operator problems
-#  if defined  ( _STLP_NO_ARROW_OPERATOR )
-// User wants to disable proxy -> operators
-#    define _STLP_DEFINE_ARROW_OPERATOR
-#  else
 // Compiler can handle generic -> operator.
 #    if defined (__BORLANDC__)
 #      define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(*(*this)); }
@@ -24,7 +19,6 @@
 #    else
 #      define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
 #    endif
-#  endif /* _STLP_NO_ARROW_OPERATOR */
 
 // Important pointers specializations
 

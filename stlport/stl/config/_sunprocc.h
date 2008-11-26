@@ -90,52 +90,8 @@
 
 #if ( __SUNPRO_CC < 0x500 )
 
-#  undef _STLP_NATIVE_C_HEADER
-#  undef _STLP_NATIVE_CPP_C_HEADER
+#error "Sorry. Use better compiler"
 
-#  define wint_t __wint_t
-// famous CC 4.2 bug
-#  define _STLP_INLINE_STRING_LITERAL_BUG 1
-// /usr/include
-#  define _STLP_NATIVE_C_INCLUDE_PATH ../include
-
-// 4.2 cannot handle iterator_traits<_Tp>::iterator_category as a return type ;(
-#  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-
-// 4.2 does not like it
-#  undef  _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
-
-#  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
-
-#  define _STLP_NEED_TYPENAME 1
-#  define _STLP_NEED_EXPLICIT 1
-#  define _STLP_NO_BAD_ALLOC 1
-#  define _STLP_NO_ARROW_OPERATOR 1
-
-#  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
-#  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
-#  define _STLP_GLOBAL_NESTED_RETURN_TYPE_PARAM_BUG 1
-#  undef  _STLP_HAS_NO_NEW_C_HEADERS
-#  define _STLP_HAS_NO_NEW_C_HEADERS 1
-// #  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
-
-#  if ( __SUNPRO_CC < 0x420 )
-#    define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
-#    define _STLP_NO_NEW_STYLE_CASTS 1
-#    define _STLP_NO_METHOD_SPECIALIZATION 1
-#    if ( __SUNPRO_CC > 0x401 )
-#      if (__SUNPRO_CC==0x410)
-#        define _STLP_BASE_TYPEDEF_OUTSIDE_BUG  1
-#      endif
-#    else
-   // SUNPro C++ 4.0.1
-#      define _STLP_BASE_MATCH_BUG          1
-#      define _STLP_BASE_TYPEDEF_BUG        1
-#      if (( __SUNPRO_CC < 0x401 ) && !defined(__SUNPRO_C))
-         __GIVE_UP_WITH_STL(SUNPRO_401)
-#      endif
-#    endif /* 4.0.1 */
-#  endif /* 4.2 */
 #endif /* <  5.0 */
 
 #ifndef _MBSTATET_H

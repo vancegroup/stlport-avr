@@ -77,36 +77,8 @@
 #  endif
 
 #  if __MWERKS__ < 0x2100      // CW Pro3 features
-#   define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-#   define _STLP_HAS_NO_NAMESPACES 1
-#   define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
-
-#   define _STLP_NEED_TYPENAME        1
-#   define _STLP_NO_ARROW_OPERATOR 1
-#   define _STLP_TEMPLATE_PARAM_SUBTYPE_BUG  1
-#   define _STLP_FORCED_INLINE_INSTANTIATION_BUG  1
-#   define _STLP_MULTI_CONST_TEMPLATE_ARG_BUG  1
-#   define _STLP_INLINE_NAME_RESOLUTION_BUG  1
-// *** Metrowerks Standard Library Bug ***
-#   define _STLP_MSVC50_COMPATIBILITY 1
+#    error "Sorry. Use better compiler."
 #  endif
-
-#  if __MWERKS__ < 0x2000      // v. 2.0 features
-#   define _STLP_NO_WCHAR_T 1
-#   define _STLP_NO_DEFAULT_NON_TYPE_PARAM 1
-#   define _STLP_NON_TYPE_TMPL_PARAM_BUG  1  // dwa 8/21/97 - this bug fixed for CWPro2
-#  endif
-
-#  if __MWERKS__ < 0x1900                 // dwa 8/19/97 - 1.9 Compiler feature defines
-#   define _STLP_LIMITED_DEFAULT_TEMPLATES 1
-#   define _STLP_BASE_TYPEDEF_BUG        1
-#   define _STLP_BASE_MATCH_BUG   1
-#   define _STLP_NONTEMPL_BASE_MATCH_BUG 1
-#   define _STLP_DEFAULT_TYPE_PARAM  1      // More limited template parameters
-
-#   if __MWERKS__ < 0x1800
-    __GIVE_UP_WITH_STL(CW_18)
-#   endif
 
 #  endif
 

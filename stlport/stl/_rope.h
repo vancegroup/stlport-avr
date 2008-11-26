@@ -350,14 +350,6 @@ public:
   _CharT* _STLP_VOLATILE _M_c_string;
   _STLP_PRIV _STLP_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
 
-#ifdef _STLP_NO_ARROW_OPERATOR
-  _Rope_RopeRep() : _Refcount_Base(1), _M_size(allocator_type(), 0) {
-#  if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
-    _STLP_CHECK_RUNTIME_COMPATIBILITY();
-#  endif
-  }
-#endif
-
   /* Flattened version of string, if needed.  */
   /* typically 0.                             */
   /* If it's not 0, then the memory is owned  */
@@ -459,11 +451,6 @@ public:
     _M_init(_IsBasicCharType());
   }
 
-# ifdef _STLP_NO_ARROW_OPERATOR
-  _Rope_RopeLeaf() {}
-  _Rope_RopeLeaf(const _Rope_RopeLeaf<_CharT, _Alloc>& ) {}
-# endif
-
 // The constructor assumes that d has been allocated with
   // the proper allocator and the properly padded size.
   // In contrast, the destructor deallocates the data:
@@ -490,10 +477,6 @@ public:
                                    (max)(__l->_M_depth, __r->_M_depth) + 1, false,
                                    __l->_M_size._M_data + __r->_M_size._M_data, __a), _M_left(__l), _M_right(__r)
   {}
-# ifdef _STLP_NO_ARROW_OPERATOR
-  _Rope_RopeConcatenation() {}
-  _Rope_RopeConcatenation(const _Rope_RopeConcatenation<_CharT, _Alloc>&) {}
-# endif
 
   ~_Rope_RopeConcatenation() {
     this->_M_free_c_string();
@@ -517,10 +500,6 @@ public:
   bool _M_delete_when_done;
   _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Rope_RopeRep<_CharT,_Alloc>::allocator_type allocator_type;
-# ifdef _STLP_NO_ARROW_OPERATOR
-  _Rope_RopeFunction() {}
-  _Rope_RopeFunction(const _Rope_RopeFunction<_CharT, _Alloc>& ) {}
-# endif
 
   _Rope_RopeFunction(char_producer<_CharT>* __f, size_t _p_size,
                      bool __d, allocator_type __a)

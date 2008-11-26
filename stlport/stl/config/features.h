@@ -679,10 +679,6 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_DONT_SUP_DFLT_PARAM 1
 #endif
 
-#if defined (__SGI_STL_NO_ARROW_OPERATOR) && ! defined (_STLP_NO_ARROW_OPERATOR)
-#  define _STLP_NO_ARROW_OPERATOR
-#endif
-
 #if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !(defined (_STLP_NO_ARROW_OPERATOR)) && \
        !defined (_STLP_NO_MSVC50_COMPATIBILITY) && !defined (_STLP_MSVC50_COMPATIBILITY)

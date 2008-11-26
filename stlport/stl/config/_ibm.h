@@ -75,7 +75,7 @@
 #  define _STLP_HAS_NO_NAMESPACES 1
 #  define _STLP_NEED_TYPENAME 1
 #  define _STLP_NEED_EXPLICIT 1
-#  define _STLP_NO_ARROW_OPERATOR 1
+#  define _STLP_NO_ARROW_OPERATOR 1 // Unsupported
 #  define _STLP_NO_NEW_STYLE_CASTS 1
 #  define _STLP_NO_WCHAR_T 1
 #  define _STLP_NEED_MUTABLE 1

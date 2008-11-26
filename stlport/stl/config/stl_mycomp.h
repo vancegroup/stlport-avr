@@ -211,9 +211,6 @@
 // key type being const
 // #  define _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
 
-// Uncomment this to disable -> operators on all iterators
-// #  define   _STLP_NO_ARROW_OPERATOR 1
-
 // Uncomment this to disble at() member functions for containers
 // #  define   _STLP_NO_AT_MEMBER_FUNCTION 1
 

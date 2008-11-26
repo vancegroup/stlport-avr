@@ -1,8 +1,6 @@
 /*========================================== */
 #if 1 /* def _STLP_3_COMPATIBILITY */
 
-# define __SGI_STL_PORT  _STLPORT_VERSION
-
 # if defined (_STLP_DEBUG) && ! defined ( __STL_DEBUG )
 #  define __STL_DEBUG _STLP_DEBUG
 # endif

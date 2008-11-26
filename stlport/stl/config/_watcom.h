@@ -75,7 +75,7 @@
 
 //#define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
 
-#define _STLP_NO_ARROW_OPERATOR 1
+#define _STLP_NO_ARROW_OPERATOR 1 // Unsuppoerted more
 // This one is present in 11, but apparently has bugs (with auto_ptr).
 //#define _STLP_NO_NEW_STYLE_CASTS 1
 

@@ -17,7 +17,7 @@
 #  define _STLP_NEED_EXPLICIT
 #  define _STLP_HAS_NO_EXCEPTIONS
 #  define _STLP_NO_EXCEPTION_SPEC
-#  define _STLP_NO_ARROW_OPERATOR
+#  define _STLP_NO_ARROW_OPERATOR // Unsupported more
 #  define _STLP_NO_NEW_STYLE_CASTS
 
 #  define _STLP_NEED_MUTABLE
