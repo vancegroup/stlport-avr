@@ -10,7 +10,8 @@
 
 !if ("$(COMPILER_NAME)" != "evc3" && \
      "$(COMPILER_NAME)" != "evc4" && \
-     "$(COMPILER_NAME)" != "evc8")
+     "$(COMPILER_NAME)" != "evc8" && \
+     "$(COMPILER_NAME)" != "evc9")
 !error You pick the wrong makefile, please rerun configure script and follow the instructions.
 !endif
 
@@ -30,4 +31,5 @@ DEFS_STATIC_DBG = /D_STLP_USE_STATIC_LIB
 DEFS_STATIC_STLDBG = /D_STLP_USE_STATIC_LIB
 
 LDSEARCH=$(LDSEARCH) /LIBPATH:$(STLPORT_LIB_DIR)
+
 !include $(SRCROOT)/Makefiles/nmake/top.mak

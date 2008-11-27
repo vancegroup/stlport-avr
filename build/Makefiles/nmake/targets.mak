@@ -161,6 +161,25 @@ RES_MARKED=$(RES_MARKED:@=obj\evc8-sh4\@)
 !error Unknown target processor configured!
 !endif
 
+!elseif "$(COMPILER_NAME)" == "evc9"
+!if "$(TARGET_PROC)" == ""
+!error No target processor configured!
+!elseif "$(TARGET_PROC)" == "arm"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc9-arm\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc9-arm\@)
+!elseif "$(TARGET_PROC)" == "x86"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc9-x86\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc9-x86\@)
+!elseif "$(TARGET_PROC)" == "mips"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc9-mips\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc9-mips\@)
+!elseif "$(TARGET_PROC)" == "sh4"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc9-sh4\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc9-sh4\@)
+!else
+!error Unknown target processor configured!
+!endif
+
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_MARKED=$(OBJ_MARKED:@=obj\vc6\@)
 RES_MARKED=$(RES_MARKED:@=obj\vc6\@)

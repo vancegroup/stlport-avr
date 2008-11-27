@@ -34,7 +34,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #if defined (_STLP_USE_DEFAULT_FILE_OFFSET) || \
     (!defined(_LARGEFILE_SOURCE) && !defined(_LARGEFILE64_SOURCE))
-#  if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400)
+#  if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400) || defined(_STLP_WCE)
 #    define FSEEK fseek
 #  else
 #    define FSEEK _fseeki64

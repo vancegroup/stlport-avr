@@ -1,3 +1,7 @@
+2008-11-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build: EVC9 (Visual Studio 2008) by Johan Andersson.
+
 2008-11-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* Repository: STLport release 5.2.0

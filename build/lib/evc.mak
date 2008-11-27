@@ -10,7 +10,8 @@
 
 !if ("$(COMPILER_NAME)" != "evc3" && \
      "$(COMPILER_NAME)" != "evc4" && \
-     "$(COMPILER_NAME)" != "evc8")
+     "$(COMPILER_NAME)" != "evc8" && \
+     "$(COMPILER_NAME)" != "evc9")
 !error You picked the wrong makefile, please rerun configure script and follow the instructions.
 !endif
 
