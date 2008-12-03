@@ -11,6 +11,7 @@ CHECK_TAGS += check-stldbg
 endif
 STLPORT_DIR ?= ../../..
 
+STLPORT_INCLUDE_DIR = ../../../stlport
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
@@ -22,6 +23,8 @@ dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 ifndef WITHOUT_STLPORT
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 endif
+
+INCLUDES += -I$(STLPORT_INCLUDE_DIR)
 
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}

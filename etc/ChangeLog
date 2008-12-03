@@ -1,3 +1,9 @@
+2008-12-03  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build: HP-UX/ia64 with aC++ compiler; verified on HP-UX 11.23
+	and 11.31 with aC++ A.06.17; [4 of 436 tests, 4 ignored (2 explicit),
+	and 4 of 360 tests, 2 ignored]; submitted by Boris Gubenko.
+
 2008-11-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build: EVC9 (Visual Studio 2008) by Johan Andersson.

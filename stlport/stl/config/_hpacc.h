@@ -9,7 +9,7 @@
 #  define _STLP_RAND48 1
 #endif
 /* #  define _STLP_RAND48 1 */
-#define _STLP_NO_NATIVE_MBSTATE_T      1
+/* #define _STLP_NO_NATIVE_MBSTATE_T      1 */
 #define _STLP_HPACC_BROKEN_BUFEND       1
 #define _STLP_WCHAR_HPACC_EXCLUDE      1
 

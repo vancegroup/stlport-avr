@@ -121,11 +121,12 @@ struct _Dig<0>
 // Tests for infinity and NaN differ on different OSs.  We encapsulate
 // these differences here.
 #if !defined (USE_SPRINTF_INSTEAD)
-#  if defined (__hpux)
+#  if defined (__hpux) && defined (__GNUC__)
 #    define _STLP_USE_SIGN_HELPER
 #  elif defined (__DJGPP) || (defined (_STLP_USE_GLIBC) && ! defined (__MSL__)) || \
       defined (__CYGWIN__) || \
-      defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
+      defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
+      defined (__HP_aCC)
 static inline bool _Stl_is_nan_or_inf(double x)
 #    if defined (isfinite)
 { return !isfinite(x); }

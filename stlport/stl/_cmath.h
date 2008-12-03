@@ -545,7 +545,16 @@ using ::fabs;
 using ::floor;
 using ::fmod;
 using ::frexp;
+/*
+   Because of some weird interaction between STLport headers
+   and native HP-UX headers, when compiled with _STLP_DEBUG
+   macro defined with aC++, hypot() is not declared.
+   At some point we'll need to get to the bottom line of
+   this problem.
+*/
+#if !(defined(__HP_aCC) && defined(_STLP_DEBUG))
 using ::hypot;
+#endif
 using ::ldexp;
 using ::log;
 using ::log10;
