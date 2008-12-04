@@ -3,11 +3,11 @@
 SRCROOT := ../..
 COMPILER_NAME := aCC
 -include ${SRCROOT}/Makefiles/gmake/config.mak
-ALL_TAGS = release-shared check-release
-CHECK_TAGS = check-release
+ALL_TAGS = release-shared check-release-shared
+CHECK_TAGS = check-release-shared
 ifndef WITHOUT_STLPORT
-ALL_TAGS += stldbg-shared check-stldbg
-CHECK_TAGS += check-stldbg
+ALL_TAGS += stldbg-shared check-stldbg-shared
+CHECK_TAGS += check-stldbg-shared
 endif
 STLPORT_DIR ?= ../..
 
@@ -33,11 +33,11 @@ dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_DBG} -Wl,+b${STLPORT_DI
 stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} -Wl,+b${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}
 endif
 
-check-release:	release-shared
+check-release-shared:	release-shared
 	-${OUTPUT_DIR}/${PRGNAME}
 
 ifndef WITHOUT_STLPORT
-check-stldbg:	stldbg-shared
+check-stldbg-shared:	stldbg-shared
 	-${OUTPUT_DIR_STLDBG}/${PRGNAME}
 endif
 

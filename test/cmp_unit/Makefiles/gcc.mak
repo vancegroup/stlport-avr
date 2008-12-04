@@ -5,11 +5,11 @@ COMPILER_NAME := gcc
 #NOT_USE_NOSTDLIB := 1
 #WITHOUT_STLPORT := 1
 -include ${SRCROOT}/Makefiles/gmake/config.mak
-ALL_TAGS = release-shared check-release
-CHECK_TAGS = check-release
+ALL_TAGS = release-shared check-release-shared
+CHECK_TAGS = check-release-shared
 ifndef WITHOUT_STLPORT
-ALL_TAGS += stldbg-shared check-stldbg
-CHECK_TAGS += check-stldbg
+ALL_TAGS += stldbg-shared check-stldbg-shared
+CHECK_TAGS += check-stldbg-shared
 endif
 STLPORT_DIR ?= ../..
 
@@ -85,11 +85,11 @@ endif
 endif
 endif
 
-check-release:	release-shared
+check-release-shared:	release-shared
 	-${OUTPUT_DIR}/${PRGNAME}
 
 ifndef WITHOUT_STLPORT
-check-stldbg:	stldbg-shared
+check-stldbg-shared:	stldbg-shared
 	-${OUTPUT_DIR_STLDBG}/${PRGNAME}
 endif
 

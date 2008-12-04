@@ -19,27 +19,28 @@ ifndef WITHOUT_STLPORT
 stldbg-shared:	LDFLAGS += -L${SRCROOT}/src/${OUTPUT_DIR_STLDBG}
 endif
 
-check:	all-shared
-	$(MAKE) -C ./ut
-	(cd ./ut; ${OUTPUT_DIR}/exam_self_test) || exit 1
-	(cd ./ut; ${OUTPUT_DIR_DBG}/exam_self_test) || exit 1
-ifndef WITHOUT_STLPORT
-	(cd ./ut; ${OUTPUT_DIR_STLDBG}/exam_self_test) || exit 1
-endif
+#check:	all-shared
+#	$(MAKE) -C ./ut
+#	(cd ./ut; ${OUTPUT_DIR}/exam_self_test) || exit 1
+#	(cd ./ut; ${OUTPUT_DIR_DBG}/exam_self_test) || exit 1
+#ifndef WITHOUT_STLPORT
+#	(cd ./ut; ${OUTPUT_DIR_STLDBG}/exam_self_test) || exit 1
+#endif
 
-check-release-shared:	release-shared
-	$(MAKE) -C ./ut release-shared
-	(cd ./ut; ${OUTPUT_DIR}/exam_self_test) || exit 1
+#check-release-shared:	release-shared
+#	$(MAKE) -C ./ut release-shared
+#	(cd ./ut; ${OUTPUT_DIR}/exam_self_test) || exit 1
 
-check-dbg-shared:	dbg-shared
-	$(MAKE) -C ./ut dbg-shared
-	(cd ./ut; ${OUTPUT_DIR_DBG}/exam_self_test) || exit 1
+#check-dbg-shared:	dbg-shared
+#	$(MAKE) -C ./ut dbg-shared
+#	(cd ./ut; ${OUTPUT_DIR_DBG}/exam_self_test) || exit 1
 
-ifndef WITHOUT_STLPORT
-check-stldbg-shared:	stldbg-shared
-	$(MAKE) -C ./ut stldbg-shared
-	(cd ./ut; ${OUTPUT_DIR_STLDBG}/exam_self_test) || exit 1
-endif
+#ifndef WITHOUT_STLPORT
+#check-stldbg-shared:	stldbg-shared
+#	$(MAKE) -C ./ut stldbg-shared
+#	(cd ./ut; ${OUTPUT_DIR_STLDBG}/exam_self_test) || exit 1
+#endif
 
 depend clean distclean mostlyclean maintainer-clean::
-	${MAKE} -C ut $@
+
+#	${MAKE} -C ut $@
