@@ -1,3 +1,7 @@
+2008-12-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: STLport release 5.2.1
+
 2008-12-03  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build: HP-UX/ia64 with aC++ compiler; verified on HP-UX 11.23
