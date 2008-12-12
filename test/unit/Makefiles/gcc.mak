@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <08/10/26 20:48:38 ptr>
+# -*- Makefile -*- Time-stamp: <08/12/12 06:33:10 ptr>
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
@@ -88,6 +88,9 @@ endif
 check-release-shared:	release-shared
 	-${OUTPUT_DIR}/${PRGNAME}
 
+check-dbg-shared:	dbg-shared
+	-${OUTPUT_DIR_DBG}/${PRGNAME}
+
 ifndef WITHOUT_STLPORT
 check-stldbg-shared:	stldbg-shared
 	-${OUTPUT_DIR_STLDBG}/${PRGNAME}
@@ -95,3 +98,4 @@ endif
 
 check:	${CHECK_TAGS}
 
+PHONY += check check-release-shared check-dbg-shared check-stldbg-shared

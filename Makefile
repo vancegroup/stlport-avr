@@ -1,4 +1,4 @@
-# Time-stamp: <08/06/12 14:28:42 ptr>
+# Time-stamp: <08/12/12 06:44:27 ptr>
 #
 # Copyright (c) 2004-2008
 # Petr Ovtchenkov
@@ -9,15 +9,16 @@
 SRCROOT := .
 SUBDIRS := src
 
+include ${SRCROOT}/Makefiles/gmake/top.mak
 include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
-all install depend clean distclean mostlyclean maintainer-clean uninstall::
+all uninstall:
 	+$(call doinsubdirs,${SUBDIRS})
 
-distclean clean depend mostlyclean maintainer-clean::
-	+$(call doinsubdirs,test/exam test/misc test/cmp_unit test/unit)
+depend clean distclean mostlyclean maintainer-clean::
+	+$(call doinsubdirs,${SUBDIRS} test/exam test/misc test/cmp_unit test/unit)
 
-release-shared install-release-shared dbg-shared stldbg-shared:
+release-shared install-release-shared dbg-shared install-dbg-shared stldbg-shared install-stldbg-shared:
 	+$(call doinsubdirs,${SUBDIRS})
 
 check:	release-shared dbg-shared stldbg-shared
@@ -35,13 +36,15 @@ check-stldbg-shared:	stldbg-shared
 	+$(call dotaginsubdirs,stldbg-shared,test/exam test/misc test/cmp_unit test/unit)
 	+$(call doinsubdirs,test/cmp_unit test/unit)
 
-install::	install-headers
+install:	install-headers
+	+$(call doinsubdirs,${SUBDIRS})
 
 install-headers:
 	${MAKE} -C src install-headers
 
-.PHONY: all install depend release-shared install-release-shared \
-        clean distclean mostlyclean maintainer-clean uninstall \
-        dbg-shared stldbg-shared \
-        install-headers \
-        check check-release-shared check-dbg-shared check-stldbg-shared
+PHONY += all install depend \
+         install-release-shared install-dbg-shared install-stldbg-shared \
+         clean distclean mostlyclean maintainer-clean uninstall \
+         release-shared dbg-shared stldbg-shared \
+         install-headers \
+         check check-release-shared check-dbg-shared check-stldbg-shared
