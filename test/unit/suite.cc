@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/11/22 01:52:39 ptr>
+// -*- C++ -*- Time-stamp: <08/12/12 22:31:15 ptr>
 
 /*
  * Copyright (c) 2008
@@ -22,6 +22,8 @@
 #include "map_test.h"
 #include "numerics.h"
 #include "stream_test.h"
+#include "alg_test.h"
+#include "functor_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -190,6 +192,81 @@ int main( int argc, const char** argv )
   t.add( &string_test::allocator_with_state, str_test, "allocator_with_state" );
   t.add( &string_test::capacity, str_test, "capacity" );
   t.add( &string_test::concat24, str_test, "concat24" );
+
+  alg_test algtest;
+
+  t.add( &alg_test::remcopy1, algtest, "algorithm remcopy1" );
+  t.add( &alg_test::remcpif1, algtest, "algorithm remcpif1" );
+  t.add( &alg_test::remif1, algtest, "algorithm remif1" );
+  t.add( &alg_test::remove1, algtest, "algorithm remove1" );
+  t.add( &alg_test::repcpif1, algtest, "algorithm repcpif1" );
+  t.add( &alg_test::replace0, algtest, "algorithm replace0" );
+  t.add( &alg_test::replace1, algtest, "algorithm replace1" );
+  t.add( &alg_test::replcpy1, algtest, "algorithm replcpy1" );
+  t.add( &alg_test::replif1, algtest, "algorithm replif1" );
+  t.add( &alg_test::revcopy1, algtest, "algorithm revcopy1" );
+  t.add( &alg_test::reverse1, algtest, "algorithm reverse1" );
+
+  t.add( &alg_test::min_max, algtest, "algorithm min_max" );
+  t.add( &alg_test::count_test, algtest, "algorithm count_test" );
+  t.add( &alg_test::sort_test, algtest, "algorithm sort_test" );
+  t.add( &alg_test::search_n_test, algtest, "algorithm search_n_test" );
+  t.add( &alg_test::find_first_of_test, algtest, "algorithm find_first_of_test" );
+  t.add( &alg_test::find_first_of_nsc_test, algtest, "algorithm find_first_of_nsc_test" );
+
+  t.add( &alg_test::max1, algtest, "algorithm max1" );
+  t.add( &alg_test::max2, algtest, "algorithm max2" );
+  t.add( &alg_test::maxelem1, algtest, "algorithm maxelem1" );
+  t.add( &alg_test::maxelem2, algtest, "algorithm maxelem2" );
+
+  t.add( &alg_test::min1, algtest, "algorithm min1" );
+  t.add( &alg_test::min2, algtest, "algorithm min2" );
+  t.add( &alg_test::minelem1, algtest, "algorithm minelem1" );
+  t.add( &alg_test::minelem2, algtest, "algorithm minelem2" );
+
+  t.add( &alg_test::lwrbnd1, algtest, "algorithm lwrbnd1" );
+  t.add( &alg_test::lwrbnd2, algtest, "algorithm lwrbnd2" );
+  t.add( &alg_test::uprbnd1, algtest, "algorithm uprbnd1" );
+  t.add( &alg_test::uprbnd2, algtest, "algorithm uprbnd2" );
+
+  t.add( &alg_test::equal_range0, algtest, "algorithm equal_range0" );
+  t.add( &alg_test::equal_range1, algtest, "algorithm equal_range1" );
+  t.add( &alg_test::equal_range2, algtest, "algorithm equal_range2" );
+
+  t.add( &alg_test::foreach0, algtest, "algorithm foreach0" );
+  t.add( &alg_test::foreach1, algtest, "algorithm foreach1" );
+
+  t.add( &alg_test::gener1, algtest, "algorithm gener1" );
+  t.add( &alg_test::gener2, algtest, "algorithm gener2" );
+  t.add( &alg_test::genern1, algtest, "algorithm genern1" );
+  t.add( &alg_test::genern2, algtest, "algorithm genern2" );
+
+  functor_test fntest;
+
+  t.add( &functor_test::equal0, fntest, "functor equal0" );
+  t.add( &functor_test::equal1, fntest, "functor equal1" );
+  t.add( &functor_test::equal2, fntest, "functor equal2" );
+  t.add( &functor_test::equalto, fntest, "functor equalto" );
+
+  t.add( &functor_test::bnegate1, fntest, "functor bnegate1" );
+  t.add( &functor_test::bnegate2, fntest, "functor bnegate2" );
+
+  t.add( &functor_test::logicand, fntest, "functor logic and" );
+  t.add( &functor_test::logicnot, fntest, "functor logic not" );
+  t.add( &functor_test::logicor, fntest, "functor logic or" );
+
+  t.add( &functor_test::lesst, fntest, "functor less" );
+  t.add( &functor_test::lesseqt, fntest, "functor less-or-equal" );
+
+  t.add( &functor_test::greatert, fntest, "functor greater" );
+  t.add( &functor_test::greatereq, fntest, "functor greater-or-equal" );
+
+  t.add( &functor_test::func1, fntest, "functor func1" );
+  t.add( &functor_test::func2, fntest, "functor func2" );
+  t.add( &functor_test::func3, fntest, "functor func3" );
+
+  t.add( &functor_test::plus0, fntest, "functor plus0" );
+  t.add( &functor_test::minus0, fntest, "functor minus0" );
 
   iostream_test strm_test;
 

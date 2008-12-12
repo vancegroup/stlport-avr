@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <08/11/23 22:16:28 ptr>
+# -*- makefile -*- Time-stamp: <08/12/12 22:30:34 ptr>
 
 # this is the version number of needed STLport library for linking
 LIBMAJOR = 6
@@ -15,8 +15,6 @@ SRC_CPP = adj_test.cpp \
 	bind_test.cpp \
 	binsert_test.cpp \
 	bitset_test.cpp \
-	bnegate_test.cpp \
-	bound_test.cpp \
 	bsearch_test.cpp \
 	bvector_test.cpp \
 	cmath_test.cpp \
@@ -29,16 +27,12 @@ SRC_CPP = adj_test.cpp \
 	ctype_facets_test.cpp \
 	deque_test.cpp \
 	divides_test.cpp \
-	equal_test.cpp \
 	exception_test.cpp \
 	fill_test.cpp \
 	find_test.cpp \
 	finsert_test.cpp \
-	foreach_test.cpp \
 	fstream_test.cpp \
-	func_test.cpp \
-	generator_test.cpp \
-	greater_test.cpp \
+        functor_test.cpp \
 	hash_test.cpp \
 	heap_test.cpp \
 	includes_test.cpp \
@@ -49,19 +43,15 @@ SRC_CPP = adj_test.cpp \
 	iota_test.cpp \
 	istmit_test.cpp \
 	iter_test.cpp \
-	less_test.cpp \
 	lexcmp_test.cpp \
 	limits_test.cpp \
 	list_test.cpp \
 	locale_test.cpp \
-	logic_test.cpp \
 	map_test.cpp \
-	max_test.cpp \
 	memory_test.cpp \
 	merge_test.cpp \
 	messages_facets_test.cpp \
 	mfunptr_test.cpp \
-	min_test.cpp \
 	mismatch_test.cpp \
 	modulus_test.cpp \
 	money_facets_test.cpp \
@@ -75,14 +65,12 @@ SRC_CPP = adj_test.cpp \
 	partial_test.cpp \
 	partition_test.cpp \
 	perm_test.cpp \
-	plusminus_test.cpp \
 	ptr2_test.cpp \
 	ptrspec_test.cpp \
 	rawriter_test.cpp \
 	reference_wrapper_test.cpp \
 	resolve_name.cpp \
 	reviter_test.cpp \
-	rm_cp_test.cpp \
 	rndshf_test.cpp \
 	rope_test.cpp \
 	rotate_test.cpp \
