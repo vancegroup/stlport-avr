@@ -1,3 +1,11 @@
+2009-01-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* configure: fix wrong parsing of values in environment
+	variables like CFLAGS, thanks Peter Pramberger;
+
+	* configure: if no arguments, check environment variables
+	for options, instead of setting defaults.
+
 2008-12-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* Repository: STLport release 5.2.1
