@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <08/06/07 15:22:19 yeti>
+# Time-stamp: <09/01/09 12:08:03 ptr>
 
 base=`cd \`dirname $0\`; echo $PWD`
 
@@ -14,6 +14,10 @@ write_option() {
 write_over_option() {
   target=`echo $1 | sed -e 's/^[^=]*=//'`
   echo $2 ?= $target >> ${configmak}
+}
+
+write_raw_option() {
+  echo $2 := $3$1 >> ${configmak}
 }
 
 print_help() {
@@ -128,8 +132,6 @@ default_settings () {
   #   write_option "/usr/local" BASE_INSTALL_DIR '${DESTDIR}'
   # fi
 }
-
-[ $# -eq 0 ] && { >${configmak}; default_settings; exit 0; }
 
 for a in $@ ; do
   case $a in
@@ -289,7 +291,7 @@ if [ -n "${CXX}" ]; then
   if [ -n "${cxx_set}" ]; then
     echo "Both --with-cxx and \$CXX set, using the first"
   elif [ -z "${target_set}" ]; then
-    write_option "${CXX}" _FORCE_CXX
+    write_raw_option "${CXX}" _FORCE_CXX
   else
     echo "For cross-compilation with gcc use --target option only"
   fi
@@ -302,13 +304,13 @@ if [ -n "${CC}" ]; then
   if [ -n "${cxx_set}" ]; then
     echo "Both --with-cc and \$CC set, using the first"
   else
-    write_option "${CC}" _FORCE_CC
+    write_raw_option "${CC}" _FORCE_CC
   fi
 fi
 
 if [ -n "${CXXFLAGS}" ]; then
   if [ -z "${cxxflags_set}" ]; then
-    write_option "${CXXFLAGS}" EXTRA_CXXFLAGS
+    write_raw_option "${CXXFLAGS}" EXTRA_CXXFLAGS
   else
     echo "Both --with-extra-cxxflags and \$CXXFLAGS set, using the first"
   fi
@@ -316,7 +318,7 @@ fi
 
 if [ -n "${CFLAGS}" ]; then
   if [ -z "${cflags_set}" ]; then
-    write_option "${CFLAGS}" EXTRA_CFLAGS
+    write_raw_option "${CFLAGS}" EXTRA_CFLAGS
   else
     echo "Both --with-extra-cflags and \$CFLAGS set, using the first"
   fi
@@ -324,12 +326,10 @@ fi
 
 if [ -n "${LDFLAGS}" ]; then
   if [ -z "${ldflags_set}" ]; then
-    write_option "${LDFLAGS}" EXTRA_LDFLAGS
+    write_raw_option "${LDFLAGS}" EXTRA_LDFLAGS
   else
     echo "Both --with-extra-ldflags and \$LDFLAGS set, using the first"
   fi
 fi
-
-# default settings
 
 default_settings
