@@ -400,7 +400,7 @@ class vector :
                                   size_type __n, const false_type& /* trivial move */ )
       {
         size_type __len = _M_compute_next_size(__n);
-        pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+        pointer __new_start = this->_M_end_of_storage.allocate(__len);
         pointer __new_finish = __new_start;
         pointer old = this->_M_start;
         _STLP_TRY {
