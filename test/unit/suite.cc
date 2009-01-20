@@ -20,10 +20,15 @@
 #include "slist_test.h"
 #include "string_test.h"
 #include "map_test.h"
+#include "set_operations_test.h"
 #include "numerics.h"
 #include "stream_test.h"
 #include "alg_test.h"
 #include "functor_test.h"
+#include "search_test.h"
+#include "sort_test.h"
+#include "adj_test.h"
+#include "copy_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -339,6 +344,27 @@ int main( int argc, const char** argv )
   t.add( &set_test::reverse_iterator_test, s_test, "set reverse_iterator_test" );
   t.add( &set_test::template_methods, s_test, "set template_methods" );
 
+  set_union_test su_test;
+
+  t.add( &set_union_test::setunon0, su_test, "setunon0" );
+  t.add( &set_union_test::setunon1, su_test, "setunon1" );
+  t.add( &set_union_test::setunon2, su_test, "setunon2" );
+
+  set_intersection_test si_test;
+
+  t.add( &set_intersection_test::setintr0, si_test, "setintr0" );
+  t.add( &set_intersection_test::setintr1, si_test, "setintr1" );
+  t.add( &set_intersection_test::setintr2, si_test, "setintr2" );
+
+  set_difference_test sd_test;
+
+  t.add( &set_difference_test::setdiff0, sd_test, "setdiff0" );
+  t.add( &set_difference_test::setdiff1, sd_test, "setdiff1" );
+  t.add( &set_difference_test::setdiff2, sd_test, "setdiff2" );
+  t.add( &set_difference_test::setsymd0, sd_test, "setsymd0" );
+  t.add( &set_difference_test::setsymd1, sd_test, "setsymd1" );
+  t.add( &set_difference_test::setsymd2, sd_test, "setsymd2" );
+
   multiset_test ms_test;
 
   t.add( &multiset_test::mset1, ms_test, "mset1" );
@@ -387,6 +413,40 @@ int main( int argc, const char** argv )
   t.add( &fstream_test::offset, fstrm_test, "fstream offset" );
   t.add( &fstream_test::big_file, fstrm_test, "fstream big_file" );
   t.add( &fstream_test::custom_facet, fstrm_test, "fstream custom_facet" );
+  
+  search_test sch_test;
+  
+  t.add( &search_test::search0, sch_test, "search0" );
+  t.add( &search_test::search1, sch_test, "search1" );
+  t.add( &search_test::search2, sch_test, "search2" );
+
+  sort_test srt_test;
+  
+  t.add( &sort_test::sort1, srt_test, "sort1" );
+  t.add( &sort_test::sort2, srt_test, "sort2" );
+  t.add( &sort_test::sort3, srt_test, "sort3" );
+  t.add( &sort_test::sort4, srt_test, "sort4" );
+  t.add( &sort_test::stblsrt1, srt_test, "stblsrt1" );
+  t.add( &sort_test::stblsrt2, srt_test, "stblsrt2" );
+  t.add( &sort_test::bad_predicate_detected, srt_test, "bad_predicate_detected" );
+
+  adj_test a_test;
+
+  t.add( &adj_test::adjfind0, a_test, "adjfind0" );
+  t.add( &adj_test::adjfind1, a_test, "adjfind1" );
+  t.add( &adj_test::adjfind2, a_test, "adjfind2" );
+  t.add( &adj_test::adjdiff0, a_test, "adjdiff0" );
+  t.add( &adj_test::adjdiff1, a_test, "adjdiff1" );
+  t.add( &adj_test::adjdiff2, a_test, "adjdiff2" );
+  
+  copy_test cp_test;
+
+  t.add( &copy_test::copy_array, cp_test, "copy_array" );
+  t.add( &copy_test::copy_volatile, cp_test, "copy_volatile" );
+  t.add( &copy_test::copy_vector, cp_test, "copy_vector" );
+  t.add( &copy_test::copy_insert, cp_test, "copy_insert" );
+  t.add( &copy_test::copy_back, cp_test, "copy_back" );
+  t.add( &copy_test::copy_back_array, cp_test, "copy_back_array" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );

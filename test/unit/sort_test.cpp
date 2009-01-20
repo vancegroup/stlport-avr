@@ -1,3 +1,5 @@
+#include "sort_test.h"
+
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -7,71 +9,34 @@
 #  include <stdexcept>
 #endif
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class SortTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(SortTest);
-  CPPUNIT_TEST(sort1);
-  CPPUNIT_TEST(sort2);
-  CPPUNIT_TEST(sort3);
-  CPPUNIT_TEST(sort4);
-  CPPUNIT_TEST(stblsrt1);
-  CPPUNIT_TEST(stblsrt2);
-#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
-  CPPUNIT_TEST(bad_predicate_detected);
-#endif
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void sort1();
-  void sort2();
-  void sort3();
-  void sort4();
-  void stblsrt1();
-  void stblsrt2();
-  void bad_predicate_detected();
-
-  static bool string_less(const char* a_, const char* b_)
-  {
-    return strcmp(a_, b_) < 0 ? 1 : 0;
-  }
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(SortTest);
-
-//
-// tests implementation
-//
-void SortTest::stblsrt1()
+int EXAM_IMPL(sort_test::stblsrt1)
 {
   //Check that stable_sort do sort
   int numbers[6] = { 1, 50, -10, 11, 42, 19 };
   stable_sort(numbers, numbers + 6);
   //-10 1 11 19 42 50
-  CPPUNIT_ASSERT(numbers[0]==-10);
-  CPPUNIT_ASSERT(numbers[1]==1);
-  CPPUNIT_ASSERT(numbers[2]==11);
-  CPPUNIT_ASSERT(numbers[3]==19);
-  CPPUNIT_ASSERT(numbers[4]==42);
-  CPPUNIT_ASSERT(numbers[5]==50);
+  EXAM_CHECK(numbers[0]==-10);
+  EXAM_CHECK(numbers[1]==1);
+  EXAM_CHECK(numbers[2]==11);
+  EXAM_CHECK(numbers[3]==19);
+  EXAM_CHECK(numbers[4]==42);
+  EXAM_CHECK(numbers[5]==50);
 
   char const* letters[6] = {"bb", "aa", "ll", "dd", "qq", "cc" };
   stable_sort(letters, letters + 6, string_less);
   // aa bb cc dd ll qq
-  CPPUNIT_ASSERT( strcmp(letters[0], "aa") == 0 );
-  CPPUNIT_ASSERT( strcmp(letters[1], "bb") == 0 );
-  CPPUNIT_ASSERT( strcmp(letters[2], "cc") == 0 );
-  CPPUNIT_ASSERT( strcmp(letters[3], "dd") == 0 );
-  CPPUNIT_ASSERT( strcmp(letters[4], "ll") == 0 );
-  CPPUNIT_ASSERT( strcmp(letters[5], "qq") == 0 );
+  EXAM_CHECK( strcmp(letters[0], "aa") == 0 );
+  EXAM_CHECK( strcmp(letters[1], "bb") == 0 );
+  EXAM_CHECK( strcmp(letters[2], "cc") == 0 );
+  EXAM_CHECK( strcmp(letters[3], "dd") == 0 );
+  EXAM_CHECK( strcmp(letters[4], "ll") == 0 );
+  EXAM_CHECK( strcmp(letters[5], "qq") == 0 );
+
+  return EXAM_RESULT;
 }
 
 struct Data {
@@ -87,7 +52,7 @@ private:
   int m_index, m_value;
 };
 
-void SortTest::stblsrt2()
+int EXAM_IMPL(sort_test::stblsrt2)
 {
   //Check that stable_sort is stable:
   Data datas[] = {
@@ -101,30 +66,34 @@ void SortTest::stblsrt2()
   };
   stable_sort(datas, datas + 7);
 
-  CPPUNIT_ASSERT( datas[0] == Data(5, 4) );
-  CPPUNIT_ASSERT( datas[1] == Data(2, 6) );
-  CPPUNIT_ASSERT( datas[2] == Data(3, 6) );
-  CPPUNIT_ASSERT( datas[3] == Data(4, 6) );
-  CPPUNIT_ASSERT( datas[4] == Data(1, 8) );
-  CPPUNIT_ASSERT( datas[5] == Data(6, 9) );
-  CPPUNIT_ASSERT( datas[6] == Data(0, 10) );
+  EXAM_CHECK( datas[0] == Data(5, 4) );
+  EXAM_CHECK( datas[1] == Data(2, 6) );
+  EXAM_CHECK( datas[2] == Data(3, 6) );
+  EXAM_CHECK( datas[3] == Data(4, 6) );
+  EXAM_CHECK( datas[4] == Data(1, 8) );
+  EXAM_CHECK( datas[5] == Data(6, 9) );
+  EXAM_CHECK( datas[6] == Data(0, 10) );
+
+  return EXAM_RESULT;
 }
 
-void SortTest::sort1()
+int EXAM_IMPL(sort_test::sort1)
 {
   int numbers[6] = { 1, 50, -10, 11, 42, 19 };
 
   sort(numbers, numbers + 6);
   // -10 1 11 19 42 50
-  CPPUNIT_ASSERT(numbers[0]==-10);
-  CPPUNIT_ASSERT(numbers[1]==1);
-  CPPUNIT_ASSERT(numbers[2]==11);
-  CPPUNIT_ASSERT(numbers[3]==19);
-  CPPUNIT_ASSERT(numbers[4]==42);
-  CPPUNIT_ASSERT(numbers[5]==50);
+  EXAM_CHECK(numbers[0]==-10);
+  EXAM_CHECK(numbers[1]==1);
+  EXAM_CHECK(numbers[2]==11);
+  EXAM_CHECK(numbers[3]==19);
+  EXAM_CHECK(numbers[4]==42);
+  EXAM_CHECK(numbers[5]==50);
+
+  return EXAM_RESULT;
 }
 
-void SortTest::sort2()
+int EXAM_IMPL(sort_test::sort2)
 {
   int numbers[] = { 1, 50, -10, 11, 42, 19 };
 
@@ -132,15 +101,17 @@ void SortTest::sort2()
   sort(numbers, numbers + count, greater<int>());
 
   //  50 42 19 11 1 -10
-  CPPUNIT_ASSERT(numbers[5]==-10);
-  CPPUNIT_ASSERT(numbers[4]==1);
-  CPPUNIT_ASSERT(numbers[3]==11);
-  CPPUNIT_ASSERT(numbers[2]==19);
-  CPPUNIT_ASSERT(numbers[1]==42);
-  CPPUNIT_ASSERT(numbers[0]==50);
+  EXAM_CHECK(numbers[5]==-10);
+  EXAM_CHECK(numbers[4]==1);
+  EXAM_CHECK(numbers[3]==11);
+  EXAM_CHECK(numbers[2]==19);
+  EXAM_CHECK(numbers[1]==42);
+  EXAM_CHECK(numbers[0]==50);
+
+  return EXAM_RESULT;
 }
 
-void SortTest::sort3()
+int EXAM_IMPL(sort_test::sort3)
 {
   vector<bool> boolVector;
 
@@ -149,8 +120,10 @@ void SortTest::sort3()
 
   sort( boolVector.begin(), boolVector.end() );
 
-  CPPUNIT_ASSERT(boolVector[0]==false);
-  CPPUNIT_ASSERT(boolVector[1]==true);
+  EXAM_CHECK(boolVector[0]==false);
+  EXAM_CHECK(boolVector[1]==true);
+
+  return EXAM_RESULT;
 }
 
 /*
@@ -178,7 +151,7 @@ template <class _Tp>
 void SortTestFunc (_Tp) {
 }
 
-void SortTest::sort4()
+int EXAM_IMPL(sort_test::sort4)
 {
   bool copy_constructor_called = false;
   SortTestAux instance(copy_constructor_called);
@@ -186,21 +159,23 @@ void SortTest::sort4()
   SortTestAux const& rc_instance = instance;
 
   SortTestFunc(r_instance);
-  CPPUNIT_ASSERT(copy_constructor_called);
+  EXAM_CHECK(copy_constructor_called);
   copy_constructor_called = false;
   SortTestFunc(rc_instance);
-  CPPUNIT_ASSERT(copy_constructor_called);
+  EXAM_CHECK(copy_constructor_called);
+
+  return EXAM_RESULT;
 }
 
-#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
-void SortTest::bad_predicate_detected()
+int EXAM_IMPL(sort_test::bad_predicate_detected)
 {
+#if defined _STLP_DO_CHECK_BAD_PREDICATE
   int numbers[] = { 0, 0, 1, 0, 0, 1, 0, 0 };
   try {
     sort(numbers, numbers + sizeof(numbers) / sizeof(numbers[0]), less_equal<int>());
 
     //Here is means that no exception has been raised
-    CPPUNIT_ASSERT( false );
+    EXAM_ERROR("bad predicate detection");
   }
   catch (runtime_error const&)
   { /*OK bad predicate has been detected.*/ }
@@ -209,9 +184,14 @@ void SortTest::bad_predicate_detected()
     stable_sort(numbers, numbers + sizeof(numbers) / sizeof(numbers[0]), less_equal<int>());
 
     //Here is means that no exception has been raised
-    CPPUNIT_ASSERT( false );
+    EXAM_ERROR("bad predicate detection");
   }
   catch (runtime_error const&)
   { /*OK bad predicate has been detected.*/ }
+
+#  else  // _STLP_DO_CHECK_BAD_PREDICATE
+  throw exam::skip_exception();
+#  endif // _STLP_DO_CHECK_BAD_PREDICATE
+
+  return EXAM_RESULT;
 }
-#endif
