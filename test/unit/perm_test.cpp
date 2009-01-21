@@ -1,3 +1,5 @@
+#include "perm_test.h"
+
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -5,224 +7,211 @@
 #include <functional>
 
 #include "iota.h"
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class PermTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(PermTest);
-  CPPUNIT_TEST(nextprm0);
-  CPPUNIT_TEST(nextprm1);
-  CPPUNIT_TEST(nextprm2);
-  CPPUNIT_TEST(prevprm0);
-  CPPUNIT_TEST(prevprm1);
-  CPPUNIT_TEST(prevprm2);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void nextprm0();
-  void nextprm1();
-  void nextprm2();
-  void prevprm0();
-  void prevprm1();
-  void prevprm2();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(PermTest);
-
-//
-// tests implementation
-//
-void PermTest::prevprm0()
+int EXAM_IMPL(perm_test::prevprm0)
 {
   int v1[3] = { 0, 1, 2 };
   prev_permutation(v1, v1 + 3);
 
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==0);
+
+  return EXAM_RESULT;
 }
-void PermTest::prevprm1()
+
+int EXAM_IMPL(perm_test::prevprm1)
 {
   vector <int> v1(3);
   __iota(v1.begin(), v1.end(), 0);
 
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==0);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==1);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==0);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==2);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==2);//
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==2);//
+  EXAM_CHECK(v1[2]==1);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==2);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==0);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==1);
   prev_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==0);
+
+  return EXAM_RESULT;
 }
-void PermTest::prevprm2()
+
+int EXAM_IMPL(perm_test::prevprm2)
 {
   vector <int> v1(3);
   __iota(v1.begin(), v1.end(), 0);
 
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==1);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==2);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==0);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==1);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==0);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==2);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==1);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==2);
   prev_permutation(v1.begin(), v1.end(), greater<int>());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==0);
+
+  return EXAM_RESULT;
 }
-void PermTest::nextprm0()
+
+int EXAM_IMPL(perm_test::nextprm0)
 {
   int v1[3] = { 0, 1, 2 };
   next_permutation(v1, v1 + 3);
 
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==1);
+
+  return EXAM_RESULT;
 }
-void PermTest::nextprm1()
+
+int EXAM_IMPL(perm_test::nextprm1)
 {
   vector <int> v1(3);
   __iota(v1.begin(), v1.end(), 0);
 
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==1);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==2);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==0);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==1);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==0);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==2);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==0);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==1);
+  EXAM_CHECK(v1[0]==0);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==1);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==0);
-  CPPUNIT_ASSERT(v1[2]==2);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==0);
+  EXAM_CHECK(v1[2]==2);
   next_permutation(v1.begin(), v1.end());
-  CPPUNIT_ASSERT(v1[0]==1);
-  CPPUNIT_ASSERT(v1[1]==2);
-  CPPUNIT_ASSERT(v1[2]==0);
+  EXAM_CHECK(v1[0]==1);
+  EXAM_CHECK(v1[1]==2);
+  EXAM_CHECK(v1[2]==0);
+
+  return EXAM_RESULT;
 }
-void PermTest::nextprm2()
+
+int EXAM_IMPL(perm_test::nextprm2)
 {
   vector <char> v1(3);
   __iota(v1.begin(), v1.end(), 'A');
 
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='A');
-  CPPUNIT_ASSERT(v1[1]=='C');
-  CPPUNIT_ASSERT(v1[2]=='B');
+  EXAM_CHECK(v1[0]=='A');
+  EXAM_CHECK(v1[1]=='C');
+  EXAM_CHECK(v1[2]=='B');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='B');
-  CPPUNIT_ASSERT(v1[1]=='A');
-  CPPUNIT_ASSERT(v1[2]=='C');
+  EXAM_CHECK(v1[0]=='B');
+  EXAM_CHECK(v1[1]=='A');
+  EXAM_CHECK(v1[2]=='C');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='B');
-  CPPUNIT_ASSERT(v1[1]=='C');
-  CPPUNIT_ASSERT(v1[2]=='A');
+  EXAM_CHECK(v1[0]=='B');
+  EXAM_CHECK(v1[1]=='C');
+  EXAM_CHECK(v1[2]=='A');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='C');
-  CPPUNIT_ASSERT(v1[1]=='A');
-  CPPUNIT_ASSERT(v1[2]=='B');
+  EXAM_CHECK(v1[0]=='C');
+  EXAM_CHECK(v1[1]=='A');
+  EXAM_CHECK(v1[2]=='B');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='C');
-  CPPUNIT_ASSERT(v1[1]=='B');
-  CPPUNIT_ASSERT(v1[2]=='A');
+  EXAM_CHECK(v1[0]=='C');
+  EXAM_CHECK(v1[1]=='B');
+  EXAM_CHECK(v1[2]=='A');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='A');
-  CPPUNIT_ASSERT(v1[1]=='B');
-  CPPUNIT_ASSERT(v1[2]=='C');
+  EXAM_CHECK(v1[0]=='A');
+  EXAM_CHECK(v1[1]=='B');
+  EXAM_CHECK(v1[2]=='C');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='A');
-  CPPUNIT_ASSERT(v1[1]=='C');
-  CPPUNIT_ASSERT(v1[2]=='B');
+  EXAM_CHECK(v1[0]=='A');
+  EXAM_CHECK(v1[1]=='C');
+  EXAM_CHECK(v1[2]=='B');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='B');
-  CPPUNIT_ASSERT(v1[1]=='A');
-  CPPUNIT_ASSERT(v1[2]=='C');
+  EXAM_CHECK(v1[0]=='B');
+  EXAM_CHECK(v1[1]=='A');
+  EXAM_CHECK(v1[2]=='C');
   next_permutation(v1.begin(), v1.end(), less<char>());
-  CPPUNIT_ASSERT(v1[0]=='B');
-  CPPUNIT_ASSERT(v1[1]=='C');
-  CPPUNIT_ASSERT(v1[2]=='A');
+  EXAM_CHECK(v1[0]=='B');
+  EXAM_CHECK(v1[1]=='C');
+  EXAM_CHECK(v1[2]=='A');
 
+  return EXAM_RESULT;
 }

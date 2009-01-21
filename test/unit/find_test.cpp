@@ -1,51 +1,25 @@
+#include "find_test.h"
+
 #include <vector>
 #include <algorithm>
-
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class FindTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(FindTest);
-  CPPUNIT_TEST(find0);
-  CPPUNIT_TEST(find1);
-  CPPUNIT_TEST(findif0);
-  CPPUNIT_TEST(findif1);
-  CPPUNIT_TEST(find_char);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void find0();
-  void find1();
-  void findif0();
-  void findif1();
-  void find_char();
-  static bool odd(int a_);
-  static bool div_3(int a_);
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(FindTest);
-
-//
-// tests implementation
-//
-void FindTest::find0()
+int EXAM_IMPL(find_test::find0)
 {
   int numbers[10] = { 0, 1, 4, 9, 16, 25, 36, 49, 64 };
 
   int *location = find((int*)numbers, (int*)numbers + 10, 25);
 
-  CPPUNIT_ASSERT((location - numbers)==5);
+  EXAM_CHECK((location - numbers)==5);
 
   int *out_range = find((int*)numbers, (int*)numbers + 10, 128);
 
-  CPPUNIT_ASSERT( out_range == (int *)(numbers + 10) );
+  EXAM_CHECK( out_range == (int *)(numbers + 10) );
+
+  return EXAM_RESULT;
 }
 
 struct Key
@@ -61,39 +35,43 @@ struct Key
   }
 };
 
-void FindTest::find1()
+int EXAM_IMPL(find_test::find1)
 {
   int years[] = { 1942, 1952, 1962, 1972, 1982, 1992 };
 
   const unsigned yearCount = sizeof(years) / sizeof(years[0]);
   int* location = find((int*)years, (int*)years + yearCount, 1972);
 
-  CPPUNIT_ASSERT((location - years)==3);
+  EXAM_CHECK((location - years)==3);
+
+  return EXAM_RESULT;
 }
 
-void FindTest::findif0()
+int EXAM_IMPL(find_test::findif0)
 {
   {
     int numbers[6] = { 2, 4, 8, 15, 32, 64 };
     int *location = find_if((int*)numbers, (int*)numbers + 6, odd);
 
-    CPPUNIT_ASSERT((location - numbers)==3);
+    EXAM_CHECK((location - numbers)==3);
 
     int numbers_even[6] = { 2, 4, 8, 16, 32, 64 };
 
     int *out_range = find_if((int*)numbers_even, (int*)numbers_even + 6, odd);
 
-    CPPUNIT_ASSERT( out_range == (int *)(numbers_even + 6) );
+    EXAM_CHECK( out_range == (int *)(numbers_even + 6) );
   }
 
   {
     Key keys[10] = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0} };
     Key const* k = find(keys + 0, keys + 10, 5);
-    CPPUNIT_ASSERT( k == keys + 10 );
+    EXAM_CHECK( k == keys + 10 );
   }
+
+  return EXAM_RESULT;
 }
 
-void FindTest::findif1()
+int EXAM_IMPL(find_test::findif1)
 {
   typedef vector <int> IntVec;
   IntVec v(10);
@@ -101,20 +79,22 @@ void FindTest::findif1()
     v[i] =(i + 1) *(i + 1);
   IntVec::iterator iter;
   iter = find_if(v.begin(), v.end(), div_3);
-  CPPUNIT_ASSERT((iter - v.begin())==2);
+  EXAM_CHECK((iter - v.begin())==2);
+
+  return EXAM_RESULT;
 }
 
-bool FindTest::odd(int a_)
+bool find_test::odd(int a_)
 {
   return (a_ % 2) != 0;
 }
 
-bool FindTest::div_3(int a_)
+bool find_test::div_3(int a_)
 {
   return a_ % 3 ? 0 : 1;
 }
 
-void FindTest::find_char()
+int EXAM_IMPL(find_test::find_char)
 {
   char str[] = "abcdefghij";
   char *pstr = (char*)str;
@@ -122,14 +102,30 @@ void FindTest::find_char()
   size_t str_size = sizeof(str) / sizeof(char);
 
   char *d = find(pstr, pstr + str_size, 'd');
-  CPPUNIT_ASSERT( *d == 'd' );
+  EXAM_CHECK( *d == 'd' );
 
   const char *e = find(cpstr, cpstr + str_size, 'e');
-  CPPUNIT_ASSERT( *e == 'e' );
+  EXAM_CHECK( *e == 'e' );
 
   char *last = find(pstr, pstr + str_size, 'x');
-  CPPUNIT_ASSERT( last == pstr + str_size );
+  EXAM_CHECK( last == pstr + str_size );
 
   const char *clast = find(cpstr, cpstr + str_size, 'x');
-  CPPUNIT_ASSERT( clast == cpstr + str_size );
+  EXAM_CHECK( clast == cpstr + str_size );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(advance_test::adv)
+{
+  typedef vector <int> IntVector;
+  IntVector v(10);
+  for (int i = 0; (size_t)i < v.size(); ++i)
+    v[i] = i;
+  IntVector::iterator location = v.begin();
+  EXAM_CHECK(*location==0);
+  advance(location, 5);
+  EXAM_CHECK(*location==5);
+
+  return EXAM_RESULT;
 }

@@ -29,6 +29,12 @@
 #include "sort_test.h"
 #include "adj_test.h"
 #include "copy_test.h"
+#include "perm_test.h"
+#include "find_test.h"
+#include "partition_test.h"
+#include "iter_test.h"
+#include "bind_test.h"
+#include "count_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -447,6 +453,69 @@ int main( int argc, const char** argv )
   t.add( &copy_test::copy_insert, cp_test, "copy_insert" );
   t.add( &copy_test::copy_back, cp_test, "copy_back" );
   t.add( &copy_test::copy_back_array, cp_test, "copy_back_array" );
+
+  perm_test pm_test;
+
+  t.add( &perm_test::nextprm0, pm_test, "nextprm0" );
+  t.add( &perm_test::nextprm1, pm_test, "nextprm1" );
+  t.add( &perm_test::nextprm2, pm_test, "nextprm2" );
+  t.add( &perm_test::prevprm0, pm_test, "prevprm0" );
+  t.add( &perm_test::prevprm1, pm_test, "prevprm1" );
+  t.add( &perm_test::prevprm2, pm_test, "prevprm2" );
+
+  find_test fn_test;
+
+  t.add( &find_test::find0, fn_test, "find0" );
+  t.add( &find_test::find1, fn_test, "find1" );
+  t.add( &find_test::findif0, fn_test, "findif0" );
+  t.add( &find_test::findif1, fn_test, "findif1" );
+  t.add( &find_test::find_char, fn_test, "find_char" );
+
+  advance_test adv_test;
+
+  t.add( &advance_test::adv, adv_test, "advance test" );
+
+  partition_test prt_test;
+
+  t.add( &partition_test::ptition0, prt_test, "ptition0" );
+  t.add( &partition_test::ptition1, prt_test, "ptition1" );
+  t.add( &partition_test::stblptn0, prt_test, "stblptn0" );
+  t.add( &partition_test::stblptn1, prt_test, "stblptn1" );
+
+  iter_test it_test;
+
+  t.add( &iter_test::iter1, it_test, "iter1" );
+  t.add( &iter_test::iter2, it_test, "iter2" );
+  t.add( &iter_test::iter3, it_test, "iter3" );
+  t.add( &iter_test::iterswp0, it_test, "iterswp0" );
+  t.add( &iter_test::iterswp1, it_test, "iterswp1" );
+  t.add( &iter_test::iterswp2, it_test, "iterswp2" );
+  t.add( &iter_test::iterswp3, it_test, "iterswp3" );
+
+  istream_iterator_test isit_test;
+
+  t.add( &istream_iterator_test::istmit1, isit_test, "istmit1" );
+  t.add( &istream_iterator_test::copy_n_test, isit_test, "copy_n_test" );
+
+  ioiter_test ioit_test;
+
+  t.add( &ioiter_test::ioiterat_test, ioit_test, "ioiterat_test" );
+  t.add( &ioiter_test::assign_test, ioit_test, "assign_test" );
+  t.add( &ioiter_test::assign2_test, ioit_test, "assign2_test" );
+
+  bind_test bn_test;
+
+  t.add( &bind_test::bind1st1, bn_test, "bind1st1" );
+  t.add( &bind_test::bind2nd1, bn_test, "bind2nd1" );
+  t.add( &bind_test::bind2nd2, bn_test, "bind2nd2" );
+  t.add( &bind_test::bind2nd3, bn_test, "bind2nd3" );
+  t.add( &bind_test::bind_memfn, bn_test, "bind_memfn" );
+
+  count_test cn_test;
+
+  t.add( &count_test::count0, cn_test, "count0" );
+  t.add( &count_test::count1, cn_test, "count1" );
+  t.add( &count_test::countif1, cn_test, "countif1" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );

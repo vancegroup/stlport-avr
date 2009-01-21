@@ -1,3 +1,5 @@
+#include "iter_test.h"
+
 #include <algorithm>
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
@@ -7,34 +9,9 @@
 #  include <string>
 #endif
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
-
-//
-// TestCase class
-//
-class IStreamIteratorTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(IStreamIteratorTest);
-#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(istmit1);
-#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(copy_n_test);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void istmit1();
-  void copy_n_test();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(IStreamIteratorTest);
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  if !defined (STLPORT) || !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
@@ -48,10 +25,7 @@ typedef istream_iterator<string, ptrdiff_t> istream_string_ite;
 #  endif
 #endif
 
-//
-// tests implementation
-//
-void IStreamIteratorTest::istmit1()
+int EXAM_IMPL(istream_iterator_test::istmit1)
 {
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   const char* buff = "MyString";
@@ -70,16 +44,20 @@ void IStreamIteratorTest::istmit1()
   }
   buffer[i] = '\0'; // Null terminate buffer.
 
-  CPPUNIT_ASSERT(!strcmp(buffer, buff));
+  EXAM_CHECK(!strcmp(buffer, buff));
 
   {
     istringstream empty_istr;
-    CPPUNIT_ASSERT( istream_char_ite(empty_istr) == istream_char_ite() );
+    EXAM_CHECK( istream_char_ite(empty_istr) == istream_char_ite() );
   }
+
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void IStreamIteratorTest::copy_n_test()
+int EXAM_IMPL(istream_iterator_test::copy_n_test)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (_STLP_USE_NO_IOSTREAMS)
   //This test check that no character is lost while reading the istream
@@ -90,9 +68,9 @@ void IStreamIteratorTest::copy_n_test()
     istream_char_ite ite = copy_n(copy_n(istream_char_ite(istr),
                                          2, back_inserter(chars)).first,
                                   2, back_inserter(chars)).first;
-    CPPUNIT_ASSERT( chars == "aabb" );
+    EXAM_CHECK( chars == "aabb" );
     copy_n(ite, 2, back_inserter(chars));
-    CPPUNIT_ASSERT( chars == "aabbcd" );
+    EXAM_CHECK( chars == "aabbcd" );
   }
 
   {
@@ -101,15 +79,15 @@ void IStreamIteratorTest::copy_n_test()
     vector<string> strings;
 
     copy_n(istream_int_ite(istr), 2, back_inserter(ints));
-    CPPUNIT_ASSERT( ints.size() == 2 );
-    CPPUNIT_ASSERT( ints[0] == 11 );
-    CPPUNIT_ASSERT( ints[1] == 22 );
+    EXAM_CHECK( ints.size() == 2 );
+    EXAM_CHECK( ints[0] == 11 );
+    EXAM_CHECK( ints[1] == 22 );
     ints.clear();
     istr.clear();
     copy_n(istream_string_ite(istr), 2, back_inserter(strings));
-    CPPUNIT_ASSERT( strings.size() == 2 );
-    CPPUNIT_ASSERT( strings[0] == "AA" );
-    CPPUNIT_ASSERT( strings[1] == "BB" );
+    EXAM_CHECK( strings.size() == 2 );
+    EXAM_CHECK( strings[0] == "AA" );
+    EXAM_CHECK( strings[1] == "BB" );
     strings.clear();
     istr.clear();
     /* The following code cannot work, '33' is extracted as a string
@@ -123,14 +101,14 @@ void IStreamIteratorTest::copy_n_test()
      * again it fails as int can be converted to strings.
      *
     copy_n(istream_int_ite(istr), 2, back_inserter(ints));
-    CPPUNIT_ASSERT( ints.size() == 2 );
-    CPPUNIT_ASSERT( ints[0] == 33 );
-    CPPUNIT_ASSERT( ints[1] == 44 );
+    EXAM_CHECK( ints.size() == 2 );
+    EXAM_CHECK( ints[0] == 33 );
+    EXAM_CHECK( ints[1] == 44 );
     istr.clear();
     copy_n(istream_string_ite(istr), 2, back_inserter(strings));
-    CPPUNIT_ASSERT( strings.size() == 2 );
-    CPPUNIT_ASSERT( strings[0] == "CC" );
-    CPPUNIT_ASSERT( strings[1] == "DD" );
+    EXAM_CHECK( strings.size() == 2 );
+    EXAM_CHECK( strings[0] == "CC" );
+    EXAM_CHECK( strings[1] == "DD" );
     */
   }
 
@@ -139,21 +117,25 @@ void IStreamIteratorTest::copy_n_test()
     vector<int> ints;
     istream_iterator<int> itr(is);
     itr = copy_n(itr, 0, back_inserter(ints)).first;
-    CPPUNIT_ASSERT( ints.empty() );
+    EXAM_CHECK( ints.empty() );
     itr = copy_n(itr, -1, back_inserter(ints)).first;
-    CPPUNIT_ASSERT( ints.empty() );
+    EXAM_CHECK( ints.empty() );
     itr = copy_n(itr, 2, back_inserter(ints)).first;
-    CPPUNIT_ASSERT( ints.size() == 2 );
-    CPPUNIT_ASSERT( ints[0] == 1 );
-    CPPUNIT_ASSERT( ints[1] == 2 );
+    EXAM_CHECK( ints.size() == 2 );
+    EXAM_CHECK( ints[0] == 1 );
+    EXAM_CHECK( ints[1] == 2 );
     itr = copy_n(itr, 2, back_inserter(ints)).first;
-    CPPUNIT_ASSERT( ints.size() == 4 );
-    CPPUNIT_ASSERT( ints[2] == 3 );
-    CPPUNIT_ASSERT( ints[3] == 4 );
+    EXAM_CHECK( ints.size() == 4 );
+    EXAM_CHECK( ints[2] == 3 );
+    EXAM_CHECK( ints[3] == 4 );
     itr = copy_n(itr, 2, back_inserter(ints)).first;
-    CPPUNIT_ASSERT( ints.size() == 6 );
-    CPPUNIT_ASSERT( ints[4] == 5 );
-    CPPUNIT_ASSERT( ints[5] == 6 );
+    EXAM_CHECK( ints.size() == 6 );
+    EXAM_CHECK( ints[4] == 5 );
+    EXAM_CHECK( ints[5] == 6 );
   }
+
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }

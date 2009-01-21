@@ -8,7 +8,6 @@ PRGNAME = stl_unit_test
 SRC_CC = suite.cc \
          numerics.cc
 SRC_CPP = adj_test.cpp \
-	advance_test.cpp \
 	alg_test.cpp \
 	allocator_test.cpp \
 	bcompos_test.cpp \

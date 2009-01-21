@@ -1,46 +1,17 @@
+#include "iter_test.h"
+
 #include <vector>
 #include <list>
 #include <algorithm>
 #include <numeric>
 
 #include "iota.h"
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class IterTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(IterTest);
-  CPPUNIT_TEST(iter1);
-  CPPUNIT_TEST(iter3);
-  CPPUNIT_TEST(iter4);
-  CPPUNIT_TEST(iterswp0);
-  CPPUNIT_TEST(iterswp1);
-  CPPUNIT_TEST(iterswp2);
-  CPPUNIT_TEST(iterswp3);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void iter1();
-  void iter3();
-  void iter4();
-  void iterswp0();
-  void iterswp1();
-  void iterswp2();
-  void iterswp3();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(IterTest);
-
-//
-// tests implementation
-//
-void IterTest::iter1()
+int EXAM_IMPL(iter_test::iter1)
 {
   vector<const char*> v; // Vector of character strings.
   v.push_back("zippy"); // First element.
@@ -50,17 +21,20 @@ void IterTest::iter1()
   for (vec::iterator i = v.begin(); i != v.end(); ++i, ++counter) {
     switch (counter) {
       case 0:
-        CPPUNIT_ASSERT(!strcmp(*i, "zippy"));
+        EXAM_CHECK(!strcmp(*i, "zippy"));
         break;
       case 1:
-        CPPUNIT_ASSERT(!strcmp(*i, "motorboy"));
+        EXAM_CHECK(!strcmp(*i, "motorboy"));
         break;
       default:
-        CPPUNIT_FAIL;
+        EXAM_ERROR("Out of range");
     }
   }
+
+  return EXAM_RESULT;
 }
-void IterTest::iter3()
+
+int EXAM_IMPL(iter_test::iter2)
 {
   typedef vector<const char*> Vec;
   Vec v; // Vector of character strings.
@@ -71,17 +45,20 @@ void IterTest::iter3()
   for (it = v.rbegin(); it != v.rend(); ++it, ++counter) {
     switch (counter) {
       case 1:
-        CPPUNIT_ASSERT(!strcmp(*it, "zippy"));
+        EXAM_CHECK(!strcmp(*it, "zippy"));
         break;
       case 0:
-        CPPUNIT_ASSERT(!strcmp(*it, "motorboy"));
+        EXAM_CHECK(!strcmp(*it, "motorboy"));
         break;
       default:
-        CPPUNIT_FAIL;
+        EXAM_ERROR("Out of range");
     }
   }
+
+  return EXAM_RESULT;
 }
-void IterTest::iter4()
+
+int EXAM_IMPL(iter_test::iter3)
 {
   vector<int> v; // Empty vector of integers.
   v.push_back(1);
@@ -90,38 +67,46 @@ void IterTest::iter4()
   // Position immediately after last item.
   vector<int>::iterator i = v.end();
   // Move back one and then access.
-  CPPUNIT_ASSERT((*--i)==3);
+  EXAM_CHECK((*--i)==3);
   i -= 2; // Jump back two items.
-  CPPUNIT_ASSERT((*i)==1);
+  EXAM_CHECK((*i)==1);
+
+  return EXAM_RESULT;
 }
-void IterTest::iterswp0()
+
+int EXAM_IMPL(iter_test::iterswp0)
 {
   int numbers[6] = { 0, 1, 2, 3, 4, 5 };
 
   iter_swap(numbers, numbers + 3);
 
-  CPPUNIT_ASSERT(numbers[0]==3);
-  CPPUNIT_ASSERT(numbers[1]==1);
-  CPPUNIT_ASSERT(numbers[2]==2);
-  CPPUNIT_ASSERT(numbers[3]==0);
-  CPPUNIT_ASSERT(numbers[4]==4);
-  CPPUNIT_ASSERT(numbers[5]==5);
+  EXAM_CHECK(numbers[0]==3);
+  EXAM_CHECK(numbers[1]==1);
+  EXAM_CHECK(numbers[2]==2);
+  EXAM_CHECK(numbers[3]==0);
+  EXAM_CHECK(numbers[4]==4);
+  EXAM_CHECK(numbers[5]==5);
 
+  return EXAM_RESULT;
 }
-void IterTest::iterswp1()
+
+int EXAM_IMPL(iter_test::iterswp1)
 {
   vector<int> v1(6);
   __iota(v1.begin(), v1.end(), 0);
   iter_swap( v1.begin(), v1.begin() + 3 );
 
-  CPPUNIT_ASSERT(v1[0]==3);
-  CPPUNIT_ASSERT(v1[1]==1);
-  CPPUNIT_ASSERT(v1[2]==2);
-  CPPUNIT_ASSERT(v1[3]==0);
-  CPPUNIT_ASSERT(v1[4]==4);
-  CPPUNIT_ASSERT(v1[5]==5);
+  EXAM_CHECK(v1[0]==3);
+  EXAM_CHECK(v1[1]==1);
+  EXAM_CHECK(v1[2]==2);
+  EXAM_CHECK(v1[3]==0);
+  EXAM_CHECK(v1[4]==4);
+  EXAM_CHECK(v1[5]==5);
+
+  return EXAM_RESULT;
 }
-void IterTest::iterswp2()
+
+int EXAM_IMPL(iter_test::iterswp2)
 {
   vector<bool> boolVector;
 
@@ -137,11 +122,12 @@ void IterTest::iterswp2()
 
   iter_swap( i1, i2 );
 
-  CPPUNIT_ASSERT(( *i1 == v1 && *i2 == v0 ));
+  EXAM_CHECK(( *i1 == v1 && *i2 == v0 ));
+
+  return EXAM_RESULT;
 }
 
-
-void IterTest::iterswp3()
+int EXAM_IMPL(iter_test::iterswp3)
 {
   vector<int> vvref(10, 10);
   vector<int> lvref(10, 20);
@@ -150,8 +136,8 @@ void IterTest::iterswp3()
   list<vector<int> > lvints(4, lvref);
 
   iter_swap(vvints.begin(), lvints.begin());
-  CPPUNIT_CHECK( vvints.front() == lvref );
-  CPPUNIT_CHECK( lvints.front() == vvref );
+  EXAM_CHECK( vvints.front() == lvref );
+  EXAM_CHECK( lvints.front() == vvref );
 
   //const vector<vector<int> > &cvvints = vvints;
   //iter_swap(cvvints.begin(), lvints.begin());
@@ -163,7 +149,9 @@ void IterTest::iterswp3()
 
   iter_swap(vvints.begin(), lvints.begin());
   //Check that elements have been swaped:
-  CPPUNIT_CHECK( pvvint == &lvints.front().front() );
-  CPPUNIT_CHECK( plvint == &vvints.front().front() );
+  EXAM_CHECK( pvvint == &lvints.front().front() );
+  EXAM_CHECK( plvint == &vvints.front().front() );
 #endif
+
+  return EXAM_RESULT;
 }

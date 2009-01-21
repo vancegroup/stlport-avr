@@ -8,7 +8,6 @@
 #include <functional>
 
 #include "iota.h"
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
