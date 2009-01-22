@@ -10,11 +10,9 @@ SRC_CC = suite.cc \
 SRC_CPP = adj_test.cpp \
 	alg_test.cpp \
 	allocator_test.cpp \
-	bcompos_test.cpp \
+	binary_test.cpp \
 	bind_test.cpp \
-	binsert_test.cpp \
 	bitset_test.cpp \
-	bsearch_test.cpp \
 	bvector_test.cpp \
 	cmath_test.cpp \
 	codecvt_test.cpp \
@@ -29,7 +27,6 @@ SRC_CPP = adj_test.cpp \
 	exception_test.cpp \
 	fill_test.cpp \
 	find_test.cpp \
-	finsert_test.cpp \
 	fstream_test.cpp \
         functor_test.cpp \
 	hash_test.cpp \
@@ -52,10 +49,8 @@ SRC_CPP = adj_test.cpp \
 	messages_facets_test.cpp \
 	mfunptr_test.cpp \
 	mismatch_test.cpp \
-	modulus_test.cpp \
 	money_facets_test.cpp \
 	multiset_test.cpp \
-	neq_test.cpp \
 	nthelm_test.cpp \
 	num_facets_test.cpp \
 	num_put_get_test.cpp \

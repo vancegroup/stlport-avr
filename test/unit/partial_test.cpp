@@ -1,3 +1,5 @@
+#include "partial_test.h"
+
 #include <numeric>
 #include <vector>
 #include <algorithm>
@@ -9,65 +11,29 @@
 #endif
 
 #include "iota.h"
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class PartialTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(PartialTest);
-  CPPUNIT_TEST(parsrt0);
-  CPPUNIT_TEST(parsrt1);
-  CPPUNIT_TEST(parsrt2);
-  CPPUNIT_TEST(parsrtc0);
-  CPPUNIT_TEST(parsrtc1);
-  CPPUNIT_TEST(parsrtc2);
-#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
-  CPPUNIT_TEST(bad_predicate_detected);
-#endif
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void parsrt0();
-  void parsrt1();
-  void parsrt2();
-  void parsrtc0();
-  void parsrtc1();
-  void parsrtc2();
-  void bad_predicate_detected();
-
-  static bool str_compare(const char* a_, const char* b_)
-  {
-    return strcmp(a_, b_) < 0 ? 1 : 0;
-  }
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(PartialTest);
-
-//
-// tests implementation
-//
-void PartialTest::parsrt0()
+int EXAM_IMPL(partial_test::parsrt0)
 {
   int numbers[6] = { 5, 2, 4, 3, 1, 6 };
 
   partial_sort((int*)numbers, (int*)numbers + 3, (int*)numbers + 6);
 
   // 1 2 3 5 4 6
-  CPPUNIT_ASSERT(numbers[0]==1);
-  CPPUNIT_ASSERT(numbers[1]==2);
-  CPPUNIT_ASSERT(numbers[2]==3);
-  CPPUNIT_ASSERT(numbers[3]==5);
-  CPPUNIT_ASSERT(numbers[4]==4);
-  CPPUNIT_ASSERT(numbers[5]==6);
+  EXAM_CHECK(numbers[0]==1);
+  EXAM_CHECK(numbers[1]==2);
+  EXAM_CHECK(numbers[2]==3);
+  EXAM_CHECK(numbers[3]==5);
+  EXAM_CHECK(numbers[4]==4);
+  EXAM_CHECK(numbers[5]==6);
+
+  return EXAM_RESULT;
 }
 
-void PartialTest::parsrt1()
+int EXAM_IMPL(partial_test::parsrt1)
 {
   // 8 8 5 3 7 6 5 3 2 4
   // 2 3 3 4 5 8 8 7 6 5
@@ -76,19 +42,21 @@ void PartialTest::parsrt1()
   vector <int> v1(numbers, numbers+10);
   partial_sort(v1.begin(), v1.begin() + v1.size() / 2, v1.end());
 
-  CPPUNIT_ASSERT(v1[0]==2);
-  CPPUNIT_ASSERT(v1[1]==3);
-  CPPUNIT_ASSERT(v1[2]==3);
-  CPPUNIT_ASSERT(v1[3]==4);
-  CPPUNIT_ASSERT(v1[4]==5);
-  CPPUNIT_ASSERT(v1[5]==8);
-  CPPUNIT_ASSERT(v1[6]==8);
-  CPPUNIT_ASSERT(v1[7]==7);
-  CPPUNIT_ASSERT(v1[8]==6);
-  CPPUNIT_ASSERT(v1[9]==5);
+  EXAM_CHECK(v1[0]==2);
+  EXAM_CHECK(v1[1]==3);
+  EXAM_CHECK(v1[2]==3);
+  EXAM_CHECK(v1[3]==4);
+  EXAM_CHECK(v1[4]==5);
+  EXAM_CHECK(v1[5]==8);
+  EXAM_CHECK(v1[6]==8);
+  EXAM_CHECK(v1[7]==7);
+  EXAM_CHECK(v1[8]==6);
+  EXAM_CHECK(v1[9]==5);
+
+  return EXAM_RESULT;
 }
 
-void PartialTest::parsrt2()
+int EXAM_IMPL(partial_test::parsrt2)
 {
   char const* names[] = { "aa", "ff", "dd", "ee", "cc", "bb" };
 
@@ -100,33 +68,37 @@ void PartialTest::parsrt2()
   partial_sort(v1.begin(), v1.begin() + nameSize / 2, v1.end(), str_compare);
 
   // aa bb cc ff ee dd
-  CPPUNIT_ASSERT( strcmp(v1[0], "aa") == 0 );
-  CPPUNIT_ASSERT( v1[0] == names[0] );
-  CPPUNIT_ASSERT( strcmp(v1[1], "bb") == 0 );
-  CPPUNIT_ASSERT( v1[1] == names[5] );
-  CPPUNIT_ASSERT( strcmp(v1[2], "cc") == 0 );
-  CPPUNIT_ASSERT( v1[2] == names[4] );
-  CPPUNIT_ASSERT( strcmp(v1[3], "ff") == 0 );
-  CPPUNIT_ASSERT( v1[3] == names[1] );
-  CPPUNIT_ASSERT( strcmp(v1[4], "ee") == 0 );
-  CPPUNIT_ASSERT( v1[4] == names[3] );
-  CPPUNIT_ASSERT( strcmp(v1[5], "dd") == 0 );
-  CPPUNIT_ASSERT( v1[5] == names[2] );
+  EXAM_CHECK( strcmp(v1[0], "aa") == 0 );
+  EXAM_CHECK( v1[0] == names[0] );
+  EXAM_CHECK( strcmp(v1[1], "bb") == 0 );
+  EXAM_CHECK( v1[1] == names[5] );
+  EXAM_CHECK( strcmp(v1[2], "cc") == 0 );
+  EXAM_CHECK( v1[2] == names[4] );
+  EXAM_CHECK( strcmp(v1[3], "ff") == 0 );
+  EXAM_CHECK( v1[3] == names[1] );
+  EXAM_CHECK( strcmp(v1[4], "ee") == 0 );
+  EXAM_CHECK( v1[4] == names[3] );
+  EXAM_CHECK( strcmp(v1[5], "dd") == 0 );
+  EXAM_CHECK( v1[5] == names[2] );
+
+  return EXAM_RESULT;
 }
 
-void PartialTest::parsrtc0()
+int EXAM_IMPL(partial_test::parsrtc0)
 {
   int numbers[6] = { 5, 2, 4, 3, 1, 6 };
 
   int result[3];
   partial_sort_copy((int*)numbers, (int*)numbers + 6, (int*)result, (int*)result + 3);
   //1 2 3
-  CPPUNIT_ASSERT(result[0]==1);
-  CPPUNIT_ASSERT(result[1]==2);
-  CPPUNIT_ASSERT(result[2]==3);
+  EXAM_CHECK(result[0]==1);
+  EXAM_CHECK(result[1]==2);
+  EXAM_CHECK(result[2]==3);
+
+  return EXAM_RESULT;
 }
 
-void PartialTest::parsrtc1()
+int EXAM_IMPL(partial_test::parsrtc1)
 {
   int numbers[10] ={ 3, 0, 4, 3, 2, 8, 2, 7, 7, 5 };
 
@@ -137,14 +109,16 @@ void PartialTest::parsrtc1()
   vector <int> result(5);
 
   partial_sort_copy(v1.begin(), v1.end(), result.begin(), result.end());
-  CPPUNIT_ASSERT(result[0]==0);
-  CPPUNIT_ASSERT(result[1]==2);
-  CPPUNIT_ASSERT(result[2]==2);
-  CPPUNIT_ASSERT(result[3]==3);
-  CPPUNIT_ASSERT(result[4]==3);
+  EXAM_CHECK(result[0]==0);
+  EXAM_CHECK(result[1]==2);
+  EXAM_CHECK(result[2]==2);
+  EXAM_CHECK(result[3]==3);
+  EXAM_CHECK(result[4]==3);
+
+  return EXAM_RESULT;
 }
 
-void PartialTest::parsrtc2()
+int EXAM_IMPL(partial_test::parsrtc2)
 {
   char const* names[] = { "aa", "ff", "dd", "ee", "cc", "bb" };
 
@@ -156,17 +130,19 @@ void PartialTest::parsrtc2()
   partial_sort_copy(v1.begin(), v1.end(), result.begin(), result.end(), str_compare);
 
   // aa bb cc
-  CPPUNIT_ASSERT( strcmp( result[0], "aa" ) == 0 );
-  CPPUNIT_ASSERT( result[0] == names[0] );
-  CPPUNIT_ASSERT( strcmp( result[1], "bb" ) == 0 );
-  CPPUNIT_ASSERT( result[1] == names[5] );
-  CPPUNIT_ASSERT( strcmp( result[2], "cc" ) == 0 );
-  CPPUNIT_ASSERT( result[2] == names[4] );
+  EXAM_CHECK( strcmp( result[0], "aa" ) == 0 );
+  EXAM_CHECK( result[0] == names[0] );
+  EXAM_CHECK( strcmp( result[1], "bb" ) == 0 );
+  EXAM_CHECK( result[1] == names[5] );
+  EXAM_CHECK( strcmp( result[2], "cc" ) == 0 );
+  EXAM_CHECK( result[2] == names[4] );
+
+  return EXAM_RESULT;
 }
 
-#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
-void PartialTest::bad_predicate_detected()
+int EXAM_IMPL(partial_test::bad_predicate_detected)
 {
+#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
   int numbers[] = { 0, 0, 1, 0, 0, 1, 0, 0 };
   const size_t s = sizeof(numbers) / sizeof(numbers[0]);
 
@@ -174,7 +150,7 @@ void PartialTest::bad_predicate_detected()
     partial_sort(numbers, numbers + s / 2, numbers + s, less_equal<int>());
 
     //Here is means that no exception has been raised
-    CPPUNIT_ASSERT( false );
+    EXAM_ERROR( "Predicate exception expected" );
   }
   catch (runtime_error const&)
   { /*OK bad predicate has been detected.*/ }
@@ -184,9 +160,13 @@ void PartialTest::bad_predicate_detected()
     partial_sort_copy(numbers, numbers + s, result.begin(), result.end(), less_equal<int>());
 
     //Here is means that no exception has been raised
-    CPPUNIT_ASSERT( false );
+    EXAM_ERROR( "Predicate exception expected" );
   }
   catch (runtime_error const&)
   { /*OK bad predicate has been detected.*/ }
+
+#else  // _STLP_DO_CHECK_BAD_PREDICATE
+  throw exam::skip_exception();
+#endif // _STLP_DO_CHECK_BAD_PREDICATE
+  return EXAM_RESULT;
 }
-#endif

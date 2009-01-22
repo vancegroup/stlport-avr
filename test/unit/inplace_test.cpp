@@ -1,46 +1,29 @@
+#include "inplace_test.h"
+
 #include <vector>
 #include <algorithm>
 #include <functional>
-
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class InplaceTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(InplaceTest);
-  CPPUNIT_TEST(inplmrg1);
-  CPPUNIT_TEST(inplmrg2);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void inplmrg1();
-  void inplmrg2();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(InplaceTest);
-
-//
-// tests implementation
-//
-void InplaceTest::inplmrg1()
+int EXAM_IMPL(inplace_test::inplmrg1)
 {
   int numbers[6] = { 1, 10, 42, 3, 16, 32 };
   inplace_merge(numbers, numbers + 3, numbers + 6);
 
-  CPPUNIT_ASSERT(numbers[0]==1);
-  CPPUNIT_ASSERT(numbers[1]==3);
-  CPPUNIT_ASSERT(numbers[2]==10);
-  CPPUNIT_ASSERT(numbers[3]==16);
-  CPPUNIT_ASSERT(numbers[4]==32);
-  CPPUNIT_ASSERT(numbers[5]==42);
+  EXAM_CHECK(numbers[0]==1);
+  EXAM_CHECK(numbers[1]==3);
+  EXAM_CHECK(numbers[2]==10);
+  EXAM_CHECK(numbers[3]==16);
+  EXAM_CHECK(numbers[4]==32);
+  EXAM_CHECK(numbers[5]==42);
+
+  return EXAM_RESULT;
 }
-void InplaceTest::inplmrg2()
+
+int EXAM_IMPL(inplace_test::inplmrg2)
 {
   vector<size_t> v1(10);
   for(size_t i = 0; i < v1.size(); ++i)
@@ -48,14 +31,16 @@ void InplaceTest::inplmrg2()
 
   inplace_merge(v1.begin(), v1.begin() + 5, v1.end(), greater<size_t>());
 
-  CPPUNIT_ASSERT(v1[0]==4);
-  CPPUNIT_ASSERT(v1[1]==4);
-  CPPUNIT_ASSERT(v1[2]==3);
-  CPPUNIT_ASSERT(v1[3]==3);
-  CPPUNIT_ASSERT(v1[4]==2);
-  CPPUNIT_ASSERT(v1[5]==2);
-  CPPUNIT_ASSERT(v1[6]==1);
-  CPPUNIT_ASSERT(v1[7]==1);
-  CPPUNIT_ASSERT(v1[8]==0);
-  CPPUNIT_ASSERT(v1[9]==0);
+  EXAM_CHECK(v1[0]==4);
+  EXAM_CHECK(v1[1]==4);
+  EXAM_CHECK(v1[2]==3);
+  EXAM_CHECK(v1[3]==3);
+  EXAM_CHECK(v1[4]==2);
+  EXAM_CHECK(v1[5]==2);
+  EXAM_CHECK(v1[6]==1);
+  EXAM_CHECK(v1[7]==1);
+  EXAM_CHECK(v1[8]==0);
+  EXAM_CHECK(v1[9]==0);
+
+  return EXAM_RESULT;
 }

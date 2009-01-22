@@ -1,3 +1,5 @@
+#include "swap_test.h"
+
 #include <vector>
 #include <algorithm>
 #include <vector>
@@ -8,57 +10,31 @@
 #include <typeinfo>
 #endif
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class SwapTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(SwapTest);
-  CPPUNIT_TEST(swap1);
-  CPPUNIT_TEST(swprnge1);
-  CPPUNIT_TEST(swap_container_non_spec);
-#if defined (STLPORT) && \
-   !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(swap_container_spec);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void swap1();
-  void swprnge1();
-  void swap_container_non_spec();
-  void swap_container_spec();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(SwapTest);
-
-//
-// tests implementation
-//
-void SwapTest::swap1()
+int EXAM_IMPL(swap_test::swap1)
 {
   int a = 42;
   int b = 19;
   swap(a, b);
 
-  CPPUNIT_ASSERT(a==19);
-  CPPUNIT_ASSERT(b==42);
+  EXAM_CHECK(a==19);
+  EXAM_CHECK(b==42);
+
+  return EXAM_RESULT;
 }
 
-void SwapTest::swprnge1()
+int EXAM_IMPL(swap_test::swprnge1)
 {
   char word1[] = "World";
   char word2[] = "Hello";
   swap_ranges((char*)word1, (char*)word1 + ::strlen(word1), (char*)word2);
-  CPPUNIT_ASSERT(!strcmp(word1, "Hello"));
-  CPPUNIT_ASSERT(!strcmp(word2, "World"));
+  EXAM_CHECK(!strcmp(word1, "Hello"));
+  EXAM_CHECK(!strcmp(word2, "World"));
+
+  return EXAM_RESULT;
 }
 
 class Obj
@@ -85,7 +61,7 @@ class Obj
  * exchange; this assume usage of temporary object)
  *
  */
-void SwapTest::swap_container_non_spec()
+int EXAM_IMPL(swap_test::swap_container_non_spec)
 {
   queue<Obj> v1;
   queue<Obj> v2;
@@ -102,22 +78,24 @@ void SwapTest::swap_container_non_spec()
   v2.push( Obj() );
   v2.back().v = 12;
 
-  CPPUNIT_CHECK( v1.size() == 2 );
-  CPPUNIT_CHECK( v2.size() == 3 );
+  EXAM_CHECK( v1.size() == 2 );
+  EXAM_CHECK( v2.size() == 3 );
 
   swap( v1, v2 ); // this shouldn't try make it as v1.swap( v2 ), no queue::swap method!
 
-  CPPUNIT_CHECK( v1.size() == 3 );
-  CPPUNIT_CHECK( v2.size() == 2 );
+  EXAM_CHECK( v1.size() == 3 );
+  EXAM_CHECK( v2.size() == 2 );
 
   // either copy constructor or assignment operator
-  CPPUNIT_CHECK( v1.front().v == 1 || v1.front().v == 2 );
-  CPPUNIT_CHECK( v1.back().v == 1 || v1.back().v == 2 );
-  CPPUNIT_CHECK( v2.front().v == 1 || v2.front().v == 2 );
-  CPPUNIT_CHECK( v2.back().v == 1 || v2.back().v == 2 );
+  EXAM_CHECK( v1.front().v == 1 || v1.front().v == 2 );
+  EXAM_CHECK( v1.back().v == 1 || v1.back().v == 2 );
+  EXAM_CHECK( v2.front().v == 1 || v2.front().v == 2 );
+  EXAM_CHECK( v2.back().v == 1 || v2.back().v == 2 );
+
+  return EXAM_RESULT;
 }
 
-void SwapTest::swap_container_spec()
+int EXAM_IMPL(swap_test::swap_container_spec)
 {
 #if 0 /* temporary: investigation of problem with swap */
   if ( typeid(/* _STLP_PRIV */ _SwapImplemented<vector<Obj> >::_Ret) == typeid(_STLP_PRIV __false_type) ) {
@@ -147,19 +125,22 @@ void SwapTest::swap_container_spec()
   v2[1].v = 11;
   v2[2].v = 12;
 
-  CPPUNIT_CHECK( v1.size() == 2 );
-  CPPUNIT_CHECK( v2.size() == 3 );
+  EXAM_CHECK( v1.size() == 2 );
+  EXAM_CHECK( v2.size() == 3 );
 
   swap( v1, v2 ); // this should has effect v1.swap( v2 )
 
-  CPPUNIT_CHECK( v1.size() == 3 );
-  CPPUNIT_CHECK( v2.size() == 2 );
+  EXAM_CHECK( v1.size() == 3 );
+  EXAM_CHECK( v2.size() == 2 );
 
-  CPPUNIT_CHECK( v1[0].v == 10 );
-  CPPUNIT_CHECK( v1[1].v == 11 );
-  CPPUNIT_CHECK( v1[2].v == 12 );
+  EXAM_CHECK( v1[0].v == 10 );
+  EXAM_CHECK( v1[1].v == 11 );
+  EXAM_CHECK( v1[2].v == 12 );
 
-  CPPUNIT_CHECK( v2[0].v == -1 );
-  CPPUNIT_CHECK( v2[1].v == -2 );
+  EXAM_CHECK( v2[0].v == -1 );
+  EXAM_CHECK( v2[1].v == -2 );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }

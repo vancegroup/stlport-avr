@@ -1,3 +1,5 @@
+#include "rope_test.h"
+
 //Small header to get STLport numerous defines:
 #include <utility>
 
@@ -9,49 +11,13 @@
 #  endif
 #endif
 
-#include "cppunit/cppunit_proxy.h"
-
 // #include <stdlib.h> // for rand etc
 
 #if defined (_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class RopeTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(RopeTest);
-#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(io);
-#if defined (_STLP_USE_NO_IOSTREAMS)
-  CPPUNIT_STOP_IGNORE;
-#endif
-  CPPUNIT_TEST(find1);
-  CPPUNIT_TEST(find2);
-  CPPUNIT_TEST(construct_from_char);
-  CPPUNIT_TEST(bug_report);
-  CPPUNIT_TEST(test_saved_rope_iterators);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void io();
-  void find1();
-  void find2();
-  void construct_from_char();
-  void bug_report();
-  void test_saved_rope_iterators();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
-
-//
-// tests implementation
-//
-void RopeTest::io()
+int EXAM_IMPL(rope_test::io)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (_STLP_USE_NO_IOSTREAMS) 
   char const* cstr = "rope test string";
@@ -61,45 +27,57 @@ void RopeTest::io()
     ostringstream ostr;
     ostr << rstr;
 
-    CPPUNIT_ASSERT( ostr );
-    CPPUNIT_ASSERT( ostr.str() == cstr );
+    EXAM_CHECK( ostr );
+    EXAM_CHECK( ostr.str() == cstr );
   }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void RopeTest::find1()
+int EXAM_IMPL(rope_test::find1)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) 
   crope r("Fuzzy Wuzzy was a bear");
   crope::size_type n = r.find( "hair" );
-  CPPUNIT_ASSERT( n == crope::npos );
+  EXAM_CHECK( n == crope::npos );
 
   n = r.find("ear");
 
-  CPPUNIT_ASSERT( n == (r.size() - 3) );
+  EXAM_CHECK( n == (r.size() - 3) );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void RopeTest::find2()
+int EXAM_IMPL(rope_test::find2)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) 
   crope r("Fuzzy Wuzzy was a bear");
   crope::size_type n = r.find( 'e' );
-  CPPUNIT_ASSERT( n == (r.size() - 3) );
+  EXAM_CHECK( n == (r.size() - 3) );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void RopeTest::construct_from_char()
+int EXAM_IMPL(rope_test::construct_from_char)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) 
   crope r('1');
   char const* s = r.c_str();
-  CPPUNIT_ASSERT( '1' == s[0] && '\0' == s[1] );
+  EXAM_CHECK( '1' == s[0] && '\0' == s[1] );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
 // Test used for a bug report from Peter Hercek
-void RopeTest::bug_report()
+int EXAM_IMPL(rope_test::bug_report)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) 
   //first create a rope bigger than crope::_S_copy_max = 23
@@ -113,8 +91,11 @@ void RopeTest::bug_report()
   crope sevenCharRope2("1234567");
   // add one more character to the leaf
   evilRope += '8'; // here is the write beyond the allocated memory
-  CPPUNIT_ASSERT( strcmp(sevenCharRope2.c_str(), "1234567") == 0 );
+  EXAM_CHECK( strcmp(sevenCharRope2.c_str(), "1234567") == 0 );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
@@ -149,7 +130,7 @@ crope create_rope( int len )
 
 #endif
 
-void RopeTest::test_saved_rope_iterators()
+int EXAM_IMPL(rope_test::test_saved_rope_iterators)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) 
    //
@@ -158,21 +139,21 @@ void RopeTest::test_saved_rope_iterators()
    // srand(0);
    crope r = create_rope(300);
    string expected(r.begin(), r.end());
-   CPPUNIT_ASSERT(expected.size() == r.size());
-   CPPUNIT_ASSERT(equal(expected.begin(), expected.end(), r.begin()));
+   EXAM_CHECK(expected.size() == r.size());
+   EXAM_CHECK(equal(expected.begin(), expected.end(), r.begin()));
    crope::const_iterator i(r.begin()), j(r.end());
    int pos = 0;
    while(i != j)
    {
       crope::const_iterator k;
       // This initial read triggers the bug:
-      CPPUNIT_ASSERT(*i);
+      EXAM_CHECK(*i);
       k = i;
       int newpos = pos;
       // Now make sure that i is incremented into the next leaf:
       while(i != j)
       {
-         CPPUNIT_ASSERT(*i == expected[newpos]);
+         EXAM_CHECK(*i == expected[newpos]);
          ++i;
          ++newpos;
       }
@@ -181,5 +162,8 @@ void RopeTest::test_saved_rope_iterators()
       ++i;
       ++pos;
    }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }

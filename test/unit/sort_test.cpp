@@ -189,9 +189,9 @@ int EXAM_IMPL(sort_test::bad_predicate_detected)
   catch (runtime_error const&)
   { /*OK bad predicate has been detected.*/ }
 
-#  else  // _STLP_DO_CHECK_BAD_PREDICATE
+#else  // _STLP_DO_CHECK_BAD_PREDICATE
   throw exam::skip_exception();
-#  endif // _STLP_DO_CHECK_BAD_PREDICATE
+#endif // _STLP_DO_CHECK_BAD_PREDICATE
 
   return EXAM_RESULT;
 }
