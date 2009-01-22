@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/12/12 22:23:14 ptr>
+// -*- C++ -*- Time-stamp: <09/01/23 02:18:47 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2009
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -20,10 +20,14 @@
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <slist>
 #endif
+#include <queue>
 #include <deque>
 #include <functional>
 #include <map>
 #include <string>
+#include <cstring>
+
+#include "iota.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -1037,5 +1041,814 @@ int EXAM_IMPL(alg_test::genern2)
   EXAM_CHECK(v1[8]==34);
   EXAM_CHECK(v1[9]==55);
 
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(count_test::count0)
+{
+  int numbers[10] = { 1, 2, 4, 1, 2, 4, 1, 2, 4, 1 };
+
+  int result = count(numbers, numbers + 10, 1);
+  EXAM_CHECK(result==4);
+#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
+  result = 0;
+  count(numbers, numbers + 10, 1, result);
+  EXAM_CHECK(result==4);
+#endif
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(count_test::count1)
+{
+  vector <int> numbers(100);
+  for(int i = 0; i < 100; i++)
+  numbers[i] = i % 3;
+  int elements = count(numbers.begin(), numbers.end(), 2);
+  EXAM_CHECK(elements==33);
+#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
+  elements = 0;
+  count(numbers.begin(), numbers.end(), 2, elements);
+  EXAM_CHECK(elements==33);
+#endif
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(count_test::countif1)
+{
+  vector <int> numbers(100);
+  for(int i = 0; i < 100; i++)
+    numbers[i] = i % 3;
+  int elements = count_if(numbers.begin(), numbers.end(), odd);
+  EXAM_CHECK(elements==33);
+#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
+  elements = 0;
+  count_if(numbers.begin(), numbers.end(), odd, elements);
+  EXAM_CHECK(elements==33);
+#endif
+
+  return EXAM_RESULT;
+}
+
+int count_test::odd(int a_)
+{
+  return a_ % 2;
+}
+
+static int negate_int( int a_ )
+{ return -a_; }
+
+static char map_char( char a_, int b_ )
+{ return char(a_ + b_); }
+
+static char shift( char c )
+{ return char(((int)c + 1) % 256); }
+
+int EXAM_IMPL(transform_test::trnsfrm1)
+{
+  int numbers[6] = { -5, -1, 0, 1, 6, 11 };
+
+  int result[6];
+  transform((int*)numbers, (int*)numbers + 6, (int*)result, negate_int);
+
+  EXAM_CHECK(result[0]==5);
+  EXAM_CHECK(result[1]==1);
+  EXAM_CHECK(result[2]==0);
+  EXAM_CHECK(result[3]==-1);
+  EXAM_CHECK(result[4]==-6);
+  EXAM_CHECK(result[5]==-11);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(transform_test::trnsfrm2)
+{
+#if defined (__MVS__)
+  int trans[] = {-11, 4, -6, -6, -18, 0, 18, -14, 6, 0, -1, -59};
+#else
+  int trans[] = {-4, 4, -6, -6, -10, 0, 10, -6, 6, 0, -1, -77};
+#endif
+  char n[] = "Larry Mullen";
+  const size_t count = ::strlen(n);
+
+  string res;
+  transform(n, n + count, trans, back_inserter(res), map_char);
+  EXAM_CHECK( res == "Hello World!" );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(transform_test::self_str)
+{
+  string s( "0123456789abcdefg" );
+  string r( "123456789:bcdefgh" );
+  transform( s.begin(), s.end(), s.begin(), shift );
+  EXAM_CHECK( s == r );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(neq_test::negate0)
+{
+  int input [3] = { 1, 2, 3 };
+
+  int output[3];
+  transform((int*)input, (int*)input + 3, (int*)output, negate<int>());
+
+  EXAM_CHECK(output[0]==-1);
+  EXAM_CHECK(output[1]==-2);
+  EXAM_CHECK(output[2]==-3);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(neq_test::nequal0)
+{
+  int input1 [4] = { 1, 7, 2, 2 };
+  int input2 [4] = { 1, 6, 2, 3 };
+
+  int output [4];
+  transform((int*)input1, (int*)input1 + 4, (int*)input2, (int*)output, not_equal_to<int>());
+
+  EXAM_CHECK(output[0]==0);
+  EXAM_CHECK(output[1]==1);
+  EXAM_CHECK(output[2]==0);
+  EXAM_CHECK(output[3]==1);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(modulus_test::modulus0)
+{
+  int input1 [4] = { 6, 8, 10, 2 };
+  int input2 [4] = { 4, 2, 11, 3 };
+
+  int output [4];
+
+  transform((int*)input1, (int*)input1 + 4, (int*)input2, (int*)output, modulus<int>());
+  EXAM_CHECK(output[0]==2);
+  EXAM_CHECK(output[1]==0);
+  EXAM_CHECK(output[2]==10);
+  EXAM_CHECK(output[3]==2);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(copy_test::copy_array)
+{
+  char string[23] = "A string to be copied.";
+  char result[23];
+  copy(string, string + 23, result);
+  EXAM_CHECK(!strncmp(string, result, 23));
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(copy_test::copy_volatile)
+{
+  {
+    int a[] = {0, 1, 2, 3, 4, 5};
+    const size_t size = sizeof(a) / sizeof(a[0]);
+    volatile int va[size]; 
+    copy(a, a + size, va);
+    for ( size_t i = 0; i != size; ++i ) {
+      EXAM_CHECK( a[i] == va[i] );
+    }
+  }
+
+  {
+    const int a[] = {0, 1, 2, 3, 4, 5};
+    const size_t size = sizeof(a) / sizeof(a[0]);
+    volatile int va[size]; 
+    copy(a, a + size, va);
+    for ( size_t i = 0; i != size; ++i ) {
+      EXAM_CHECK( a[i] == va[i] );
+    }
+  }
+
+  // Following code can be activated to check that it doesn't compiled
+#if 0
+  {
+    int a[] = {0, 1, 2, 3, 4, 5};
+    const size_t size = sizeof(a) / sizeof(a[0]);
+    const volatile int va[size] = {5, 4, 3, 2, 1, 0}; 
+    copy(a, a + size, va);
+    for (size_t i = 0; i != size; ++i) {
+      EXAM_CHECK( a[i] == va[i] );
+    }
+  }
+#endif
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(copy_test::copy_vector)
+{
+  vector<int> v1(10);
+
+  for ( int i = 0; (size_t)i < v1.size(); ++i ) {
+    v1[i] = i;
+  }
+
+  vector<int> v2(v1.size());
+  copy(v1.begin(), v1.end(), v2.begin());
+
+  EXAM_CHECK( v2 == v1 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(copy_test::copy_insert)
+{
+  vector<int> v1(10);
+  for ( int loc = 0; (size_t)loc < v1.size(); ++loc ) {
+    v1[loc] = loc;
+  }
+  vector<int> v2;
+  insert_iterator<vector<int> > i(v2, v2.begin());
+  copy(v1.begin(), v1.end(), i);
+
+  EXAM_CHECK( v2 == v1 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(copy_test::copy_back)
+{
+  vector<int> v1(10);
+  for ( int i = 0; (size_t)i < v1.size(); ++i ) {
+    v1[i] = i;
+  }
+  vector<int> v2(v1.size());
+  copy_backward(v1.begin(), v1.end(), v2.end());
+
+  EXAM_CHECK( v2 == v1 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(copy_test::copy_back_array)
+{
+  int numbers[5] = { 1, 2, 3, 4, 5 };
+
+  int result[5];
+  copy_backward(numbers, numbers + 5, (int*)result + 5);
+  EXAM_CHECK(result[0]==numbers[0]);
+  EXAM_CHECK(result[1]==numbers[1]);
+  EXAM_CHECK(result[2]==numbers[2]);
+  EXAM_CHECK(result[3]==numbers[3]);
+  EXAM_CHECK(result[4]==numbers[4]);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fill_test::fill1)
+{
+  vector<int> v(10);
+  fill(v.begin(), v.end(), 42);
+
+  EXAM_CHECK(v[0]==42);
+  EXAM_CHECK(v[1]==42);
+  EXAM_CHECK(v[2]==42);
+  EXAM_CHECK(v[3]==42);
+  EXAM_CHECK(v[4]==42);
+  EXAM_CHECK(v[5]==42);
+  EXAM_CHECK(v[6]==42);
+  EXAM_CHECK(v[7]==42);
+  EXAM_CHECK(v[8]==42);
+  EXAM_CHECK(v[9]==42);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fill_test::filln1)
+{
+  vector<int> v(10);
+  fill_n(v.begin(), v.size(), 42);
+
+  EXAM_CHECK(v[0]==42);
+  EXAM_CHECK(v[1]==42);
+  EXAM_CHECK(v[2]==42);
+  EXAM_CHECK(v[3]==42);
+  EXAM_CHECK(v[4]==42);
+  EXAM_CHECK(v[5]==42);
+  EXAM_CHECK(v[6]==42);
+  EXAM_CHECK(v[7]==42);
+  EXAM_CHECK(v[8]==42);
+  EXAM_CHECK(v[9]==42);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(search_test::search0)
+{
+  int v1[6] = { 1, 1, 2, 3, 5, 8 };
+  int v2[6] = { 0, 1, 2, 3, 4, 5 };
+  int v3[2] = { 3, 4 };
+
+  int* location;
+  location = search((int*)v1, (int*)v1 + 6, (int*)v3, (int*)v3 + 2);
+  EXAM_CHECK(location == v1 + 6);
+
+  location = search((int*)v2, (int*)v2 + 6, (int*)v3, (int*)v3 + 2);
+  EXAM_CHECK(location != v2 + 6);
+  EXAM_CHECK(location - v2 == 3);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(search_test::search1)
+{
+  typedef vector <int> IntVec;
+  IntVec v1(10);
+  __iota(v1.begin(), v1.end(), 0);
+  IntVec v2(3);
+  __iota(v2.begin(), v2.end(), 50);
+
+  IntVec::iterator location;
+  location = search(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+  EXAM_CHECK(location == v1.end());
+
+  __iota(v2.begin(), v2.end(), 4);
+
+  location = search(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+  EXAM_CHECK(location != v1.end());
+  EXAM_CHECK(location - v1.begin() == 4);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(search_test::search2)
+{
+  char const* grades[] = { "A", "B", "C", "D", "F" };
+  char const* letters[] = { "Q", "E", "D" };
+  const unsigned gradeCount = sizeof(grades) / sizeof(grades[0]);
+  const unsigned letterCount = sizeof(letters) / sizeof(letters[0]);
+  char const** location = search((char const**)grades, (char const**)grades + gradeCount, (char const**)letters, (char const**)letters + letterCount, str_equal);
+
+  EXAM_CHECK(location == grades + gradeCount);
+
+  copy((char const**)grades + 1, (char const**)grades + 1 + letterCount, (char const**)letters);
+  location = search((char const**)grades, (char const**)grades + gradeCount, (char const**)letters, (char const**)letters + letterCount, str_equal);
+
+  EXAM_CHECK(location != grades + gradeCount);
+  EXAM_CHECK(location - grades == 1);
+
+  return EXAM_RESULT;
+}
+
+bool str_equal(const char* a_, const char* b_)
+{
+  return strcmp(a_, b_) == 0 ? 1 : 0;
+}
+
+int EXAM_IMPL(mismatch_test::mismatch0)
+{
+  int n1[5] = { 1, 2, 3, 4, 5 };
+  int n2[5] = { 1, 2, 3, 4, 5 };
+  int n3[5] = { 1, 2, 3, 2, 1 };
+
+  pair <int*, int*> result = mismatch((int*)n1, (int*)n1 + 5, (int*)n2);
+  EXAM_CHECK(result.first ==(n1 + 5) && result.second ==(n2 + 5));
+
+  result = mismatch((int*)n1, (int*)n1 + 5, (int*)n3);
+  EXAM_CHECK(!(result.first ==(n1 + 5) && result.second ==(n3 + 5)));
+  EXAM_CHECK((result.first - n1)==3);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(mismatch_test::mismatch1)
+{
+  typedef vector<int> IntVec;
+  IntVec v1(10);
+  __iota(v1.begin(), v1.end(), 0);
+  IntVec v2(v1);
+
+  pair <IntVec::iterator, IntVec::iterator> result = mismatch(v1.begin(), v1.end(), v2.begin());
+
+  EXAM_CHECK(result.first == v1.end() && result.second == v2.end());
+
+  v2[v2.size()/2] = 42;
+  result = mismatch(v1.begin(), v1.end(), v2.begin());
+  EXAM_CHECK(!(result.first == v1.end() && result.second == v2.end()));
+  EXAM_CHECK((result.first - v1.begin())==5);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(mismatch_test::mismatch2)
+{
+  const unsigned size = 5;
+  char const* n1[size] = { "Brett", "Graham", "Jack", "Mike", "Todd" };
+
+  char const* n2[size];
+  copy(n1, n1 + 5, (char const**)n2);
+  pair <char const**, char const**> result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal);
+
+  EXAM_CHECK(result.first == n1 + size && result.second == n2 + size);
+
+  n2[2] = "QED";
+  result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal);
+  EXAM_CHECK(!(result.first == n2 + size && result.second == n2 + size));
+  EXAM_CHECK((result.first - n1)==2);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(adj_test::adjfind0)
+{
+  int numbers1 [5] = { 1, 2, 4, 8, 16 };
+  int numbers2 [5] = { 5, 3, 2, 1, 1 };
+
+  int* location = adjacent_find((int*)numbers1, (int*)numbers1 + 5);
+  EXAM_CHECK(location == numbers1 + 5); // no adj so loc should be _last
+
+  location = adjacent_find((int*)numbers2, (int*)numbers2 + 5);
+  EXAM_CHECK(location != numbers2 + 5); // adj location off should be 3 (first 1)
+  EXAM_CHECK((location - numbers2)==3);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(adj_test::adjfind1)
+{
+  typedef vector<int> IntVector;
+  IntVector v(10);
+
+  for ( int i = 0; (size_t)i < v.size(); ++i ) {
+    v[i] = i;
+  }
+
+  IntVector::iterator location;
+  location = adjacent_find(v.begin(), v.end());
+  EXAM_CHECK(location == v.end());
+  v[6] = 7;
+  location = adjacent_find(v.begin(), v.end());
+  EXAM_CHECK(location != v.end());
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(adj_test::adjfind2)
+{
+  typedef vector <const char*> CStrVector;
+
+  const char* names[] = { "Brett", "Graham", "Jack", "Mike", "Todd" };
+
+  const int nameCount = sizeof(names)/sizeof(names[0]);
+  CStrVector v(nameCount);
+
+  for( int i = 0; i < nameCount; i++ ) {
+    v[i] = names[i];
+  }
+
+  CStrVector::iterator location;
+  location = adjacent_find(v.begin(), v.end(), equal_length);
+
+  EXAM_CHECK(location != v.end());
+
+  return EXAM_RESULT;
+}
+
+int adj_test::equal_length(const char* v1_, const char* v2_)
+{
+  return ::strlen(v1_) == ::strlen(v2_);
+}
+
+int EXAM_IMPL(adj_test::adjdiff0)
+{
+  int numbers[5] = { 1, 2, 4, 8, 16 };
+  int difference[5];
+
+  adjacent_difference(numbers, numbers + 5, (int*)difference);
+
+  EXAM_CHECK(difference[0]==1);
+  EXAM_CHECK(difference[1]==1);
+  EXAM_CHECK(difference[2]==2);
+  EXAM_CHECK(difference[3]==4);
+  EXAM_CHECK(difference[4]==8);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(adj_test::adjdiff1)
+{
+  vector<int> v(10);
+
+  for( int i = 0; (size_t)i < v.size(); ++i ) {
+    v[i] = i * i;
+  }
+
+  vector<int> result(v.size());
+
+  adjacent_difference(v.begin(), v.end(), result.begin());
+  EXAM_CHECK(result[0]==0);
+  EXAM_CHECK(result[1]==1);
+  EXAM_CHECK(result[2]==3);
+  EXAM_CHECK(result[3]==5);
+  EXAM_CHECK(result[4]==7);
+  EXAM_CHECK(result[5]==9);
+  EXAM_CHECK(result[6]==11);
+  EXAM_CHECK(result[7]==13);
+  EXAM_CHECK(result[8]==15);
+  EXAM_CHECK(result[9]==17);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(adj_test::adjdiff2)
+{
+  vector <int> v(10);
+  for ( int i = 0; (size_t)i < v.size(); ++i ) {
+    v[i] = i + 1;
+  }
+
+  vector<int> result(v.size());
+
+  adjacent_difference(v.begin(), v.end(), result.begin(), mult);
+
+  EXAM_CHECK(result[0]==1);
+  EXAM_CHECK(result[1]==2);
+  EXAM_CHECK(result[2]==6);
+  EXAM_CHECK(result[3]==12);
+  EXAM_CHECK(result[4]==20);
+  EXAM_CHECK(result[5]==30);
+  EXAM_CHECK(result[6]==42);
+  EXAM_CHECK(result[7]==56);
+  EXAM_CHECK(result[8]==72);
+  EXAM_CHECK(result[9]==90);
+
+  return EXAM_RESULT;
+}
+
+int adj_test::mult(int a_, int b_)
+{
+  return a_ * b_;
+}
+
+int EXAM_IMPL(find_test::find0)
+{
+  int numbers[10] = { 0, 1, 4, 9, 16, 25, 36, 49, 64 };
+
+  int *location = find((int*)numbers, (int*)numbers + 10, 25);
+
+  EXAM_CHECK((location - numbers)==5);
+
+  int *out_range = find((int*)numbers, (int*)numbers + 10, 128);
+
+  EXAM_CHECK( out_range == (int *)(numbers + 10) );
+
+  return EXAM_RESULT;
+}
+
+struct Key
+{
+  int data;
+
+  /* This operator should rather be global and commutative
+     but implementing it this way show that STLport used to
+     ask too much from the user code. */
+  bool operator == (int d) const
+  {
+    return data == d;
+  }
+};
+
+int EXAM_IMPL(find_test::find1)
+{
+  int years[] = { 1942, 1952, 1962, 1972, 1982, 1992 };
+
+  const unsigned yearCount = sizeof(years) / sizeof(years[0]);
+  int* location = find((int*)years, (int*)years + yearCount, 1972);
+
+  EXAM_CHECK((location - years)==3);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(find_test::findif0)
+{
+  {
+    int numbers[6] = { 2, 4, 8, 15, 32, 64 };
+    int *location = find_if((int*)numbers, (int*)numbers + 6, odd);
+
+    EXAM_CHECK((location - numbers)==3);
+
+    int numbers_even[6] = { 2, 4, 8, 16, 32, 64 };
+
+    int *out_range = find_if((int*)numbers_even, (int*)numbers_even + 6, odd);
+
+    EXAM_CHECK( out_range == (int *)(numbers_even + 6) );
+  }
+
+  {
+    Key keys[10] = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0} };
+    Key const* k = find(keys + 0, keys + 10, 5);
+    EXAM_CHECK( k == keys + 10 );
+  }
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(find_test::findif1)
+{
+  typedef vector <int> IntVec;
+  IntVec v(10);
+
+  for( int i = 0; (size_t)i < v.size(); ++i ) {
+    v[i] = (i + 1) * (i + 1);
+  }
+
+  IntVec::iterator iter = find_if(v.begin(), v.end(), div_3);
+
+  EXAM_CHECK((iter - v.begin())==2);
+
+  return EXAM_RESULT;
+}
+
+bool find_test::odd(int a_)
+{
+  return (a_ % 2) != 0;
+}
+
+bool find_test::div_3(int a_)
+{
+  return a_ % 3 ? 0 : 1;
+}
+
+int EXAM_IMPL(find_test::find_char)
+{
+  char str[] = "abcdefghij";
+  char *pstr = (char*)str;
+  const char* cpstr = (const char*)str;
+  size_t str_size = sizeof(str) / sizeof(char);
+
+  char *d = find(pstr, pstr + str_size, 'd');
+  EXAM_CHECK( *d == 'd' );
+
+  const char *e = find(cpstr, cpstr + str_size, 'e');
+  EXAM_CHECK( *e == 'e' );
+
+  char *last = find(pstr, pstr + str_size, 'x');
+  EXAM_CHECK( last == pstr + str_size );
+
+  const char *clast = find(cpstr, cpstr + str_size, 'x');
+  EXAM_CHECK( clast == cpstr + str_size );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(advance_test::adv)
+{
+  typedef vector<int> IntVector;
+  IntVector v(10);
+
+  for ( int i = 0; (size_t)i < v.size(); ++i ) {
+    v[i] = i;
+  }
+  IntVector::iterator location = v.begin();
+
+  EXAM_CHECK(*location==0);
+  advance(location, 5);
+  EXAM_CHECK(*location==5);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(swap_test::swap1)
+{
+  int a = 42;
+  int b = 19;
+
+  swap(a, b);
+
+  EXAM_CHECK(a==19);
+  EXAM_CHECK(b==42);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(swap_test::swprnge1)
+{
+  char word1[] = "World";
+  char word2[] = "Hello";
+
+  swap_ranges((char*)word1, (char*)word1 + ::strlen(word1), (char*)word2);
+
+  EXAM_CHECK(!strcmp(word1, "Hello"));
+  EXAM_CHECK(!strcmp(word2, "World"));
+
+  return EXAM_RESULT;
+}
+
+class Obj
+{
+  public:
+    Obj() :
+        v( 0 )
+      { }
+    Obj( const Obj& ) :
+        v( 1 )
+      { }
+
+    Obj& operator =( const Obj& )
+      { v = 2; return *this; }
+
+    int v;
+};
+
+/*
+ * Following two tests check the corectness of specialization of swap():
+ * for containers with container::swap method swap( a, b ) should
+ * use a.swap( b ), but don't try to do this substitution for container
+ * without swap method (in this case swap should be made via explicit members
+ * exchange; this assume usage of temporary object)
+ *
+ */
+int EXAM_IMPL(swap_test::swap_container_non_spec)
+{
+  queue<Obj> v1;
+  queue<Obj> v2;
+
+  v1.push( Obj() );
+  v1.back().v = -1;
+  v1.push( Obj() );
+  v1.back().v = -2;
+
+  v2.push( Obj() );
+  v2.back().v = 10;  
+  v2.push( Obj() );
+  v2.back().v = 11;
+  v2.push( Obj() );
+  v2.back().v = 12;
+
+  EXAM_CHECK( v1.size() == 2 );
+  EXAM_CHECK( v2.size() == 3 );
+
+  swap( v1, v2 ); // this shouldn't try make it as v1.swap( v2 ), no queue::swap method!
+
+  EXAM_CHECK( v1.size() == 3 );
+  EXAM_CHECK( v2.size() == 2 );
+
+  // either copy constructor or assignment operator
+  EXAM_CHECK( v1.front().v == 1 || v1.front().v == 2 );
+  EXAM_CHECK( v1.back().v == 1 || v1.back().v == 2 );
+  EXAM_CHECK( v2.front().v == 1 || v2.front().v == 2 );
+  EXAM_CHECK( v2.back().v == 1 || v2.back().v == 2 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(swap_test::swap_container_spec)
+{
+#if 0 /* temporary: investigation of problem with swap */
+  if ( typeid(/* _STLP_PRIV */ _SwapImplemented<vector<Obj> >::_Ret) == typeid(_STLP_PRIV __false_type) ) {
+    cerr << "false type" << endl;
+  } else if ( typeid(/* _STLP_PRIV */ _SwapImplemented<vector<Obj> >::_Ret) == typeid(_STLP_PRIV __true_type) ) {
+    cerr << "true type" << endl;
+  } else {
+    cerr << "unknown type" << endl;
+  }
+#endif /* end of temporary */
+#if !defined (STLPORT) || \
+     defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+  vector<Obj> v1;
+  vector<Obj> v2;
+
+  v1.push_back( Obj() );
+  v1.push_back( Obj() );
+
+  v1[0].v = -1;
+  v1[1].v = -2;
+
+  v2.push_back( Obj() );
+  v2.push_back( Obj() );
+  v2.push_back( Obj() );
+
+  v2[0].v = 10;
+  v2[1].v = 11;
+  v2[2].v = 12;
+
+  EXAM_CHECK( v1.size() == 2 );
+  EXAM_CHECK( v2.size() == 3 );
+
+  swap( v1, v2 ); // this should has effect v1.swap( v2 )
+
+  EXAM_CHECK( v1.size() == 3 );
+  EXAM_CHECK( v2.size() == 2 );
+
+  EXAM_CHECK( v1[0].v == 10 );
+  EXAM_CHECK( v1[1].v == 11 );
+  EXAM_CHECK( v1[2].v == 12 );
+
+  EXAM_CHECK( v2[0].v == -1 );
+  EXAM_CHECK( v2[1].v == -2 );
+#else
+  throw exam::skip_exception();
+#endif
   return EXAM_RESULT;
 }

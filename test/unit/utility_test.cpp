@@ -1,4 +1,17 @@
-#include "pair_test.h"
+// -*- C++ -*- Time-stamp: <09/01/23 01:03:58 ptr>
+
+/*
+ * Copyright (c) 2004-2009
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
+#include "utility_test.h"
 
 #include <utility>
 #include <vector>
@@ -9,7 +22,7 @@
 using namespace std;
 #endif
 
-int EXAM_IMPL(pair_test::pair0)
+int EXAM_IMPL(utility_test::pair0)
 {
   pair<int, int> p = make_pair(1, 10);
 
@@ -19,7 +32,7 @@ int EXAM_IMPL(pair_test::pair0)
   return EXAM_RESULT;
 }
 
-int EXAM_IMPL(pair_test::init)
+int EXAM_IMPL(utility_test::init)
 {
   pair<int, string> PAIR_ARRAY[] = { pair<int, string>(0, "0") };
 

@@ -1,3 +1,16 @@
+// -*- C++ -*- Time-stamp: <09/01/23 01:10:22 ptr>
+
+/*
+ * Copyright (c) 2004-2009
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
 #include "binary_test.h"
 
 #include <algorithm>
@@ -10,8 +23,9 @@ using namespace std;
 int EXAM_IMPL(bsearch_test::bsearch1)
 {
   int vector[100];
-  for(int i = 0; i < 100; i++)
+  for (int i = 0; i < 100; i++) {
     vector[i] = i;
+  }
   EXAM_CHECK(binary_search(vector, vector + 100, 42));
 
   return EXAM_RESULT;

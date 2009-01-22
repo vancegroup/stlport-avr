@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <09/01/23 00:38:39 ptr>
+// -*- C++ -*- Time-stamp: <09/01/23 02:15:27 ptr>
 
 /*
- * Copyright (c) 2008
+ * Copyright (c) 2008, 2009
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License Version 3.0
@@ -25,33 +25,24 @@
 #include "stream_test.h"
 #include "alg_test.h"
 #include "functor_test.h"
-#include "search_test.h"
 #include "sort_test.h"
-#include "adj_test.h"
-#include "copy_test.h"
 #include "perm_test.h"
-#include "find_test.h"
 #include "partition_test.h"
 #include "iter_test.h"
 #include "bind_test.h"
-#include "count_test.h"
 #include "partial_test.h"
 #include "heap_test.h"
 #include "binary_test.h"
 #include "rotate_test.h"
-#include "fill_test.h"
 #include "unique_test.h"
-#include "transform_test.h"
 #include "ptr2_test.h"
-#include "mismatch_test.h"
-#include "pair_test.h"
+#include "utility_test.h"
 #include "rndshf_test.h"
 #include "nthelm_test.h"
 #include "includes_test.h"
 #include "inplace_test.h"
 #include "rope_test.h"
 #include "unary_test.h"
-#include "swap_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -633,10 +624,10 @@ int main( int argc, const char** argv )
   t.add( &mismatch_test::mismatch1, mis_test, "mismatch1" );
   t.add( &mismatch_test::mismatch2, mis_test, "mismatch2" );
 
-  pair_test pr_test;
+  utility_test pr_test;
 
-  t.add( &pair_test::pair0, pr_test, "pair0" );
-  t.add( &pair_test::init, pr_test, "init" );
+  t.add( &utility_test::pair0, pr_test, "pair0" );
+  t.add( &utility_test::init, pr_test, "init" );
 
   rnd_shuffle_test rnd_test;
 

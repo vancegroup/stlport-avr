@@ -1,3 +1,16 @@
+// -*- C++ -*- Time-stamp: <09/01/23 00:51:38 ptr>
+
+/*
+ * Copyright (c) 2004-2009
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
 #ifndef __TEST_BINARY_TEST_H
 #define __TEST_BINARY_TEST_H
 
