@@ -1,41 +1,17 @@
+#include "allocator_test.h"
+
 #include <memory>
+#include <algorithm>
+#include <iterator>
 #include <vector>
 
 #include <cstdio>
-
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class AllocatorTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(AllocatorTest);
-  CPPUNIT_TEST(zero_allocation);
-#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-  CPPUNIT_TEST(bad_alloc_test);
-#endif
-#if defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_USE_PERTHREAD_ALLOC)
-  CPPUNIT_TEST(per_thread_alloc);
-#endif
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void zero_allocation();
-  void bad_alloc_test();
-  void per_thread_alloc();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(AllocatorTest);
-
-//
-// tests implementation
-//
-void AllocatorTest::zero_allocation()
+int EXAM_IMPL(allocator_test::zero_allocation)
 {
   typedef allocator<char> CharAllocator;
   CharAllocator charAllocator;
@@ -44,17 +20,20 @@ void AllocatorTest::zero_allocation()
   charAllocator.deallocate(buf, 0);
 
   charAllocator.deallocate(0, 0);
+
+  return EXAM_RESULT;
 }
 
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+  struct BigStruct
+  {
+    char _data[4096];
+  };
+#endif
 
-struct BigStruct
+int EXAM_IMPL(allocator_test::bad_alloc_test)
 {
-  char _data[4096];
-};
-
-void AllocatorTest::bad_alloc_test()
-{
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   typedef allocator<BigStruct> BigStructAllocType;
   BigStructAllocType bigStructAlloc;
 
@@ -63,7 +42,7 @@ void AllocatorTest::bad_alloc_test()
     BigStructAllocType::pointer pbigStruct = bigStructAlloc.allocate(1024 * 1024 * 1024);
 
     //Allocation failed but no exception thrown
-    CPPUNIT_ASSERT( pbigStruct != 0 );
+    EXAM_CHECK( pbigStruct != 0 );
 
     // Just it case it succeeds:
     bigStructAlloc.deallocate(pbigStruct, 1024 * 1024 * 1024);
@@ -73,10 +52,14 @@ void AllocatorTest::bad_alloc_test()
   catch (...) {
     //We shouldn't be there:
     //Not bad_alloc exception thrown.
-    CPPUNIT_FAIL;
+    EXAM_ERROR("bad_alloc exception thrown");
   }
-}
+
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
+}
 
 #if defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_USE_PERTHREAD_ALLOC)
 #  include <pthread.h>
@@ -149,9 +132,11 @@ void* f(void* pdatas) {
 
   return 0;
 }
+#endif
 
-void AllocatorTest::per_thread_alloc()
+int EXAM_IMPL(allocator_test::per_thread_alloc)
 {
+#if defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_USE_PERTHREAD_ALLOC)
   const size_t nth = 2;
   SharedDatas datas(nth);
   pthread_t t[nth];
@@ -164,5 +149,90 @@ void AllocatorTest::per_thread_alloc()
   for (i = 0; i < nth; ++i ) {
     pthread_join(t[i], 0);
   }
-}
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
+}
+
+#if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)
+auto_ptr<int> CreateAutoPtr(int val)
+{ return auto_ptr<int>(new int(val)); }
+
+bool CheckEquality(auto_ptr<int> pint, int val)
+{ return *pint == val; }
+#endif
+
+int EXAM_IMPL(memory_test::auto_ptr_test)
+{
+#if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)
+  {
+    auto_ptr<int> pint(new int(1));
+    EXAM_CHECK( *pint == 1 );
+    *pint = 2;
+    EXAM_CHECK( *pint == 2 );
+  }
+
+  {
+    auto_ptr<int> pint(CreateAutoPtr(3));
+    EXAM_CHECK( *pint == 3 );
+    EXAM_CHECK( CheckEquality(pint, 3) );
+  }
+
+  {
+    auto_ptr<const int> pint(new int(2));
+    EXAM_CHECK( *pint == 2 );
+  }
+  {
+    auto_ptr<volatile int> pint(new int(2));
+    EXAM_CHECK( *pint == 2 );
+  }
+  {
+    auto_ptr<const volatile int> pint(new int(2));
+    EXAM_CHECK( *pint == 2 );
+  }
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
+}
+
+class X
+{
+  public:
+    X(int i_ = 0) : i(i_) {}
+    ~X() {}
+    operator int() const { return i; }
+
+  private:
+    int i;
+};
+
+int EXAM_IMPL(rawriter_test::rawiter1)
+{
+  allocator<X> a;
+  typedef X* x_pointer;
+  x_pointer save_p, p;
+  p = a.allocate(5);
+  save_p=p;
+  raw_storage_iterator<X*, X> r(p);
+  int i;
+  for(i = 0; i < 5; i++)
+    *r++ = X(i);
+
+  EXAM_CHECK(*p++ == 0);
+  EXAM_CHECK(*p++ == 1);
+  EXAM_CHECK(*p++ == 2);
+  EXAM_CHECK(*p++ == 3);
+  EXAM_CHECK(*p++ == 4);
+
+//#if defined (STLPORT) || defined (__GNUC__)
+  a.deallocate(save_p, 5);
+/*
+#else
+  a.deallocate(save_p);
+#endif
+*/
+
+  return EXAM_RESULT;
+}

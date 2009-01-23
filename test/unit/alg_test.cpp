@@ -23,6 +23,7 @@
 #include <queue>
 #include <deque>
 #include <functional>
+#include <numeric>
 #include <map>
 #include <string>
 #include <cstring>
@@ -1847,6 +1848,131 @@ int EXAM_IMPL(swap_test::swap_container_spec)
 
   EXAM_CHECK( v2[0].v == -1 );
   EXAM_CHECK( v2[1].v == -2 );
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(merge_test::merge0)
+{
+  int numbers1[5] = { 1, 6, 13, 25, 101 };
+  int numbers2[5] = {-5, 26, 36, 46, 99 };
+
+  int result[10];
+  merge((int*)numbers1, (int*)numbers1 + 5, (int*)numbers2, (int*)numbers2 + 5, (int*)result);
+
+  EXAM_CHECK(result[0]==-5);
+  EXAM_CHECK(result[1]==1);
+  EXAM_CHECK(result[2]==6);
+  EXAM_CHECK(result[3]==13);
+  EXAM_CHECK(result[4]==25);
+  EXAM_CHECK(result[5]==26);
+  EXAM_CHECK(result[6]==36);
+  EXAM_CHECK(result[7]==46);
+  EXAM_CHECK(result[8]==99);
+  EXAM_CHECK(result[9]==101);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(merge_test::merge1)
+{
+  vector<int> v1(5);
+  vector<int> v2(v1.size());
+  __iota(v1.begin(), v1.end(), 0);
+  __iota(v2.begin(), v2.end(), 3);
+
+  vector <int> result(v1.size() + v2.size());
+  merge(v1.begin(), v1.end(), v2.begin(), v2.end(), result.begin());
+
+  EXAM_CHECK(result[0]==0);
+  EXAM_CHECK(result[1]==1);
+  EXAM_CHECK(result[2]==2);
+  EXAM_CHECK(result[3]==3);
+  EXAM_CHECK(result[4]==3);
+  EXAM_CHECK(result[5]==4);
+  EXAM_CHECK(result[6]==4);
+  EXAM_CHECK(result[7]==5);
+  EXAM_CHECK(result[8]==6);
+  EXAM_CHECK(result[9]==7);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(merge_test::merge2)
+{
+  vector <int> v1(5);
+  vector <int> v2(v1.size());
+  for (int i = 0; (size_t)i < v1.size(); ++i) {
+    v1[i] = 10 - i;
+    v2[i] =  7 - i;
+  }
+  vector<int> result(v1.size() + v2.size());
+  merge(v1.begin(), v1.end(), v2.begin(), v2.end(), result.begin(), greater<int>() );
+
+  EXAM_CHECK(result[0]==10);
+  EXAM_CHECK(result[1]==9);
+  EXAM_CHECK(result[2]==8);
+  EXAM_CHECK(result[3]==7);
+  EXAM_CHECK(result[4]==7);
+  EXAM_CHECK(result[5]==6);
+  EXAM_CHECK(result[6]==6);
+  EXAM_CHECK(result[7]==5);
+  EXAM_CHECK(result[8]==4);
+  EXAM_CHECK(result[9]==3);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(divide_test::div)
+{
+  int input [3] = { 2, 3, 4 };
+  int result = accumulate(input, input + 3, 48, divides<int>());
+  EXAM_CHECK(result==2);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(lexcmp_test::lexcmp1)
+{
+  const unsigned size = 6;
+  char n1[size] = "shoe";
+  char n2[size] = "shine";
+
+  bool before = lexicographical_compare(n1, n1 + size, n2, n2 + size);
+  EXAM_CHECK(!before);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(lexcmp_test::lexcmp2)
+{
+  const unsigned size = 6;
+  char n1[size] = "shoe";
+  char n2[size] = "shine";
+
+  bool before = lexicographical_compare(n1, n1 + size, n2, n2 + size, greater<char>());
+  EXAM_CHECK(before);
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(iota_test::iota1)
+{
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  int numbers[10];
+  iota(numbers, numbers + 10, 42);
+  EXAM_CHECK(numbers[0]==42);
+  EXAM_CHECK(numbers[1]==43);
+  EXAM_CHECK(numbers[2]==44);
+  EXAM_CHECK(numbers[3]==45);
+  EXAM_CHECK(numbers[4]==46);
+  EXAM_CHECK(numbers[5]==47);
+  EXAM_CHECK(numbers[6]==48);
+  EXAM_CHECK(numbers[7]==49);
+  EXAM_CHECK(numbers[8]==50);
+  EXAM_CHECK(numbers[9]==51);
 #else
   throw exam::skip_exception();
 #endif

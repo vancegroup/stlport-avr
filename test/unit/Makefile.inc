@@ -12,7 +12,6 @@ SRC_CPP = alg_test.cpp \
 	binary_test.cpp \
 	bind_test.cpp \
 	bitset_test.cpp \
-	bvector_test.cpp \
 	cmath_test.cpp \
 	codecvt_test.cpp \
 	collate_facets_test.cpp \
@@ -20,7 +19,6 @@ SRC_CPP = alg_test.cpp \
 	cstring_test.cpp \
 	ctype_facets_test.cpp \
 	deque_test.cpp \
-	divides_test.cpp \
 	exception_test.cpp \
 	fstream_test.cpp \
         functor_test.cpp \
@@ -31,16 +29,12 @@ SRC_CPP = alg_test.cpp \
 	insert_test.cpp \
 	ioiter_test.cpp \
 	stream_test.cpp \
-	iota_test.cpp \
 	istmit_test.cpp \
 	iter_test.cpp \
-	lexcmp_test.cpp \
 	limits_test.cpp \
 	list_test.cpp \
 	locale_test.cpp \
 	map_test.cpp \
-	memory_test.cpp \
-	merge_test.cpp \
 	messages_facets_test.cpp \
 	mfunptr_test.cpp \
 	money_facets_test.cpp \
@@ -55,7 +49,6 @@ SRC_CPP = alg_test.cpp \
 	perm_test.cpp \
 	ptr2_test.cpp \
 	ptrspec_test.cpp \
-	rawriter_test.cpp \
 	reference_wrapper_test.cpp \
 	resolve_name.cpp \
 	reviter_test.cpp \
@@ -70,7 +63,6 @@ SRC_CPP = alg_test.cpp \
 	slist_test.cpp \
 	sort_test.cpp \
 	string_test.cpp \
-	strstream_buffer_read_test.cpp \
 	unary_test.cpp \
 	uninitialized_test.cpp \
 	unique_test.cpp \

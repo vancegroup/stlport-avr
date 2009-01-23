@@ -194,4 +194,31 @@ class swap_test
     int EXAM_DECL(swap_container_spec);
 };
 
+class merge_test
+{
+  public:
+    int EXAM_DECL(merge0);
+    int EXAM_DECL(merge1);
+    int EXAM_DECL(merge2);
+};
+
+class divide_test
+{
+  public:
+    int EXAM_DECL(div);
+};
+
+class lexcmp_test
+{
+  public:
+    int EXAM_DECL(lexcmp1);
+    int EXAM_DECL(lexcmp2);
+};
+
+class iota_test
+{
+  public:
+    int EXAM_DECL(iota1);
+};
+
 #endif // __TEST_ALG_TEST_H

@@ -19,6 +19,7 @@
 #include "list_test.h"
 #include "slist_test.h"
 #include "string_test.h"
+#include "cstring_test.h"
 #include "map_test.h"
 #include "set_operations_test.h"
 #include "numerics.h"
@@ -43,6 +44,14 @@
 #include "inplace_test.h"
 #include "rope_test.h"
 #include "unary_test.h"
+#include "allocator_test.h"
+#include "ptrspec_test.h"
+#include "limits_test.h"
+#include "mfunptr_test.h"
+#include "uninitialized_test.h"
+#include "bitset_test.h"
+#include "cmath_test.h"
+#include "config_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -137,6 +146,10 @@ int main( int argc, const char** argv )
   t.add( &vector_test::assign_check, vec_test, "vector assign_check" );
   t.add( &vector_test::ebo, vec_test, "vector ebo" );
 
+  bvector_test bvc_test;
+
+  t.add( &bvector_test::bvec1, bvc_test, "bvec1" );
+
   deque_test deq_test;
 
   t.add( &deque_test::deque1, deq_test, "deque1" );
@@ -211,6 +224,10 @@ int main( int argc, const char** argv )
   t.add( &string_test::allocator_with_state, str_test, "allocator_with_state" );
   t.add( &string_test::capacity, str_test, "capacity" );
   t.add( &string_test::concat24, str_test, "concat24" );
+
+  cstring_test cst_test;
+
+  t.add( &cstring_test::import_checks, cst_test, "import_checks" );
 
   alg_test algtest;
 
@@ -407,6 +424,9 @@ int main( int argc, const char** argv )
   t.add( &unordered_test::buckets, uo_test, "unordered buckets" );
   t.add( &unordered_test::equal_range, uo_test, "unordered equal_range" );
   t.add( &unordered_test::template_methods, uo_test, "unordered template_methods" );
+
+  valarray_test val_test;
+  t.add( &valarray_test::transcendentals, val_test, "transcendentals" );
 
   fstream_test fstrm_test;
 
@@ -674,6 +694,78 @@ int main( int argc, const char** argv )
   t.add( &swap_test::swprnge1, sw_test, "swprnge1" );
   t.add( &swap_test::swap_container_non_spec, sw_test, "swap_container_non_spec" );
   t.add( &swap_test::swap_container_spec, sw_test, "swap_container_spec" );
+
+  merge_test mr_test;
+
+  t.add( &merge_test::merge0, mr_test, "merge0" );
+  t.add( &merge_test::merge1, mr_test, "merge1" );
+  t.add( &merge_test::merge2, mr_test, "merge2" );
+
+  divide_test div_test;
+  t.add( &divide_test::div, div_test, "div" );
+
+  lexcmp_test lcm_test;
+
+  t.add( &lexcmp_test::lexcmp1, lcm_test, "lexcmp1" );
+  t.add( &lexcmp_test::lexcmp2, lcm_test, "lexcmp2" );
+
+  allocator_test al_test;
+
+  t.add( &allocator_test::zero_allocation, al_test, "zero_allocation" );
+  t.add( &allocator_test::bad_alloc_test, al_test, "bad_alloc_test" );
+  t.add( &allocator_test::per_thread_alloc, al_test, "per_thread_alloc" );
+
+  memory_test mem_test;
+  t.add( &memory_test::auto_ptr_test, mem_test, "memory_test::auto_ptr_test" );
+
+  rawriter_test rw_test;
+  t.add( &rawriter_test::rawiter1, rw_test, "rawiter1" );
+
+  strstream_buffer_test strb_test;
+  t.add( &strstream_buffer_test::read_from_buffer, strb_test, "read_from_buffer" );
+
+//file stream_test.cpp with this test wasn't added to Makefile.inc
+//  strstream_test strs_test;
+//  t.add( &strstream_test::input, strs_test, "strstream_test::input" );
+
+  ptrspec_test pts_test;
+
+  t.add( &ptrspec_test::ptr_specialization_test, pts_test, "ptr_specialization_test" );
+  t.add( &ptrspec_test::function_pointer, pts_test, "function_pointer" );
+
+  limits_test lt_test;
+
+  t.add( &limits_test::limits, lt_test, "limits_test::limits" );
+  t.add( &limits_test::qnan_test, lt_test, "limits_test::qnan_test" );
+
+  mem_fun_ptr_test mf_test;
+
+  t.add( &mem_fun_ptr_test::mem_ptr_fun, mf_test, "mem_ptr_fun" );
+  t.add( &mem_fun_ptr_test::find, mf_test, "mem_fun_ptr_test::find" );
+
+  uninitialized_test unin_test;
+
+  t.add( &uninitialized_test::copy_test, unin_test, "copy_test" );
+  t.add( &uninitialized_test::fill_test, unin_test, "fill_test" );
+  t.add( &uninitialized_test::fill_n_test, unin_test, "fill_n_test" );
+
+  bitset_test bts_test;
+
+  t.add( &bitset_test::bitset1, bts_test, "bitset1" );
+  t.add( &bitset_test::iostream, bts_test, "iostream" );
+
+  cmath_test cmt_test;
+  t.add( &cmath_test::import_checks, cmt_test, "cmath_test::import_checks" );
+
+  iota_test iot_test;
+  t.add( &iota_test::iota1, iot_test, "iota1" );
+
+  config_test conf_test;
+
+  t.add( &config_test::placement_new_bug, conf_test, "placement_new_bug" );
+  t.add( &config_test::endianess, conf_test, "endianess" );
+  t.add( &config_test::template_function_partial_ordering, conf_test, "template_function_partial_ordering" );
+  t.add( &config_test::new_throw_bad_alloc, conf_test, "new_throw_bad_alloc" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );

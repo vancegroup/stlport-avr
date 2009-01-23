@@ -1,31 +1,12 @@
+#include "uninitialized_test.h"
+
 #include <memory>
 #include <vector>
 #include <list>
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
-
-//
-// TestCase class
-//
-class UninitializedTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(UninitializedTest);
-  CPPUNIT_TEST(copy_test);
-  //CPPUNIT_TEST(fill_test);
-  //CPPUNIT_TEST(fill_n_test);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void copy_test();
-  void fill_test();
-  void fill_n_test();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(UninitializedTest);
 
 struct NotTrivialCopyStruct {
   NotTrivialCopyStruct() : member(0) {}
@@ -108,10 +89,7 @@ namespace tr1 {
 struct base {};
 struct derived : public base {};
 
-//
-// tests implementation
-//
-void UninitializedTest::copy_test()
+int EXAM_IMPL(uninitialized_test::copy_test)
 {
   {
     //Random iterators
@@ -121,7 +99,7 @@ void UninitializedTest::copy_test()
       uninitialized_copy(src.begin(), src.end(), dst.begin());
       vector<NotTrivialCopyStruct>::const_iterator it(dst.begin()), end(dst.end());
       for (; it != end; ++it) {
-        CPPUNIT_ASSERT( (*it).member == 1 );
+        EXAM_CHECK( (*it).member == 1 );
       }
     }
     {
@@ -142,9 +120,9 @@ void UninitializedTest::copy_test()
 #if defined (STLPORT)
         /* If the member is 1, it means that library has not found any
         optimization oportunity and called the regular copy-ctor instead. */
-        CPPUNIT_ASSERT( (*it).member == 0 );
+        EXAM_CHECK( (*it).member == 0 );
 #else
-        CPPUNIT_ASSERT( (*it).member == 1 );
+        EXAM_CHECK( (*it).member == 1 );
 #endif
       }
     }
@@ -164,7 +142,7 @@ void UninitializedTest::copy_test()
       uninitialized_copy(src.begin(), src.end(), dst.begin());
 
       for (it = dst.begin(); it != end; ++it) {
-        CPPUNIT_ASSERT( (*it).member == 1 );
+        EXAM_CHECK( (*it).member == 1 );
       }
     }
 
@@ -180,7 +158,7 @@ void UninitializedTest::copy_test()
       uninitialized_copy(src.begin(), src.end(), dst.begin());
 
       for (it = dst.begin(); it != end; ++it) {
-        CPPUNIT_ASSERT( (*it).member == 1 );
+        EXAM_CHECK( (*it).member == 1 );
       }
     }
   }
@@ -198,7 +176,7 @@ void UninitializedTest::copy_test()
       vector<unsigned int> dst(src.begin(), src.end());
       vector<unsigned int>::const_iterator it(dst.begin());
       for (i = -5; i < 6; ++i, ++it) {
-        CPPUNIT_ASSERT( *it == (unsigned int)i );
+        EXAM_CHECK( *it == (unsigned int)i );
       }
     }
 
@@ -213,7 +191,7 @@ void UninitializedTest::copy_test()
       vector<unsigned int> dst(src.begin(), src.end());
       vector<unsigned int>::const_iterator it(dst.begin());
       for (i = -5; i < 6; ++i, ++it) {
-        CPPUNIT_ASSERT( *it == (unsigned int)i );
+        EXAM_CHECK( *it == (unsigned int)i );
       }
     }
 
@@ -228,7 +206,7 @@ void UninitializedTest::copy_test()
       vector<float> dst(src.begin(), src.end());
       vector<float>::const_iterator it(dst.begin());
       for (i = -5; i < 6; ++i, ++it) {
-        CPPUNIT_ASSERT( *it == (float)i );
+        EXAM_CHECK( *it == (float)i );
       }
     }
 
@@ -246,7 +224,7 @@ void UninitializedTest::copy_test()
       vector<base*> dst(src.begin(), src.end());
       vector<base*>::iterator it(dst.begin()), end(dst.end());
       for (; it != end; ++it) {
-        CPPUNIT_ASSERT( (*it) == pd );
+        EXAM_CHECK( (*it) == pd );
       }
     }
   }
@@ -255,16 +233,20 @@ void UninitializedTest::copy_test()
     //Vector initialization:
     vector<TrivialInitStruct> vect(10);
     //Just 1 constructor call for the default value:
-    CPPUNIT_ASSERT( TrivialInitStruct::nbConstructorCalls == 1  );
+    EXAM_CHECK( TrivialInitStruct::nbConstructorCalls == 1  );
   }
+
+  return EXAM_RESULT;
 }
 
-/*
-void UninitializedTest::fill_test()
+int EXAM_IMPL(uninitialized_test::fill_test)
 {
+  throw exam::skip_exception();
+  return EXAM_RESULT;
 }
 
-void UninitializedTest::fill_n_test()
+int EXAM_IMPL(uninitialized_test::fill_n_test)
 {
+  throw exam::skip_exception();
+  return EXAM_RESULT;
 }
-*/

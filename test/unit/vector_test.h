@@ -39,4 +39,10 @@ class vector_test
     int EXAM_DECL(ebo);
 };
 
+class bvector_test
+{
+  public:
+    int EXAM_DECL(bvec1);
+};
+
 #endif // __TEST_VECTOR_TEST_H

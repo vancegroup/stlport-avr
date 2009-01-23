@@ -1,3 +1,5 @@
+#include "ptrspec_test.h"
+
 #include <vector>
 #include <list>
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
@@ -7,43 +9,9 @@
 #include <set>
 #include <iterator>
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
-
-//
-// TestCase class
-//
-class PtrSpecTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(PtrSpecTest);
-  CPPUNIT_TEST(ptr_specialization_test);
-  CPPUNIT_TEST(function_pointer);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  /// this seems to be compile only test but...
-  void ptr_specialization_test();
-  void function_pointer();
-
-  template <class _Tp>
-  struct unary_pred {
-    bool operator () (_Tp *__ptr) const {
-     return *__ptr == 0;
-    }
-  };
-
-  template <class _Tp>
-  struct binary_pred {
-    bool operator () (_Tp *__first, _Tp *__second) const {
-      return *__first < *__second;
-    }
-  };
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(PtrSpecTest);
 
 #define TEST_INSTANCIATE_CONTAINER(cont) \
   template class cont<int*>; \
@@ -71,10 +39,7 @@ public:
   void func() {}
 };
 
-//
-// tests implementation
-//
-void PtrSpecTest::ptr_specialization_test()
+int EXAM_IMPL(ptrspec_test::ptr_specialization_test)
 {
   int *int_array[] = {0, 0, 0};
   int const* cint_array[] = {0, 0, 0};
@@ -199,14 +164,18 @@ void PtrSpecTest::ptr_specialization_test()
   pint_deque.assign(int_array, int_array + 3);
   pcint_deque.assign(int_array, int_array + 3);
   pcint_deque.assign(cint_array, cint_array + 3);
+
+  return EXAM_RESULT;
 }
 
 typedef void (*Func)(int);
 void f1(int) {}
 
-void PtrSpecTest::function_pointer()
+int EXAM_IMPL(ptrspec_test::function_pointer)
 {
   vector<Func> fs;
   fs.push_back(&f1);
-  CPPUNIT_ASSERT( !fs.empty() );
+  EXAM_CHECK( !fs.empty() );
+
+  return EXAM_RESULT;
 }

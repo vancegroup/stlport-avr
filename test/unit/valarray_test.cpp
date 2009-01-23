@@ -1,33 +1,15 @@
-#include <valarray>
+#include "map_test.h"
 
-#include "cppunit/cppunit_proxy.h"
+#include <valarray>
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class ValarrayTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(ValarrayTest);
-  CPPUNIT_TEST(transcendentals);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void transcendentals();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(ValarrayTest);
-
-//
-// tests implementation
-//
 // For the moment this test is just a complitation test
 // everyone is welcome to do a real good unit test for
 // valarray functionality.
-void ValarrayTest::transcendentals()
+int EXAM_IMPL(valarray_test::transcendentals)
 {
 #ifdef __SUNPRO_CC
   using std::abs;
@@ -118,4 +100,6 @@ void ValarrayTest::transcendentals()
   valarray<double> v2(v0[gslice()]);
   //valarray<double> v3(v0[valarray<bool>()]);
   valarray<double> v4(v0[valarray<size_t>()]);
+
+  return EXAM_RESULT;
 }

@@ -1,39 +1,15 @@
+#include "mfunptr_test.h"
+
 #include <functional>
 #include <memory>
 #include <vector>
 #include <algorithm>
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class MemFunPtrTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(MemFunPtrTest);
-  CPPUNIT_TEST(mem_ptr_fun);
-#if defined (STLPORT) && !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-  //This test require partial template specialization feature to avoid the
-  //reference to reference problem. No workaround yet for limited compilers.
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(find);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  // compile test not neccessary to run but...
-  void mem_ptr_fun();
-  void find();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(MemFunPtrTest);
-
 //else there is no workaround for the return void bug
-
 struct S1 { } s1;
 struct S2 { } s2;
 
@@ -62,10 +38,8 @@ public:
   void vf1c(const S1&) const;
 };
 
-//
-// tests implementation
-//
-void MemFunPtrTest::mem_ptr_fun()
+// compile test not neccessary to run but...
+int EXAM_IMPL(mem_fun_ptr_test::mem_ptr_fun)
 {
   Class obj;
   const Class& objc = obj;
@@ -124,7 +98,10 @@ void MemFunPtrTest::mem_ptr_fun()
   mem_fun_ref(&Class::vf0c)(objc);
   mem_fun_ref(&Class::vf1c)(objc, s1);
 #endif /* _STLP_DONT_TEST_RETURN_VOID */
+
+  return EXAM_RESULT;
 }
+
 int f1(S1&)
 {return 1;}
 
@@ -187,8 +164,10 @@ struct V {
 #endif
 };
 
-void MemFunPtrTest::find()
+int EXAM_IMPL(mem_fun_ptr_test::find)
 {
+//This test require partial template specialization feature to avoid the
+//reference to reference problem. No workaround yet for limited compilers.
 #if !defined (STLPORT) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   vector<V> v;
 
@@ -202,8 +181,8 @@ void MemFunPtrTest::find()
   const_mem_fun1_ref_t<bool,V,int> pmf = mem_fun_ref( &V::f );
   binder2nd<const_mem_fun1_ref_t<bool,V,int> > b(pmf, 2);
   vector<V>::iterator i = find_if( v.begin(), v.end(), b );
-  CPPUNIT_ASSERT(i != v.end());
-  CPPUNIT_ASSERT(i->v == 2);
+  EXAM_CHECK(i != v.end());
+  EXAM_CHECK(i->v == 2);
 
   // step 2, just check that compiler understand what pass to bind2nd:
   binder2nd<const_mem_fun1_ref_t<bool,V,int> > b2 = bind2nd( pmf, 2 );
@@ -212,14 +191,17 @@ void MemFunPtrTest::find()
   binder2nd<const_mem_fun1_ref_t<bool,V,int> > b3 = bind2nd( mem_fun_ref( &V::f ), 2 );
 
   vector<V>::iterator j = find_if( v.begin(), v.end(), b3 );
-  CPPUNIT_ASSERT(j != v.end());
-  CPPUNIT_ASSERT(j->v == 2);
+  EXAM_CHECK(j != v.end());
+  EXAM_CHECK(j->v == 2);
 
   // step 4, more brief, more complex:
   vector<V>::iterator k = find_if( v.begin(), v.end(), bind2nd( mem_fun_ref( &V::f ), 2 ) );
-  CPPUNIT_ASSERT(k != v.end());
-  CPPUNIT_ASSERT(k->v == 2);
+  EXAM_CHECK(k != v.end());
+  EXAM_CHECK(k->v == 2);
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
 #ifdef _STLP_DONT_TEST_RETURN_VOID

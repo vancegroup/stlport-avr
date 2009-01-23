@@ -551,3 +551,49 @@ int EXAM_IMPL(vector_test::ebo)
 
   return EXAM_RESULT;
 }
+
+int EXAM_IMPL(bvector_test::bvec1)
+{
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  bool ii[3]= {1,0,1};
+  bit_vector b(3);
+
+  EXAM_CHECK(b[0]==0);
+  EXAM_CHECK(b[1]==0);
+  EXAM_CHECK(b[2]==0);
+
+  b[0] = b[2] = 1;
+
+  EXAM_CHECK(b[0]==1);
+  EXAM_CHECK(b[1]==0);
+  EXAM_CHECK(b[2]==1);
+
+  b.insert(b.begin(),(bool*)ii, ii+2);
+
+  EXAM_CHECK(b[0]==1);
+  EXAM_CHECK(b[1]==0);
+  EXAM_CHECK(b[2]==1);
+  EXAM_CHECK(b[3]==0);
+  EXAM_CHECK(b[4]==1);
+
+  bit_vector bb = b;
+  if (bb != b)
+    exit(1);
+
+  b[0] |= 0;
+  b[1] |= 0;
+  b[2] |= 1;
+  b[3] |= 1;
+  EXAM_CHECK(!((b[0] != 1) || (b[1] != 0) || (b[2] != 1) || (b[3] != 1)));
+
+
+  bb[0] &= 0;
+  bb[1] &= 0;
+  bb[2] &= 1;
+  bb[3] &= 1;
+  EXAM_CHECK(!((bb[0] != 0) || (bb[1] != 0) || (bb[2] != 1) || (bb[3] != 0)));
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
+}

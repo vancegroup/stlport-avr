@@ -83,4 +83,10 @@ class unordered_test
     int EXAM_DECL(template_methods);
 };
 
+class valarray_test
+{
+  public:
+    int EXAM_DECL(transcendentals);
+};
+
 #endif // __TEST_MAP_TEST_H

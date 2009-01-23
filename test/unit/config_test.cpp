@@ -1,55 +1,31 @@
+#include "config_test.h"
+
 #include <new>
 #include <vector>
-
-#include "cppunit/cppunit_proxy.h"
 
 #if defined (_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class ConfigTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(ConfigTest);
-#if !defined (STLPORT)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(placement_new_bug);
-  CPPUNIT_TEST(endianess);
-  CPPUNIT_TEST(template_function_partial_ordering);
-#if !defined (_STLP_USE_EXCEPTIONS)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(new_throw_bad_alloc);
-  CPPUNIT_TEST_SUITE_END();
-
-  protected:
-    void placement_new_bug();
-    void endianess();
-    void template_function_partial_ordering();
-    void new_throw_bad_alloc();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(ConfigTest);
-
-void ConfigTest::placement_new_bug()
+int EXAM_IMPL(config_test::placement_new_bug)
 {
 #if defined (STLPORT)
   int int_val = 1;
   int *pint;
   pint = new(&int_val) int();
-  CPPUNIT_ASSERT( pint == &int_val );
+  EXAM_CHECK( pint == &int_val );
 #  if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
-  CPPUNIT_ASSERT( int_val != 0 );
+  EXAM_CHECK( int_val != 0 );
 #  else
-  CPPUNIT_ASSERT( int_val == 0 );
+  EXAM_CHECK( int_val == 0 );
 #  endif
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void ConfigTest::endianess()
+int EXAM_IMPL(config_test::endianess)
 {
 #if defined (STLPORT)
   int val = 0x01020304;
@@ -57,15 +33,18 @@ void ConfigTest::endianess()
 #  if defined (_STLP_BIG_ENDIAN)
   //This test only work if sizeof(int) == 4, this is a known limitation
   //that will be handle the day we find a compiler for which it is false.
-  CPPUNIT_ASSERT( *ptr == 0x01 ||
-                  sizeof(int) > 4 && *ptr == 0x00 );
+  EXAM_CHECK( *ptr == 0x01 ||
+              sizeof(int) > 4 && *ptr == 0x00 );
 #  elif defined (_STLP_LITTLE_ENDIAN)
-  CPPUNIT_ASSERT( *ptr == 0x04 );
+  EXAM_CHECK( *ptr == 0x04 );
 #  endif
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void ConfigTest::template_function_partial_ordering()
+int EXAM_IMPL(config_test::template_function_partial_ordering)
 {
 #if defined (STLPORT)
   vector<int> vect1(10, 0);
@@ -76,16 +55,19 @@ void ConfigTest::template_function_partial_ordering()
   swap(vect1, vect2);
 
 #  if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-  CPPUNIT_ASSERT( pvect1Front == &vect2.front() );
-  CPPUNIT_ASSERT( pvect2Front == &vect1.front() );
+  EXAM_CHECK( pvect1Front == &vect2.front() );
+  EXAM_CHECK( pvect2Front == &vect1.front() );
 #  else
-  CPPUNIT_ASSERT( pvect1Front != &vect2.front() );
-  CPPUNIT_ASSERT( pvect2Front != &vect1.front() );
+  EXAM_CHECK( pvect1Front != &vect2.front() );
+  EXAM_CHECK( pvect2Front != &vect1.front() );
 #  endif
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void ConfigTest::new_throw_bad_alloc()
+int EXAM_IMPL(config_test::new_throw_bad_alloc)
 {
 #if defined (STLPORT) && defined (_STLP_USE_EXCEPTIONS)
   try
@@ -98,7 +80,7 @@ void ConfigTest::new_throw_bad_alloc()
     void* pvoid = operator new (huge_amount);
 #if !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
     // Allocation should have fail
-    CPPUNIT_ASSERT( pvoid != 0 );
+    EXAM_CHECK( pvoid != 0 );
 #endif
     // Just in case it succeeds:
     operator delete(pvoid);
@@ -108,14 +90,17 @@ void ConfigTest::new_throw_bad_alloc()
 #if defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
     // Looks like your compiler new operator finally throw bad_alloc, you can fix
     // configuration.
-    CPPUNIT_FAIL;
+    EXAM_ERROR("bad_alloc error");
 #endif
   }
   catch (...)
   {
     //We shouldn't be there:
     //Not bad_alloc exception thrown.
-    CPPUNIT_FAIL;
+    EXAM_ERROR("bad_alloc error");
   }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }

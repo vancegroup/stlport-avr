@@ -69,4 +69,16 @@ class fstream_test
     int EXAM_DECL(custom_facet);
 };
 
+class strstream_buffer_test
+{
+  public:
+    int EXAM_DECL(read_from_buffer);
+};
+
+class strstream_test
+{
+  public:
+    int EXAM_DECL(input);
+};
+
 #endif // __TEST_STREAM_TEST_H

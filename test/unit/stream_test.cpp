@@ -562,3 +562,50 @@ int EXAM_IMPL(sstream_test::negative)
 
   return EXAM_RESULT;
 }
+
+/*
+ * Note: Strstreams are really broken in STLport. But strstreams are 
+ * obsolete, and even if ones was mentioned in D7.1--D7.4 of 
+ * Standard, we have no wish to spent time with repair ones.
+ */
+
+#if !defined (_STLP_USE_NO_IOSTREAMS) || !defined (_STLP_NO_IOSTREAMS)
+#  include <strstream>
+#  include <limits>
+#endif
+
+int EXAM_IMPL(strstream_buffer_test::read_from_buffer)
+{
+#if !defined (_STLP_NO_IOSTREAMS)
+  char hello[] = "Hello";
+  strstream stream(hello, sizeof(hello), ios_base::in);
+  char cur;
+  stream >> cur;
+  EXAM_CHECK(cur == 'H');
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(strstream_test::input)
+{
+#  if defined (STLPORT) && defined (_STLP_LONG_LONG) && !defined (_STLP_USE_NO_IOSTREAMS)
+  {
+    istrstream is("652208307");
+    _STLP_LONG_LONG rval = 0;
+    is >> rval;
+    EXAM_CHECK( rval == 652208307 );
+  }
+  {
+    istrstream is("-652208307");
+    _STLP_LONG_LONG rval = 0;
+    is >> rval;
+    EXAM_CHECK( rval == -652208307 );
+  }
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
+}
+

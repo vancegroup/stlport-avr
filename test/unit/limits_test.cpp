@@ -12,49 +12,22 @@
  *
  */
 
+#include "limits_test.h"
+
 #include <limits>
 //#include <sstream>
-
-#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class LimitTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(LimitTest);
-#  if defined (__BORLANDC__)
-  /* Ignore FPU exceptions, set FPU precision to 64 bits */
-  unsigned int _float_control_word = _control87(0, 0);
-  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
-#  endif
-  CPPUNIT_TEST(test);
-  CPPUNIT_TEST(qnan_test);
-#  if defined (__BORLANDC__)
-  /* Reset floating point control word */
-  _clear87();
-  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
-#  endif
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void test();
-  void qnan_test();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(LimitTest);
-
 #if defined (STLPORT) && defined (_STLP_STATIC_CONST_INIT_BUG)
-#  define CHECK_COND(X) if (!(X))  { CPPUNIT_MESSAGE(#X); return false; }
+#  define CHECK_COND(X) if (!(X))  { EXAM_MESSAGE(#X); return false; }
 #else
 //This version force to have external linkage on static constant which might
 //reveal that _STLP_NO_STATIC_CONST_DEFINITION should be commented.
 bool check_cond(const bool& cond) { return cond; }
-#  define CHECK_COND(X) if (!check_cond(X)) { CPPUNIT_MESSAGE(#X); return false; }
+#  define CHECK_COND(X) if (!check_cond(X)) { EXAM_MESSAGE(#X); return false; }
 #endif
 
 bool valid_sign_info(bool, bool)
@@ -146,7 +119,7 @@ bool test_float_limits(const _Tp &) {
     tmp /= 2;
     if (tmp > 0 && tmp < lim::min()) {
       // has_denorm could be denorm_present
-      CPPUNIT_MESSAGE("It looks like your compiler/platform supports denormalized floating point representation.");
+      EXAM_MESSAGE("It looks like your compiler/platform supports denormalized floating point representation.");
     }
   }
   else if (lim::has_denorm == denorm_present) {
@@ -161,7 +134,7 @@ bool test_float_limits(const _Tp &) {
       CHECK_COND(tmp >= lim::denorm_min() || tmp == (_Tp)0);
       //ostringstream str;
       //str << "denorm_min = " << lim::denorm_min() << ", tmp = " << tmp;
-      //CPPUNIT_MESSAGE(str.str().c_str());
+      //EXAM_MESSAGE(str.str().c_str());
     }
   }
 
@@ -180,10 +153,10 @@ bool test_float_limits(const _Tp &) {
     /*
     ostringstream str;
     str << "lim::max() = " << lim::max() << ", val = " << val << ", infinity = " << infinity;
-    CPPUNIT_MESSAGE( str.str().c_str() );
+    EXAM_MESSAGE( str.str().c_str() );
     str.str(string());
     str << "sizeof(_Tp) = " << sizeof(_Tp);
-    CPPUNIT_MESSAGE( str.str().c_str() );
+    EXAM_MESSAGE( str.str().c_str() );
     if (sizeof(_Tp) == 4) {
       str.str(string());
       str << "val in hexa: " << showbase << hex << *((const unsigned int*)&val);
@@ -209,13 +182,13 @@ bool test_float_limits(const _Tp &) {
         str << showbase << hex << setw(4) << setfill('0') << *((const unsigned short*)&infinity + i);
       }
     }
-    CPPUNIT_MESSAGE( str.str().c_str() );
+    EXAM_MESSAGE( str.str().c_str() );
     str.str(string());
     str << dec;
     str << "lim::digits = " << lim::digits << ", lim::digits10 = " << lim::digits10 << endl;
     str << "lim::min_exponent = " << lim::min_exponent << ", lim::min_exponent10 = " << lim::min_exponent10 << endl;
     str << "lim::max_exponent = " << lim::max_exponent << ", lim::max_exponent10 = " << lim::max_exponent10 << endl;
-    CPPUNIT_MESSAGE( str.str().c_str() );
+    EXAM_MESSAGE( str.str().c_str() );
     */
 
     CHECK_COND(infinity == infinity);
@@ -238,15 +211,15 @@ bool test_qnan(const _Tp &) {
     //if (sizeof(_Tp) == 4) {
     //  ostringstream str;
     //  str << "qnan " << qnan << ", in hexa: " << showbase << hex << *((unsigned int*)&qnan);
-    //  CPPUNIT_MESSAGE( str.str().c_str() );
+    //  EXAM_MESSAGE( str.str().c_str() );
     //  str.str("");
     //  float val = generate_nan(0.0f);
     //  str << "val " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
-    //  CPPUNIT_MESSAGE( str.str().c_str() );
+    //  EXAM_MESSAGE( str.str().c_str() );
     //  str.str("");
     //  val = -qnan;
     //  str << "-qnan " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
-    //  CPPUNIT_MESSAGE( str.str().c_str() );
+    //  EXAM_MESSAGE( str.str().c_str() );
     //}
     /* NaNs shall always compare "false" when compared for equality
     * If one of these fail, your compiler may be optimizing incorrectly,
@@ -271,47 +244,76 @@ bool test_qnan(const _Tp &) {
 class ArbitraryType
 {};
 
-void LimitTest::test() {
-  CPPUNIT_CHECK(test_integral_limits_base(bool()));
-  CPPUNIT_CHECK(test_integral_limits(char()));
-  typedef signed char signed_char;
-  CPPUNIT_CHECK(test_signed_integral_limits(signed_char()));
-  typedef unsigned char unsigned_char;
-  CPPUNIT_CHECK(test_unsigned_integral_limits(unsigned_char()));
-#  if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT)
-  CPPUNIT_CHECK(test_integral_limits(wchar_t()));
+int EXAM_IMPL(limits_test::limits) {
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
 #  endif
-  CPPUNIT_CHECK(test_signed_integral_limits(short()));
+
+  EXAM_CHECK(test_integral_limits_base(bool()));
+  EXAM_CHECK(test_integral_limits(char()));
+  typedef signed char signed_char;
+  EXAM_CHECK(test_signed_integral_limits(signed_char()));
+  typedef unsigned char unsigned_char;
+  EXAM_CHECK(test_unsigned_integral_limits(unsigned_char()));
+#  if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT)
+  EXAM_CHECK(test_integral_limits(wchar_t()));
+#  endif
+  EXAM_CHECK(test_signed_integral_limits(short()));
   typedef unsigned short unsigned_short;
-  CPPUNIT_CHECK(test_unsigned_integral_limits(unsigned_short()));
-  CPPUNIT_CHECK(test_signed_integral_limits(int()));
+  EXAM_CHECK(test_unsigned_integral_limits(unsigned_short()));
+  EXAM_CHECK(test_signed_integral_limits(int()));
   typedef unsigned int unsigned_int;
-  CPPUNIT_CHECK(test_unsigned_integral_limits(unsigned_int()));
-  CPPUNIT_CHECK(test_signed_integral_limits(long()));
+  EXAM_CHECK(test_unsigned_integral_limits(unsigned_int()));
+  EXAM_CHECK(test_signed_integral_limits(long()));
   typedef unsigned long unsigned_long;
-  CPPUNIT_CHECK(test_unsigned_integral_limits(unsigned_long()));
+  EXAM_CHECK(test_unsigned_integral_limits(unsigned_long()));
 #  if defined (_STLP_LONG_LONG)
   typedef _STLP_LONG_LONG long_long;
-  CPPUNIT_CHECK(test_signed_integral_limits(long_long()));
+  EXAM_CHECK(test_signed_integral_limits(long_long()));
   typedef unsigned _STLP_LONG_LONG unsigned_long_long;
-  CPPUNIT_CHECK(test_unsigned_integral_limits(unsigned_long_long()));
+  EXAM_CHECK(test_unsigned_integral_limits(unsigned_long_long()));
 #endif
 
-  CPPUNIT_CHECK(test_float_limits(float()));
-  CPPUNIT_CHECK(test_float_limits(double()));
+  EXAM_CHECK(test_float_limits(float()));
+  EXAM_CHECK(test_float_limits(double()));
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
   typedef long double long_double;
-  CPPUNIT_CHECK(test_float_limits(long_double()));
+  EXAM_CHECK(test_float_limits(long_double()));
 #  endif
 
-  CPPUNIT_ASSERT( !numeric_limits<ArbitraryType>::is_specialized );
+  EXAM_CHECK( !numeric_limits<ArbitraryType>::is_specialized );
+
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+  return EXAM_RESULT;
 }
 
-void LimitTest::qnan_test() {
-  CPPUNIT_CHECK(test_qnan(float()));
-  CPPUNIT_CHECK(test_qnan(double()));
+int EXAM_IMPL(limits_test::qnan_test)
+{
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+  EXAM_CHECK(test_qnan(float()));
+  EXAM_CHECK(test_qnan(double()));
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
   typedef long double long_double;
-  CPPUNIT_CHECK(test_qnan(long_double()));
+  EXAM_CHECK(test_qnan(long_double()));
 #  endif
+
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+  return EXAM_RESULT;
 }
