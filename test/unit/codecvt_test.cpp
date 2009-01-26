@@ -1,3 +1,5 @@
+#include "codecvt_test.h"
+
 #include <string>
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
@@ -6,38 +8,9 @@
 #  include <stdexcept>
 #  include <cstdio> // for WEOF
 
-#  include "cppunit/cppunit_proxy.h"
-
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
-
-//
-// TestCase class
-//
-class CodecvtTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(CodecvtTest);
-  CPPUNIT_TEST(variable_encoding);
-  CPPUNIT_STOP_IGNORE;
-#if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
-  CPPUNIT_IGNORE;
 #endif
-  CPPUNIT_TEST(in_out_test);
-  CPPUNIT_TEST(length_test);
-  CPPUNIT_TEST(imbue_while_reading);
-  CPPUNIT_TEST(special_encodings);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void variable_encoding();
-  void in_out_test();
-  void length_test();
-  void imbue_while_reading();
-  void special_encodings();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(CodecvtTest);
 
 #if defined (STLPORT)
 #  define __NO_THROW _STLP_NOTHROW
@@ -280,34 +253,34 @@ locale::id& _GetFacetId(const generator_codecvt*)
 { return generator_codecvt::id; }
 #endif
 
-//
-// tests implementation
-//
-void CodecvtTest::variable_encoding()
+#endif // !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+int EXAM_IMPL(codecvt_test::variable_encoding)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   //We first generate the file used for test:
   const char* fileName = "test_file.txt";
   {
     ofstream ostr(fileName);
     //Maybe we simply do not have write access to repository
-    CPPUNIT_ASSERT( ostr.good() );
+    EXAM_CHECK( ostr.good() );
     for (int i = 0; i < 2048; ++i) {
       ostr << "0123456789";
     }
-    CPPUNIT_ASSERT( ostr.good() );
+    EXAM_CHECK( ostr.good() );
   }
 
   {
     ifstream istr(fileName);
-    CPPUNIT_ASSERT( istr.good() );
-    CPPUNIT_ASSERT( !istr.eof() );
+    EXAM_CHECK( istr.good() );
+    EXAM_CHECK( !istr.eof() );
 
     eater_codecvt codec(1);
     locale loc(locale::classic(), &codec);
 
     istr.imbue(loc);
-    CPPUNIT_ASSERT( istr.good() );
-    CPPUNIT_ASSERT( (int)istr.tellg() == 0 );
+    EXAM_CHECK( istr.good() );
+    EXAM_CHECK( (int)istr.tellg() == 0 );
 
     int theoricalPos = 0;
     do {
@@ -320,11 +293,11 @@ void CodecvtTest::variable_encoding()
         ++theoricalPos;
       }
 
-      CPPUNIT_ASSERT( (int)istr.tellg() == theoricalPos );
+      EXAM_CHECK( (int)istr.tellg() == theoricalPos );
     }
     while (!istr.eof());
 
-    CPPUNIT_ASSERT( istr.eof() );
+    EXAM_CHECK( istr.eof() );
   }
 
 #  if 0
@@ -333,15 +306,15 @@ void CodecvtTest::variable_encoding()
    * is not a valid theorical example of codecvt implementation. */
   {
     ifstream istr(fileName);
-    CPPUNIT_ASSERT( istr.good() );
-    CPPUNIT_ASSERT( !istr.eof() );
+    EXAM_CHECK( istr.good() );
+    EXAM_CHECK( !istr.eof() );
 
     generator_codecvt codec(1);
     locale loc(locale::classic(), &codec);
 
     istr.imbue(loc);
-    CPPUNIT_ASSERT( istr.good() );
-    CPPUNIT_ASSERT( (int)istr.tellg() == 0 );
+    EXAM_CHECK( istr.good() );
+    EXAM_CHECK( (int)istr.tellg() == 0 );
 
     int theoricalPos = 0;
     int theoricalTellg;
@@ -364,19 +337,25 @@ void CodecvtTest::variable_encoding()
       }
 
       if ((int)istr.tellg() != theoricalTellg) {
-        CPPUNIT_ASSERT( (int)istr.tellg() == theoricalTellg );
+        EXAM_CHECK( (int)istr.tellg() == theoricalTellg );
       }
     }
     while (!istr.eof());
 
-    CPPUNIT_ASSERT( istr.eof() );
+    EXAM_CHECK( istr.eof() );
   }
 #  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void CodecvtTest::in_out_test()
+int EXAM_IMPL(codecvt_test::in_out_test)
 {
-#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS)) \
+                       || !defined (_STLP_USE_NO_IOSTREAMS)
   try {
     locale loc("");
 
@@ -392,10 +371,10 @@ void CodecvtTest::in_out_test()
         wchar_t *next_to;
         cdecvt_type::result res = cdect.in(state, from.data(), from.data() + from.size(), next_from,
                                            to, to + sizeof(to) / sizeof(wchar_t), next_to);
-        CPPUNIT_ASSERT( res == cdecvt_type::ok );
-        CPPUNIT_ASSERT( next_from == from.data() + 1 );
-        CPPUNIT_ASSERT( next_to == &to[0] + 1 );
-        CPPUNIT_ASSERT( to[0] == L'a');
+        EXAM_CHECK( res == cdecvt_type::ok );
+        EXAM_CHECK( next_from == from.data() + 1 );
+        EXAM_CHECK( next_to == &to[0] + 1 );
+        EXAM_CHECK( to[0] == L'a');
       }
       {
         cdecvt_type::state_type state;
@@ -406,24 +385,28 @@ void CodecvtTest::in_out_test()
         char *next_to;
         cdecvt_type::result res = cdect.out(state, from.data(), from.data() + from.size(), next_from,
                                             to, to + sizeof(to) / sizeof(char), next_to);
-        CPPUNIT_ASSERT( res == cdecvt_type::ok );
-        CPPUNIT_ASSERT( next_from == from.data() + 1 );
-        CPPUNIT_ASSERT( next_to == &to[0] + 1 );
-        CPPUNIT_ASSERT( to[0] == 'a');
+        EXAM_CHECK( res == cdecvt_type::ok );
+        EXAM_CHECK( next_from == from.data() + 1 );
+        EXAM_CHECK( next_to == &to[0] + 1 );
+        EXAM_CHECK( to[0] == 'a');
       }
     }
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_FAIL;
+    EXAM_ERROR("Exception appeared");
   }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void CodecvtTest::length_test()
+int EXAM_IMPL(codecvt_test::length_test)
 {
-#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS)) \
+                       || !defined (_STLP_USE_NO_IOSTREAMS)
   try {
     locale loc("");
 
@@ -435,16 +418,19 @@ void CodecvtTest::length_test()
         memset(&state, 0, sizeof(cdecvt_type::state_type));
         string from("abcdef");
         int res = cdect.length(state, from.data(), from.data() + from.size(), from.size());
-        CPPUNIT_ASSERT( (size_t)res == from.size() );
+        EXAM_CHECK( (size_t)res == from.size() );
       }
     }
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_FAIL;
+    EXAM_ERROR("Exception appeared");
   }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
 #if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
@@ -476,9 +462,10 @@ protected:
 };
 #endif
 
-void CodecvtTest::imbue_while_reading()
+int EXAM_IMPL(codecvt_test::imbue_while_reading)
 {
-#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS)) \
+                       || !defined (_STLP_USE_NO_IOSTREAMS)
   {
     wofstream ofs( "test.txt" );
     const wchar_t buf[] = L" ";
@@ -495,13 +482,17 @@ void CodecvtTest::imbue_while_reading()
   ifs.imbue( locale() );
   ifs.ignore(4096);
   int ch = ifs.get();
-  CPPUNIT_CHECK( ch != (int)WEOF );
+  EXAM_CHECK( ch != (int)WEOF );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void CodecvtTest::special_encodings()
+int EXAM_IMPL(codecvt_test::special_encodings)
 {
-#if !defined (STLPORT) || (!defined (_STLP_NO_WCHAR_T) && defined (_STLP_USE_EXCEPTIONS))
+#if !defined (STLPORT) || (!defined (_STLP_NO_WCHAR_T) && defined (_STLP_USE_EXCEPTIONS)) \
+                       || !defined (_STLP_USE_NO_IOSTREAMS)
   {
     locale loc(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>("C"));
     codecvt<wchar_t, char, mbstate_t> const& cvt = use_facet<codecvt<wchar_t, char, mbstate_t> >(loc);
@@ -511,11 +502,11 @@ void CodecvtTest::special_encodings()
     const char *from_next;
     wchar_t wc;
     wchar_t *to_next;
-    CPPUNIT_ASSERT( cvt.in(state, &c, &c + 1, from_next, &wc, &wc, to_next) == codecvt_base::ok );
-    CPPUNIT_ASSERT( to_next == &wc );
-    CPPUNIT_ASSERT( cvt.in(state, &c, &c + 1, from_next, &wc, &wc + 1, to_next) == codecvt_base::ok );
-    CPPUNIT_ASSERT( wc == L'0' );
-    CPPUNIT_ASSERT( to_next == &wc + 1 );
+    EXAM_CHECK( cvt.in(state, &c, &c + 1, from_next, &wc, &wc, to_next) == codecvt_base::ok );
+    EXAM_CHECK( to_next == &wc );
+    EXAM_CHECK( cvt.in(state, &c, &c + 1, from_next, &wc, &wc + 1, to_next) == codecvt_base::ok );
+    EXAM_CHECK( wc == L'0' );
+    EXAM_CHECK( to_next == &wc + 1 );
   }
   try
   {
@@ -532,14 +523,14 @@ void CodecvtTest::special_encodings()
       wchar_t wbuf[4096];
       // Check we will have enough room for the generated wide string generated from the whole char buffer:
       int len = cvt.length(state, cp936_str.data(), cp936_str.data() + cp936_str.size(), sizeof(wbuf) / sizeof(wchar_t));
-      CPPUNIT_ASSERT( cp936_str.size() == (size_t)len );
+      EXAM_CHECK( cp936_str.size() == (size_t)len );
 
       const char *from_next;
       wchar_t *to_next;
       res = cvt.in(state, cp936_str.data(), cp936_str.data() + cp936_str.size(), from_next,
                           wbuf, wbuf + sizeof(wbuf) / sizeof(wchar_t), to_next);
-      CPPUNIT_ASSERT( res == codecvt_base::ok );
-      CPPUNIT_ASSERT( from_next == cp936_str.data() + cp936_str.size() );
+      EXAM_CHECK( res == codecvt_base::ok );
+      EXAM_CHECK( from_next == cp936_str.data() + cp936_str.size() );
       cp936_wstr.assign(wbuf, to_next);
     }
 
@@ -549,13 +540,13 @@ void CodecvtTest::special_encodings()
       char *to_next;
       res = cvt.out(state, cp936_wstr.data(), cp936_wstr.data() + cp936_wstr.size(), from_next,
                            buf, buf + sizeof(buf), to_next);
-      CPPUNIT_ASSERT( res == codecvt_base::ok );
-      CPPUNIT_CHECK( string(buf, to_next) == cp936_str );
+      EXAM_CHECK( res == codecvt_base::ok );
+      EXAM_CHECK( string(buf, to_next) == cp936_str );
     }
   }
   catch (const runtime_error&)
   {
-    CPPUNIT_MESSAGE("Not enough platform localization support to check 936 code page encoding.");
+    EXAM_MESSAGE("Not enough platform localization support to check 936 code page encoding.");
   }
   try
   {
@@ -572,14 +563,14 @@ void CodecvtTest::special_encodings()
       wchar_t wbuf[4096];
       // Check we will have enough room for the wide string generated from the whole char buffer:
       int len = cvt.length(state, utf8_str.data(), utf8_str.data() + utf8_str.size(), sizeof(wbuf) / sizeof(wchar_t));
-      CPPUNIT_ASSERT( utf8_str.size() == (size_t)len );
+      EXAM_CHECK( utf8_str.size() == (size_t)len );
 
       const char *from_next;
       wchar_t *to_next;
       res = cvt.in(state, utf8_str.data(), utf8_str.data() + utf8_str.size(), from_next,
                           wbuf, wbuf + sizeof(wbuf) / sizeof(wchar_t), to_next);
-      CPPUNIT_ASSERT( res == codecvt_base::ok );
-      CPPUNIT_ASSERT( from_next == utf8_str.data() + utf8_str.size() );
+      EXAM_CHECK( res == codecvt_base::ok );
+      EXAM_CHECK( from_next == utf8_str.data() + utf8_str.size() );
       utf8_wstr.assign(wbuf, to_next);
 
       // Try to read one char after the other:
@@ -597,7 +588,7 @@ void CodecvtTest::special_encodings()
             // reset length:
             from = from_next;
             length = 1;
-            CPPUNIT_ASSERT( wc == utf8_wstr[windex++] );
+            EXAM_CHECK( wc == utf8_wstr[windex++] );
             wc = 0;
             break;
           case codecvt_base::partial:
@@ -611,11 +602,11 @@ void CodecvtTest::special_encodings()
             continue;
           case codecvt_base::error:
           case codecvt_base::noconv:
-            CPPUNIT_FAIL;
+            EXAM_ERROR("codecvt_base error");
             //break;
         }
       }
-      CPPUNIT_ASSERT( windex == utf8_wstr.size() );
+      EXAM_CHECK( windex == utf8_wstr.size() );
     }
 
     {
@@ -624,8 +615,8 @@ void CodecvtTest::special_encodings()
       char *to_next;
       res = cvt.out(state, utf8_wstr.data(), utf8_wstr.data() + utf8_wstr.size(), from_next,
                            buf, buf + sizeof(buf), to_next);
-      CPPUNIT_ASSERT( res == codecvt_base::ok );
-      CPPUNIT_CHECK( string(buf, to_next) == utf8_str );
+      EXAM_CHECK( res == codecvt_base::ok );
+      EXAM_CHECK( string(buf, to_next) == utf8_str );
     }
 
     {
@@ -636,14 +627,15 @@ void CodecvtTest::special_encodings()
       wchar_t *to_next;
       res = cvt.in(state, bad_utf8_str.data(), bad_utf8_str.data() + bad_utf8_str.size(), from_next,
                           &wc, &wc + 1, to_next);
-      CPPUNIT_ASSERT( res == codecvt_base::error );
+      EXAM_CHECK( res == codecvt_base::error );
     }
   }
   catch (const runtime_error&)
   {
-    CPPUNIT_MESSAGE("Not enough platform localization support to check UTF8 encoding.");
+    EXAM_MESSAGE("Not enough platform localization support to check UTF8 encoding.");
   }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
-
-#endif

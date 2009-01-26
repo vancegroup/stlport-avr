@@ -1,85 +1,79 @@
+#include "reference_wrapper_test.h"
+
 #include <functional>
 
 #if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
-
-#include <typeinfo>
-#include "cppunit/cppunit_proxy.h"
+#  include <typeinfo>
+#endif
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-class RefWrapperTest :
-    public CPPUNIT_NS::TestCase
+int EXAM_IMPL(ref_wrapper_test::ref)
 {
-    CPPUNIT_TEST_SUITE(RefWrapperTest);
-    CPPUNIT_TEST(ref);
-    CPPUNIT_TEST(cref);
-    CPPUNIT_TEST_SUITE_END();
-
-  protected:
-    void ref();
-    void cref();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(RefWrapperTest);
-
-void RefWrapperTest::ref()
-{
+#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
   typedef std::tr1::reference_wrapper<int> rr_type;
 
-  CPPUNIT_CHECK( (::boost::is_convertible<rr_type, int&>::value) );
-  CPPUNIT_CHECK( (::boost::is_same<rr_type::type, int>::value) );
+  EXAM_CHECK( (::boost::is_convertible<rr_type, int&>::value) );
+  EXAM_CHECK( (::boost::is_same<rr_type::type, int>::value) );
 
   int i = 1;
   int j = 2;
 
   rr_type r1 = std::tr1::ref(i);
 
-  CPPUNIT_CHECK( r1.get() == 1 );
+  EXAM_CHECK( r1.get() == 1 );
 
   r1 = std::tr1::ref(j);
 
-  CPPUNIT_CHECK( r1.get() == 2 );
+  EXAM_CHECK( r1.get() == 2 );
 
   i = 3;
 
-  CPPUNIT_CHECK( r1.get() == 2 );
+  EXAM_CHECK( r1.get() == 2 );
 
   j = 4;
 
-  CPPUNIT_CHECK( r1.get() == 4 );
+  EXAM_CHECK( r1.get() == 4 );
 
   r1.get() = 5;
 
-  CPPUNIT_CHECK( j == 5 );
+  EXAM_CHECK( j == 5 );
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void RefWrapperTest::cref()
+int EXAM_IMPL(ref_wrapper_test::cref)
 {
+#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
   typedef std::tr1::reference_wrapper<const int> crr_type;
 
-  CPPUNIT_CHECK( (::boost::is_convertible<crr_type, const int&>::value) );
-  CPPUNIT_CHECK( (::boost::is_same<crr_type::type, const int>::value) );
+  EXAM_CHECK( (::boost::is_convertible<crr_type, const int&>::value) );
+  EXAM_CHECK( (::boost::is_same<crr_type::type, const int>::value) );
 
   int i = 1;
   int j = 2;
 
   crr_type r1 = std::tr1::cref(i);
 
-  CPPUNIT_CHECK( r1.get() == 1 );
+  EXAM_CHECK( r1.get() == 1 );
 
   r1 = std::tr1::cref(j);
 
-  CPPUNIT_CHECK( r1.get() == 2 );
+  EXAM_CHECK( r1.get() == 2 );
 
   i = 3;
 
-  CPPUNIT_CHECK( r1.get() == 2 );
+  EXAM_CHECK( r1.get() == 2 );
 
   j = 4;
 
-  CPPUNIT_CHECK( r1.get() == 4 );
+  EXAM_CHECK( r1.get() == 4 );
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
-
-#endif /* !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT */

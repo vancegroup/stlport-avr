@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/23 02:15:27 ptr>
+// -*- C++ -*- Time-stamp: <09/01/26 23:30:10 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -52,6 +52,12 @@
 #include "bitset_test.h"
 #include "cmath_test.h"
 #include "config_test.h"
+#include "exception_test.h"
+#include "num_put_get_test.h"
+#include "codecvt_test.h"
+#include "shared_ptr_test.h"
+#include "reference_wrapper_test.h"
+#include "errno_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -766,6 +772,43 @@ int main( int argc, const char** argv )
   t.add( &config_test::endianess, conf_test, "endianess" );
   t.add( &config_test::template_function_partial_ordering, conf_test, "template_function_partial_ordering" );
   t.add( &config_test::new_throw_bad_alloc, conf_test, "new_throw_bad_alloc" );
+
+  exception_test exc_test;
+
+  t.add( &exception_test::what, exc_test, "exception_test::what" );
+  t.add( &exception_test::unexpected_except, exc_test, "exception_test::unexpected_except" );
+  t.add( &exception_test::uncaught_except, exc_test, "exception_test::uncaught_except" );
+  t.add( &exception_test::exception_emission, exc_test, "exception_test::exception_emission" );
+
+  errno_test err_test;
+  t.add( &errno_test::check, err_test, "errno_test::check" );
+
+  num_put_get_test nmg_test;
+
+  t.add( &num_put_get_test::num_put_float, nmg_test, "num_put_float" );
+  t.add( &num_put_get_test::num_put_integer, nmg_test, "num_put_integer" );
+  t.add( &num_put_get_test::num_get_float, nmg_test, "num_get_float" );
+  t.add( &num_put_get_test::num_get_integer, nmg_test, "num_get_integer" );
+  t.add( &num_put_get_test::inhex, nmg_test, "inhex" );
+  t.add( &num_put_get_test::pointer, nmg_test, "pointer" );
+  t.add( &num_put_get_test::fix_float_long, nmg_test, "fix_float_long" );
+  t.add( &num_put_get_test::custom_numpunct, nmg_test, "custom_numpunct" );
+
+  codecvt_test cvt_test;
+
+  t.add( &codecvt_test::variable_encoding, cvt_test, "variable_encoding" );
+  t.add( &codecvt_test::in_out_test, cvt_test, "in_out_test" );
+  t.add( &codecvt_test::length_test, cvt_test, "length_test" );
+  t.add( &codecvt_test::imbue_while_reading, cvt_test, "imbue_while_reading" );
+  t.add( &codecvt_test::special_encodings, cvt_test, "special_encodings" );
+
+  shared_ptr_test shp_test;
+  t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );
+
+  ref_wrapper_test ref_test;
+
+  t.add( &ref_wrapper_test::ref, ref_test, "ref" );
+  t.add( &ref_wrapper_test::cref, ref_test, "cref" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );

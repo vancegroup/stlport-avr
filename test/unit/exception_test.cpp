@@ -1,53 +1,8 @@
+#include "exception_test.h"
+
 #include <exception>
 #include <stdexcept>
 #include <string>
-
-#include "cppunit/cppunit_proxy.h"
-
-#if defined (STLPORT) && defined (_STLP_USE_NAMESPACES)
-/*
- * This test case purpose is to check that the exception handling
- * functions are correctly imported to the STLport namespace only
- * if they have a right behavior.
- * Otherwise they are not imported to report the problem as a compile
- * time error.
- */
-
-//
-// TestCase class
-//
-class ExceptionTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(ExceptionTest);
-#if defined (STLPORT) && !defined (_STLP_USE_EXCEPTIONS)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(what);
-#if defined (STLPORT) && defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(unexpected_except);
-#if defined (STLPORT) && defined (_STLP_USE_EXCEPTIONS)
-  CPPUNIT_STOP_IGNORE;
-#endif
-#if defined (STLPORT) && defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(uncaught_except);
-#if defined (STLPORT) && defined (_STLP_USE_EXCEPTIONS)
-  CPPUNIT_STOP_IGNORE;
-#endif
-  CPPUNIT_TEST(exception_emission);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void what();
-  void unexpected_except();
-  void uncaught_except();
-  void exception_emission();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(ExceptionTest);
 
 #if !defined (STLPORT) || !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
 bool g_unexpected_called = false;
@@ -66,17 +21,22 @@ void throw_except_func() throw(std::exception) {
 }
 #endif
 
-void ExceptionTest::what()
+int EXAM_IMPL(exception_test::what)
 {
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
     throw std::runtime_error( std::string( "message" ) );
   }
   catch ( std::runtime_error& err ) {
-    CPPUNIT_CHECK( strcmp( err.what(), "message" ) == 0 );
+    EXAM_CHECK( strcmp( err.what(), "message" ) == 0 );
   }
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void ExceptionTest::unexpected_except()
+int EXAM_IMPL(exception_test::unexpected_except)
 {
 #if !defined (STLPORT) || !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
   std::unexpected_handler hdl = &unexpected_hdl;
@@ -86,13 +46,16 @@ void ExceptionTest::unexpected_except()
     throw_except_func();
   }
   catch (std::bad_exception const&) {
-    CPPUNIT_ASSERT( true );
+    EXAM_CHECK( true );
   }
   catch (special_except) {
-    CPPUNIT_ASSERT( false );
+    EXAM_CHECK( false );
   }
-  CPPUNIT_ASSERT( g_unexpected_called );
+  EXAM_CHECK( g_unexpected_called );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
 #if !defined (STLPORT) || !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
@@ -109,15 +72,15 @@ struct UncaughtClassTest
 };
 #endif
 
-void ExceptionTest::uncaught_except()
+int EXAM_IMPL(exception_test::uncaught_except)
 {
 #if !defined (STLPORT) || !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
   int uncaught_result = -1;
   {
     UncaughtClassTest test_inst(uncaught_result);
-    CPPUNIT_ASSERT( uncaught_result == -1 );
+    EXAM_CHECK( uncaught_result == -1 );
   }
-  CPPUNIT_ASSERT( uncaught_result == 0 );
+  EXAM_CHECK( uncaught_result == 0 );
 
   {
     try {
@@ -128,11 +91,14 @@ void ExceptionTest::uncaught_except()
     catch (...) {
     }
   }
-  CPPUNIT_ASSERT( uncaught_result == 1 );
+  EXAM_CHECK( uncaught_result == 1 );
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
 
-void ExceptionTest::exception_emission()
+int EXAM_IMPL(exception_test::exception_emission)
 {
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   std::string foo = "foo";
@@ -140,26 +106,26 @@ void ExceptionTest::exception_emission()
     throw std::runtime_error(foo);
   }
   catch (std::runtime_error const& e) {
-    CPPUNIT_ASSERT( foo == e.what() );
+    EXAM_CHECK( foo == e.what() );
     std::runtime_error clone("");
     clone = e;
-    CPPUNIT_ASSERT(foo == clone.what() );
+    EXAM_CHECK(foo == clone.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    EXAM_CHECK( false );
   }
 
   try {
     throw std::runtime_error(foo);
   }
   catch (std::runtime_error e) {
-    CPPUNIT_ASSERT( foo == e.what() );
+    EXAM_CHECK( foo == e.what() );
     std::runtime_error clone("");
     clone = e;
-    CPPUNIT_ASSERT(foo == clone.what() );
+    EXAM_CHECK(foo == clone.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    EXAM_CHECK( false );
   }
 
   std::string msg(512, 'a');
@@ -167,27 +133,29 @@ void ExceptionTest::exception_emission()
     throw std::runtime_error(msg);
   }
   catch (std::runtime_error const& e) {
-    CPPUNIT_ASSERT(msg == e.what() );
+    EXAM_CHECK(msg == e.what() );
     std::runtime_error clone("");
     clone = e;
-    CPPUNIT_ASSERT(msg == clone.what() );
+    EXAM_CHECK(msg == clone.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    EXAM_CHECK( false );
   }
 
   try {
     throw std::runtime_error(msg);
   }
   catch (std::runtime_error e) {
-    CPPUNIT_ASSERT(msg == e.what() );
+    EXAM_CHECK(msg == e.what() );
     std::runtime_error clone("");
     clone = e;
-    CPPUNIT_ASSERT(msg == clone.what() );
+    EXAM_CHECK(msg == clone.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    EXAM_CHECK( false );
   }
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
 }
-#endif

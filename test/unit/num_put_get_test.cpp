@@ -1,3 +1,5 @@
+#include "num_put_get_test.h"
+
 #include <limits>
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
@@ -9,491 +11,456 @@
 #  include <iostream>
 #  include <ieee754.h>
 */
-
 #  include "complete_digits.h"
-#  include "cppunit/cppunit_proxy.h"
+#endif
+
 
 #  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #  endif
 
-//
-// TestCase class
-//
-class NumPutGetTest : public CPPUNIT_NS::TestCase
+static bool check_float(float val, float ref)
 {
-  CPPUNIT_TEST_SUITE(NumPutGetTest);
-#  if defined (__BORLANDC__)
-  /* Ignore FPU exceptions, set FPU precision to 64 bits */
-  unsigned int _float_control_word = _control87(0, 0);
-  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
-#  endif
-  CPPUNIT_TEST(num_put_float);
-  CPPUNIT_TEST(num_put_integer);
-  CPPUNIT_TEST(num_get_float);
-  CPPUNIT_TEST(num_get_integer);
-  CPPUNIT_TEST(inhex);
-  CPPUNIT_TEST(pointer);
-  CPPUNIT_TEST(fix_float_long);
-  CPPUNIT_TEST(custom_numpunct);
-#  if defined (__BORLANDC__)
-  /* Reset floating point control word */
-  _clear87();
-  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
-#  endif
-  CPPUNIT_TEST_SUITE_END();
+  float epsilon = numeric_limits<float>::epsilon();
+  return val <= ref + epsilon && val >= ref - epsilon;
+}
 
-private:
-  void num_put_float();
-  void num_put_integer();
-  void num_get_float();
-  void num_get_integer();
-  void inhex();
-  void pointer();
-  void fix_float_long();
-  void custom_numpunct();
+static bool check_double(double val, double ref)
+{
+  double epsilon = numeric_limits<double>::epsilon();
+  return val <= ref + epsilon && val >= ref - epsilon;
+}
 
-  static bool check_float(float val, float ref)
+static string reset_stream(ostringstream &ostr)
+{
+  string tmp = ostr.str();
+  ostr.str("");
+  return tmp;
+}
+
+template <class F>
+void check_get_float( F v )
+{
+  F in_val_d = v;
+  typedef numeric_limits<F> limits;
   {
-    float epsilon = numeric_limits<float>::epsilon();
-    return val <= ref + epsilon && val >= ref - epsilon;
+    stringstream str;
+
+    str << "1E+" << limits::max_exponent10;
+
+    str >> in_val_d;
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d != limits::infinity() );
   }
-
-  static bool check_double(double val, double ref)
   {
-    double epsilon = numeric_limits<double>::epsilon();
-    return val <= ref + epsilon && val >= ref - epsilon;
+    stringstream str;
+
+    str << "-1E+" << limits::max_exponent10;
+
+    str >> in_val_d;
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d != -limits::infinity() );
   }
-
-  static string reset_stream(ostringstream &ostr)
   {
-    string tmp = ostr.str();
-    ostr.str("");
-    return tmp;
+    stringstream str;
+
+    str << "1E" << limits::min_exponent10;
+
+    str >> in_val_d;
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d != F(0.0) );
   }
-
-  template <class F>
-  void check_get_float( F v )
   {
-    F in_val_d = v;
-    typedef numeric_limits<F> limits;
-    {
-      stringstream str;
+    stringstream str;
 
-      str << "1E+" << limits::max_exponent10;
+    str << "1E+" << (limits::max_exponent10 + 1);
 
-      str >> in_val_d;
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d != limits::infinity() );
-    }
-    {
-      stringstream str;
+    str >> in_val_d;
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d == limits::infinity() );
+  }
+  {
+    stringstream str;
 
-      str << "-1E+" << limits::max_exponent10;
+    str << "-1E+" << (limits::max_exponent10 + 1);
 
-      str >> in_val_d;
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d != -limits::infinity() );
-    }
-    {
-      stringstream str;
+    str >> in_val_d;
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d == -limits::infinity() );
+  }
+  {
+    stringstream str;
 
-      str << "1E" << limits::min_exponent10;
+    str << "1E" << (limits::min_exponent10 - 1);
 
-      str >> in_val_d;
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d != F(0.0) );
-    }
-    {
-      stringstream str;
-
-      str << "1E+" << (limits::max_exponent10 + 1);
-
-      str >> in_val_d;
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d == limits::infinity() );
-    }
-    {
-      stringstream str;
-
-      str << "-1E+" << (limits::max_exponent10 + 1);
-
-      str >> in_val_d;
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d == -limits::infinity() );
-    }
-    {
-      stringstream str;
-
-      str << "1E" << (limits::min_exponent10 - 1);
-
-      str >> in_val_d;
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d >= F(0.0) && in_val_d <= limits::min() );
-    }
+    str >> in_val_d;
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d >= F(0.0) && in_val_d <= limits::min() );
+  }
 #if !defined (__MINGW32__)
-    {
-      stringstream str;
+  {
+    stringstream str;
 
-      str << limits::max();
+    str << limits::max();
 
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_CHECK( str.str() != "inf" );
-      CPPUNIT_CHECK( str.str() != "-inf" );
-      CPPUNIT_CHECK( str.str() != "nan" );
-      CPPUNIT_CHECK( str.str() != "-nan" );
-      //CPPUNIT_MESSAGE( str.str().c_str() );
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK( str.str() != "inf" );
+    EXAM_CHECK( str.str() != "-inf" );
+    EXAM_CHECK( str.str() != "nan" );
+    EXAM_CHECK( str.str() != "-nan" );
+    //EXAM_MESSAGE( str.str().c_str() );
 
-      //str.str("");
-      //str << limits::max_exponent10;
-      //CPPUNIT_MESSAGE( str.str().c_str() );
+    //str.str("");
+    //str << limits::max_exponent10;
+    //EXAM_MESSAGE( str.str().c_str() );
 
-      str >> in_val_d;
+    str >> in_val_d;
 
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d != limits::infinity() );
-    }
-    {
-      stringstream str;
-
-      str << fixed << limits::max();
-
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_CHECK( str.str() != "inf" );
-      CPPUNIT_CHECK( str.str() != "-inf" );
-      CPPUNIT_CHECK( str.str() != "nan" );
-      CPPUNIT_CHECK( str.str() != "-nan" );
-      //CPPUNIT_MESSAGE( str.str().c_str() );
-
-      //str.str("");
-      //str << limits::max_exponent10;
-      //CPPUNIT_MESSAGE( str.str().c_str() );
-
-      str >> in_val_d;
-
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d != limits::infinity() );
-    }
-    {
-      stringstream str;
-
-      str << scientific << setprecision(50) << limits::max();
-
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_CHECK( str.str() != "inf" );
-      CPPUNIT_CHECK( str.str() != "-inf" );
-      CPPUNIT_CHECK( str.str() != "nan" );
-      CPPUNIT_CHECK( str.str() != "-nan" );
-      //CPPUNIT_MESSAGE( str.str().c_str() );
-
-      //str.str("");
-      //str << limits::max_exponent10;
-      //CPPUNIT_MESSAGE( str.str().c_str() );
-
-      str >> in_val_d;
-
-      CPPUNIT_ASSERT(!str.fail());
-      CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_CHECK( in_val_d == in_val_d );
-      CPPUNIT_CHECK( in_val_d != limits::infinity() );
-    }
-#endif
-    {
-      stringstream str;
-
-      str << limits::infinity();
-
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( !limits::has_infinity || str.str() == "inf" );
-    }
-    {
-      stringstream str;
-
-      str << -limits::infinity();
-
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( !limits::has_infinity || str.str() == "-inf" );
-    }
-    {
-      stringstream str;
-
-      str << limits::quiet_NaN();
-
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( !limits::has_quiet_NaN || str.str() == "nan" );
-    }
-    {
-      stringstream str;
-
-      str << -limits::quiet_NaN();
-
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( !limits::has_quiet_NaN || str.str() == "-nan" );
-    }
-    {
-      stringstream str;
-
-      str << "0." << string(limits::max_exponent10, '0') << "1e" << (limits::max_exponent10 + 1);
-      CPPUNIT_ASSERT( !str.fail() );
-
-      str >> in_val_d;
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( str.eof() );
-      CPPUNIT_CHECK( in_val_d == 1 );
-    }
-    {
-      stringstream str;
-
-      str << "1" << string(-(limits::min_exponent10 - 1), '0') << "e" << (limits::min_exponent10 - 1);
-      CPPUNIT_ASSERT( !str.fail() );
-
-      str >> in_val_d;
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( str.eof() );
-      CPPUNIT_CHECK( in_val_d == 1 );
-    }
-#  if defined (_STLPORT_VERSION) && (_STLPORT_VERSION >= 0x530)
-    // The following tests are showing that simply changing stream
-    // precision lead to different result. Do not seems to be a real
-    // problem, simply rounding approximation but additional study should
-    // be done after 5.2 release.
-    {
-      stringstream str;
-      str << setprecision(limits::digits10 + 2) << limits::max();
-
-      CPPUNIT_MESSAGE(str.str().c_str());
-      CPPUNIT_ASSERT( !str.fail() );
-
-      F val;
-      str >> val;
-
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( limits::infinity() > val );
-    }
-    {
-      stringstream str;
-      str << setprecision(limits::digits10 + 1) << limits::max();
-
-      CPPUNIT_MESSAGE(str.str().c_str());
-      CPPUNIT_ASSERT( !str.fail() );
-
-      F val;
-      str >> val;
-
-      CPPUNIT_ASSERT( !str.fail() );
-      CPPUNIT_ASSERT( limits::infinity() > val );
-    }
-#  endif
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d != limits::infinity() );
   }
-};
+  {
+    stringstream str;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(NumPutGetTest);
+    str << fixed << limits::max();
+
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK( str.str() != "inf" );
+    EXAM_CHECK( str.str() != "-inf" );
+    EXAM_CHECK( str.str() != "nan" );
+    EXAM_CHECK( str.str() != "-nan" );
+    //EXAM_MESSAGE( str.str().c_str() );
+
+    //str.str("");
+    //str << limits::max_exponent10;
+    //EXAM_MESSAGE( str.str().c_str() );
+
+    str >> in_val_d;
+
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d != limits::infinity() );
+  }
+  {
+    stringstream str;
+
+    str << scientific << setprecision(50) << limits::max();
+
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK( str.str() != "inf" );
+    EXAM_CHECK( str.str() != "-inf" );
+    EXAM_CHECK( str.str() != "nan" );
+    EXAM_CHECK( str.str() != "-nan" );
+    //EXAM_MESSAGE( str.str().c_str() );
+
+    //str.str("");
+    //str << limits::max_exponent10;
+    //EXAM_MESSAGE( str.str().c_str() );
+
+    str >> in_val_d;
+
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( in_val_d == in_val_d );
+    EXAM_CHECK( in_val_d != limits::infinity() );
+  }
+#endif
+  {
+    stringstream str;
+
+    str << limits::infinity();
+
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( !limits::has_infinity || str.str() == "inf" );
+  }
+  {
+    stringstream str;
+
+    str << -limits::infinity();
+
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( !limits::has_infinity || str.str() == "-inf" );
+  }
+  {
+    stringstream str;
+
+    str << limits::quiet_NaN();
+
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( !limits::has_quiet_NaN || str.str() == "nan" );
+  }
+  {
+    stringstream str;
+
+    str << -limits::quiet_NaN();
+
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( !limits::has_quiet_NaN || str.str() == "-nan" );
+  }
+  {
+    stringstream str;
+
+    str << "0." << string(limits::max_exponent10, '0') << "1e" << (limits::max_exponent10 + 1);
+    EXAM_CHECK( !str.fail() );
+
+    str >> in_val_d;
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( str.eof() );
+    EXAM_CHECK( in_val_d == 1 );
+  }
+  {
+    stringstream str;
+
+    str << "1" << string(-(limits::min_exponent10 - 1), '0') << "e" << (limits::min_exponent10 - 1);
+    EXAM_CHECK( !str.fail() );
+
+    str >> in_val_d;
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( str.eof() );
+    EXAM_CHECK( in_val_d == 1 );
+  }
+#  if defined (_STLPORT_VERSION) && (_STLPORT_VERSION >= 0x530)
+  // The following tests are showing that simply changing stream
+  // precision lead to different result. Do not seems to be a real
+  // problem, simply rounding approximation but additional study should
+  // be done after 5.2 release.
+  {
+    stringstream str;
+    str << setprecision(limits::digits10 + 2) << limits::max();
+
+    //EXAM_MESSAGE(str.str().c_str());
+    EXAM_CHECK( !str.fail() );
+
+    F val;
+    str >> val;
+
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( limits::infinity() > val );
+  }
+  {
+    stringstream str;
+    str << setprecision(limits::digits10 + 1) << limits::max();
+
+    //EXAM_MESSAGE(str.str().c_str());
+    EXAM_CHECK( !str.fail() );
+
+    F val;
+    str >> val;
+
+    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK( limits::infinity() > val );
+  }
+#  endif
+}
 
 #if defined (_MSC_VER)
 #  pragma warning (disable : 4056)
 #  pragma warning (disable : 4756)
 #endif
 
-//
-// tests implementation
-//
-void NumPutGetTest::num_put_float()
+int EXAM_IMPL(num_put_get_test::num_put_float)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   {
     string output, digits;
 
     {
       ostringstream ostr;
       ostr << 1.23457e+17f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
       digits = "17";
       complete_digits(digits);
-      CPPUNIT_CHECK(output == string("1.23457e+") + digits );
+      EXAM_CHECK(output == string("1.23457e+") + digits );
     }
     
     {
       ostringstream ostr;
       ostr << setprecision(200) << 1.23457e+17f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK( output.size() < 200 );
+      EXAM_CHECK( output.size() < 200 );
     }
     
     {
       ostringstream ostr;
       ostr << setprecision(200) << numeric_limits<float>::min();
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK( output.size() < 200 );
+      EXAM_CHECK( output.size() < 200 );
     }
     
     {
       ostringstream ostr;
       ostr << fixed << 1.23457e+17f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output.size() == 25);
-      CPPUNIT_CHECK(output.substr(0, 5) == "12345");
-      CPPUNIT_CHECK(output.substr(18) == ".000000");
+      EXAM_CHECK(output.size() == 25);
+      EXAM_CHECK(output.substr(0, 5) == "12345");
+      EXAM_CHECK(output.substr(18) == ".000000");
     }
 
     {
       ostringstream ostr;
       ostr << fixed << showpos << 1.23457e+17f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output.size() == 26);
-      CPPUNIT_CHECK(output.substr(0, 6) == "+12345");
-      CPPUNIT_CHECK(output.substr(19) == ".000000");
+      EXAM_CHECK(output.size() == 26);
+      EXAM_CHECK(output.substr(0, 6) == "+12345");
+      EXAM_CHECK(output.substr(19) == ".000000");
     }
 
     {
       ostringstream ostr;
       ostr << fixed << showpos << setprecision(100) << 1.23457e+17f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output.size() == 120);
-      CPPUNIT_CHECK(output.substr(0, 6) == "+12345");
-      CPPUNIT_CHECK(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
+      EXAM_CHECK(output.size() == 120);
+      EXAM_CHECK(output.substr(0, 6) == "+12345");
+      EXAM_CHECK(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
     }
 
     {
       ostringstream ostr;
       ostr << scientific << setprecision(8) << 0.12345678f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
       digits = "1";
       complete_digits(digits);
-      CPPUNIT_CHECK(output == string("1.23456780e-") + digits );
+      EXAM_CHECK(output == string("1.23456780e-") + digits );
     }
 
     {
       ostringstream ostr;
       ostr << fixed << setprecision(8) << setw(30) << setfill('0') << 0.12345678f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output == "000000000000000000000.12345678");
+      EXAM_CHECK(output == "000000000000000000000.12345678");
     }
 
     {
       ostringstream ostr;
       ostr << fixed << showpos << setprecision(8) << setw(30) << setfill('0') << 0.12345678f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output == "0000000000000000000+0.12345678");
+      EXAM_CHECK(output == "0000000000000000000+0.12345678");
     }
 
     {
       ostringstream ostr;
       ostr << fixed << showpos << setprecision(8) << setw(30) << left << setfill('0') << 0.12345678f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output == "+0.123456780000000000000000000");
+      EXAM_CHECK(output == "+0.123456780000000000000000000");
     }
 
     {
       ostringstream ostr;
       ostr << fixed << showpos << setprecision(8) << setw(30) << internal << setfill('0') << 0.12345678f;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output == "+00000000000000000000.12345678");
+      EXAM_CHECK(output == "+00000000000000000000.12345678");
     }
 
     {
       ostringstream ostr;
       ostr << fixed << showpos << setprecision(100) << 1.234567e+17;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output.size() == 120);
-      CPPUNIT_CHECK(output.substr(0, 6) == "+12345");
-      CPPUNIT_CHECK(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
+      EXAM_CHECK(output.size() == 120);
+      EXAM_CHECK(output.substr(0, 6) == "+12345");
+      EXAM_CHECK(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
     }
 
 #if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
     {
       ostringstream ostr;
       ostr << fixed << showpos << setprecision(100) << 1.234567e+17l;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK(output.size() == 120);
-      CPPUNIT_CHECK(output.substr(0, 6) == "+12345");
-      CPPUNIT_CHECK(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
+      EXAM_CHECK(output.size() == 120);
+      EXAM_CHECK(output.substr(0, 6) == "+12345");
+      EXAM_CHECK(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
     }
 #endif
 
     {
       ostringstream ostr;
       ostr << scientific << setprecision(50) << 0.0;
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      CPPUNIT_CHECK( output == "0.00000000000000000000000000000000000000000000000000e+00" );
+      EXAM_CHECK( output == "0.00000000000000000000000000000000000000000000000000e+00" );
     }
     {
       ostringstream ostr;
       ostr << fixed << setprecision(100) << numeric_limits<float>::max();
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      //CPPUNIT_MESSAGE( output.c_str() );
+      //EXAM_MESSAGE( output.c_str() );
     }
 
     {
       ostringstream ostr;
       ostr << setprecision(100) << numeric_limits<double>::max();
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      //CPPUNIT_MESSAGE( output.c_str() );
+      //EXAM_MESSAGE( output.c_str() );
     }
 
 #if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
     {
       ostringstream ostr;
       ostr << setprecision(100) << numeric_limits<long double>::max();
-      CPPUNIT_ASSERT(ostr.good());
+      EXAM_CHECK(ostr.good());
       output = reset_stream(ostr);
-      //CPPUNIT_MESSAGE( output.c_str() );
+      //EXAM_MESSAGE( output.c_str() );
     }
 #endif
 
     //{
     //  ostringstream ostr;
     //  ostr << setprecision(-numeric_limits<float>::min_exponent10 + numeric_limits<float>::digits10 + 9) << numeric_limits<float>::min();
-    //  CPPUNIT_ASSERT(ostr.good());
+    //  EXAM_CHECK(ostr.good());
     //  output = reset_stream(ostr);
-    //  //CPPUNIT_MESSAGE( output.c_str() );
+    //  //EXAM_MESSAGE( output.c_str() );
     //}
 
     //{
     //  ostringstream ostr;
     //  ostr << setprecision(-numeric_limits<double>::min_exponent10 + numeric_limits<double>::digits10) << numeric_limits<double>::min();
-    //  CPPUNIT_ASSERT(ostr.good());
+    //  EXAM_CHECK(ostr.good());
     //  output = reset_stream(ostr);
-    //  //CPPUNIT_MESSAGE( output.c_str() );
+    //  //EXAM_MESSAGE( output.c_str() );
     //}
 
 //#if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
 //    {
 //      ostringstream ostr;
 //      ostr << setprecision(-numeric_limits<long double>::min_exponent10 + numeric_limits<long double>::digits10) << numeric_limits<long double>::min();
-//      CPPUNIT_ASSERT(ostr.good());
+//      EXAM_CHECK(ostr.good());
 //      output = reset_stream(ostr);
-//      CPPUNIT_MESSAGE( output.c_str() );
+//      EXAM_MESSAGE( output.c_str() );
 //    }
 //#endif
   }
@@ -504,30 +471,40 @@ void NumPutGetTest::num_put_float()
     str.setf(ios::fixed, ios::floatfield);
     str << 1.0e+5;
     // cerr << str.str() << endl;
-    CPPUNIT_CHECK( str.str() == "100000.000000" );
+    EXAM_CHECK( str.str() == "100000.000000" );
 
     reset_stream(str);
     str.precision(0);
     str << 1.0e+5;
-    CPPUNIT_CHECK( str.str() == "100000" );
+    EXAM_CHECK( str.str() == "100000" );
 
     reset_stream(str);
     str.precision(4);
     str << 1.0e+5;
-    CPPUNIT_CHECK( str.str() == "100000.0000" );
+    EXAM_CHECK( str.str() == "100000.0000" );
 
     reset_stream(str);
     str.precision(0);
     str << 1.0e+83;
-    CPPUNIT_CHECK( str.str().size() == 84 );
+    EXAM_CHECK( str.str().size() == 84 );
     //printf("\nC result: %.0f\n", 1.0e+83);
-    //CPPUNIT_MESSAGE( str.str().c_str() );
-    //CPPUNIT_CHECK( str.str() == "100000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
+    //EXAM_MESSAGE( str.str().c_str() );
+    //EXAM_CHECK( str.str() == "100000000000000000000000000000000000000000000000000000000000000000000000000000000000" );
 
     // cerr.setf(ios::fixed, ios::floatfield);
     // cerr << DBL_MAX << endl;
     // cerr << 1.0e+37 << endl;
   }
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
 #define CHECK_COMPLETE(type, val, base, showbase, showpos, casing, width, adjust, expected) \
@@ -535,14 +512,21 @@ void NumPutGetTest::num_put_float()
   type tmp = val; \
   ostringstream ostr; \
   ostr << base << showbase << showpos << casing << setw(width) << adjust << tmp; \
-  CPPUNIT_CHECK( ostr.str() == expected ); \
+  EXAM_CHECK( ostr.str() == expected ); \
 }
 
 #define CHECK(type, val, base, expected) \
   CHECK_COMPLETE(type, val, base, noshowbase, noshowpos, nouppercase, 0, right, expected)
 
-void NumPutGetTest::num_put_integer()
+int EXAM_IMPL(num_put_get_test::num_put_integer)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   //octal outputs
   {
     CHECK(short, 0, oct, "0")
@@ -693,80 +677,97 @@ void NumPutGetTest::num_put_integer()
     CHECK_COMPLETE(short, 1, hex, showbase, noshowpos, uppercase, 6, left, "0X1   ")
     CHECK_COMPLETE(short, 1, hex, showbase, showpos, uppercase, 6, internal, "0X   1")
   }
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void NumPutGetTest::num_get_float()
+int EXAM_IMPL(num_put_get_test::num_get_float)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   float in_val;
 
   istringstream istr;
 
   istr.str("1.2345");
   istr >> in_val;
-  CPPUNIT_ASSERT(!istr.fail());
-  CPPUNIT_ASSERT(istr.eof());
-  CPPUNIT_ASSERT(check_float(in_val, 1.2345f));
+  EXAM_CHECK(!istr.fail());
+  EXAM_CHECK(istr.eof());
+  EXAM_CHECK(check_float(in_val, 1.2345f));
   istr.clear();
 
   istr.str("-1.2345");
   istr >> in_val;
-  CPPUNIT_ASSERT(!istr.fail());
-  CPPUNIT_ASSERT(istr.eof());
-  CPPUNIT_ASSERT(check_float(in_val, -1.2345f));
+  EXAM_CHECK(!istr.fail());
+  EXAM_CHECK(istr.eof());
+  EXAM_CHECK(check_float(in_val, -1.2345f));
   istr.clear();
 
   istr.str("+1.2345");
   istr >> in_val;
-  CPPUNIT_ASSERT(!istr.fail());
-  CPPUNIT_ASSERT(check_float(in_val, 1.2345f));
+  EXAM_CHECK(!istr.fail());
+  EXAM_CHECK(check_float(in_val, 1.2345f));
   istr.clear();
 
   istr.str("000000000000001.234500000000");
   istr >> in_val;
-  CPPUNIT_ASSERT(!istr.fail());
-  CPPUNIT_ASSERT(istr.eof());
-  CPPUNIT_ASSERT(check_float(in_val, 1.2345f));
+  EXAM_CHECK(!istr.fail());
+  EXAM_CHECK(istr.eof());
+  EXAM_CHECK(check_float(in_val, 1.2345f));
   istr.clear();
 
   istr.str("1.2345e+04");
   istr >> in_val;
-  CPPUNIT_ASSERT(!istr.fail());
-  CPPUNIT_ASSERT(istr.eof());
-  CPPUNIT_ASSERT(check_float(in_val, 12345.0f));
+  EXAM_CHECK(!istr.fail());
+  EXAM_CHECK(istr.eof());
+  EXAM_CHECK(check_float(in_val, 12345.0f));
   istr.clear();
 
-  CPPUNIT_MESSAGE( "float" );
+  EXAM_MESSAGE( "float" );
   check_get_float( 0.0F );
-  CPPUNIT_MESSAGE( "double" );
+  EXAM_MESSAGE( "double" );
   check_get_float( 0.0 );
 #if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
-  CPPUNIT_MESSAGE( "long double" );
+  EXAM_MESSAGE( "long double" );
   check_get_float( 0.0L );
 #endif
   {
     stringstream str;
 
     str << "1e" << numeric_limits<double>::max_exponent10;
-    CPPUNIT_ASSERT(!str.fail());
+    EXAM_CHECK(!str.fail());
 
     float val;
     str >> val;
-    CPPUNIT_ASSERT(!str.fail());
-    CPPUNIT_ASSERT(str.eof());
-    CPPUNIT_ASSERT( numeric_limits<double>::max_exponent10 <= numeric_limits<float>::max_exponent10 ||
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( numeric_limits<double>::max_exponent10 <= numeric_limits<float>::max_exponent10 ||
                     val == numeric_limits<float>::infinity() );
   }
   {
     stringstream str;
 
     str << "1e" << numeric_limits<double>::min_exponent10;
-    CPPUNIT_ASSERT(!str.fail());
+    EXAM_CHECK(!str.fail());
 
     float val;
     str >> val;
-    CPPUNIT_ASSERT(!str.fail());
-    CPPUNIT_ASSERT(str.eof());
-    CPPUNIT_ASSERT( numeric_limits<double>::min_exponent10 >= numeric_limits<float>::min_exponent10 ||
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( numeric_limits<double>::min_exponent10 >= numeric_limits<float>::min_exponent10 ||
                     val == 0.0f );
   }
 #if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
@@ -774,26 +775,26 @@ void NumPutGetTest::num_get_float()
     stringstream str;
 
     str << "1e" << numeric_limits<long double>::max_exponent10;
-    CPPUNIT_ASSERT(!str.fail());
+    EXAM_CHECK(!str.fail());
 
     double val;
     str >> val;
-    CPPUNIT_ASSERT(!str.fail());
-    CPPUNIT_ASSERT(str.eof());
-    CPPUNIT_ASSERT( numeric_limits<long double>::max_exponent10 <= numeric_limits<double>::max_exponent10 ||
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( numeric_limits<long double>::max_exponent10 <= numeric_limits<double>::max_exponent10 ||
                     val == numeric_limits<double>::infinity() );
   }
   {
     stringstream str;
 
     str << "1e" << numeric_limits<long double>::min_exponent10;
-    CPPUNIT_ASSERT(!str.fail());
+    EXAM_CHECK(!str.fail());
 
     double val;
     str >> val;
-    CPPUNIT_ASSERT(!str.fail());
-    CPPUNIT_ASSERT(str.eof());
-    CPPUNIT_ASSERT( numeric_limits<long double>::min_exponent10 >= numeric_limits<double>::min_exponent10 ||
+    EXAM_CHECK(!str.fail());
+    EXAM_CHECK(str.eof());
+    EXAM_CHECK( numeric_limits<long double>::min_exponent10 >= numeric_limits<double>::min_exponent10 ||
                     val == 0.0 );
   }
   {
@@ -802,30 +803,47 @@ void NumPutGetTest::num_get_float()
     s << p;
     long double x;
     s >> x;
-    CPPUNIT_ASSERT( x > 2.70l && x < 2.72l );
+    EXAM_CHECK( x > 2.70l && x < 2.72l );
   }
 #endif
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void NumPutGetTest::num_get_integer()
+int EXAM_IMPL(num_put_get_test::num_get_integer)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   //octal input
   {
     istringstream istr;
     istr.str("30071");
     short val;
     istr >> oct >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 12345 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 12345 );
     istr.clear();
 
     if (sizeof(short) == 2) {
       istr.str("177777");
       istr >> oct >> val;
-      CPPUNIT_ASSERT( !istr.fail() );
-      CPPUNIT_ASSERT( istr.eof() );
-      CPPUNIT_ASSERT( val == -1 );
+      EXAM_CHECK( !istr.fail() );
+      EXAM_CHECK( istr.eof() );
+      EXAM_CHECK( val == -1 );
       istr.clear();
     }
   }
@@ -836,43 +854,43 @@ void NumPutGetTest::num_get_integer()
     istr.str("10000");
     short val = -1;
     istr >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 10000 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 10000 );
     istr.clear();
 
     istr.str("+10000");
     val = -1;
     istr >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 10000 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 10000 );
     istr.clear();
 
     if (sizeof(short) == 2) {
       val = -1;
       istr.str("10000000");
       istr >> val;
-      CPPUNIT_ASSERT( istr.fail() );
-      CPPUNIT_ASSERT( istr.eof() );
-      CPPUNIT_ASSERT( val == -1 );
+      EXAM_CHECK( istr.fail() );
+      EXAM_CHECK( istr.eof() );
+      EXAM_CHECK( val == -1 );
       istr.clear();
     }
 
     val = -1;
     istr.str("0x0");
     istr >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( !istr.eof() );
-    CPPUNIT_ASSERT( val == 0 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( !istr.eof() );
+    EXAM_CHECK( val == 0 );
     istr.clear();
 
     val = -1;
     istr.str("000001");
     istr >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 1 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 1 );
     istr.clear();
   }
 
@@ -882,93 +900,127 @@ void NumPutGetTest::num_get_integer()
     istr.str("3039");
     short val = -1;
     istr >> hex >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 12345 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 12345 );
     istr.clear();
 
     istr.str("x3039");
     val = -1;
     istr >> hex >> val;
-    CPPUNIT_ASSERT( istr.fail() );
-    CPPUNIT_ASSERT( !istr.eof() );
-    CPPUNIT_ASSERT( val == -1 );
+    EXAM_CHECK( istr.fail() );
+    EXAM_CHECK( !istr.eof() );
+    EXAM_CHECK( val == -1 );
     istr.clear();
 
     istr.str("03039");
     val = -1;
     istr >> hex >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 12345 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 12345 );
     istr.clear();
 
     istr.str("0x3039");
     istr >> hex >> val;
-    CPPUNIT_ASSERT( !istr.fail() );
-    CPPUNIT_ASSERT( istr.eof() );
-    CPPUNIT_ASSERT( val == 12345 );
+    EXAM_CHECK( !istr.fail() );
+    EXAM_CHECK( istr.eof() );
+    EXAM_CHECK( val == 12345 );
     istr.clear();
 
     if (sizeof(short) == 2) {
       val = -1;
       istr.str("cfc7");
       istr >> hex >> val;
-      CPPUNIT_ASSERT( !istr.fail() );
-      CPPUNIT_ASSERT( istr.eof() );
-      CPPUNIT_ASSERT( val == -12345 );
+      EXAM_CHECK( !istr.fail() );
+      EXAM_CHECK( istr.eof() );
+      EXAM_CHECK( val == -12345 );
       istr.clear();
     }
   }
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void NumPutGetTest::inhex()
+int EXAM_IMPL(num_put_get_test::inhex)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   {
     ostringstream s;
     s << hex << 0;
-    CPPUNIT_CHECK( s.str() == "0" );
+    EXAM_CHECK( s.str() == "0" );
   }
   {
     ostringstream s;
     s << hex << 0xff;
-    CPPUNIT_CHECK( s.str() == "ff" );
+    EXAM_CHECK( s.str() == "ff" );
   }
   {
     ostringstream s;
     s << hex << setw( 4 ) << 0xff;
-    CPPUNIT_CHECK( s.str() == "  ff" );
+    EXAM_CHECK( s.str() == "  ff" );
   }
   {
     ostringstream s;
     s << hex << setw( 4 ) << 0;
-    CPPUNIT_CHECK( s.str() == "   0" );
+    EXAM_CHECK( s.str() == "   0" );
   }
   {
     ostringstream s;
     s << hex << showbase << 0;
-    CPPUNIT_CHECK( s.str() == "0" );
+    EXAM_CHECK( s.str() == "0" );
   }
   {
     ostringstream s;
     s << hex << showbase << 0xff;
-    CPPUNIT_CHECK( s.str() == "0xff" );
+    EXAM_CHECK( s.str() == "0xff" );
   }
   {
     ostringstream s;
     s << hex << showbase << setw( 4 ) << 0xff;
-    CPPUNIT_CHECK( s.str() == "0xff" );
+    EXAM_CHECK( s.str() == "0xff" );
   }
   { // special case for regression (partially duplicate CHECK_COMPLETE above):
     ostringstream s;
     s.setf( ios_base::internal, ios_base::adjustfield );
     s << hex << showbase << setw(8+2) << 0;
-    CPPUNIT_CHECK( s.str() == "         0" );
+    EXAM_CHECK( s.str() == "         0" );
   }
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void NumPutGetTest::pointer()
+int EXAM_IMPL(num_put_get_test::pointer)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   // Problem with printing pointer to null
 
   /*
@@ -986,13 +1038,13 @@ void NumPutGetTest::pointer()
     // cerr << buf << endl;
     // Hmmm, I see 0xff00 on box with 32-bits address; pointer like 'unsigned hex'? 
     if ( sizeof( p ) == 2 ) {
-      CPPUNIT_ASSERT( strcmp( buf, "0xff00" ) == 0 );
+      EXAM_CHECK( strcmp( buf, "0xff00" ) == 0 );
     } else if ( sizeof( p ) == 4 ) {
-      CPPUNIT_ASSERT( strcmp( buf, "0x0000ff00" ) == 0 );
+      EXAM_CHECK( strcmp( buf, "0x0000ff00" ) == 0 );
     } else if ( sizeof( p ) == 8 ) {
-      CPPUNIT_ASSERT( strcmp( buf, "0x000000000000ff00" ) == 0 );
+      EXAM_CHECK( strcmp( buf, "0x000000000000ff00" ) == 0 );
     } else {
-      CPPUNIT_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
+      EXAM_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
     }
     */
   }
@@ -1010,51 +1062,68 @@ void NumPutGetTest::pointer()
     ostringstream s;
     void *p = (void *)0xff00;
     s << p;
-    CPPUNIT_ASSERT( s.good() );
+    EXAM_CHECK( s.good() );
     if ( sizeof( p ) == 2 ) {
-      CPPUNIT_ASSERT( s.str() == "0xff00" );
+      EXAM_CHECK( s.str() == "0xff00" );
     } else if ( sizeof( p ) == 4 ) {
-      CPPUNIT_ASSERT( s.str() == "0x0000ff00" ); // this pass
+      EXAM_CHECK( s.str() == "0x0000ff00" ); // this pass
     } else if ( sizeof( p ) == 8 ) {
-      CPPUNIT_ASSERT( s.str() == "0x000000000000ff00" );
+      EXAM_CHECK( s.str() == "0x000000000000ff00" );
     } else {
-      CPPUNIT_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
+      EXAM_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
     }
   }
   {
     ostringstream s;
     void *p = 0;
     s << p;
-    CPPUNIT_ASSERT( s.good() );
+    EXAM_CHECK( s.good() );
     if ( sizeof( p ) == 2 ) {
-      CPPUNIT_ASSERT( s.str() == "0x0000" );
+      EXAM_CHECK( s.str() == "0x0000" );
     } else if ( sizeof( p ) == 4 ) {
-      CPPUNIT_ASSERT( s.str() == "0x00000000" ); // but this will fail, if follow %p
+      EXAM_CHECK( s.str() == "0x00000000" ); // but this will fail, if follow %p
     } else if ( sizeof( p ) == 8 ) {
-      CPPUNIT_ASSERT( s.str() == "0x0000000000000000" );
+      EXAM_CHECK( s.str() == "0x0000000000000000" );
     } else {
-      CPPUNIT_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
+      EXAM_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
     }
   }
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
-void NumPutGetTest::fix_float_long()
+int EXAM_IMPL(num_put_get_test::fix_float_long)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   ostringstream str;
 
   str.setf(ios::fixed, ios::floatfield);
   str << 1.0e+5;
-  CPPUNIT_CHECK( str.str() == "100000.000000" );
+  EXAM_CHECK( str.str() == "100000.000000" );
 
   reset_stream(str);
   str.precision(0);
   str << 1.0e+5;
-  CPPUNIT_CHECK( str.str() == "100000" );
+  EXAM_CHECK( str.str() == "100000" );
 
   reset_stream(str);
   str.precision(4);
   str << 1.0e+5;
-  CPPUNIT_CHECK( str.str() == "100000.0000" );
+  EXAM_CHECK( str.str() == "100000.0000" );
 
   reset_stream(str);
   str.precision(0);
@@ -1063,16 +1132,16 @@ void NumPutGetTest::fix_float_long()
     istringstream istr( str.str() );
     double f;
     istr >> f;
-    CPPUNIT_CHECK( !istr.fail() );
+    EXAM_CHECK( !istr.fail() );
     if ( int(numeric_limits<double>::digits10) < 83 ) {
       double delta = 1.0;
       for ( int ee = 83 - int(numeric_limits<double>::digits10); ee > 0; --ee ) {
         delta *= 10.0;
       }
       // we may loss some digits here, but not more than mantissa:
-      CPPUNIT_CHECK( (f > (1.0e+83 - delta)) && (f < (1.0e+83 + delta)) );
+      EXAM_CHECK( (f > (1.0e+83 - delta)) && (f < (1.0e+83 + delta)) );
     } else {
-      CPPUNIT_CHECK( check_double(f, 1.0e+83) );
+      EXAM_CHECK( check_double(f, 1.0e+83) );
     }
   }
 
@@ -1084,7 +1153,7 @@ void NumPutGetTest::fix_float_long()
     istringstream istr( str.str() );
     long double f;
     istr >> f;
-    CPPUNIT_CHECK( !istr.fail() );
+    EXAM_CHECK( !istr.fail() );
     if ( int(numeric_limits<long double>::digits10) < 83 ) {
       long double delta = 1.0l;
       for ( int ee = 83 - int(numeric_limits<long double>::digits10); ee > 0; --ee ) {
@@ -1095,9 +1164,9 @@ void NumPutGetTest::fix_float_long()
       cerr << str.str() << endl;
       cerr << delta << endl;
       cerr << f << endl;
-      CPPUNIT_CHECK( (f > (1.0e+83l - delta)) && (f < (1.0e+83l + delta)) );
+      EXAM_CHECK( (f > (1.0e+83l - delta)) && (f < (1.0e+83l + delta)) );
     } else {
-      CPPUNIT_CHECK( check_double(f, 1.0e+83l) );
+      EXAM_CHECK( check_double(f, 1.0e+83l) );
     }
   }
 #endif
@@ -1109,14 +1178,14 @@ void NumPutGetTest::fix_float_long()
     istringstream istr( str.str() );
     double f;
     istr >> f;
-    CPPUNIT_CHECK( !istr.fail() );
+    EXAM_CHECK( !istr.fail() );
     if ( int(numeric_limits<double>::digits10) < int(numeric_limits<double>::max_exponent10) ) {
       double delta = 9.0;
       for ( int ee = int(numeric_limits<double>::max_exponent10) - int(numeric_limits<double>::digits10); ee > 0; --ee ) {
         delta *= 10.0;
       }
       // we may loss some digits here, but not more than mantissa:
-      CPPUNIT_CHECK( (f > (numeric_limits<double>::max() - delta)) );
+      EXAM_CHECK( (f > (numeric_limits<double>::max() - delta)) );
     }
   }
 
@@ -1128,17 +1197,27 @@ void NumPutGetTest::fix_float_long()
     istringstream istr( str.str() );
     long double f;
     istr >> f;
-    CPPUNIT_CHECK( !istr.fail() );
+    EXAM_CHECK( !istr.fail() );
     if ( int(numeric_limits<long double>::digits10) < int(numeric_limits<long double>::max_exponent10) ) {
       long double delta = 1.0l;
       for ( int ee = int(numeric_limits<long double>::max_exponent10) - int(numeric_limits<long double>::digits10); ee > 0; --ee ) {
         delta *= 10.0l;
       }
       // we may loss some digits here, but not more than mantissa:
-      CPPUNIT_CHECK( (f > (numeric_limits<long double>::max() - delta)) );
+      EXAM_CHECK( (f > (numeric_limits<long double>::max() - delta)) );
     }
   }
 #endif
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
+
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
 }
 
 class CommaSepNumPunct : public numpunct<char> {
@@ -1148,10 +1227,17 @@ class CommaSepNumPunct : public numpunct<char> {
 
 #define CHECK2(val, expected) \
   os.str(""); os << fixed << setprecision(3) << showpos << val; \
-  CPPUNIT_ASSERT( os.str() == expected )
+  EXAM_CHECK( os.str() == expected )
 
-void NumPutGetTest::custom_numpunct()
+int EXAM_IMPL(num_put_get_test::custom_numpunct)
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
     ostringstream os;
     locale loc(os.getloc(), new CommaSepNumPunct());
     os.imbue(loc);
@@ -1180,6 +1266,14 @@ void NumPutGetTest::custom_numpunct()
     CHECK2(-123456789.123, "-123,456,78,9.123");
     //CHECK2(-100000000000000000000000000000.0, "-100000000000000000000000,000,00,0.000");
     CHECK2(-numeric_limits<double>::infinity(), "-inf");
-}
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
 
+#else
+  throw exam::skip_exception();
 #endif
+  return EXAM_RESULT;
+}

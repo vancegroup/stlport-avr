@@ -171,7 +171,7 @@ int EXAM_IMPL(string_test::mt)
   DWORD duration = GetTickCount() - start;
   ostringstream ostr;
   ostr << "Duration: " << duration << endl;
-  CPPUNIT_MESSAGE(ostr.str().c_str());
+  EXAM_MESSAGE(ostr.str().c_str());
   */
 #  endif
 #endif
