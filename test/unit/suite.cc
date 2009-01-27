@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/26 23:30:10 ptr>
+// -*- C++ -*- Time-stamp: <09/01/27 12:09:02 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -58,51 +58,7 @@
 #include "shared_ptr_test.h"
 #include "reference_wrapper_test.h"
 #include "errno_test.h"
-
-// ------------
-#include "cppunit_proxy.h"
-#include "file_reporter.h"
-#include "cppunit_timer.h"
-
-#include "stdio.h"
-
-  int TestCase::m_numErrors = 0;
-  int TestCase::m_numTests = 0;
-
-  TestCase *TestCase::m_root = 0;
-  Reporter *TestCase::m_reporter = 0;
-
-  void TestCase::registerTestCase(TestCase *in_testCase) {
-    in_testCase->m_next = m_root;
-    m_root = in_testCase;
-  }
-
-  int TestCase::run(Reporter *in_reporter, const char *in_testName, bool invert) {
-    TestCase::m_reporter = in_reporter;
-
-    m_numErrors = 0;
-    m_numTests = 0;
-
-    TestCase *tmp = m_root;
-    while (tmp != 0) {
-      tmp->myRun(in_testName, invert);
-      tmp = tmp->m_next;
-    }
-    return m_numErrors;
-  }
-
-int test_main() {
-  CPPUNIT_NS::Reporter* reporter = new FileReporter( stdout, false );
-
-  int num_errors = CPPUNIT_NS::TestCase::run(reporter, "" );
-
-  reporter->printSummary();
-  delete reporter;
-
-  return num_errors;
-}
-
-// ------------
+#include "locale_test.h"
 
 int main( int argc, const char** argv )
 {
@@ -810,6 +766,28 @@ int main( int argc, const char** argv )
   t.add( &ref_wrapper_test::ref, ref_test, "ref" );
   t.add( &ref_wrapper_test::cref, ref_test, "cref" );
 
+  locale_test ltest;
+
+  t.add( &locale_test::locale_by_name, ltest, "locale_by_name" );
+  t.add( &locale_test::moneypunct_by_name, ltest, "moneypunct_by_name" );
+  t.add( &locale_test::time_by_name, ltest, "time_by_name" );
+  t.add( &locale_test::numpunct_by_name, ltest, "numpunct_by_name" );
+  t.add( &locale_test::ctype_by_name, ltest, "ctype_by_name" );
+  t.add( &locale_test::collate_by_name, ltest, "collate_by_name" );
+  t.add( &locale_test::messages_by_name, ltest, "messages_by_name" );
+
+  t.add( &locale_test::loc_has_facet, ltest, "loc_has_facet" );
+  t.add( &locale_test::num_put_get, ltest, "num_put_get" );
+  t.add( &locale_test::money_put_get, ltest, "money_put_get" );
+  t.add( &locale_test::money_put_X_bug, ltest, "money_put_X_bug" );
+  t.add( &locale_test::time_put_get, ltest, "time_put_get" );
+  t.add( &locale_test::collate_facet, ltest, "collate_facet" );
+  t.add( &locale_test::ctype_facet, ltest, "ctype_facet" );
+  t.add( &locale_test::locale_init_problem, ltest, "locale_init_problem" );
+
+  t.add( &locale_test::default_locale, ltest, "default_locale" );
+  t.add( &locale_test::combine, ltest, "combine" );
+
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );
     return 0;
@@ -833,5 +811,5 @@ int main( int argc, const char** argv )
     return 0;
   }
 
-  return t.girdle() + test_main();
+  return t.girdle();
 }

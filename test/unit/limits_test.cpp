@@ -15,20 +15,8 @@
 #include "limits_test.h"
 
 #include <limits>
-//#include <sstream>
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
-
-#if defined (STLPORT) && defined (_STLP_STATIC_CONST_INIT_BUG)
-#  define CHECK_COND(X) if (!(X))  { EXAM_MESSAGE(#X); return false; }
-#else
-//This version force to have external linkage on static constant which might
-//reveal that _STLP_NO_STATIC_CONST_DEFINITION should be commented.
-bool check_cond(const bool& cond) { return cond; }
-#  define CHECK_COND(X) if (!check_cond(X)) { EXAM_MESSAGE(#X); return false; }
-#endif
 
 bool valid_sign_info(bool, bool)
 { return true; }
@@ -43,16 +31,16 @@ template <class _Tp>
 bool test_integral_limits_base(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
   typedef numeric_limits<_Tp> lim;
 
-  CHECK_COND(lim::is_specialized);
-  CHECK_COND(lim::is_exact);
-  CHECK_COND(lim::is_integer);
-  CHECK_COND(!lim::is_iec559);
-  CHECK_COND(lim::min() < lim::max());
-  CHECK_COND((unknown_sign && ((lim::is_signed && (lim::min() != 0)) || (!lim::is_signed && (lim::min() == 0)))) ||
+  EXAM_CHECK_ASYNC(lim::is_specialized);
+  EXAM_CHECK_ASYNC(lim::is_exact);
+  EXAM_CHECK_ASYNC(lim::is_integer);
+  EXAM_CHECK_ASYNC(!lim::is_iec559);
+  EXAM_CHECK_ASYNC(lim::min() < lim::max());
+  EXAM_CHECK_ASYNC((unknown_sign && ((lim::is_signed && (lim::min() != 0)) || (!lim::is_signed && (lim::min() == 0)))) ||
              (!unknown_sign && ((lim::is_signed && is_signed) || (!lim::is_signed && !is_signed))));
 
   if (unknown_sign) {
-    CHECK_COND(valid_sign_info(lim::is_signed, _Tp()));
+    EXAM_CHECK_ASYNC(valid_sign_info(lim::is_signed, _Tp()));
   }
   return true;
 }
@@ -64,17 +52,17 @@ bool test_integral_limits(const _Tp &val, bool unknown_sign = true, bool is_sign
 
   typedef numeric_limits<_Tp> lim;
 
-  CHECK_COND(lim::is_modulo);
+  EXAM_CHECK_ASYNC(lim::is_modulo);
 
   if (lim::is_bounded ||
      (!lim::is_bounded && !lim::is_signed)) {
     _Tp tmp = lim::min();
-    CHECK_COND( --tmp > lim::min() );
+    EXAM_CHECK_ASYNC( --tmp > lim::min() );
   }
 
   if (lim::is_bounded) {
     _Tp tmp = lim::max();
-    CHECK_COND( ++tmp < lim::max() );
+    EXAM_CHECK_ASYNC( ++tmp < lim::max() );
   }
 
   return true;
@@ -96,42 +84,42 @@ bool test_float_values(_Tp lhs, _Tp rhs)
 template <class _Tp>
 bool test_float_limits(const _Tp &) {
   typedef numeric_limits<_Tp> lim;
-  CHECK_COND(lim::is_specialized);
-  CHECK_COND(!lim::is_modulo);
-  CHECK_COND(!lim::is_integer);
-  CHECK_COND(lim::is_signed);
+  EXAM_CHECK_ASYNC(lim::is_specialized);
+  EXAM_CHECK_ASYNC(!lim::is_modulo);
+  EXAM_CHECK_ASYNC(!lim::is_integer);
+  EXAM_CHECK_ASYNC(lim::is_signed);
 
-  CHECK_COND(lim::max() > 1000);
-  CHECK_COND(lim::min() > 0);
-  CHECK_COND(lim::min() < 0.001);
-  CHECK_COND(lim::epsilon() > 0);
+  EXAM_CHECK_ASYNC(lim::max() > 1000);
+  EXAM_CHECK_ASYNC(lim::min() > 0);
+  EXAM_CHECK_ASYNC(lim::min() < 0.001);
+  EXAM_CHECK_ASYNC(lim::epsilon() > 0);
 
   if (lim::is_iec559) {
-    CHECK_COND(lim::has_infinity);
-    CHECK_COND(lim::has_quiet_NaN);
-    CHECK_COND(lim::has_signaling_NaN);
-    CHECK_COND(lim::has_denorm == denorm_present);
+    EXAM_CHECK_ASYNC(lim::has_infinity);
+    EXAM_CHECK_ASYNC(lim::has_quiet_NaN);
+    EXAM_CHECK_ASYNC(lim::has_signaling_NaN);
+    EXAM_CHECK_ASYNC(lim::has_denorm == denorm_present);
   }
 
   if (lim::has_denorm == denorm_absent) {
-    CHECK_COND(lim::denorm_min() == lim::min());
+    EXAM_CHECK_ASYNC(lim::denorm_min() == lim::min());
     _Tp tmp = lim::min();
     tmp /= 2;
     if (tmp > 0 && tmp < lim::min()) {
       // has_denorm could be denorm_present
-      EXAM_MESSAGE("It looks like your compiler/platform supports denormalized floating point representation.");
+      EXAM_MESSAGE_ASYNC("It looks like your compiler/platform supports denormalized floating point representation.");
     }
   }
   else if (lim::has_denorm == denorm_present) {
-    CHECK_COND(lim::denorm_min() > 0);
-    CHECK_COND(lim::denorm_min() < lim::min());
+    EXAM_CHECK_ASYNC(lim::denorm_min() > 0);
+    EXAM_CHECK_ASYNC(lim::denorm_min() < lim::min());
 
     _Tp tmp = lim::min();
     while (tmp != 0) {
       _Tp old_tmp = tmp;
       tmp /= 2;
-      CHECK_COND(tmp < old_tmp);
-      CHECK_COND(tmp >= lim::denorm_min() || tmp == (_Tp)0);
+      EXAM_CHECK_ASYNC(tmp < old_tmp);
+      EXAM_CHECK_ASYNC(tmp >= lim::denorm_min() || tmp == (_Tp)0);
       //ostringstream str;
       //str << "denorm_min = " << lim::denorm_min() << ", tmp = " << tmp;
       //EXAM_MESSAGE(str.str().c_str());
@@ -148,7 +136,7 @@ bool test_float_limits(const _Tp &) {
 
     /* We use test_float_values because without it some compilers (gcc) perform weird
      * optimization on the test giving unexpected result. */
-    CHECK_COND(test_float_values(val, infinity));
+    EXAM_CHECK_ASYNC(test_float_values(val, infinity));
 
     /*
     ostringstream str;
@@ -191,9 +179,9 @@ bool test_float_limits(const _Tp &) {
     EXAM_MESSAGE( str.str().c_str() );
     */
 
-    CHECK_COND(infinity == infinity);
-    CHECK_COND(infinity > lim::max());
-    CHECK_COND(-infinity < -lim::max());
+    EXAM_CHECK_ASYNC(infinity == infinity);
+    EXAM_CHECK_ASYNC(infinity > lim::max());
+    EXAM_CHECK_ASYNC(-infinity < -lim::max());
   }
 
   return true;
@@ -225,16 +213,16 @@ bool test_qnan(const _Tp &) {
     * If one of these fail, your compiler may be optimizing incorrectly,
     * or the STLport is incorrectly configured.
     */
-    CHECK_COND(! (qnan == 42));
-    CHECK_COND(! (qnan == qnan));
-    CHECK_COND(qnan != 42);
-    CHECK_COND(qnan != qnan);
+    EXAM_CHECK_ASYNC(! (qnan == 42));
+    EXAM_CHECK_ASYNC(! (qnan == qnan));
+    EXAM_CHECK_ASYNC(qnan != 42);
+    EXAM_CHECK_ASYNC(qnan != qnan);
 
     /* The following tests may cause arithmetic traps.
-    * CHECK_COND(! (qnan < 42));
-    * CHECK_COND(! (qnan > 42));
-    * CHECK_COND(! (qnan <= 42));
-    * CHECK_COND(! (qnan >= 42));
+    * EXAM_CHECK_ASYNC(! (qnan < 42));
+    * EXAM_CHECK_ASYNC(! (qnan > 42));
+    * EXAM_CHECK_ASYNC(! (qnan <= 42));
+    * EXAM_CHECK_ASYNC(! (qnan >= 42));
     */
   }
   return true;

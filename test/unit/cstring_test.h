@@ -1,7 +1,7 @@
 #ifndef __TEST_CSTRING_TEST_H
 #define __TEST_CSTRING_TEST_H
 
-#define FIT_EXAM
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

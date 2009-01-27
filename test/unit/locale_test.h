@@ -1,91 +1,67 @@
-#include <string>
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <iosfwd>
+// -*- C++ -*- Time-stamp: <09/01/27 12:36:55 ptr>
 
-#  include "cppunit/cppunit_proxy.h"
-#  include <locale>
+/*
+ * Copyright (c) 2004-2009
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
+#ifndef __TEST_LOCALE_TEST_H
+#define __TEST_LOCALE_TEST_H
+
+#define __FIT_EXAM
+
+#include <exam/suite.h>
+
+#include <string>
+#include <iosfwd>
+#include <locale>
 
 struct ref_monetary;
 struct ref_locale;
 
-#  if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
-#    define STD std::
-#  else
-#    define STD
-#  endif
-
-//
-// TestCase class
-//
-class LocaleTest : public CPPUNIT_NS::TestCase
+class locale_test
 {
-  CPPUNIT_TEST_SUITE(LocaleTest);
-#  if defined (STLPORT) && !defined (_STLP_USE_EXCEPTIONS)
-  CPPUNIT_IGNORE;
-#  endif
-  CPPUNIT_TEST(locale_by_name);
-  CPPUNIT_TEST(moneypunct_by_name);
-  CPPUNIT_TEST(time_by_name);
-  CPPUNIT_TEST(numpunct_by_name);
-  CPPUNIT_TEST(ctype_by_name);
-  CPPUNIT_TEST(collate_by_name);
-  CPPUNIT_TEST(messages_by_name);
-  CPPUNIT_STOP_IGNORE;
-  CPPUNIT_TEST(loc_has_facet);
-  CPPUNIT_TEST(num_put_get);
-  CPPUNIT_TEST(money_put_get);
-  CPPUNIT_TEST(money_put_X_bug);
-  CPPUNIT_TEST(time_put_get);
-  CPPUNIT_TEST(collate_facet);
-  CPPUNIT_TEST(ctype_facet);
-  CPPUNIT_TEST(locale_init_problem);
-  CPPUNIT_STOP_IGNORE;
-  CPPUNIT_TEST(default_locale);
-#  if !defined (STLPORT)
-  CPPUNIT_IGNORE;
-#  endif
-  CPPUNIT_STOP_IGNORE;
-#if (defined (STLPORT) && \
-   (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
-  CPPUNIT_IGNORE;
-#  endif
-  CPPUNIT_TEST(combine);
-  CPPUNIT_TEST_SUITE_END();
+  public:
+    int EXAM_DECL(locale_by_name);
+    int EXAM_DECL(moneypunct_by_name);
+    int EXAM_DECL(time_by_name);
+    int EXAM_DECL(numpunct_by_name);
+    int EXAM_DECL(ctype_by_name);
+    int EXAM_DECL(collate_by_name);
+    int EXAM_DECL(messages_by_name);
 
-public:
-  void locale_by_name();
-  void loc_has_facet();
-  void num_put_get();
-  void numpunct_by_name();
-  void time_put_get();
-  void time_by_name();
-  void collate_facet();
-  void collate_by_name();
-  void ctype_facet();
-  void ctype_by_name();
-  void locale_init_problem();
-  void money_put_get();
-  void money_put_X_bug();
-  void moneypunct_by_name();
-  void default_locale();
-  void combine();
-  void messages_by_name();
-private:
-  void _loc_has_facet( const STD locale& );
-  void _num_put_get( const STD locale&, const ref_locale* );
-  void _time_put_get( const STD locale& );
-  void _ctype_facet( const STD locale& );
-  void _ctype_facet_w( const STD locale& );
-  void _locale_init_problem( const STD locale& );
+    int EXAM_DECL(loc_has_facet);
+    int EXAM_DECL(num_put_get);
+    int EXAM_DECL(money_put_get);
+    int EXAM_DECL(money_put_X_bug);
+    int EXAM_DECL(time_put_get);
+    int EXAM_DECL(collate_facet);
+    int EXAM_DECL(ctype_facet);
+    int EXAM_DECL(locale_init_problem);
 
-  static const ref_monetary* _get_ref_monetary(size_t);
-  static const char* _get_ref_monetary_name(const ref_monetary*);
+    int EXAM_DECL(default_locale);
+    int EXAM_DECL(combine);
 
-  void _money_put_get( const STD locale&, const ref_monetary* );
-  void _money_put_get2( const STD locale& loc, const STD locale& streamLoc, const ref_monetary* );
-  void _money_put_X_bug( const STD locale&, const ref_monetary* );
+  private:
+    void _loc_has_facet( const std::locale& );
+    void _num_put_get( const std::locale&, const ref_locale* );
+    void _time_put_get( const std::locale& );
+    void _ctype_facet( const std::locale& );
+    void _ctype_facet_w( const std::locale& );
+    void _locale_init_problem( const std::locale& );
+
+    static const ref_monetary* _get_ref_monetary(size_t);
+    static const char* _get_ref_monetary_name(const ref_monetary*);
+
+    void _money_put_get( const std::locale&, const ref_monetary* );
+    void _money_put_get2( const std::locale& loc, const std::locale& streamLoc, const ref_monetary* );
+    void _money_put_X_bug( const std::locale&, const ref_monetary* );
 };
 
-#  undef STD
-#endif
-
+#endif // __TEST_EXCEPTION_TEST_H

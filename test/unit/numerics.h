@@ -11,7 +11,7 @@
 #ifndef __TEST_NUMERICS_H
 #define __TEST_NUMERICS_H
 
-#define FIT_EXAM
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

@@ -1,7 +1,7 @@
 #ifndef __TEST_CMATH_TEST_H
 #define __TEST_CMATH_TEST_H
 
-#define FIT_EXAM
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

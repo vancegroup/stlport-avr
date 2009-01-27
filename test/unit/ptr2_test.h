@@ -14,7 +14,7 @@
 #ifndef __TEST_PTR2_TEST_H
 #define __TEST_PTR2_TEST_H
 
-#define FIT_EXAM
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

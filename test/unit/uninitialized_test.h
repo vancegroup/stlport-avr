@@ -1,7 +1,7 @@
 #ifndef __TEST_UNINITIALIZED_TEST_H
 #define __TEST_UNINITIALIZED_TEST_H
 
-#define FIT_EXAM
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

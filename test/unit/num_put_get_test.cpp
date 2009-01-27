@@ -1,23 +1,31 @@
+// -*- C++ -*- Time-stamp: <09/01/27 13:09:59 ptr>
+
+/*
+ * Copyright (c) 2004-2009
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
 #include "num_put_get_test.h"
 
 #include <limits>
 
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <iomanip>
-#  include <string>
-#  include <sstream>
-#  include <cstdio>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <cstdio>
 /*
-#  include <iostream>
-#  include <ieee754.h>
+#include <iostream>
+#include <ieee754.h>
 */
-#  include "complete_digits.h"
-#endif
+#include "complete_digits.h"
 
-
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
 
 static bool check_float(float val, float ref)
 {
@@ -49,10 +57,10 @@ void check_get_float( F v )
     str << "1E+" << limits::max_exponent10;
 
     str >> in_val_d;
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d != limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d != limits::infinity() );
   }
   {
     stringstream str;
@@ -60,10 +68,10 @@ void check_get_float( F v )
     str << "-1E+" << limits::max_exponent10;
 
     str >> in_val_d;
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d != -limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d != -limits::infinity() );
   }
   {
     stringstream str;
@@ -71,10 +79,10 @@ void check_get_float( F v )
     str << "1E" << limits::min_exponent10;
 
     str >> in_val_d;
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d != F(0.0) );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d != F(0.0) );
   }
   {
     stringstream str;
@@ -82,10 +90,10 @@ void check_get_float( F v )
     str << "1E+" << (limits::max_exponent10 + 1);
 
     str >> in_val_d;
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d == limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d == limits::infinity() );
   }
   {
     stringstream str;
@@ -93,10 +101,10 @@ void check_get_float( F v )
     str << "-1E+" << (limits::max_exponent10 + 1);
 
     str >> in_val_d;
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d == -limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d == -limits::infinity() );
   }
   {
     stringstream str;
@@ -104,10 +112,10 @@ void check_get_float( F v )
     str << "1E" << (limits::min_exponent10 - 1);
 
     str >> in_val_d;
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d >= F(0.0) && in_val_d <= limits::min() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d >= F(0.0) && in_val_d <= limits::min() );
   }
 #if !defined (__MINGW32__)
   {
@@ -115,69 +123,69 @@ void check_get_float( F v )
 
     str << limits::max();
 
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK( str.str() != "inf" );
-    EXAM_CHECK( str.str() != "-inf" );
-    EXAM_CHECK( str.str() != "nan" );
-    EXAM_CHECK( str.str() != "-nan" );
-    //EXAM_MESSAGE( str.str().c_str() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC( str.str() != "inf" );
+    EXAM_CHECK_ASYNC( str.str() != "-inf" );
+    EXAM_CHECK_ASYNC( str.str() != "nan" );
+    EXAM_CHECK_ASYNC( str.str() != "-nan" );
+    //EXAM_MESSAGE_ASYNC( str.str().c_str() );
 
     //str.str("");
     //str << limits::max_exponent10;
-    //EXAM_MESSAGE( str.str().c_str() );
+    //EXAM_MESSAGE_ASYNC( str.str().c_str() );
 
     str >> in_val_d;
 
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d != limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d != limits::infinity() );
   }
   {
     stringstream str;
 
     str << fixed << limits::max();
 
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK( str.str() != "inf" );
-    EXAM_CHECK( str.str() != "-inf" );
-    EXAM_CHECK( str.str() != "nan" );
-    EXAM_CHECK( str.str() != "-nan" );
-    //EXAM_MESSAGE( str.str().c_str() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC( str.str() != "inf" );
+    EXAM_CHECK_ASYNC( str.str() != "-inf" );
+    EXAM_CHECK_ASYNC( str.str() != "nan" );
+    EXAM_CHECK_ASYNC( str.str() != "-nan" );
+    //EXAM_MESSAGE_ASYNC( str.str().c_str() );
 
     //str.str("");
     //str << limits::max_exponent10;
-    //EXAM_MESSAGE( str.str().c_str() );
+    //EXAM_MESSAGE_ASYNC( str.str().c_str() );
 
     str >> in_val_d;
 
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d != limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d != limits::infinity() );
   }
   {
     stringstream str;
 
     str << scientific << setprecision(50) << limits::max();
 
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK( str.str() != "inf" );
-    EXAM_CHECK( str.str() != "-inf" );
-    EXAM_CHECK( str.str() != "nan" );
-    EXAM_CHECK( str.str() != "-nan" );
-    //EXAM_MESSAGE( str.str().c_str() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC( str.str() != "inf" );
+    EXAM_CHECK_ASYNC( str.str() != "-inf" );
+    EXAM_CHECK_ASYNC( str.str() != "nan" );
+    EXAM_CHECK_ASYNC( str.str() != "-nan" );
+    //EXAM_MESSAGE_ASYNC( str.str().c_str() );
 
     //str.str("");
     //str << limits::max_exponent10;
-    //EXAM_MESSAGE( str.str().c_str() );
+    //EXAM_MESSAGE_ASYNC( str.str().c_str() );
 
     str >> in_val_d;
 
-    EXAM_CHECK(!str.fail());
-    EXAM_CHECK(str.eof());
-    EXAM_CHECK( in_val_d == in_val_d );
-    EXAM_CHECK( in_val_d != limits::infinity() );
+    EXAM_CHECK_ASYNC(!str.fail());
+    EXAM_CHECK_ASYNC(str.eof());
+    EXAM_CHECK_ASYNC( in_val_d == in_val_d );
+    EXAM_CHECK_ASYNC( in_val_d != limits::infinity() );
   }
 #endif
   {
@@ -185,54 +193,54 @@ void check_get_float( F v )
 
     str << limits::infinity();
 
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( !limits::has_infinity || str.str() == "inf" );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( !limits::has_infinity || str.str() == "inf" );
   }
   {
     stringstream str;
 
     str << -limits::infinity();
 
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( !limits::has_infinity || str.str() == "-inf" );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( !limits::has_infinity || str.str() == "-inf" );
   }
   {
     stringstream str;
 
     str << limits::quiet_NaN();
 
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( !limits::has_quiet_NaN || str.str() == "nan" );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( !limits::has_quiet_NaN || str.str() == "nan" );
   }
   {
     stringstream str;
 
     str << -limits::quiet_NaN();
 
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( !limits::has_quiet_NaN || str.str() == "-nan" );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( !limits::has_quiet_NaN || str.str() == "-nan" );
   }
   {
     stringstream str;
 
     str << "0." << string(limits::max_exponent10, '0') << "1e" << (limits::max_exponent10 + 1);
-    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK_ASYNC( !str.fail() );
 
     str >> in_val_d;
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( str.eof() );
-    EXAM_CHECK( in_val_d == 1 );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( str.eof() );
+    EXAM_CHECK_ASYNC( in_val_d == 1 );
   }
   {
     stringstream str;
 
     str << "1" << string(-(limits::min_exponent10 - 1), '0') << "e" << (limits::min_exponent10 - 1);
-    EXAM_CHECK( !str.fail() );
+    EXAM_CHECK_ASYNC( !str.fail() );
 
     str >> in_val_d;
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( str.eof() );
-    EXAM_CHECK( in_val_d == 1 );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( str.eof() );
+    EXAM_CHECK_ASYNC( in_val_d == 1 );
   }
 #  if defined (_STLPORT_VERSION) && (_STLPORT_VERSION >= 0x530)
   // The following tests are showing that simply changing stream
@@ -243,27 +251,27 @@ void check_get_float( F v )
     stringstream str;
     str << setprecision(limits::digits10 + 2) << limits::max();
 
-    //EXAM_MESSAGE(str.str().c_str());
-    EXAM_CHECK( !str.fail() );
+    //EXAM_MESSAGE_ASYNC(str.str().c_str());
+    EXAM_CHECK_ASYNC( !str.fail() );
 
     F val;
     str >> val;
 
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( limits::infinity() > val );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( limits::infinity() > val );
   }
   {
     stringstream str;
     str << setprecision(limits::digits10 + 1) << limits::max();
 
-    //EXAM_MESSAGE(str.str().c_str());
-    EXAM_CHECK( !str.fail() );
+    //EXAM_MESSAGE_ASYNC(str.str().c_str());
+    EXAM_CHECK_ASYNC( !str.fail() );
 
     F val;
     str >> val;
 
-    EXAM_CHECK( !str.fail() );
-    EXAM_CHECK( limits::infinity() > val );
+    EXAM_CHECK_ASYNC( !str.fail() );
+    EXAM_CHECK_ASYNC( limits::infinity() > val );
   }
 #  endif
 }
@@ -275,8 +283,6 @@ void check_get_float( F v )
 
 int EXAM_IMPL(num_put_get_test::num_put_float)
 {
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-
 #  if defined (__BORLANDC__)
   /* Ignore FPU exceptions, set FPU precision to 64 bits */
   unsigned int _float_control_word = _control87(0, 0);
@@ -501,9 +507,6 @@ int EXAM_IMPL(num_put_get_test::num_put_float)
   _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
 #  endif
 
-#else
-  throw exam::skip_exception();
-#endif
   return EXAM_RESULT;
 }
 
