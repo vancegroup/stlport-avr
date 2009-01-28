@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/27 12:09:02 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 14:43:37 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -391,6 +391,7 @@ int main( int argc, const char** argv )
   t.add( &valarray_test::transcendentals, val_test, "transcendentals" );
 
   fstream_test fstrm_test;
+  exam::test_suite::test_case_type fstream_tc[10];
 
   t.add( &fstream_test::output, fstrm_test, "fstream output" );
   t.add( &fstream_test::input, fstrm_test, "fstream input" );
@@ -399,10 +400,14 @@ int main( int argc, const char** argv )
   t.add( &fstream_test::err, fstrm_test, "fstream err" );
   t.add( &fstream_test::tellg, fstrm_test, "fstream tellg" );
   t.add( &fstream_test::tellp, fstrm_test, "fstream tellp" );
-  t.add( &fstream_test::seek, fstrm_test, "fstream seek" );
-  t.add( &fstream_test::buf, fstrm_test, "fstream buf" );
-  t.add( &fstream_test::rdbuf, fstrm_test, "fstream rdbuf" );
-  t.add( &fstream_test::streambuf_output, fstrm_test, "fstream streambuf_output" );
+
+  t.add( &fstream_test::seek_wide_stream, fstrm_test, "wfstream seek",
+    fstream_tc[0] = t.add( &fstream_test::seek_text, fstrm_test, "fstream seek in text",
+      t.add( &fstream_test::seek_binary, fstrm_test, "fstream seek in binary" ) ) );
+  t.add( &fstream_test::buf, fstrm_test, "fstream buf" /* , fstream_tc[0] */ );
+
+  t.add( &fstream_test::rdbuf, fstrm_test, "fstream rdbuf",
+    t.add( &fstream_test::streambuf_output, fstrm_test, "fstream streambuf_output" ) );
   t.add( &fstream_test::win32_file_format, fstrm_test, "fstream win32_file_format" );
   t.add( &fstream_test::null_stream, fstrm_test, "fstream null_stream" );
   t.add( &fstream_test::null_buf, fstrm_test, "fstream null_buf" );

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/11/22 01:22:33 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 14:38:25 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -326,123 +326,129 @@ int EXAM_IMPL(fstream_test::buf)
   return EXAM_RESULT;
 }
 
-int EXAM_IMPL(fstream_test::seek)
+int EXAM_IMPL(fstream_test::seek_binary)
 {
+  // Test in binary mode:
   {
-    // Test in binary mode:
-    {
-      fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
-      EXAM_CHECK( s );
+    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
+    EXAM_REQUIRE( s );
 
-      s << "1234567890\n";
-      EXAM_CHECK( s );
-    }
-
-    char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
-    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary );
-    EXAM_CHECK( s );
-
-    int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
-    EXAM_CHECK( chars_read == 11 );
-    EXAM_CHECK( b1[9] == '0' );
-    EXAM_CHECK( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(chars_read) );
-    EXAM_CHECK( s.rdbuf()->pubseekoff( -chars_read, ios_base::cur ) == fstream::pos_type(0) );
-
-    char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
-
-    EXAM_CHECK( s.rdbuf()->sgetn( b2, 10 ) == 10 );
-    EXAM_CHECK( b2[9] == '0' );
+    s << "1234567890\n";
+    EXAM_REQUIRE( s );
   }
 
+  char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
+  fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary );
+  EXAM_REQUIRE( s );
+
+  int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
+  EXAM_CHECK( chars_read == 11 );
+  EXAM_CHECK( b1[9] == '0' );
+  EXAM_CHECK( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(chars_read) );
+  EXAM_CHECK( s.rdbuf()->pubseekoff( -chars_read, ios_base::cur ) == fstream::pos_type(0) );
+
+  char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
+
+  EXAM_CHECK( s.rdbuf()->sgetn( b2, 10 ) == 10 );
+  EXAM_CHECK( b2[9] == '0' );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fstream_test::seek_text)
+{
+  // Test in text mode:
   {
-    // Test in text mode:
-    {
-      fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
-      EXAM_CHECK( s );
+    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
+    EXAM_REQUIRE( s );
 
-      s << "1234567890\n";
-      EXAM_CHECK( s );
-    }
-
-    char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
-    fstream s( "test_file.txt", ios_base::in | ios_base::out );
-    EXAM_CHECK( s );
-
-    int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
-    EXAM_CHECK( chars_read == 11 );
-    EXAM_CHECK( b1[9] == '0' );
-
-    fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
-    // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
-    streamoff offset = pos;
-    EXAM_CHECK( offset >= chars_read );
-    offset = s.rdbuf()->pubseekoff( -offset, ios_base::cur );
-    EXAM_CHECK( offset == 0 );
-
-    char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
-
-    EXAM_CHECK( s.rdbuf()->sgetn( b2, 5 ) == 5 );
-    EXAM_CHECK( b2[4] == '5' );
-
-    pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
-    EXAM_CHECK( pos == fstream::pos_type(5) );
-    EXAM_CHECK( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+    s << "1234567890\n";
+    EXAM_REQUIRE( s );
   }
 
+  char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
+  fstream s( "test_file.txt", ios_base::in | ios_base::out );
+  EXAM_REQUIRE( s );
+
+  int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
+  EXAM_CHECK( chars_read == 11 );
+  EXAM_CHECK( b1[9] == '0' );
+
+  fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+  // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
+  streamoff offset = pos;
+  EXAM_CHECK( offset >= chars_read );
+  offset = s.rdbuf()->pubseekoff( -offset, ios_base::cur );
+  EXAM_CHECK( offset == 0 );
+
+  char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
+
+  EXAM_CHECK( s.rdbuf()->sgetn( b2, 5 ) == 5 );
+  EXAM_CHECK( b2[4] == '5' );
+
+  pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+  EXAM_CHECK( pos == fstream::pos_type(5) );
+  EXAM_CHECK( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fstream_test::seek_wide_stream)
+{
 #if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
-  {
-    // Test with a wariable encoding:
-    locale loc;
-    try {
-      locale tmp(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(".UTF8"));
-      loc = tmp;
-    }
-    catch ( const runtime_error& err ) {
-      // Localization no supported so no test:
-      EXAM_ERROR( err.what() );
-      // throw exam::skip_exception();
-
-      return EXAM_RESULT;
-    }
-
-    {
-      wfstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
-      EXAM_CHECK( s );
-      s.imbue(loc);
-      EXAM_CHECK( s );
-
-      s << L"1234567890\n";
-      EXAM_CHECK( s );
-    }
-
-    wchar_t b1[] = { L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x' };
-    wfstream s( "test_file.txt", ios_base::in | ios_base::out );
-    EXAM_CHECK( s );
-    s.imbue(loc);
-    EXAM_CHECK( s );
-
-    int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) / sizeof(wchar_t) );
-    EXAM_CHECK( chars_read == 11 );
-    EXAM_CHECK( b1[9] == L'0' );
-
-    fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
-    // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
-    streamoff off = pos;
-    EXAM_CHECK( off >= chars_read );
-    off = s.rdbuf()->pubseekoff(-off, ios_base::cur);
-    EXAM_CHECK( off == -1 );
-    off = s.rdbuf()->pubseekoff(0, ios_base::beg);
-    EXAM_CHECK( off == 0 );
-
-    wchar_t b2[10] = { L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y' };
-
-    EXAM_CHECK( s.rdbuf()->sgetn( b2, 5 ) == 5 );
-    EXAM_CHECK( b2[4] == L'5' );
-
-    pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
-    EXAM_CHECK( pos == fstream::pos_type(5) );
-    //EXAM_CHECK( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+  // Test with a wariable encoding:
+  locale loc;
+  try {
+    locale tmp(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(".UTF-8"));
+    loc = tmp;
   }
+  catch ( const runtime_error& err ) {
+    // Localization no supported so no test:
+    EXAM_ERROR( err.what() );
+    // throw exam::skip_exception();
+
+    return EXAM_RESULT;
+  }
+
+  {
+    wfstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
+    EXAM_REQUIRE( s );
+    s.imbue(loc);
+    EXAM_REQUIRE( s );
+
+    s << L"1234567890\n";
+    EXAM_REQUIRE( s );
+  }
+
+  wchar_t b1[] = { L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x' };
+  wfstream s( "test_file.txt", ios_base::in | ios_base::out );
+  EXAM_REQUIRE( s );
+  s.imbue(loc);
+  EXAM_REQUIRE( s );
+
+  int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) / sizeof(wchar_t) );
+  EXAM_CHECK( chars_read == 11 );
+  EXAM_CHECK( b1[9] == L'0' );
+
+  fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+  // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
+  streamoff off = pos;
+  EXAM_CHECK( off >= chars_read );
+  off = s.rdbuf()->pubseekoff(-off, ios_base::cur);
+  EXAM_CHECK( off == -1 );
+  off = s.rdbuf()->pubseekoff(0, ios_base::beg);
+  EXAM_CHECK( off == 0 );
+
+  wchar_t b2[10] = { L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y' };
+
+  EXAM_CHECK( s.rdbuf()->sgetn( b2, 5 ) == 5 );
+  EXAM_CHECK( b2[4] == L'5' );
+
+  pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+  EXAM_CHECK( pos == fstream::pos_type(5) );
+  //EXAM_CHECK( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+#else
+  throw exam::skip_exception();
 #endif
 
   return EXAM_RESULT;
@@ -827,8 +833,6 @@ int EXAM_IMPL(fstream_test::null_stream)
 
 int EXAM_IMPL(fstream_test::null_buf)
 {
-#  if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
-
   /* **********************************************************************************
 
   testcase for bug #1830513:
@@ -877,9 +881,6 @@ int EXAM_IMPL(fstream_test::null_buf)
   f.getline( buf, 1 ); // <-- key line
   EXAM_CHECK( buf[0] == 0 );
   EXAM_CHECK( f.fail() ); // due to delimiter not found while buffer was exhausted
-#  else
-  throw exam::skip_exception();
-#  endif
 
   return EXAM_RESULT;
 }

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/11/22 00:40:58 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 14:25:14 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -57,7 +57,9 @@ class fstream_test
     int EXAM_DECL(err);
     int EXAM_DECL(tellg);
     int EXAM_DECL(tellp);
-    int EXAM_DECL(seek);
+    int EXAM_DECL(seek_binary);
+    int EXAM_DECL(seek_text);
+    int EXAM_DECL(seek_wide_stream);
     int EXAM_DECL(buf);
     int EXAM_DECL(rdbuf);
     int EXAM_DECL(streambuf_output);
