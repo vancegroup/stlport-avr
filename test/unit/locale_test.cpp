@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/27 13:05:36 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 15:04:37 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -338,11 +338,8 @@ int EXAM_IMPL(locale_test::combine)
 
 int EXAM_IMPL(locale_test::collate_facet)
 {
-  cerr << __FILE__ << ':' << __LINE__ << endl;
   {
-    cerr << __FILE__ << ':' << __LINE__ << endl;
     EXAM_CHECK( has_facet<collate<char> >(locale::classic()) );
-    cerr << __FILE__ << ':' << __LINE__ << endl;
     collate<char> const& col = use_facet<collate<char> >(locale::classic());
 
     char const str1[] = "abcdef1";
