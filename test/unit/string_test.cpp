@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/28 00:41:48 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 15:02:26 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2009
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -11,16 +11,16 @@
  *
  */
 
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include "string_test.h"
 
 //To make GLib C++ closer to STLport behavior we need this macro:
 //Only mandatory when building unit tests without STLport, do not change
 //anything when building with STLport
 #define _GLIBCXX_FULLY_DYNAMIC_STRING
-
-//Has to be first for StackAllocator swap overload to be taken
-//into account (at least using GCC 4.0.1)
-#include "stack_allocator.h"
 
 #include <vector>
 #include <deque>

@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/27 23:49:18 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 15:00:46 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2009
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -11,11 +11,11 @@
  *
  */
 
-#include "slist_test.h"
-
 //Has to be first for StackAllocator swap overload to be taken
 //into account (at least using GCC 4.0.1)
 #include "stack_allocator.h"
+
+#include "slist_test.h"
 
 #include <algorithm>
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)

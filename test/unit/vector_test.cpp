@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/26 23:28:29 ptr>
+// -*- C++ -*- Time-stamp: <09/01/28 15:00:24 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2009
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -11,11 +11,11 @@
  *
  */
 
-#include "vector_test.h"
-
 //Has to be first for StackAllocator swap overload to be taken
 //into account (at least using GCC 4.0.1)
 #include "stack_allocator.h"
+
+#include "vector_test.h"
 
 #include <vector>
 #include <algorithm>
