@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/03/26 02:02:03 ptr>
+// -*- C++ -*- Time-stamp: <09/01/29 17:32:17 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2008
+ * Copyright (c) 1997-1999, 2002-2009
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
@@ -559,6 +559,64 @@ __FIT_DECLSPEC long& iword( int __idx )
 __FIT_DECLSPEC void*& pword( int __idx )
 {
   return *reinterpret_cast<void **>( std::tr2::detail::_alloc_uw( __idx ));
+}
+
+__FIT_DECLSPEC void block_signal( int sig )
+{
+#ifdef __unix
+  sigset_t sigset;
+
+  sigemptyset( &sigset );
+  sigaddset( &sigset, sig );
+#  ifdef __FIT_PTHREADS
+  pthread_sigmask( SIG_BLOCK, &sigset, 0 );
+#  endif
+#endif // __unix
+}
+
+__FIT_DECLSPEC void unblock_signal( int sig )
+{
+#ifdef __unix
+  sigset_t sigset;
+
+  sigemptyset( &sigset );
+  sigaddset( &sigset, sig );
+#  ifdef __FIT_PTHREADS
+  pthread_sigmask( SIG_UNBLOCK, &sigset, 0 );
+#  endif
+#endif // __unix
+}
+
+__FIT_DECLSPEC int signal_handler( int sig, void (*handler)(int) )
+{
+#ifdef __unix
+  struct sigaction act;
+
+  sigemptyset( &act.sa_mask );
+  sigaddset( &act.sa_mask, sig );
+
+  act.sa_flags = 0; // SA_RESTART;
+  act.sa_handler = handler;
+  return sigaction( sig, &act, 0 );
+#else
+  return -1;
+#endif // __unix
+}
+
+__FIT_DECLSPEC int signal_handler( int sig, void (*handler)(int, siginfo_t*, void*) )
+{
+#ifdef __unix
+  struct sigaction act;
+
+  sigemptyset( &act.sa_mask );
+  sigaddset( &act.sa_mask, sig );
+
+  act.sa_flags = SA_SIGINFO; // SA_RESTART;
+  act.sa_sigaction = handler;
+  return sigaction( sig, &act, 0 );
+#else
+  return -1;
+#endif // __unix
 }
 
 } // namespace this_thread

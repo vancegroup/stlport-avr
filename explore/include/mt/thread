@@ -38,6 +38,7 @@
 # include <pthread.h>
 # include <semaphore.h>
 # include <sched.h>
+# include <signal.h>
 #endif // __unix
 
 #include <cerrno>
@@ -641,6 +642,11 @@ __FIT_DECLSPEC int xalloc();
 
 __FIT_DECLSPEC long& iword( int __idx );
 __FIT_DECLSPEC void*& pword( int __idx );
+
+__FIT_DECLSPEC void block_signal( int sig );
+__FIT_DECLSPEC void unblock_signal( int sig );
+__FIT_DECLSPEC int signal_handler( int sig, void (*handler)(int) );
+__FIT_DECLSPEC int signal_handler( int sig, void (*handler)(int, siginfo_t*, void*) );
 
 } // namespace this_thread
 
