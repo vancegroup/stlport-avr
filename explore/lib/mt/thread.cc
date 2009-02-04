@@ -22,6 +22,7 @@
 # include <unistd.h>
 #endif
 #include <fcntl.h>
+#include <cstdlib>
 
 #include <mt/mutex>
 #include <mt/thread>

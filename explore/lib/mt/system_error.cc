@@ -16,6 +16,8 @@
 #include "mt/callstack.h"
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
 
 #if 0
 #ifdef STLPORT
