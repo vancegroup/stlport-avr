@@ -50,6 +50,7 @@ void callstack( std::ostream& s )
 #include <ucontext.h>
 #include <dlfcn.h>
 #include <execinfo.h>
+#include <cstdlib>
 
 #ifdef __FIT_CPP_DEMANGLE
 #  include <cxxabi.h>

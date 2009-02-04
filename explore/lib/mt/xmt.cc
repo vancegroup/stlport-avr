@@ -22,6 +22,7 @@
 #include <xmt.h>
 
 #include <cstring>
+#include <climits>
 #ifndef _WIN32
 # include <ostream>
 #endif
