@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/07/30 20:49:38 ptr>
+// -*- C++ -*- Time-stamp: <09/02/04 18:40:18 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2008
@@ -410,15 +410,9 @@ class __condition_event
 
     void notify_one()
       {
-        {
-          unique_lock<__mutex<false,SCOPE> > lk( _lock );
+        unique_lock<__mutex<false,SCOPE> > lk( _lock );
 
-          if ( _val ) {
-            return;
-          }
-
-          _val = true;
-        }
+        _val = true;
 
 #ifdef __FIT_WIN32THREADS
         SetEvent( _cond );
@@ -433,15 +427,9 @@ class __condition_event
 
     void notify_all()
       {
-        {
-          unique_lock<__mutex<false,SCOPE> > lk( _lock );
+        unique_lock<__mutex<false,SCOPE> > lk( _lock );
 
-          if ( _val ) {
-            return;
-          }
-
-          _val = true;
-        }
+        _val = true;
 
 #ifdef __FIT_WIN32THREADS
         if ( SetEvent( _cond ) == FALSE ) {
