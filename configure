@@ -280,6 +280,8 @@ do
           ;;
       esac
       ;;
+    '')
+      ;;
     *)
       echo "Unknown configuration option '$option'"
       exit -1
