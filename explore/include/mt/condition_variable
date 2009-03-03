@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/02/04 18:40:18 ptr>
+// -*- C++ -*- Time-stamp: <09/02/25 16:07:21 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2008
@@ -89,7 +89,8 @@ class __condition_variable
 #endif
       }
 
-    void wait( unique_lock<__mutex<false,SCOPE> >& lock )
+    template <bool RECURSIVE_SAFE>
+    void wait( unique_lock<__mutex<RECURSIVE_SAFE,SCOPE> >& lock )
       {
 #ifdef __FIT_WIN32THREADS
         ResetEvent( _cond );
@@ -109,15 +110,16 @@ class __condition_variable
 #endif
       }
 
-    template <class Predicate>
-    void wait( unique_lock<__mutex<false,SCOPE> >& lock, Predicate pred )
+    template <bool RECURSIVE_SAFE, class Predicate>
+    void wait( unique_lock<__mutex<RECURSIVE_SAFE,SCOPE> >& lock, Predicate pred )
       {
         while ( !pred() ) {
           wait( lock );
         }
       }
 
-    bool timed_wait( unique_lock<__mutex<false,SCOPE> >& lock, const system_time& abs_time )
+    template <bool RECURSIVE_SAFE>
+    bool timed_wait( unique_lock<__mutex<RECURSIVE_SAFE,SCOPE> >& lock, const system_time& abs_time )
       {
 #ifdef __FIT_PTHREADS
         ::timespec t;
@@ -134,16 +136,16 @@ class __condition_variable
         return true;
       }
 
-    template <class Duration>
-    bool timed_wait( unique_lock<__mutex<false,SCOPE> >& lock, const Duration& rel_time )
+    template <bool RECURSIVE_SAFE, class Duration>
+    bool timed_wait( unique_lock<__mutex<RECURSIVE_SAFE,SCOPE> >& lock, const Duration& rel_time )
       {
 #ifdef __FIT_PTHREADS
         return timed_wait( lock, get_system_time() + rel_time );
 #endif
       }
 
-    template <class Predicate>
-    bool timed_wait( unique_lock<__mutex<false,SCOPE> >& lock, const system_time& abs_time, Predicate pred )
+    template <bool RECURSIVE_SAFE, class Predicate>
+    bool timed_wait( unique_lock<__mutex<RECURSIVE_SAFE,SCOPE> >& lock, const system_time& abs_time, Predicate pred )
       {
         while ( !pred() ) {
           if ( !timed_wait( lock, abs_time ) ) {
@@ -153,8 +155,8 @@ class __condition_variable
         return true;
       }
 
-    template <class Duration, class Predicate>
-    bool timed_wait( unique_lock<__mutex<false,SCOPE> >& lock, const Duration& rel_time, Predicate pred )
+    template <bool RECURSIVE_SAFE, class Duration, class Predicate>
+    bool timed_wait( unique_lock<__mutex<RECURSIVE_SAFE,SCOPE> >& lock, const Duration& rel_time, Predicate pred )
       {
 #ifdef __FIT_PTHREADS
         return timed_wait( lock, get_system_time() + rel_time, pred );
