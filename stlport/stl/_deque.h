@@ -539,14 +539,14 @@ class deque :
       { _M_initialize(__n); }
     deque(size_type __n, const value_type& __val, const allocator_type& __a = allocator_type()) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __n)
-      { _M_fill_initialize(__val, false_type()); }
+      { _M_fill_initialize(__val, typename has_trivial_default_constructor<_Tp>::type()); }
 
   protected:
     template <class _Integer>
     void _M_initialize_dispatch( _Integer __n, _Integer __x, const true_type& )
       {
         this->_M_initialize_map(__n);
-        _M_fill_initialize(__x, false_type());
+        _M_fill_initialize(__x, true_type());
       }
 
     template <class _InputIter>
@@ -779,7 +779,7 @@ class deque :
   public:                         // Erase
     iterator erase(iterator __pos)
       {
-        return _M_erase(__pos, /* _Movable() */ true_type() );
+        return _M_erase(__pos, /* _Movable() */ typename _STLP_TR1 __has_trivial_move<value_type>::type() );
       }
     iterator erase(iterator __first, iterator __last)
       {
@@ -790,7 +790,7 @@ class deque :
           if (__first == __last) {
             return __first;
           }
-          return _M_erase(__first, __last, /* _Movable() */ true_type() );
+          return _M_erase(__first, __last, /* _Movable() */ false_type() );
         }
       }
 
@@ -880,7 +880,7 @@ class deque :
     template <class _ForwardIterator>
     void _M_insert_range_aux( iterator __pos,
                               _ForwardIterator __first, _ForwardIterator __last,
-                              size_type __n, const true_type& /*_Movable*/)
+                              size_type __n, const false_type& /*_Movable*/)
       {
         const difference_type __elemsbefore = __pos - this->_M_start;
         size_type __length = size();
@@ -919,7 +919,7 @@ class deque :
     template <class _ForwardIterator>
     void _M_insert_range_aux( iterator __pos,
                               _ForwardIterator __first, _ForwardIterator __last,
-                              size_type __n, const false_type& /*_Movable*/)
+                              size_type __n, const true_type& /*_Movable*/)
       {
         const difference_type __elemsbefore = __pos - this->_M_start;
         size_type __length = size();

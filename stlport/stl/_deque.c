@@ -145,7 +145,7 @@ void deque<_Tp, _Alloc >::_M_fill_insert(iterator __pos, size_type __n, const va
 }
 
 template <class _Tp, class _Alloc >
-__iterator__ deque<_Tp,_Alloc>::_M_erase( iterator __pos, const true_type& /* trivial move */ )
+__iterator__ deque<_Tp,_Alloc>::_M_erase( iterator __pos, const false_type& /* trivial move */ )
 {
   difference_type __index = __pos - this->_M_start;
   if (size_type(__index) < this->size() >> 1) {
@@ -178,7 +178,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase( iterator __pos, const true_type& /* tr
 }
 
 template <class _Tp, class _Alloc >
-__iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __pos, const false_type& /* trivial move */)
+__iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __pos, const true_type& /* trivial move */)
 {
   iterator __next = __pos;
   ++__next;
@@ -194,7 +194,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __pos, const false_type& /* tr
 }
 
 template <class _Tp, class _Alloc >
-__iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, const true_type& /*_Movable*/)
+__iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, const false_type& /*_Movable*/)
 {
   difference_type __n = __last - __first;
   difference_type __elems_before = __first - this->_M_start;
@@ -253,7 +253,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, cons
 }
 
 template <class _Tp, class _Alloc >
-__iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, const false_type& /*_Movable*/)
+__iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, const true_type& /*_Movable*/)
 {
   difference_type __n = __last - __first;
   difference_type __elems_before = __first - this->_M_start;
@@ -400,7 +400,7 @@ void deque<_Tp,_Alloc>::_M_pop_front_aux()
 template <class _Tp, class _Alloc >
 __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
                                                    const value_type& __x,
-                                                   const true_type& /*_Movable*/)
+                                                   const false_type& /*_Movable*/)
 {
   const difference_type __elems_before = __pos - this->_M_start;
   size_type __length = this->size();
@@ -442,7 +442,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
 template <class _Tp, class _Alloc >
 __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
                                                    const value_type& __x,
-                                                   const false_type& /*_Movable*/)
+                                                   const true_type& /*_Movable*/)
 {
   const difference_type __elems_before = __pos - this->_M_start;
   size_type __length = this->size();
