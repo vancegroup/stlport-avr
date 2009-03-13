@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <09/02/17 22:55:07 ptr>
+// -*- C++ -*- Time-stamp: <09/03/14 00:46:21 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2008
+ * Copyright (c) 1997-1999, 2002-2009
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
@@ -147,6 +147,9 @@ class __mutex_base
     __mutex_base( const __mutex_base& )
       { }
 
+    __mutex_base& operator =( const __mutex_base& )
+      { return *this; }
+
   protected:
 #ifdef __FIT_PTHREADS
     pthread_mutex_t _M_lock;
@@ -264,6 +267,9 @@ class __mutex :
   private:
     __mutex( const __mutex& )
       { }
+
+    __mutex& operator =( const __mutex& )
+      { return *this; }
 
 #ifndef __FIT_WIN32THREADS
   private:
@@ -421,9 +427,9 @@ class __mutex<true,SCOPE> : // Recursive Safe
 {
   public:
     __mutex() :
-        _count( 0 ),
+        _count( 0 )
 # ifdef __FIT_PTHREADS
-        _id( __STATIC_CAST(pthread_t,-1) )
+        , _id( __STATIC_CAST(pthread_t,-1) )
 # endif
       { }
 
@@ -492,6 +498,8 @@ class __mutex<true,SCOPE> : // Recursive Safe
   private:
     __mutex( const __mutex& )
       { }
+    __mutex& operator =( const __mutex& )
+      { return *this; }
 
   protected:
     unsigned _count;
