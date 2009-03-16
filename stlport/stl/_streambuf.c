@@ -134,19 +134,6 @@ basic_streambuf<_CharT, _Traits>::_M_xsputnc(_CharT __c, streamsize __n)
 
 template <class _CharT, class _Traits>
 _STLP_TYPENAME_ON_RETURN_TYPE basic_streambuf<_CharT, _Traits>::int_type
-basic_streambuf<_CharT, _Traits>::_M_snextc_aux()
-{
-  int_type __eof = _Traits::eof();
-  if (_M_gend == _M_gnext)
-    return _Traits::eq_int_type(this->uflow(), __eof) ? __eof : this->sgetc();
-  else {
-    _M_gnext = _M_gend;
-    return this->underflow();
-  }
-}
-
-template <class _CharT, class _Traits>
-_STLP_TYPENAME_ON_RETURN_TYPE basic_streambuf<_CharT, _Traits>::int_type
 basic_streambuf<_CharT, _Traits>::pbackfail(int_type) {
  return _Traits::eof();
 }
