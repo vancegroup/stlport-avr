@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/11/22 00:26:04 ptr>
+// -*- C++ -*- Time-stamp: <09/04/03 17:06:15 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -546,6 +546,30 @@ int EXAM_IMPL(sstream_test::tellp)
   return EXAM_RESULT;
 }
 
+int EXAM_IMPL(sstream_test::extra0_bug_id_2728232) // bug ID: 2728232
+{
+  stringstream s;
+  string str_ref( "b4209c9d-2091-48fd-8078-19176d692692" );
+  string spaces( "   " );
+
+  s << str_ref;
+
+  string str;
+
+  s >> str;
+
+  EXAM_CHECK( str == str_ref );
+  EXAM_CHECK( s.str() == str_ref );
+
+  s << spaces.c_str();
+
+  // In line below s.str() return 'b4209c9d-2091-48fd-8078-19176d6926920   '
+  // i.e. extra 0 after uid string; get pointer point to this '0',
+  // so next input return '0' first.
+  EXAM_CHECK( s.str() == (str_ref + spaces) );
+
+  return EXAM_RESULT;
+}
 
 template < class T >
 string to_string( const T& v )

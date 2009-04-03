@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/28 14:43:37 ptr>
+// -*- C++ -*- Time-stamp: <09/04/03 17:07:49 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -289,6 +289,7 @@ int main( int argc, const char** argv )
   t.add( &sstream_test::seekp, sstrm_test, "sstream seekp" );
   t.add( &sstream_test::seek_gp, sstrm_test, "sstream seek_gp" );
   t.add( &sstream_test::tellp, sstrm_test, "sstream tellp" );
+  t.add( &sstream_test::extra0_bug_id_2728232, sstrm_test, "extra 0; bug ID: 2728232" );
   t.add( &sstream_test::negative, sstrm_test, "sstream negative" );
 
   numerics num_test;

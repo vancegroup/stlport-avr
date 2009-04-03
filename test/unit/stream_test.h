@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/28 14:25:14 ptr>
+// -*- C++ -*- Time-stamp: <09/04/03 17:06:37 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -45,6 +45,7 @@ class sstream_test
     int EXAM_DECL(seek_gp);
     int EXAM_DECL(tellp);
     int EXAM_DECL(negative);
+    int EXAM_DECL(extra0_bug_id_2728232);
 };
 
 class fstream_test
