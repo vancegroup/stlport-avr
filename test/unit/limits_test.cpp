@@ -82,44 +82,45 @@ bool test_float_values(_Tp lhs, _Tp rhs)
 { return lhs == rhs; }
 
 template <class _Tp>
-bool test_float_limits(const _Tp &) {
+int EXAM_IMPL(test_float_limits)
+{
   typedef numeric_limits<_Tp> lim;
-  EXAM_CHECK_ASYNC(lim::is_specialized);
-  EXAM_CHECK_ASYNC(!lim::is_modulo);
-  EXAM_CHECK_ASYNC(!lim::is_integer);
-  EXAM_CHECK_ASYNC(lim::is_signed);
 
-  EXAM_CHECK_ASYNC(lim::max() > 1000);
-  EXAM_CHECK_ASYNC(lim::min() > 0);
-  EXAM_CHECK_ASYNC(lim::min() < 0.001);
-  EXAM_CHECK_ASYNC(lim::epsilon() > 0);
+  EXAM_CHECK(lim::is_specialized);
+  EXAM_CHECK(!lim::is_modulo);
+  EXAM_CHECK(!lim::is_integer);
+  EXAM_CHECK(lim::is_signed);
+
+  EXAM_CHECK(lim::max() > 1000);
+  EXAM_CHECK(lim::min() > 0);
+  EXAM_CHECK(lim::min() < 0.001);
+  EXAM_CHECK(lim::epsilon() > 0);
 
   if (lim::is_iec559) {
-    EXAM_CHECK_ASYNC(lim::has_infinity);
-    EXAM_CHECK_ASYNC(lim::has_quiet_NaN);
-    EXAM_CHECK_ASYNC(lim::has_signaling_NaN);
-    EXAM_CHECK_ASYNC(lim::has_denorm == denorm_present);
+    EXAM_CHECK(lim::has_infinity);
+    EXAM_CHECK(lim::has_quiet_NaN);
+    EXAM_CHECK(lim::has_signaling_NaN);
+    EXAM_CHECK(lim::has_denorm == denorm_present);
   }
 
   if (lim::has_denorm == denorm_absent) {
-    EXAM_CHECK_ASYNC(lim::denorm_min() == lim::min());
-    _Tp tmp = lim::min();
+    EXAM_CHECK(lim::denorm_min() == lim::min());
+    volatile _Tp tmp = lim::min();
     tmp /= 2;
     if (tmp > 0 && tmp < lim::min()) {
       // has_denorm could be denorm_present
-      EXAM_MESSAGE_ASYNC("It looks like your compiler/platform supports denormalized floating point representation.");
+      EXAM_MESSAGE("It looks like your compiler/platform supports denormalized floating point representation.");
     }
-  }
-  else if (lim::has_denorm == denorm_present) {
-    EXAM_CHECK_ASYNC(lim::denorm_min() > 0);
-    EXAM_CHECK_ASYNC(lim::denorm_min() < lim::min());
+  } else if (lim::has_denorm == denorm_present) {
+    EXAM_CHECK(lim::denorm_min() > 0);
+    EXAM_CHECK(lim::denorm_min() < lim::min());
 
-    _Tp tmp = lim::min();
+    volatile _Tp tmp = lim::min();
     while (tmp != 0) {
       _Tp old_tmp = tmp;
       tmp /= 2;
-      EXAM_CHECK_ASYNC(tmp < old_tmp);
-      EXAM_CHECK_ASYNC(tmp >= lim::denorm_min() || tmp == (_Tp)0);
+      EXAM_CHECK(tmp < old_tmp);
+      EXAM_CHECK(tmp >= lim::denorm_min() || tmp == (_Tp)0);
       //ostringstream str;
       //str << "denorm_min = " << lim::denorm_min() << ", tmp = " << tmp;
       //EXAM_MESSAGE(str.str().c_str());
@@ -127,16 +128,14 @@ bool test_float_limits(const _Tp &) {
   }
 
   if (lim::has_infinity) {
-    const _Tp infinity = lim::infinity();
+    const volatile _Tp infinity = lim::infinity();
     /* Make sure those values are not 0 or similar nonsense.
      * Infinity must compare as if larger than the maximum representable value. */
 
-    _Tp val = lim::max();
+    volatile _Tp val = lim::max();
     val *= 2;
 
-    /* We use test_float_values because without it some compilers (gcc) perform weird
-     * optimization on the test giving unexpected result. */
-    EXAM_CHECK_ASYNC(test_float_values(val, infinity));
+    EXAM_CHECK( val == infinity);
 
     /*
     ostringstream str;
@@ -179,22 +178,24 @@ bool test_float_limits(const _Tp &) {
     EXAM_MESSAGE( str.str().c_str() );
     */
 
-    EXAM_CHECK_ASYNC(infinity == infinity);
-    EXAM_CHECK_ASYNC(infinity > lim::max());
-    EXAM_CHECK_ASYNC(-infinity < -lim::max());
+    EXAM_CHECK(infinity == infinity);
+    EXAM_CHECK(infinity > lim::max());
+    EXAM_CHECK(-infinity < -lim::max());
   }
 
-  return true;
+  return EXAM_RESULT;
 }
 
 //float generate_nan(float f) {
 //  return 0.0f / f;
 //}
 template <class _Tp>
-bool test_qnan(const _Tp &) {
+int EXAM_IMPL(test_qnan)
+{
   typedef numeric_limits<_Tp> lim;
+
   if (lim::has_quiet_NaN) {
-    const _Tp qnan = lim::quiet_NaN();
+    const volatile _Tp qnan = lim::quiet_NaN();
 
     //if (sizeof(_Tp) == 4) {
     //  ostringstream str;
@@ -213,10 +214,10 @@ bool test_qnan(const _Tp &) {
     * If one of these fail, your compiler may be optimizing incorrectly,
     * or the STLport is incorrectly configured.
     */
-    EXAM_CHECK_ASYNC(! (qnan == 42));
-    EXAM_CHECK_ASYNC(! (qnan == qnan));
-    EXAM_CHECK_ASYNC(qnan != 42);
-    EXAM_CHECK_ASYNC(qnan != qnan);
+    EXAM_CHECK( !(qnan == 42));
+    EXAM_CHECK( !(qnan == qnan));
+    EXAM_CHECK( qnan != 42);
+    EXAM_CHECK( qnan != qnan);
 
     /* The following tests may cause arithmetic traps.
     * EXAM_CHECK_ASYNC(! (qnan < 42));
@@ -225,7 +226,7 @@ bool test_qnan(const _Tp &) {
     * EXAM_CHECK_ASYNC(! (qnan >= 42));
     */
   }
-  return true;
+  return EXAM_RESULT;
 }
 
 
@@ -264,11 +265,10 @@ int EXAM_IMPL(limits_test::limits) {
   EXAM_CHECK(test_unsigned_integral_limits(unsigned_long_long()));
 #endif
 
-  EXAM_CHECK(test_float_limits(float()));
-  EXAM_CHECK(test_float_limits(double()));
+  EXAM_RESULT |= test_float_limits<float>( __exam_ts, 0 );
+  EXAM_RESULT |= test_float_limits<double>( __exam_ts, 0 );
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
-  typedef long double long_double;
-  EXAM_CHECK(test_float_limits(long_double()));
+  EXAM_RESULT |= test_float_limits<long double>( __exam_ts, 0 );
 #  endif
 
   EXAM_CHECK( !numeric_limits<ArbitraryType>::is_specialized );
@@ -290,11 +290,10 @@ int EXAM_IMPL(limits_test::qnan_test)
   _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
 #  endif
 
-  EXAM_CHECK(test_qnan(float()));
-  EXAM_CHECK(test_qnan(double()));
+  EXAM_RESULT |= test_qnan<float>( __exam_ts, 0 );
+  EXAM_RESULT |= test_qnan<double>( __exam_ts, 0 );
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
-  typedef long double long_double;
-  EXAM_CHECK(test_qnan(long_double()));
+  EXAM_RESULT |= test_qnan<long double>( __exam_ts, 0 );
 #  endif
 
 #  if defined (__BORLANDC__)

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/03 17:07:49 ptr>
+// -*- C++ -*- Time-stamp: <09/04/05 23:36:56 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -294,7 +294,7 @@ int main( int argc, const char** argv )
 
   numerics num_test;
 
-  exam::test_suite::test_case_type num_tc[6];
+  exam::test_suite::test_case_type num_tc[7];
 
   t.add( &numerics::accum2, num_test, "accumulate, non-default functor",
     num_tc[0] = t.add( &numerics::accum1, num_test, "accumulate" ) );
