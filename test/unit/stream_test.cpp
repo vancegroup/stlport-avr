@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/03 17:06:15 ptr>
+// -*- C++ -*- Time-stamp: <09/04/06 20:21:51 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -561,11 +561,20 @@ int EXAM_IMPL(sstream_test::extra0_bug_id_2728232) // bug ID: 2728232
   EXAM_CHECK( str == str_ref );
   EXAM_CHECK( s.str() == str_ref );
 
+  /*
+    Current state of 's' has eof flag up, i.e. not good.
+    If missed s.clear() below, then after input string (spaces)
+    s.str() would return 'b4209c9d-2091-48fd-8078-19176d6926920   '
+    i.e. extra 0 after uid string; get pointer would point to this '0',
+    so next input return '0' first.
+
+    Resolution: not a bug.
+  */
+
+  s.clear(); // <-- Required here, to clear eof flag.
+
   s << spaces.c_str();
 
-  // In line below s.str() return 'b4209c9d-2091-48fd-8078-19176d6926920   '
-  // i.e. extra 0 after uid string; get pointer point to this '0',
-  // so next input return '0' first.
   EXAM_CHECK( s.str() == (str_ref + spaces) );
 
   return EXAM_RESULT;
