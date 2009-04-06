@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/05 23:36:56 ptr>
+// -*- C++ -*- Time-stamp: <09/04/06 18:55:07 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -394,27 +394,28 @@ int main( int argc, const char** argv )
   fstream_test fstrm_test;
   exam::test_suite::test_case_type fstream_tc[10];
 
-  t.add( &fstream_test::output, fstrm_test, "fstream output" );
-  t.add( &fstream_test::input, fstrm_test, "fstream input" );
-  t.add( &fstream_test::input_char, fstrm_test, "fstream input_char" );
-  t.add( &fstream_test::io, fstrm_test, "fstream io" );
-  t.add( &fstream_test::err, fstrm_test, "fstream err" );
-  t.add( &fstream_test::tellg, fstrm_test, "fstream tellg" );
-  t.add( &fstream_test::tellp, fstrm_test, "fstream tellp" );
+  fstream_tc[0] = t.add( &fstream_test::err, fstrm_test, "fstream err",
+    t.add( &fstream_test::io, fstrm_test, "fstream io",
+      t.add( &fstream_test::input_char, fstrm_test, "fstream input_char",
+        t.add( &fstream_test::input, fstrm_test, "fstream input",
+          t.add( &fstream_test::output, fstrm_test, "fstream output" ) ) ) ) );
+
+  t.add( &fstream_test::tellg, fstrm_test, "fstream tellg", fstream_tc[0] );
+  t.add( &fstream_test::tellp, fstrm_test, "fstream tellp", fstream_tc[0] );
 
   t.add( &fstream_test::seek_wide_stream, fstrm_test, "wfstream seek",
-    fstream_tc[0] = t.add( &fstream_test::seek_text, fstrm_test, "fstream seek in text",
-      t.add( &fstream_test::seek_binary, fstrm_test, "fstream seek in binary" ) ) );
-  t.add( &fstream_test::buf, fstrm_test, "fstream buf" /* , fstream_tc[0] */ );
+    fstream_tc[1] = t.add( &fstream_test::seek_text, fstrm_test, "fstream seek in text",
+      t.add( &fstream_test::seek_binary, fstrm_test, "fstream seek in binary", fstream_tc[0] ) ) );
+  t.add( &fstream_test::buf, fstrm_test, "fstream buf", fstream_tc[0] );
 
   t.add( &fstream_test::rdbuf, fstrm_test, "fstream rdbuf",
-    t.add( &fstream_test::streambuf_output, fstrm_test, "fstream streambuf_output" ) );
-  t.add( &fstream_test::win32_file_format, fstrm_test, "fstream win32_file_format" );
-  t.add( &fstream_test::null_stream, fstrm_test, "fstream null_stream" );
-  t.add( &fstream_test::null_buf, fstrm_test, "fstream null_buf" );
-  t.add( &fstream_test::offset, fstrm_test, "fstream offset" );
-  t.add( &fstream_test::big_file, fstrm_test, "fstream big_file" );
-  t.add( &fstream_test::custom_facet, fstrm_test, "fstream custom_facet" );
+    t.add( &fstream_test::streambuf_output, fstrm_test, "fstream streambuf_output", fstream_tc[0] ) );
+  t.add( &fstream_test::win32_file_format, fstrm_test, "fstream win32_file_format", fstream_tc[0] );
+  t.add( &fstream_test::null_stream, fstrm_test, "fstream null_stream", fstream_tc[0] );
+  t.add( &fstream_test::null_buf, fstrm_test, "fstream null_buf", fstream_tc[0] );
+  t.add( &fstream_test::offset, fstrm_test, "fstream offset", fstream_tc[0] );
+  t.add( &fstream_test::big_file, fstrm_test, "fstream big_file", fstream_tc[0] );
+  fstream_tc[2] = t.add( &fstream_test::custom_facet, fstrm_test, "fstream custom_facet", fstream_tc[0] );
   
   search_test sch_test;
   
@@ -758,7 +759,7 @@ int main( int argc, const char** argv )
 
   codecvt_test cvt_test;
 
-  t.add( &codecvt_test::variable_encoding, cvt_test, "variable_encoding" );
+  t.add( &codecvt_test::variable_encoding, cvt_test, "variable_encoding", fstream_tc[2] );
   t.add( &codecvt_test::in_out_test, cvt_test, "in_out_test" );
   t.add( &codecvt_test::length_test, cvt_test, "length_test" );
   t.add( &codecvt_test::imbue_while_reading, cvt_test, "imbue_while_reading" );
