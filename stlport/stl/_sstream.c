@@ -167,8 +167,8 @@ __BSB_int_type__ basic_stringbuf<_CharT, _Traits, _Alloc>::overflow(int_type __c
 
 template <class _CharT, class _Traits, class _Alloc>
 streamsize
-basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s,
-                                                 streamsize __n) {
+basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s, streamsize __n)
+{
   streamsize __nwritten = 0;
 
   if ((_M_mode & ios_base::out) && __n > 0) {
@@ -180,7 +180,9 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s,
         _Traits::copy(this->pptr(), __s, __STATIC_CAST(size_t, __n));
         this->pbump((int)__n);
         return __n;
-      } else {
+      }
+
+      if ( __avail > 0 ) {
         _Traits::copy(this->pptr(), __s, __avail);
         __nwritten += __avail;
         __n -= __avail;
