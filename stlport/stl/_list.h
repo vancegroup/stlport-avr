@@ -133,12 +133,10 @@ struct _List_iterator : public _List_iterator_base {
     this->_M_decr();
     return __tmp;
   }
-  bool operator==(const_iterator __y ) const {
-    return this->_M_node == __y._M_node;
-  }
-  bool operator!=(const_iterator __y ) const {
-    return this->_M_node != __y._M_node;
-  }
+  bool operator ==(const const_iterator& __y ) const
+      { return this->_M_node == __y._M_node; }
+  bool operator !=(const const_iterator& __y ) const
+      { return this->_M_node != __y._M_node; }
 };
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
