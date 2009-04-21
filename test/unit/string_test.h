@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/28 00:09:34 ptr>
+// -*- C++ -*- Time-stamp: <09/04/21 10:29:00 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -50,6 +50,7 @@ class string_test
     int EXAM_DECL(allocator_with_state);
     int EXAM_DECL(capacity);
     int EXAM_DECL(concat24);
+    int EXAM_DECL(assign_from_char);
 };
 
 #endif // __TEST_STRING_TEST_H

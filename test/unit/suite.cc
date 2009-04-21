@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/06 18:55:07 ptr>
+// -*- C++ -*- Time-stamp: <09/04/21 10:28:44 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -186,6 +186,7 @@ int main( int argc, const char** argv )
   t.add( &string_test::allocator_with_state, str_test, "allocator_with_state" );
   t.add( &string_test::capacity, str_test, "capacity" );
   t.add( &string_test::concat24, str_test, "concat24" );
+  t.add( &string_test::assign_from_char, str_test, "string assign from char buf" );
 
   cstring_test cst_test;
 

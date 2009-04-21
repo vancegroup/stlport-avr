@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/28 15:02:26 ptr>
+// -*- C++ -*- Time-stamp: <09/04/21 10:32:19 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -50,6 +50,11 @@
 #endif
 
 #include "stack_allocator.h"
+
+#ifdef __unix__
+#include <sys/mman.h>
+#include <unistd.h>
+#endif
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -1416,6 +1421,40 @@ int EXAM_IMPL(string_test::concat24)
   EXAM_CHECK( s[23] == '4' );
   EXAM_CHECK( s[24] == '1' );
   EXAM_CHECK( s[47] == '4' );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(string_test::assign_from_char)
+{
+#ifdef __unix__
+
+  /*
+    From bugreport ID 2495252:
+
+    The test works by allocating two pages of virtual memory, and then using
+    mprotect to make the second page read-inaccessible. The first page is
+    still read-accessible, and we only try to read 10 characters from it, but
+    the strlen call searches past that for a zero-terminator and encounters the
+    read-inaccessible page, leading to a segfault.
+
+    ptr: Not confirmed. STLport 5.1 problem?
+   */
+
+  void* v = ::mmap( 0, getpagesize()*2, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);                                                               
+     
+  char* p = reinterpret_cast<char*>(v);
+  memset( p, 'A', 2 * getpagesize() );
+  ::mprotect( p + getpagesize(), getpagesize(), PROT_NONE );
+
+  std::string s;
+
+  s.assign( p, 10 ); // was report about SEG fault here, see bug ID 2495252. Not confirmed.
+
+  EXAM_CHECK( s == "AAAAAAAAAA" );
+#else
+  throw exam::skip_exception();
+#endif
 
   return EXAM_RESULT;
 }
