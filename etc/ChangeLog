@@ -1,3 +1,9 @@
+2009-06-25  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build: fix build for ARM GNU/Linux cross;
+	verified with Sourcery G++ Lite 2009q1-176 for ARM GNU/Linux;
+	unit test build success, run not checked.
+
 2009-01-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* assert.h, errno.h: do #include <assert.h> only if
