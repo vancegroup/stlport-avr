@@ -49,8 +49,11 @@ endif
 ifneq ($(OSNAME),windows)
 ifneq ($(CXX_VERSION_MAJOR),2)
 ifneq ($(CXX_VERSION_MAJOR),3)
+# Appears to be broken on SunOS through GCC 4.3
+ifneq ($(OSNAME),sunos)
 CXXFLAGS += -fvisibility=hidden
 CFLAGS += -fvisibility=hidden
+endif
 endif
 endif
 else
