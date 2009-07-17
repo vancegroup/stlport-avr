@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <07/12/12 01:52:19 ptr>
+# -*- makefile -*- Time-stamp: <07/12/12 01:51:37 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -81,9 +81,9 @@ endif
 
 PHONY += install install-strip install-headers $(INSTALL_TAGS) $(INSTALL_STRIP_TAGS)
 
-install:	$(INSTALL_TAGS) install-headers
+install:	$(INSTALL_TAGS)
 
-install-strip:	$(INSTALL_STRIP_TAGS) install-headers
+install-strip:	$(INSTALL_STRIP_TAGS)
 
 # Workaround for GNU make 3.80; see comments in rules-so.mak
 define do_install_so_links
@@ -125,10 +125,10 @@ $(eval $(call do_install_so_links_wk,_STLDBG))
 # endif
 # endif
 
-install-release-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx} install-headers
+install-release-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx}
 	${POST_INSTALL}
 
-install-strip-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx} install-headers
+install-strip-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx}
 	${STRIP} ${_SO_STRIP_OPTION} $(INSTALL_LIB_DIR)/${SO_NAMExxx}
 	${POST_INSTALL}
 
@@ -139,6 +139,7 @@ ifndef WITHOUT_STLPORT
 install-stldbg-shared:	stldbg-shared $(INSTALL_LIB_DIR_STLDBG) $(INSTALL_LIB_DIR_STLDBG)/${SO_NAME_STLDBGxxx}
 	${POST_INSTALL_STLDBG}
 endif
+
 
 define do_install_headers
 if [ ! -d $(INSTALL_HDR_DIR) ]; then \
