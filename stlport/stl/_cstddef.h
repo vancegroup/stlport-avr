@@ -16,7 +16,7 @@
 #ifndef _STLP_INTERNAL_CSTDDEF
 #define _STLP_INTERNAL_CSTDDEF
 
-#  if (__GNUC__ >= 3) && defined (__CYGWIN__) // this total HACK is the only expedient way I could cygwin to work with GCC 3.0
+#  if defined(__CYGWIN__) && defined(__GNUC__) && (__GNUC__ >= 3) // this total HACK is the only expedient way I could cygwin to work with GCC 3.0
 #    define __need_wint_t // mostly because wint_t didn't seem to get defined otherwise :(
 #    define __need_wchar_t
 #    define __need_size_t
@@ -32,6 +32,16 @@
 #    endif
 #  else
 #    include <stddef.h>
+
+#    ifdef __GNUC__
+/* This for compiler's <new> header, because it has lines like:
+inline void* operator new(std::size_t, void* __p) throw() { return __p; }
+ */
+namespace _STLP_VENDOR_STD {
+using _STLP_VENDOR_CSTD::ptrdiff_t;
+using _STLP_VENDOR_CSTD::size_t;
+} /* namespace _STLP_VENDOR_STD */
+#     endif /* __GNUC__ */
 #  endif
 
 #  ifdef _STLP_IMPORT_VENDOR_CSTD

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/11/21 10:27:02 ptr>
+// -*- C++ -*- Time-stamp: <09/06/25 11:41:47 ptr>
 
 /*
  * Copyright (c) 2007, 2008
@@ -245,7 +245,7 @@ struct is_array :
     public false_type
 { };
 
-template <class _Tp, std::size_t _Sz>
+template <class _Tp, _STLP_STD::size_t _Sz>
 struct is_array<_Tp[_Sz]> :
     public true_type
 { };
@@ -450,7 +450,7 @@ struct remove_extent
     typedef _Tp type;
 };
 
-template <class _Tp, std::size_t _Sz>
+template <class _Tp, _STLP_STD::size_t _Sz>
 struct remove_extent<_Tp[_Sz]>
 {
     typedef _Tp type;
@@ -468,7 +468,7 @@ struct remove_all_extents
     typedef _Tp type;
 };
 
-template <class _Tp, std::size_t _Size>
+template <class _Tp, _STLP_STD::size_t _Size>
 struct remove_all_extents<_Tp[_Size]>
 {
     typedef typename remove_all_extents<_Tp>::type type;

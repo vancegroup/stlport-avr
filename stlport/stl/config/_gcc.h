@@ -151,6 +151,7 @@ typedef unsigned int wint_t;
 #endif
 
 #if (__GNUC__ >= 3)
+#  define _STLP_HAS_NO_NEW_C_HEADERS // experiment
 #  ifndef _STLP_HAS_NO_NEW_C_HEADERS
 /*
 #    ifndef _STLP_USE_UCLIBC
