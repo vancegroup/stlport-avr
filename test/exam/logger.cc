@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/26 20:00:56 ptr>
+// -*- C++ -*- Time-stamp: <09/03/16 17:26:57 ptr>
 
 /*
- * Copyright (c) 2007, 2008
+ * Copyright (c) 2007-2009
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License Version 3.0
@@ -9,13 +9,12 @@
 
 #include <exam/logger.h>
 #include <iostream>
+#include <cmath>
 
 namespace exam {
 
 using namespace std;
-#if 0
-using namespace std::tr2;
-#endif
+// using namespace std::tr2;
 
 int base_logger::flags() const
 {
@@ -37,17 +36,17 @@ int base_logger::flags( int f )
   return tmp;
 }
 
-void trivial_logger::report( const char *file, int line, bool cnd, const char *expr )
+void trivial_logger::report( const char* place, bool cnd, const char* expr )
 {
   if ( (cnd && ((_flags & trace) == 0)) || ((_flags & silent) != 0) ) {
     return;
   }
 
   if ( s != 0 ) {
-    *s << file << ":" << line << ": " << (cnd ? "pass" : "fail" ) << ": " << expr
+    *s << place << ": " << (cnd ? "pass" : "fail" ) << ": " << expr
        << std::endl;
   } else {
-    fprintf( f, "%s:%d: %s: %s\n", file, line, (cnd ? "pass" : "fail" ), expr );
+    fprintf( f, "%s: %s: %s\n", place, (cnd ? "pass" : "fail" ), expr );
   }
 }
 
@@ -175,10 +174,11 @@ void trivial_time_logger::tc( base_logger::tc_result r, const std::string& name 
         // mean = ((n + 1) * mean + static_cast<double>(*a)) / (n + 2);
         ++n;
       }
-      sum_sq -= sum * sum / n;
+      sum /= n;              // mean
+      sum_sq /= n;      
+      sum_sq -= sum * sum;   // dispersion
       sum_sq = max( 0.0, sum_sq ); // clear epsilon (round error)
-      sum_sq /= n * n; // dispersion
-      sum /= n;        // mean
+      sum_sq = sqrt(sum_sq); // mean square deviation
       if ( s != 0 ) {
         *s << "  " << sum << " " << sum_sq << " " << name << endl;
       } else {
@@ -209,10 +209,11 @@ void trivial_time_logger::tc( base_logger::tc_result r, const std::string& name,
         // mean = ((n + 1) * mean + static_cast<double>(*a)) / (n + 2);
         ++n;
       }
-      sum_sq -= sum * sum / n;
+      sum /= n;              // mean
+      sum_sq /= n;      
+      sum_sq -= sum * sum;   // dispersion
       sum_sq = max( 0.0, sum_sq ); // clear epsilon (round error)
-      sum_sq /= n * n; // dispersion
-      sum /= n;        // mean
+      sum_sq = sqrt(sum_sq); // mean square deviation
       if ( s != 0 ) {
         *s << "  " << sum << " " << sum_sq << " " << name << endl;
       } else {

@@ -1,10 +1,10 @@
-// -*- C++ -*- Time-stamp: <08/10/01 10:12:43 ptr>
+// -*- C++ -*- Time-stamp: <09/06/06 00:28:50 ptr>
 
 /*
- * Copyright (c) 2008
+ * Copyright (c) 2008, 2009
  * Dmitry Osmakov
  *
- * Copyright (c) 1997-1998, 2001, 2008
+ * Copyright (c) 1997-1998, 2001, 2008, 2009
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License Version 3.0
@@ -23,102 +23,75 @@ using namespace std;
 
 int option_base::_count = 0;
 
+string option_base::_parname( const char* def ) const
+{
+  string::size_type p[2];
+
+  p[0] = desc.find( '<' );
+
+  if ( p[0] != string::npos ) {
+    p[1] = desc.find( '>', p[0] );
+  }
+
+  string sample( def );
+
+  if ( (p[0] != string::npos) && (p[1] != string::npos) ) {
+    sample = desc.substr( p[0], p[1] - p[0] + 1 );
+  }
+
+  return sample;
+}
+
 std::ostream& option<string>::_describe( std::ostream& out ) const
 {
+  string sample( option_base::_parname( "<string>" ) );
+
   if ( option_base::shortname != 0 ) {
-    out << '-' << option_base::shortname << " <string>";
+    out << '-' << option_base::shortname << ' ' << sample;
     if ( !option_base::longname.empty() ) {
       out << ", ";
     }
   }
         
   if ( !option_base::longname.empty() ) {
-    out << "--" << option_base::longname << "=<string>";
+    out << "--" << option_base::longname << '=' << sample;
   }
 
-  if ( option_base::has_arg ) {
-    out << " [" << args.front() << "]\t";
-  } else {
-    out << '\t';
-  }
-
-  return out << option_base::desc;
+  return out << '\t' << option_base::desc << " [" <<  default_arg << ']';
 }
 
 std::ostream& option<char*>::_describe( std::ostream& out ) const
 {
+  string sample( option_base::_parname( "<string>" ) );
+
   if ( option_base::shortname != 0 ) {
-    out << '-' << option_base::shortname << " <string>";
+    out << '-' << option_base::shortname << ' ' << sample;
     if ( !option_base::longname.empty() ) {
       out << ", ";
     }
   }
         
   if ( !option_base::longname.empty() ) {
-    out << "--" << option_base::longname << "=<string>";
+    out << "--" << option_base::longname << '=' << sample;
   }
 
-  if ( option_base::has_arg ) {
-    out << " [" << args.front() << "]\t";
-  } else {
-    out << '\t';
+  return out << '\t' << option_base::desc << " [" << default_arg << ']';
+}
+
+std::ostream& option<void>::_describe( std::ostream& out ) const
+{
+  if ( option_base::shortname != 0 ) {
+    out << '-' << option_base::shortname;
+    if ( !option_base::longname.empty() ) {
+      out << ", ";
+    }
+  }
+        
+  if ( !option_base::longname.empty() ) {
+    out << "--" << option_base::longname << '\t';
   }
 
   return out << option_base::desc;
-}
-
-bool Opts::is_set( char field ) const
-{
-  options_container_type::const_iterator i = 
-    std::find_if( storage.begin(), storage.end(),
-                  std::bind2nd( ::detail::deref_equal<option_base*,char>(), field ) );
-
-  return ( (i == storage.end()) ? false : !(*i)->pos.empty());
-}
-
-bool Opts::is_set( const std::string& field ) const
-{
-  options_container_type::const_iterator i = 
-    std::find_if( storage.begin(), storage.end(),
-                  std::bind2nd( ::detail::deref_equal<option_base*,std::string>(), field ) );
-
-  return ( (i == storage.end()) ? false : !(*i)->pos.empty());
-}
-
-bool Opts::is_set( int field ) const
-{
-  options_container_type::const_iterator i = 
-    std::find_if( storage.begin(), storage.end(),
-                  std::bind2nd( ::detail::deref_equal<option_base*,int>(), field ) );
-
-  return ( (i == storage.end()) ? false : !(*i)->pos.empty());
-}
-
-int Opts::get_cnt( char field ) const
-{
-  options_container_type::const_iterator i = 
-    std::find_if( storage.begin(), storage.end(),
-                  std::bind2nd( ::detail::deref_equal<option_base*,char>(), field ) );
-
-  return ( (i == storage.end()) ? 0 : (*i)->pos.size());
-}
-
-int Opts::get_cnt( const std::string& field ) const
-{
-  options_container_type::const_iterator i = 
-    std::find_if( storage.begin(), storage.end(),
-                  std::bind2nd( ::detail::deref_equal<option_base*,std::string>(), field ) );
-
-  return ( (i == storage.end()) ? 0 : (*i)->pos.size());
-}
-
-int Opts::get_cnt( int field ) const
-{
-  options_container_type::const_iterator i = 
-    std::find_if( storage.begin(), storage.end(),
-                  std::bind2nd( ::detail::deref_equal<option_base*,int>(), field ) );
-
-  return ( (i == storage.end()) ? 0 : (*i)->pos.size());
 }
 
 string Opts::get_pname() const { return pname; }
@@ -126,23 +99,6 @@ string Opts::get_pname() const { return pname; }
 bool Opts::is_opt_name(const string& s)
 {
   return (s.size() > 1) && (s[0] == '-') && !is_flag_group(s);
-}
-
-bool Opts::is_substr( const string& small, const string& big ) const
-{
-  if ( small.size() > big.size() ) {
-    return false;
-  }
-
-  string::const_iterator i = small.begin();
-  string::const_iterator j = big.begin();
-  for ( ; i != small.end(); ++i, ++j ) {
-    if ( *i != *j ) {
-      return false;
-    }
-  }
-
-  return true;
 }
 
 bool Opts::is_flag_group( const string& s )
@@ -175,24 +131,24 @@ Opts::options_container_type::const_iterator Opts::get_opt_index( const string& 
   }
   
   if (s.size() > 2 && s[1] == '-') {
-    options_container_type::const_iterator i;
+    options_container_type::const_iterator res = storage.end();
     string tmp = s.substr(2);
+    bool ambiguous = false;
 
-    // exact match
-    for ( i = storage.begin(); i != storage.end(); ++i ) {
-      if ( (*i)->longname == tmp ) {
-        return i;
+    for ( options_container_type::const_iterator i = storage.begin(); i != storage.end(); ++i ) {
+      if ( (*i)->longname.find(tmp) == 0 ) {
+        if ( (*i)->longname.size() == tmp.size() ) { // i.e. longname == tmp
+          return i; // precise match; return it even if ambiguous
+        }
+        if ( res == storage.end() ) { // first match
+          res = i;
+        } else {
+          ambiguous = true;
+        }
       }
     }
 
-    vector< options_container_type::const_iterator > matches;
-    for ( i = storage.begin();i != storage.end();++i ) {
-      if ( is_substr( tmp, (*i)->longname ) ) {
-        matches.push_back(i);
-      }
-    }
-
-    return matches.size() == 1 ? matches[0] : storage.end();
+    return ambiguous ? storage.end() : res;
   }
     
   return storage.end();
@@ -200,7 +156,7 @@ Opts::options_container_type::const_iterator Opts::get_opt_index( const string& 
 
 void Opts::help( ostream& out )
 {
-  out << "This is " << pname;
+  out << "\nThis is " << pname;
   if ( !_brief.empty() ) {
     out << ", " << _brief;
   }
@@ -214,12 +170,13 @@ void Opts::help( ostream& out )
     out << _copyright << "\n\n";
   }  
 
-  out << "Usage:\n\n" << pname << " " << _usage << "\n"; // " [options] etc. etc."
+  out << "Usage:\n\n  " << pname << " " << _usage << "\n"; // " [options] etc. etc."
 
   if ( !storage.empty() ) {
-    out << "\nOptions:\n\n";
+    out << "\nAvailable options:\n\n";
 
     for ( options_container_type::const_iterator i = storage.begin(); i != storage.end(); ++i) {
+      out << "  ";
       (*i)->_describe( out ) << '\n';
     }
   }
@@ -252,7 +209,7 @@ void Opts::parse( int& ac, const char** av )
         throw unknown_option(opt);
       }
 
-      if ( (*p)->has_arg ) {
+      if ( (*p)->type() != typeid(void) ) {
         if ( !arg.empty() ) {
           (*p)->read(arg);
         } else {
@@ -273,7 +230,7 @@ void Opts::parse( int& ac, const char** av )
           throw unknown_option( "-" + string(1,optgroup[j]) );
         }
         (*p)->pos.push_back(++q);
-        if ( (*p)->has_arg ) {
+        if ( (*p)->type() != typeid(void) ) {
           throw missing_arg( "-" + string(1,optgroup[j]) );
         }
       }

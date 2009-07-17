@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/26 19:59:29 ptr>
+// -*- C++ -*- Time-stamp: <09/03/16 17:23:11 ptr>
 
 /*
- * Copyright (c) 2007, 2008
+ * Copyright (c) 2007-2009
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License Version 3.0
@@ -25,6 +25,7 @@
 #include <mt/mutex>
 #endif
 #include <exam/logger.h>
+#include <exam/defs.h>
 
 namespace exam {
 
@@ -208,8 +209,8 @@ class test_suite
     int flags();
     int flags( int );
     bool is_trace();
-    void report( const char *, int, bool, const char * );
-    static void report_async( const char *, int, bool, const char * );
+    void report( const char*, bool, const char* );
+    static void report_async( const char*, bool, const char* );
     base_logger *set_global_logger( base_logger * );
     base_logger *set_logger( base_logger * );
 
@@ -345,16 +346,16 @@ typedef test_suite::test_case_type test_case_type;
 #  define EXAM_IMPL(F) F( exam::test_suite *__exam_ts, int __exam_counter )
 #  define EXAM_DECL(F) F( exam::test_suite *, int = 0 )
 #  define EXAM_RESULT __exam_counter
-#  define EXAM_CHECK(C) if ( !(C) ) { __exam_ts->report( __FILE__, __LINE__, false, #C );  __exam_counter |= 1; } else __exam_ts->report( __FILE__, __LINE__, true, #C )
-#  define EXAM_CHECK_ASYNC(C) if ( !(C) ) { exam::test_suite::report_async( __FILE__, __LINE__, false, #C ); } else exam::test_suite::report_async( __FILE__, __LINE__, true, #C )
-#  define EXAM_CHECK_ASYNC_F(C,V) if ( !(C) ) { exam::test_suite::report_async( __FILE__, __LINE__, false, #C ); V |= 1; } else exam::test_suite::report_async( __FILE__, __LINE__, true, #C )
-#  define EXAM_MESSAGE(M) __exam_ts->report( __FILE__, __LINE__, true, M )
-#  define EXAM_MESSAGE_ASYNC(M) exam::test_suite::report_async( __FILE__, __LINE__, true, M )
-#  define EXAM_REQUIRE(C) if ( !(C) ) { __exam_ts->report( __FILE__, __LINE__, false, #C );  return 1; } else __exam_ts->report( __FILE__, __LINE__, true, #C )
-#  define EXAM_FAIL(M) __exam_ts->report( __FILE__, __LINE__, false, M ); return 1
-#  define EXAM_ERROR(M) __exam_ts->report( __FILE__, __LINE__, false, M ); __exam_counter |= 1
-#  define EXAM_ERROR_ASYNC(M) exam::test_suite::report_async( __FILE__, __LINE__, false, M )
-#  define EXAM_ERROR_ASYNC_F(M,V) exam::test_suite::report_async( __FILE__, __LINE__, false, M ); V |= 1
+#  define EXAM_CHECK(C) if ( !(C) ) { __exam_ts->report( HERE, false, #C );  __exam_counter |= 1; } else __exam_ts->report( HERE, true, #C )
+#  define EXAM_CHECK_ASYNC(C) if ( !(C) ) { exam::test_suite::report_async( HERE, false, #C ); } else exam::test_suite::report_async( HERE, true, #C )
+#  define EXAM_CHECK_ASYNC_F(C,V) if ( !(C) ) { exam::test_suite::report_async( HERE, false, #C ); V |= 1; } else exam::test_suite::report_async( HERE, true, #C )
+#  define EXAM_MESSAGE(M) __exam_ts->report( HERE, true, M )
+#  define EXAM_MESSAGE_ASYNC(M) exam::test_suite::report_async( HERE, true, M )
+#  define EXAM_REQUIRE(C) if ( !(C) ) { __exam_ts->report( HERE, false, #C );  return 1; } else __exam_ts->report( HERE, true, #C )
+#  define EXAM_FAIL(M) __exam_ts->report( HERE, false, M ); return 1
+#  define EXAM_ERROR(M) __exam_ts->report( HERE, false, M ); __exam_counter |= 1
+#  define EXAM_ERROR_ASYNC(M) exam::test_suite::report_async( HERE, false, M )
+#  define EXAM_ERROR_ASYNC_F(M,V) exam::test_suite::report_async( HERE, false, M ); V |= 1
 #else
 #  define EXAM_IMPL(F) F( exam::test_suite *, int )
 #  define EXAM_DECL(F) F( exam::test_suite *, int = 0 )

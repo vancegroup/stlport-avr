@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/26 19:54:52 ptr>
+// -*- C++ -*- Time-stamp: <09/03/16 17:19:48 ptr>
 
 /*
- * Copyright (c) 2007, 2008
+ * Copyright (c) 2007-2009
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License Version 3.0
@@ -64,7 +64,7 @@ class base_logger
 
     int flags( int );
 
-    virtual void report( const char *, int, bool, const char * ) = 0;
+    virtual void report( const char*, bool, const char* ) = 0;
 
     virtual void begin_ts() = 0;
     virtual void end_ts() = 0;
@@ -93,7 +93,7 @@ class trivial_logger :
          f( fs )
       { }
 
-    virtual void report( const char *, int, bool, const char * );
+    virtual void report( const char*, bool, const char* );
 
     virtual void begin_ts();
     virtual void end_ts();

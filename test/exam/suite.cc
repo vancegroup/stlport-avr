@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/10/26 20:03:47 ptr>
+// -*- C++ -*- Time-stamp: <09/03/16 17:27:07 ptr>
 
 /*
- * Copyright (c) 2007, 2008
+ * Copyright (c) 2007-2009
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License Version 3.0
@@ -233,7 +233,7 @@ base_logger *test_suite::set_logger( base_logger *new_logger )
   return tmp;
 }
 
-void test_suite::report( const char *file, int line, bool cnd, const char *expr )
+void test_suite::report( const char* place, bool cnd, const char* expr )
 {
   if ( !cnd ) {
     _last_state = fail;
@@ -241,10 +241,10 @@ void test_suite::report( const char *file, int line, bool cnd, const char *expr 
 #if 0
   lock_guard<mutex> lk( _lock_ll );
 #endif
-  local_logger->report( file, line, cnd, expr );
+  local_logger->report( place, cnd, expr );
 }
 
-void test_suite::report_async( const char *file, int line, bool cnd, const char *expr )
+void test_suite::report_async( const char* place, bool cnd, const char* expr )
 {
 #if 0
   lock_guard<mutex> lk( _lock_stack );
@@ -254,7 +254,7 @@ void test_suite::report_async( const char *file, int line, bool cnd, const char 
     throw runtime_error( "stack of test suites empty" );
   }
 
-  _stack.top()->report( file, line, cnd, expr );
+  _stack.top()->report( place, cnd, expr );
 }
 
 test_suite::test_case_type test_suite::test_by_name( const std::string& nm )
