@@ -27,16 +27,21 @@
 # include <stl/_string.h>
 #endif
 
+#include <stdint.h>
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _CharT, class _Traits, class _Alloc>
 inline size_t
-__stl_string_hash(const basic_string<_CharT,_Traits,_Alloc>& __s) {
-  unsigned long __h = 0;
+__stl_string_hash(const basic_string<_CharT,_Traits,_Alloc>& __s)
+{
+  uint32_t __h = 0;
   size_t __len = __s.size();
   const _CharT* __data = __s.data();
-  for ( size_t __i = 0; __i < __len; ++__i)
-    __h = /* 5 *__h */(__h << 2) + __h + __data[__i];
+  while ( __len-- > 0 ) {
+    __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  }
+
   return size_t(__h);
 }
 
@@ -69,3 +74,7 @@ struct _STLP_CLASS_DECLSPEC hash<wstring> {
 _STLP_END_NAMESPACE
 
 #endif
+
+// Local Variables:
+// mode:C++
+// End:
