@@ -203,6 +203,13 @@ public:
     }
     _STLP_UNWIND(c.clear())
   }
+
+  // To do: _Sequence must be swappable
+  void swap( priority_queue& r )
+    {
+      _STLP_STD::swap( comp, r.comp );
+      _STLP_STD::swap( c, r.c );
+    }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   void _M_swap_workaround(_Self& __x) {
     _Sequence __tmp = c;
@@ -211,6 +218,12 @@ public:
   }
 #endif
 };
+
+template <class _Tp, class _Sequence, class _Compare >
+inline void swap( priority_queue<_Tp,_Sequence,_Compare>& l, priority_queue<_Tp,_Sequence,_Compare>& r )
+{
+  l.swap( r );
+}
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 _STLP_BEGIN_TR1_NAMESPACE
