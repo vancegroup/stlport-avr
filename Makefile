@@ -1,6 +1,6 @@
 # Time-stamp: <08/12/12 06:44:27 ptr>
 #
-# Copyright (c) 2004-2008
+# Copyright (c) 2004-2009
 # Petr Ovtchenkov
 #
 # Licensed under the Academic Free License version 3.0
@@ -36,7 +36,7 @@ check-stldbg-shared:	stldbg-shared
 	+$(call dotaginsubdirs,stldbg-shared,test/exam test/misc test/cmp_unit test/unit)
 	+$(call doinsubdirs,test/cmp_unit test/unit)
 
-install:	install-headers
+install:	
 	+$(call doinsubdirs,${SUBDIRS})
 
 install-headers:

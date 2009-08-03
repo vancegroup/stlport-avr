@@ -61,7 +61,15 @@ You cannot use native compiler iostreams implementation with STLport STL
 
    Note: you can use --prefix= to change installation path
    (or macro DESTDIR, as usual), or even skip installation and use
-   STLport in-place.
+   STLport in-place. Default place for libraries is /usr/local/lib.
+
+5) In most cases you need to Install headers:
+
+   make install-headers
+
+   Note: you can use --prefix= to change installation path
+   (or macro DESTDIR, as usual), or even skip installation and use
+   STLport in-place. Default place for headers is /usr/local/include.
 
 ==== Usage STLport ==========
 
