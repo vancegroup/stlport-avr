@@ -397,25 +397,9 @@ struct _Alloc_traits
 };
 
 #if defined (_STLP_USE_PERTHREAD_ALLOC)
-
 _STLP_END_NAMESPACE
-// include additional header here
 #  include <stl/_pthread_alloc.h>
 _STLP_BEGIN_NAMESPACE
-
-typedef __pthread_alloc __alloc_type;
-#elif defined (_STLP_USE_NEWALLOC)
-typedef __new_alloc __alloc_type;
-#elif defined (_STLP_USE_MALLOC)
-typedef __malloc_alloc __alloc_type;
-#else
-typedef __node_alloc __alloc_type;
-#endif
-
-#if defined (_STLP_DEBUG_ALLOC)
-typedef __debug_alloc<__alloc_type> __sgi_alloc;
-#else
-typedef __alloc_type __sgi_alloc;
 #endif
 
 // This implements allocators as specified in the C++ standard.
@@ -429,6 +413,41 @@ typedef __alloc_type __sgi_alloc;
 template <class _Tp>
 class allocator
 {
+  private:
+    // underlying allocator implementation
+#if defined (_STLP_USE_PERTHREAD_ALLOC)
+#ifdef _STLP_DEBUG_ALLOC
+    typedef __debug_alloc<__pthread_alloc> __alloc_type;
+#else
+    typedef __pthread_alloc __alloc_type;
+#endif
+
+#elif defined (_STLP_USE_NEWALLOC)
+
+#ifdef _STLP_DEBUG_ALLOC
+    typedef __debug_alloc<__new_alloc> __alloc_type;
+#else
+    typedef __new_alloc __alloc_type;
+#endif
+
+#elif defined (_STLP_USE_MALLOC)
+
+#ifdef _STLP_DEBUG_ALLOC
+    typedef __debug_alloc<__malloc_alloc> __alloc_type;
+#else
+    typedef __malloc_alloc __alloc_type;
+#endif
+
+#else // then use __node_alloc
+
+#ifdef _STLP_DEBUG_ALLOC
+    typedef __debug_alloc<__node_alloc> __alloc_type;
+#else
+    typedef __node_alloc __alloc_type;
+#endif
+
+#endif
+
   public:
     typedef _Tp        value_type;
     typedef _Tp*       pointer;
@@ -469,7 +488,7 @@ class allocator
         }
         if (__n != 0) {
           size_type __buf_size = __n * sizeof(value_type);
-          _Tp* __ret = __REINTERPRET_CAST(_Tp*, __sgi_alloc::allocate(__buf_size));
+          _Tp* __ret = __REINTERPRET_CAST(_Tp*, __alloc_type::allocate(__buf_size));
 #if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
           memset((char*)__ret, _STLP_SHRED_BYTE, __buf_size);
 #endif
@@ -487,7 +506,7 @@ class allocator
 #if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
             memset((char*)__p, _STLP_SHRED_BYTE, __n * sizeof(value_type));
 #endif
-            __sgi_alloc::deallocate((void*)__p, __n * sizeof(value_type));
+            __alloc_type::deallocate((void*)__p, __n * sizeof(value_type));
           }
       }
 #if !defined (_STLP_NO_ANACHRONISMS)
@@ -495,7 +514,7 @@ class allocator
     void deallocate(pointer __p) const
       {
         if (__p != 0)
-          __sgi_alloc::deallocate((void*)__p, sizeof(value_type));
+          __alloc_type::deallocate((void*)__p, sizeof(value_type));
       }
 #endif
 
