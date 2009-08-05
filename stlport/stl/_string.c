@@ -607,7 +607,7 @@ void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
       this->_M_buffers._M_end_of_storage = this->_M_start_of_storage._M_data + __n;
     }
 #else
-    this->_M_start_of_storage._M_data = _M_start_of_storage.allocate(__n, __n);
+    this->_M_start_of_storage._M_data = _M_start_of_storage.allocate(__n);
     this->_M_finish = this->_M_start_of_storage._M_data;
     this->_M_end_of_storage = this->_M_start_of_storage._M_data + __n;
 #endif
