@@ -639,6 +639,11 @@ class _STLP_alloc_proxy :
     _Base& _M_base()
       { return *this; }
 #endif
+    void swap( _Self& r )
+      {
+        _STLP_STD::swap( static_cast<_Base&>(*this), static_cast<_Base&>(r) );
+        _STLP_STD::swap( _M_data, r._M_data );
+      }
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -655,12 +660,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Value, class _Tp, class _MaybeReboundAlloc>
 inline void swap( _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& __a, _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& __b)
-{
-  // at least gcc has problem with detecting proper (overloaded) swap,
-  // if notation with namespace (_STLP_STD::swap) used
-  /* _STLP_STD:: */ swap( static_cast<_MaybeReboundAlloc&>(__a), static_cast<_MaybeReboundAlloc&>(__b) );
-  /* _STLP_STD:: */ swap(__a._M_data, __b._M_data);
-}
+{ __a.swap( __b ); }
 
 _STLP_END_NAMESPACE
 
