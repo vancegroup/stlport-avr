@@ -27,6 +27,8 @@
 #ifndef _STLP_INTERNAL_ALLOC_H
 #define _STLP_INTERNAL_ALLOC_H
 
+#include <stdint.h>
+
 #ifndef _STLP_INTERNAL_CSTDDEF
 #  include <stl/_cstddef.h>
 #endif
@@ -302,9 +304,9 @@ class __debug_alloc :
   private:
     struct __alloc_header
     {
-        size_t __magic: 16;
-        size_t __type_size:16;
-        _STLP_UINT32_T _M_size;
+        uint32_t __magic:16;
+        uint32_t __type_size:16;
+        uint32_t _M_size;
     }; // that is 8 bytes for sure
 
     // Sunpro CC has bug on enums, so extra_before/after set explicitly

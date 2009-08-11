@@ -37,10 +37,6 @@
 // the values choosen here as defaults try to give
 // maximum functionality on the most conservative settings
 
-// Mostly correct guess, change it for Alpha (and other environments
-// that has 64-bit "long")
-// #  define _STLP_UINT32_T unsigned long
-
 // Disables wchar_t functionality
 // #  define _STLP_NO_WCHAR_T  1
 

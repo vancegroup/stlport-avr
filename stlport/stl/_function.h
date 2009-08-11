@@ -30,6 +30,8 @@
 #ifndef _STLP_INTERNAL_FUNCTION_H
 #define _STLP_INTERNAL_FUNCTION_H
 
+#include <stdint.h>
+
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
 #endif
@@ -354,39 +356,46 @@ constant2(const _Result& __val) {
 
 // subtractive_rng is an extension: it is not part of the standard.
 // Note: this code assumes that int is 32 bits.
-class subtractive_rng : public unary_function<_STLP_UINT32_T, _STLP_UINT32_T> {
-private:
-  _STLP_UINT32_T _M_table[55];
-  _STLP_UINT32_T _M_index1;
-  _STLP_UINT32_T _M_index2;
-public:
-  _STLP_UINT32_T operator()(_STLP_UINT32_T __limit) {
-    _M_index1 = (_M_index1 + 1) % 55;
-    _M_index2 = (_M_index2 + 1) % 55;
-    _M_table[_M_index1] = _M_table[_M_index1] - _M_table[_M_index2];
-    return _M_table[_M_index1] % __limit;
-  }
+class subtractive_rng :
+    public unary_function<uint32_t,uint32_t>
+{
+  private:
+    uint32_t _M_table[55];
+    int _M_index1;
+    int _M_index2;
+  public:
+    uint32_t operator()( uint32_t __limit )
+      {
+        _M_index1 = (_M_index1 + 1) % 55;
+        _M_index2 = (_M_index2 + 1) % 55;
+        _M_table[_M_index1] = _M_table[_M_index1] - _M_table[_M_index2];
+        return _M_table[_M_index1] % __limit;
+      }
 
-  void _M_initialize(_STLP_UINT32_T __seed) {
-    _STLP_UINT32_T __k = 1;
-    _M_table[54] = __seed;
-    _STLP_UINT32_T __i;
-    for (__i = 0; __i < 54; __i++) {
-        _STLP_UINT32_T __ii = (21 * (__i + 1) % 55) - 1;
-        _M_table[__ii] = __k;
-        __k = __seed - __k;
-        __seed = _M_table[__ii];
-    }
-    for (int __loop = 0; __loop < 4; __loop++) {
-        for (__i = 0; __i < 55; __i++)
+    void _M_initialize( uint32_t __seed )
+      {
+        uint32_t __k = 1;
+        _M_table[54] = __seed;
+        int __ii;
+        for ( int __i = 0; __i < 54; ++__i ) {
+          __ii = (21 * (__i + 1) % 55) - 1;
+          _M_table[__ii] = __k;
+          __k = __seed - __k;
+          __seed = _M_table[__ii];
+        }
+        for ( int __loop = 0; __loop < 4; ++__loop ) {
+          for ( int __i = 0; __i < 55; ++__i ) {
             _M_table[__i] = _M_table[__i] - _M_table[(1 + __i + 30) % 55];
-    }
-    _M_index1 = 0;
-    _M_index2 = 31;
-  }
+          }
+        }
+        _M_index1 = 0;
+        _M_index2 = 31;
+      }
 
-  subtractive_rng(unsigned int __seed) { _M_initialize(__seed); }
-  subtractive_rng() { _M_initialize(161803398ul); }
+    subtractive_rng( unsigned int __seed )
+      { _M_initialize(__seed); }
+    subtractive_rng()
+      { _M_initialize( 161803398UL ); }
 };
 
 #endif /* _STLP_NO_EXTENSIONS */

@@ -168,9 +168,6 @@
  * final workaround tuning based on given flags
  * ========================================================== */
 
-#ifndef _STLP_UINT32_T
-#  define _STLP_UINT32_T unsigned long
-#endif
 #ifndef _STLP_ABORT
 #  define _STLP_ABORT() abort()
 #endif

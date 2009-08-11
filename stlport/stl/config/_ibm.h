@@ -135,9 +135,7 @@
 #  define _STLP_USE_EXCEPTIONS 1
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 /* #pragma report(disable,CPPC1500029)
- * unsigned 32-bit integer type
  */
-#  define _STLP_UINT32_T unsigned int
 #  if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
 #    define _STLP_RAND48 1
 #  endif

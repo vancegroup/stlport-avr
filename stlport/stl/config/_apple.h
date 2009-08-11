@@ -34,7 +34,6 @@
 # include <Types.h>
 #endif
 
-#define _STLP_UINT32_T UInt32
 typedef int wint_t;
 
 #ifndef TYPE_BOOL

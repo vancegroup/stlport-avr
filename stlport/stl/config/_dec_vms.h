@@ -76,8 +76,6 @@
 #  define _STLP_LONG_LONG long long
 # endif
 
-// unsigned 32-bit integer type
-#  define _STLP_UINT32_T unsigned int
 #if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
 # define _STLP_RAND48 1
 #endif

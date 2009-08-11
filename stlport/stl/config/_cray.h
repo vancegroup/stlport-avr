@@ -18,10 +18,6 @@
 
 #define _STLP_COMPILER "CC"
 
-// Mostly correct guess, change it for Alpha (and other environments
-// that has 64-bit "long")
-#  define _STLP_UINT32_T unsigned long
-
 // Uncomment if long long is available
 #  define _STLP_LONG_LONG long long
 
