@@ -25,6 +25,7 @@ SRC_CPP = epilog_test.cpp \
 	cstdarg_header_test.cpp \
 	cstddef_header_test.cpp \
 	cstdio_header_test.cpp \
+        cstdint_header_test.cpp \
 	cstdlib_header_test.cpp \
 	cstring_header_test.cpp \
 	ctime_header_test.cpp \
@@ -54,6 +55,7 @@ SRC_CPP = epilog_test.cpp \
 	sstream_header_test.cpp \
 	stack_header_test.cpp \
 	stdexcept_header_test.cpp \
+        stdint_header_test.cpp \
         stldbg_include.cpp \
         streambuf_header_test.cpp \
         string_header_test.cpp \
@@ -76,6 +78,7 @@ SRC_C = assert_header_test.c \
 	stdarg_header_test.c \
 	stddef_header_test.c \
 	stdio_header_test.c \
+        stdint_c_header_test.c \
 	stdlib_header_test.c \
 	string_header_test.c \
 	time_header_test.c \

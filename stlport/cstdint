@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2009
+ * Petr Ovtchenkov
+ *
+ * Licensed under the Academic Free License version 3.0
+ *
+ */
+
+#ifndef _STLP_CSTDINT
+#define _STLP_CSTDINT
+
+#ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x119
+#  include <stl/_cprolog.h>
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x119) && !defined(_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
+#endif
+
+#ifdef _STLP_USE_NEW_C_HEADERS
+#  ifdef _STLP_HAS_INCLUDE_NEXT
+#    include_next <cstdint>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cstdint)
+#  endif
+#else // _STLP_USE_NEW_C_HEADERS
+#  include <stdint.h>
+
+#  if (_STLP_OUTERMOST_HEADER_ID == 0x119) && !defined(_STLP_INTERNAL_CSTDINT)
+#    include "stl/_cstdint.h"
+#  endif
+#endif // _STLP_USE_NEW_C_HEADERS
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x119)
+#  ifndef _STLP_DONT_POP_HEADER_ID
+#    include <stl/_epilog.h>
+#    undef _STLP_OUTERMOST_HEADER_ID
+#  else
+#    undef _STLP_DONT_POP_HEADER_ID
+#  endif
+#endif
+
+#endif // _STLP_CSTDINT
+
+// Local Variables:
+// mode:C++
+// End:
