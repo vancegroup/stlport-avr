@@ -30,6 +30,12 @@
 #  include <stl/_cmath.h>
 #endif
 
+#ifdef _STLP_WCE
+//  The Windows CE CRT headers define a macro to transform complex to _complex.  This
+//  interferes with use of std::complex.
+#  undef complex
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
