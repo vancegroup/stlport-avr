@@ -37,6 +37,39 @@
 #  endif
 #endif
 
+#ifndef _STLP_WCTYPE_H_SEEN
+#  define _STLP_WCTYPE_H_SEEN
+
+/* Undef convenience interfaces */
+#  undef iswalpha
+#  undef iswupper
+#  undef iswlower
+#  undef iswdigit
+#  undef iswxdigit
+#  undef iswspace
+#  undef iswpunct
+#  undef iswalnum
+#  undef iswprint
+#  undef iswcntrl
+#  undef iswgraph
+#  undef iswascii
+
+#  if defined(UNDER_CE)
+__inline int (iswalpha)(int c) { return iswctype(c, _ALPHA); }
+__inline int (iswupper)(int c) { return iswctype(c, _UPPER); }
+__inline int (iswlower)(int c) { return iswctype(c, _LOWER); }
+__inline int (iswdigit)(int c) { return iswctype(c, _DIGIT); }
+__inline int (iswxdigit)(int c) { return iswctype(c, _HEX); }
+__inline int (iswspace)(int c) { return iswctype(c, _SPACE); }
+__inline int (iswpunct)(int c) { return iswctype(c, _PUNCT); }
+__inline int (iswalnum)(int c) { return iswctype(c, _ALPHA|_DIGIT); }
+__inline int (iswprint)(int c) { return iswctype(c, _BLANK|_PUNCT|_ALPHA|_DIGIT); }
+__inline int (iswgraph)(int c) { return iswctype(c, _PUNCT|_ALPHA|_DIGIT); }
+__inline int (iswcntrl)(int c) { return iswctype(c, _CONTROL); }
+__inline int (iswascii)(int c) { return ((unsigned)(c) < 0x80); }
+#  endif
+#endif
+
 #if (_STLP_OUTERMOST_HEADER_ID == 0x279)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #    include <stl/_epilog.h>

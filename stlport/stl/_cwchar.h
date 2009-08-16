@@ -64,6 +64,8 @@ typedef _BSD_WINT_T_ wint_t;
 #  else
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <wchar.h>
+#    elif defined (_STLP_WCE_NET) && defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
+#      include <wchar.h>
 #    else
 #      include _STLP_NATIVE_C_HEADER(wchar.h)
 #    endif
@@ -266,6 +268,8 @@ using _STLP_VENDOR_CSTD::wcstok;
 
 #      if !defined (_STLP_WCE_NET)
 using _STLP_VENDOR_CSTD::wcscoll;
+#	   endif
+#      if !defined (_STLP_WCE_NET) || defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
 using _STLP_VENDOR_CSTD::wcsxfrm;
 #      endif
 using _STLP_VENDOR_CSTD::wcscat;
