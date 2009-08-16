@@ -367,7 +367,7 @@
 #endif
 
 /* this always mean the C library is in global namespace */
-#if defined (_STLP_HAS_NO_NEW_C_HEADERS) && !defined (_STLP_VENDOR_GLOBAL_CSTD)
+#if !defined (_STLP_USE_NEW_C_HEADERS) && !defined (_STLP_VENDOR_GLOBAL_CSTD)
 #  define _STLP_VENDOR_GLOBAL_CSTD 1
 #endif
 
