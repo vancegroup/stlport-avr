@@ -53,6 +53,10 @@ using _STLP_VENDOR_CSTD::strspn;
 #  include <stl/_mbstate_t.h>
 #endif
 
+#if defined(_STLP_WCE)
+#  include <wince/wchar.h>
+#endif
+
 #if (_STLP_OUTERMOST_HEADER_ID == 0x278)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #    include <stl/_epilog.h>

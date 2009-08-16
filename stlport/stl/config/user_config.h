@@ -317,6 +317,16 @@
 */
 
 
+/*
+ * The Windows CE C runtime library chooses to omit certain functions.  Replacements are
+ * provided for some of the more basic of these functions.  Defining this macro chooses
+ * to include these replacement CRT functions in the libraries.
+ */
+
+/*
+#define _STLP_USE_WINCE_CRT_FUNCTIONS 1
+ */
+
 /*==========================================================*/
 
 /*

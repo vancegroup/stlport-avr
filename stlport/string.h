@@ -54,6 +54,10 @@ struct _exception;
 #    endif
 #  endif
 
+#  if defined(_STLP_WCE)
+#    include <wince/string.h>
+#  endif
+
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x269)
 #    if !defined (_STLP_DONT_POP_HEADER_ID)
 #      include <stl/_epilog.h>

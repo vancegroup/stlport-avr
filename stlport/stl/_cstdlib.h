@@ -61,11 +61,13 @@ using _STLP_VENDOR_CSTD::size_t;
 #    ifndef _STLP_WCE
 // these functions just don't exist on Windows CE
 using _STLP_VENDOR_CSTD::abort;
+using _STLP_VENDOR_CSTD::system;
+using _STLP_VENDOR_CSTD::bsearch;
+#    endif
+#    if !defined(_STLP_WCE) || defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
 using _STLP_VENDOR_CSTD::getenv;
 using _STLP_VENDOR_CSTD::mblen;
 using _STLP_VENDOR_CSTD::mbtowc;
-using _STLP_VENDOR_CSTD::system;
-using _STLP_VENDOR_CSTD::bsearch;
 #    endif
 using _STLP_VENDOR_CSTD::atexit;
 using _STLP_VENDOR_CSTD::exit;
@@ -83,7 +85,7 @@ using _STLP_VENDOR_CSTD::strtoul;
 
 #    if !(defined (_STLP_NO_NATIVE_WIDE_STREAMS) || defined (_STLP_NO_NATIVE_MBSTATE_T))
 using _STLP_VENDOR_CSTD::wcstombs;
-#      ifndef _STLP_WCE
+#      if !defined(_STLP_WCE) || defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
 using _STLP_VENDOR_CSTD::wctomb;
 #      endif
 #    endif

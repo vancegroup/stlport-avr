@@ -45,6 +45,10 @@ using __std_alias::_streams;
 _STLP_END_NAMESPACE
 #    endif
 
+#    if defined(_STLP_WCE)
+#       include <wince/stdio.h>
+#    endif
+
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x264)
 #    if !defined (_STLP_DONT_POP_HEADER_ID)
 #      include <stl/_epilog.h>

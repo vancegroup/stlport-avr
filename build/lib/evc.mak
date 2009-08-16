@@ -20,6 +20,13 @@ SRCROOT=..
 STLPORT_INCLUDE_DIR = ../../stlport
 !include Makefile.inc
 
+SRC_CPP = $(SRC_CPP) \
+            ../../src/wince_time.cpp \
+            ../../src/wince_env.cpp \
+            ../../src/wince_multibyte.cpp \
+            ../../src/wince_string.cpp \
+            ../../src/wince_file.cpp
+
 CROSS_COMPILING=1
 
 DEFS_REL = /D_STLP_USE_DYNAMIC_LIB

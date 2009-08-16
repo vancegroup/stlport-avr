@@ -22,9 +22,12 @@
 
 #ifdef _STLP_WCE
 /* only show message when directly including this file in a non-library build */
+/*
 #  if !defined(__BUILDING_STLPORT) && (_STLP_OUTERMOST_HEADER_ID == 0x205)
 #    pragma message("eMbedded Visual C++ 3 and .NET don't have a errno.h header; STLport won't include native errno.h here")
 #  endif
+*/
+#  include <wince/errno.h>
 #else
 #  ifndef errno
 #    if defined (_STLP_HAS_INCLUDE_NEXT)

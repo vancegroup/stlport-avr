@@ -53,6 +53,7 @@ struct _exception;
 /* on evc3/evc4 including stdlib.h also defines setjmp macro */
 #  if defined (_STLP_WCE)
 #    define _STLP_NATIVE_SETJMP_H_INCLUDED
+#    include <wince/stdlib.h>
 #  endif
 
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x265)

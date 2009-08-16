@@ -100,9 +100,11 @@ using _STLP_VENDOR_CSTD::perror;
 #    endif
 using _STLP_VENDOR_CSTD::printf;
 using _STLP_VENDOR_CSTD::puts;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400)
+#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400) || defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
 using _STLP_VENDOR_CSTD::remove;
 using _STLP_VENDOR_CSTD::rename;
+#    endif
+#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400)
 using _STLP_VENDOR_CSTD::rewind;
 using _STLP_VENDOR_CSTD::setbuf;
 using _STLP_VENDOR_CSTD::tmpfile;
