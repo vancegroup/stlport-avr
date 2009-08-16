@@ -260,9 +260,12 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
       break;
 
     case 'j':
-      _bend = __write_integer(_buf, 0, (long)((long)t->tm_yday + 1));
-      __append(buf, _buf, _bend, ct);
+	{
+      long yday = (long)((long)t->tm_yday + 1);
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.3ld" : "%ld", yday);
+      __append(buf, _buf, (yday < 10L && modifier == '#') ? _buf + 1 : ((yday < 100L && modifier == '#') ? _buf + 2 : _buf + 3), ct);
       break;
+    }
 
     case 'm':
       _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)t->tm_mon + 1);
@@ -310,8 +313,8 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
       break;
 
     case 'y':
-      _bend = __write_integer(_buf, 0, (long)((long)(t->tm_year + 1900) % 100));
-      __append(buf, _buf, _bend, ct);
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)(t->tm_year % 100));
+      __append(buf, _buf, ((long)(t->tm_year % 100) < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
       break;
 
     case 'Y':
