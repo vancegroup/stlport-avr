@@ -1051,4 +1051,13 @@ void _STLP_DECLSPEC _STLP_CALL _STLP_CHECK_RUNTIME_COMPATIBILITY();
 #undef _STLP_NO_NEW_STYLE_CASTS
 #undef __AUTO_CONFIGURED
 
+
+/* This should always be at the end of features.h.  In order to avoid circular dependencies on
+    Windows CE with the CRT extensions, we delay including windows.h until here.
+ */
+#if defined(_STLP_WCE)
+#  include <stl/config/_wince_windows_suffix.h>
+#endif
+
+
 #endif /* _STLP_FEATURES_H */
