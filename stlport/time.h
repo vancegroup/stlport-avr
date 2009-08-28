@@ -25,6 +25,8 @@
 #  if !defined(__BUILDING_STLPORT) && (_STLP_OUTERMOST_HEADER_ID == 0x272)
 #    pragma message("eMbedded Visual C++ 3 doesn't have a time.h header; STLport won't include native time.h here")
 #  endif
+#elif defined(_STLP_WCE) && defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
+#  include <wince/time.h>
 #else
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <time.h>
