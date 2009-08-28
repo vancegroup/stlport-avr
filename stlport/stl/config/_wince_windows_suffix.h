@@ -18,33 +18,11 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef _STLP_INTERNAL_WINDOWS_H
-#define _STLP_INTERNAL_WINDOWS_H
+#ifndef _STLP_WINCE_WINDOWS_SUFFIX_H
+#define _STLP_WINCE_WINDOWS_SUFFIX_H
 
-#if !defined (_STLP_PLATFORM)
-#  define _STLP_PLATFORM "Windows"
-#endif
 
-#if !defined (_STLP_BIG_ENDIAN) && !defined (_STLP_LITTLE_ENDIAN)
-#  if defined (_MIPSEB)
-#    define _STLP_BIG_ENDIAN 1
-#  endif
-#  if defined (__i386) || defined (_M_IX86) || defined (_M_ARM) || \
-      defined (__amd64__) || defined (_M_AMD64) || defined (__x86_64__) || \
-      defined (__alpha__)
-#    define _STLP_LITTLE_ENDIAN 1
-#  endif
-#  if defined (__ia64__)
-    /* itanium allows both settings (for instance via gcc -mbig-endian) - hence a seperate check is required */
-#    if defined (__BIG_ENDIAN__)
-#      define _STLP_BIG_ENDIAN 1
-#    else
-#      define _STLP_LITTLE_ENDIAN 1
-#    endif
-#  endif
-#endif /* _STLP_BIG_ENDIAN */
-
-#if !defined (_STLP_WINDOWS_H_INCLUDED) && !defined(_STLP_WCE)
+#if !defined (_STLP_WINDOWS_H_INCLUDED) && defined(_STLP_WCE)
 #  define _STLP_WINDOWS_H_INCLUDED
 #  if defined (__BUILDING_STLPORT)
 #    include <stl/config/_native_headers.h>
@@ -101,13 +79,6 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, lo
 #      if defined (_WIN64)
 _STLP_IMPORT_DECLSPEC void* _STLP_STDCALL _InterlockedExchangePointer(void* volatile *, void*);
 #      endif
-#    elif !defined (_STLP_WCE)
-/* boris : for the latest SDK, you may actually need the other version of the declaration (above)
- * even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
- */
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #    else
 /* start of eMbedded Visual C++ specific section */
 #      include <stl/config/_native_headers.h>
@@ -174,11 +145,6 @@ _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
 /* end of eMbedded Visual C++ specific section */
 #    endif
 
-#    if !defined (_STLP_WCE)
-_STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
-_STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutputString);
-#    endif
-
 #    if defined (InterlockedIncrement)
 #      pragma intrinsic(_InterlockedIncrement)
 #      pragma intrinsic(_InterlockedDecrement)
@@ -228,64 +194,6 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 #    define STLPInterlockedExchangePointer _InterlockedExchangePointer
 #  endif
 
-#endif /* _STLP_WINDOWS_H_INCLUDED  && !_STLP_WCE */
+#endif /* _STLP_WINDOWS_H_INCLUDED && _STLP_WCE */
 
-/* _STLP_WIN95_LIKE signal the Windows 95 OS or assimilated Windows OS version that
- * has Interlockeded[Increment, Decrement] Win32 API functions not returning modified
- * value.
- */
-#if (defined (WINVER) && (WINVER < 0x0410) && (!defined (_WIN32_WINNT) || (_WIN32_WINNT < 0x400))) || \
-    (!defined (WINVER) && (defined (_WIN32_WINDOWS) && (_WIN32_WINDOWS < 0x0410) || \
-                          (defined (_WIN32_WINNT) && (_WIN32_WINNT < 0x400))))
-#  define _STLP_WIN95_LIKE
-#endif
-
-/* Between Windows 95 (0x400) and later Windows OSes an API enhancement forces us
- * to change _Refcount_Base internal struct. As _Refcount_base member methods might
- * be partially inlined we need to check that STLport build/use are coherent. To do
- * so we try to generate a link time error thanks to the following macro.
- * This additional check is limited to old compilers that might still be used with
- * Windows 95. */
-#if (defined (_DEBUG) || defined (_STLP_DEBUG)) && \
-    (defined (_STLP_MSVC) && (_STLP_MSVC < 1310) || \
-     defined (__GNUC__) && (__GNUC__ < 3))
-/* We invert symbol names based on macro detection, when building for Windows
- * 95 we expose a
- * building_for_windows95_or_previous_but_library_built_for_windows98_or_later
- * function in order to have a more obvious link error message signaling how
- * the lib has been built and how it is used. */
-#  if defined (__BUILDING_STLPORT)
-#    if defined (_STLP_WIN95_LIKE)
-#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_windows95_but_library_built_for_at_least_windows98
-#    else
-#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_windows95
-#    endif
-#  else
-#    if defined (_STLP_WIN95_LIKE)
-#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_windows95_but_library_built_for_at_least_windows98
-#    else
-#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_windows95
-#    endif
-#  endif
-#endif
-
-#if defined (__WIN16) || defined (WIN16) || defined (_WIN16)
-#  define _STLP_WIN16
-#else
-#  define _STLP_WIN32
-#endif
-
-#if defined(_STLP_WIN32)
-#  define _STLP_USE_WIN32_IO /* CreateFile/ReadFile/WriteFile */
-#endif
-
-#if defined(__MINGW32__) && !defined(_STLP_USE_STDIO_IO)
-#  define _STLP_USE_WIN32_IO /* CreateFile/ReadFile/WriteFile */
-#endif /* __MINGW32__ */
-
-#ifdef _STLP_WIN16
-#  define _STLP_USE_UNIX_EMULATION_IO /* _open/_read/_write */
-#  define _STLP_LDOUBLE_80
-#endif
-
-#endif /* _STLP_INTERNAL_WINDOWS_H */
+#endif /* _STLP_WINCE_WINDOWS_SUFFIX_H */
