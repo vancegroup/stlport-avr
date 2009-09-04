@@ -67,11 +67,11 @@ int main( int argc, const char** argv )
   opts.description( "test suite for 'sockios' framework" );
   opts.usage( "[options]" );
 
-  opts << option<bool>( "print this help message", 'h', "help" )
-       << option<bool>( "list all test cases", 'l', "list" )
+  opts << option<void>( "print this help message", 'h', "help" )
+       << option<void>( "list all test cases", 'l', "list" )
        << option<std::string>( "run tests by number", 'r', "run" )["0"]
-       << option<bool>( "print status of tests within test suite", 'v', "verbose" )
-       << option<bool>(  "trace checks", 't', "trace" );
+       << option<void>( "print status of tests within test suite", 'v', "verbose" )
+       << option<void>(  "trace checks", 't', "trace" );
 
   try {
     opts.parse( argc, argv );
@@ -812,11 +812,12 @@ int main( int argc, const char** argv )
   if ( opts.is_set( 'r' ) ) {
     std::stringstream ss( opts.get<std::string>( 'r' ) );
     int n;
+    int res = 0;
     while ( ss >> n ) {
-      t.single( n );
+      res |= t.single( n );
     }
 
-    return 0;
+    return res;
   }
 
   return t.girdle();
