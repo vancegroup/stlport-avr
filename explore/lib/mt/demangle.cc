@@ -17,6 +17,7 @@
 #include <mt/callstack.h>
 
 #include <iostream>
+#include <cstdlib>
 
 namespace xmt {
 
