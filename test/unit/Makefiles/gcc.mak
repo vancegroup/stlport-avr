@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <08/12/12 06:33:10 ptr>
+# -*- Makefile -*- Time-stamp: <09/10/06 17:26:48 ptr>
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
@@ -34,7 +34,7 @@ ifndef WITHOUT_STLPORT
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 endif
 
-INCLUDES += -I../include -I./cppunit
+INCLUDES += -I../include
 
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
