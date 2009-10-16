@@ -150,11 +150,10 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 size_t _Filebuf_base::_M_page_size = 4096;
 
-_Filebuf_base::_Filebuf_base()
-  : _M_file_id(INVALID_STLP_FD),
+_Filebuf_base::_Filebuf_base() :
+    _M_file_id(INVALID_STLP_FD),
     _M_openmode(0),
-    _M_is_open(false),
-    _M_should_close(false)
+    int_flags_(0)
 {}
 
 void _Filebuf_base::_S_initialize()
@@ -174,8 +173,9 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
 {
   _STLP_fd file_no;
 
-  if (_M_is_open)
+  if ( __is_open() ) {
     return false;
+  }
 
   // use FILE-based i/o
   const char* flags;
@@ -240,21 +240,23 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   // unset buffering immediately
   setbuf(_M_file, 0);
 
-  _M_is_open = true;
+  int_flags_ |= _is_open;
 
   if (openmode & ios_base::ate) {
-    if (FSEEK(_M_file, 0, SEEK_END) != 0)
-      _M_is_open = false;
+    if (FSEEK(_M_file, 0, SEEK_END) != 0) {
+      int_flags_ &= ~_is_open;
+    }
   }
 
   _M_file_id = file_no;
-  _M_should_close = _M_is_open;
+  int_flags_ |= (int_flags_ & _is_open) << 1; // _should_close == _is_open
   _M_openmode = openmode;
 
-  if (_M_is_open)
-    _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
+  if ( (int_flags_ & _is_open) && _STLP_PRIV __is_regular_file(_M_file_id) ) {
+    int_flags_ |= _regular;
+  }
 
-  return (_M_is_open != 0);
+  return (int_flags_ & _is_open) != 0;
 }
 
 
@@ -272,8 +274,9 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode)
 // was opened.
 bool _Filebuf_base::_M_open( int file_no, ios_base::openmode )
 {
-  if (_M_is_open || file_no < 0)
+  if ( (int_flags_ & _is_open) || (file_no < 0) ) {
     return false;
+  }
 
   struct STAT buf;
   if (FSTAT(file_no, &buf) != 0)
@@ -294,21 +297,25 @@ bool _Filebuf_base::_M_open( int file_no, ios_base::openmode )
       return false;
   }
   _M_file_id = file_no;
-  _M_is_open = true;
-  _M_should_close = false;
-  _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
+  int_flags_ |= _is_open;
+  if ( _STLP_PRIV __is_regular_file(_M_file_id) ) {
+    int_flags_ |= _regular;
+  }
+
   return true;
 }
 
 bool _Filebuf_base::_M_close()
 {
-  if (!_M_is_open)
+  if ( (int_flags_ & _is_open) == 0 ) {
     return false;
+  }
 
-  bool ok = _M_should_close ? (fclose(_M_file) == 0) : true;
+  bool ok = (int_flags_ & _should_close) != 0 ? (fclose(_M_file) == 0) : true;
 
-  _M_is_open = _M_should_close = false;
+  int_flags_ = 0;
   _M_openmode = 0;
+
   return ok;
 }
 

@@ -52,7 +52,8 @@ _STLP_BEGIN_NAMESPACE
 // Class _Filebuf_base, a private base class to factor out the system-
 // dependent code from basic_filebuf<>.
 
-class _STLP_CLASS_DECLSPEC _Filebuf_base {
+class _STLP_CLASS_DECLSPEC _Filebuf_base
+{
 public:                      // Opening and closing files.
   _Filebuf_base();
 
@@ -109,28 +110,39 @@ public:
 protected:                      // Static data members.
   static size_t _M_page_size;
 
-protected:                      // Data members.
-  _STLP_fd _M_file_id;
+  protected:
+    _STLP_fd _M_file_id;
 #if defined (_STLP_USE_STDIO_IO)
-  // for stdio, the whole FILE* is being kept here
-  FILE* _M_file;
+    // for stdio, the whole FILE* is being kept here
+    FILE* _M_file;
 #endif
-  ios_base::openmode _M_openmode     ;
-  unsigned char      _M_is_open      ;
-  unsigned char      _M_should_close ;
-  unsigned char      _M_regular_file ;
+    ios_base::openmode _M_openmode;
+
+    enum {
+      _is_open = 0x1,
+      _should_close = 0x2,
+      _regular = 0x4
+    };
+
+    unsigned int_flags_;
 
 #if defined (_STLP_USE_WIN32_IO)
-  _STLP_fd _M_view_id;
+    _STLP_fd _M_view_id;
 #endif
 
-public :
-  static size_t  _STLP_CALL __page_size() { return _M_page_size; }
-  int  __o_mode() const { return (int)_M_openmode; }
-  bool __is_open()      const { return (_M_is_open !=0 ); }
-  bool __should_close() const { return (_M_should_close != 0); }
-  bool __regular_file() const { return (_M_regular_file != 0); }
-  _STLP_fd __get_fd() const { return _M_file_id; }
+  public:
+    static size_t _STLP_CALL __page_size()
+      { return _M_page_size; }
+    int __o_mode() const
+      { return (int)_M_openmode; }
+    bool __is_open() const
+      { return (int_flags_ & _is_open) != 0; }
+    bool __should_close() const
+      { return (int_flags_ & _should_close) != 0; }
+    bool __regular_file() const
+      { return (int_flags_ & _regular) != 0; }
+    _STLP_fd __get_fd() const
+      { return _M_file_id; }
 };
 
 //----------------------------------------------------------------------

@@ -194,11 +194,10 @@ static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
 
 size_t _Filebuf_base::_M_page_size = 4096;
 
-_Filebuf_base::_Filebuf_base()
-  : _M_file_id(INVALID_STLP_FD),
+_Filebuf_base::_Filebuf_base() :
+    _M_file_id(INVALID_STLP_FD),
     _M_openmode(0),
-    _M_is_open(false),
-    _M_should_close(false),
+    int_flags_(0),
     _M_view_id(0)
 {}
 
@@ -219,8 +218,9 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
                             long permission) {
   _STLP_fd file_no;
 
-  if (_M_is_open)
+  if ( __is_open() ) {
     return false;
+  }
 
   DWORD dwDesiredAccess, dwCreationDisposition;
   bool doTruncate = false;
@@ -280,15 +280,15 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     return false;
   }
 
-  _M_is_open = true;
+  int_flags_ |= _is_open | _should_close;
   _M_file_id = file_no;
-  _M_should_close = _M_is_open;
   _M_openmode = openmode;
 
-  if (_M_is_open)
-    _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
+  if ( _STLP_PRIV __is_regular_file(_M_file_id) ) {
+    int_flags_ |= _regular;
+  }
 
-  return (_M_is_open != 0);
+  return true;
 }
 
 bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode) {
@@ -298,22 +298,26 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode) {
   return this->_M_open(name, openmode, FILE_ATTRIBUTE_NORMAL);
 }
 
-bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
+bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode)
+{
 #if (defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE)) || \
     (defined (__MINGW32__) && defined (__MSVCRT__)) || defined (__DMC__)
 
-  if (_M_is_open || __id == INVALID_STLP_FD)
+  if ( (int_flags_ & _is_open) || (__id == INVALID_STLP_FD) ) {
     return false;
+  }
 
-  if (init_mode != ios_base::__default_mode)
+  if (init_mode != ios_base::__default_mode) {
     _M_openmode = init_mode;
-  else
+  } else {
     _M_openmode = _get_osfflags(-1, __id);
+  }
 
-  _M_is_open = true;
+  int_flags_ |= _is_open;
   _M_file_id = __id;
-  _M_should_close = false;
-  _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
+  if ( _STLP_PRIV __is_regular_file(_M_file_id) ) {
+    int_flags_ |= _regular;
+  }
 
   return true;
 #else
@@ -329,9 +333,11 @@ bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
 // Associated the filebuf with a file descriptor pointing to an already-
 // open file.  Mode is set to be consistent with the way that the file
 // was opened.
-bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
-  if (_M_is_open || file_no < 0)
+bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode)
+{
+  if ( (int_flags_ & _is_open) || (file_no < 0) ) {
     return false;
+  }
 
 #if (defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE)) || \
     (defined (__MINGW32__) && defined (__MSVCRT__)) || defined (__DMC__)
@@ -346,9 +352,11 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
     _M_openmode = _get_osfflags(file_no, oshandle);
 
   _M_file_id = oshandle;
-  _M_is_open = true;
-  _M_should_close = false;
-  _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
+  int_flags_ |= _is_open;
+  if ( _STLP_PRIV __is_regular_file(_M_file_id) ) {
+    int_flags_ |= _regular;
+  }
+
   return true;
 #else
   _STLP_MARK_PARAMETER_AS_UNUSED(&init_mode)
@@ -357,25 +365,17 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
 #endif
 }
 
-bool _Filebuf_base::_M_close() {
-  if (!_M_is_open)
+bool _Filebuf_base::_M_close()
+{
+  if ( (int_flags_ & _is_open) == 0 ) {
     return false;
-
-  bool ok;
-
-  if (!_M_should_close)
-    ok = true;
-  else {
-    if (_M_file_id != INVALID_STLP_FD) {
-      ok = (CloseHandle(_M_file_id) != 0);
-    }
-    else {
-      ok = false;
-    }
   }
 
-  _M_is_open = _M_should_close = false;
+  bool ok = (int_flags_ & _should_close) == 0 ? true : (_M_file_id == INVALID_STLP_FD ? false : (CloseHandle(_M_file_id) != 0));
+
+  int_flags_ = 0;
   _M_openmode = 0;
+
   return ok;
 }
 
