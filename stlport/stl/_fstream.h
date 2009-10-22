@@ -224,14 +224,15 @@ protected:                      // Virtual functions from basic_streambuf.
   virtual int sync();
   virtual void imbue(const locale&);
 
-private:                        // Helper functions.
+  private:                        // Helper functions.
 
-  // Precondition: we are currently in putback input mode.  Effect:
-  // switches back to ordinary input mode.
-  void _M_exit_putback_mode() {
-    this->setg(_M_saved_eback, _M_saved_gptr, _M_saved_egptr);
-    _M_in_putback_mode = false;
-  }
+    // Precondition: we are currently in putback input mode.  Effect:
+    // switches back to ordinary input mode.
+    void _M_exit_putback_mode()
+      {
+        this->setg(_M_saved_eback, _M_saved_gptr, _M_saved_egptr);
+        int_flags_ &= ~_in_putback_mode;
+      }
   bool _M_switch_to_input_mode();
   void _M_exit_input_mode();
   bool _M_switch_to_output_mode();
@@ -247,22 +248,21 @@ private:                        // Helper functions.
   bool _M_allocate_buffers();
   void _M_deallocate_buffers();
 
-  pos_type _M_seek_return(off_type __off, _State_type __state) {
-    if (__off != -1) {
-      if (_M_in_input_mode)
-        _M_exit_input_mode();
-      _M_in_input_mode = false;
-      _M_in_output_mode = false;
-      _M_in_putback_mode = false;
-      _M_in_error_mode = false;
-      this->setg(0, 0, 0);
-      this->setp(0, 0);
-    }
+    pos_type _M_seek_return(off_type __off, _State_type __state)
+      {
+        if (__off != -1) {
+          if ( int_flags_ & _in_input_mode ) {
+            _M_exit_input_mode();
+          }
+          int_flags_ &= ~(_in_input_mode | _in_output_mode | _in_putback_mode | _in_error_mode );
+          this->setg(0, 0, 0);
+          this->setp(0, 0);
+        }
 
-    pos_type __result(__off);
-    __result.state(__state);
-    return __result;
-  }
+        pos_type __result(__off);
+        __result.state(__state);
+        return __result;
+      }
 
   bool _M_seek_init(bool __do_unshift);
 
@@ -274,16 +274,18 @@ private:                        // Data members used in all modes.
 
 private:                        // Locale-related information.
 
-  unsigned char _M_constant_width;
-  unsigned char _M_always_noconv;
+    enum {
+      _constant_width  = 0x1,
+      _always_noconv   = 0x2,
+      _int_buf_dynamic = 0x4, // set if internal buffer is heap allocated,
+                              // unset if it was supplied by the user;
+      _in_input_mode   = 0x8,
+      _in_output_mode  = 0x10,
+      _in_error_mode   = 0x20,
+      _in_putback_mode = 0x40
+    };
 
-  // private:                        // Mode flags.
-  unsigned char _M_int_buf_dynamic;  // True if internal buffer is heap allocated,
-  // false if it was supplied by the user.
-  unsigned char _M_in_input_mode;
-  unsigned char _M_in_output_mode;
-  unsigned char _M_in_error_mode;
-  unsigned char _M_in_putback_mode;
+    unsigned int_flags_;
 
   // Internal buffer: characters seen by the filebuf's clients.
   _CharT* _M_int_buf;
@@ -417,11 +419,11 @@ public:
   // There is a specialized version of underflow, for basic_filebuf<char>,
   // in fstream.cpp.
   static int_type _STLP_CALL _M_doit(basic_filebuf<_CharT, _Traits>* __this) {
-    if (!__this->_M_in_input_mode) {
-      if (!__this->_M_switch_to_input_mode())
+    if ( (__this->int_flags_ & basic_filebuf<_CharT, _Traits>::_in_input_mode) == 0) {
+      if (!__this->_M_switch_to_input_mode()) {
         return traits_type::eof();
-    }
-    else if (__this->_M_in_putback_mode) {
+      }
+    } else if ( __this->int_flags_ & basic_filebuf<_CharT, _Traits>::_in_putback_mode ) {
       __this->_M_exit_putback_mode();
       if (__this->gptr() != __this->egptr()) {
         int_type __c = traits_type::to_int_type(*__this->gptr());

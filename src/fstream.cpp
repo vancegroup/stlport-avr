@@ -39,11 +39,11 @@ _Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<c
   typedef char_traits<char> traits_type;
   typedef traits_type::int_type int_type;
 
-  if (!__this->_M_in_input_mode) {
-    if (!__this->_M_switch_to_input_mode())
+  if ( (__this->int_flags_ & basic_filebuf<char, char_traits<char> >::_in_input_mode) == 0 ) {
+    if ( !__this->_M_switch_to_input_mode() ) {
       return traits_type::eof();
-  }
-  else if (__this->_M_in_putback_mode) {
+    }
+  } else if ( __this->int_flags_ & basic_filebuf<char, char_traits<char> >::_in_putback_mode ) {
     __this->_M_exit_putback_mode();
     if (__this->gptr() != __this->egptr()) {
       int_type __c = traits_type::to_int_type(*__this->gptr());
@@ -55,7 +55,7 @@ _Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<c
   // sequences are guaranteed to be identical, then try to use memory
   // mapped I/O.  Otherwise, revert to ordinary read.
   if (__this->_M_base.__regular_file()
-      && __this->_M_always_noconv
+      && ((__this->int_flags_ & basic_filebuf<char, char_traits<char> >::_always_noconv) != 0)
       && __this->_M_base._M_in_binary_mode()) {
     // If we've mmapped part of the file already, then unmap it.
     if (__this->_M_mmap_base)

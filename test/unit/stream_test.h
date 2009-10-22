@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/03 17:06:37 ptr>
+// -*- C++ -*- Time-stamp: <09/10/16 22:15:32 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -61,6 +61,7 @@ class fstream_test
     int EXAM_DECL(seek_binary);
     int EXAM_DECL(seek_text);
     int EXAM_DECL(seek_wide_stream);
+    int EXAM_DECL(rewind);
     int EXAM_DECL(buf);
     int EXAM_DECL(rdbuf);
     int EXAM_DECL(streambuf_output);

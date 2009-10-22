@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/21 10:28:44 ptr>
+// -*- C++ -*- Time-stamp: <09/10/16 22:18:36 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -417,7 +417,9 @@ int main( int argc, const char** argv )
   t.add( &fstream_test::offset, fstrm_test, "fstream offset", fstream_tc[0] );
   t.add( &fstream_test::big_file, fstrm_test, "fstream big_file", fstream_tc[0] );
   fstream_tc[2] = t.add( &fstream_test::custom_facet, fstrm_test, "fstream custom_facet", fstream_tc[0] );
-  
+
+  t.add( &fstream_test::rewind, fstrm_test, "fstream write after read fail", fstream_tc[1] );
+ 
   search_test sch_test;
   
   t.add( &search_test::search0, sch_test, "search0" );

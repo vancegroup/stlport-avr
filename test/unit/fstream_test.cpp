@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/01/28 14:38:25 ptr>
+// -*- C++ -*- Time-stamp: <09/10/22 23:31:10 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -24,6 +24,10 @@
 #include <vector>
 #include <stdexcept>
 #include <stdio.h>
+
+#ifdef __unix__
+#include <unistd.h>
+#endif
 
 #include "full_streambuf.h"
 
@@ -293,6 +297,50 @@ int EXAM_IMPL(fstream_test::tellp)
     EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(10) );
     EXAM_CHECK( o.tellp() == ofstream::pos_type(10) );
   }
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fstream_test::rewind)
+{
+#ifdef __unix__
+  const char fname[] = "/tmp/stlport.test";
+  {
+    fstream f( fname, ios_base::in | ios_base::out | ios_base::trunc | ios_base::binary );
+
+    int n = 0;
+
+    EXAM_CHECK( f.is_open() );
+    EXAM_CHECK( f.good() );
+
+    f.write( (const char*)&n, sizeof(int) );
+    EXAM_CHECK( f.good() );
+    f.seekg( sizeof(int), ios_base::beg );
+    EXAM_CHECK( f.good() );
+    f.read( (char *)&n, sizeof(int) );
+    EXAM_CHECK( f.fail() );
+    f.clear();
+    EXAM_CHECK( f.good() );
+    n = 0;
+    f.write( (const char*)&n, sizeof(int) );
+    EXAM_CHECK( f.good() );
+  }
+  {
+    ifstream f( fname );
+    char c = -1;
+    for ( int i = 0; i < 2 * sizeof(int); ++i ) {
+      f.get( c );
+      EXAM_CHECK( !f.fail() );
+      EXAM_CHECK( c == '\0' );
+    }
+    f.get( c );
+    EXAM_CHECK( f.fail() );
+  }
+
+  unlink( fname );
+#else
+  throw exam::skip_exception();
+#endif
 
   return EXAM_RESULT;
 }
