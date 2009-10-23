@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/10/22 23:31:10 ptr>
+// -*- C++ -*- Time-stamp: <09/10/23 08:28:43 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -304,8 +304,10 @@ int EXAM_IMPL(fstream_test::tellp)
 int EXAM_IMPL(fstream_test::rewind)
 {
 #ifdef __unix__
+  /* Bug ID 2881622: write fail after failed read-and-recovery */
   const char fname[] = "/tmp/stlport.test";
   {
+    // Create empty file for read and write
     fstream f( fname, ios_base::in | ios_base::out | ios_base::trunc | ios_base::binary );
 
     int n = 0;
@@ -313,18 +315,26 @@ int EXAM_IMPL(fstream_test::rewind)
     EXAM_CHECK( f.is_open() );
     EXAM_CHECK( f.good() );
 
+    // write to this file
     f.write( (const char*)&n, sizeof(int) );
     EXAM_CHECK( f.good() );
+    // rewind 'get' pointer to end
     f.seekg( sizeof(int), ios_base::beg );
     EXAM_CHECK( f.good() );
+    // try to read
     f.read( (char *)&n, sizeof(int) );
+    // read operation fail, as expected
     EXAM_CHECK( f.fail() );
+    // clear stream state
     f.clear();
     EXAM_CHECK( f.good() );
     n = 0;
+    // continue append to EOF
     f.write( (const char*)&n, sizeof(int) );
+    // if  bug #2881622 present, operation fail
     EXAM_CHECK( f.good() );
   }
+  // check that we indeed wrote what expected:
   {
     ifstream f( fname );
     char c = -1;
