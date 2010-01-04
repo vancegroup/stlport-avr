@@ -29,10 +29,6 @@
 #  define _STLP_HAS_NO_NAMESPACES
 #endif
 
-#if defined (__MINGW32__)
-#  define _STLP_NO_DRAND48
-#endif
-
 /* Modena C++ library  */
 #if defined (__MWERKS__) && __MWERKS__ <= 0x2303 || (defined (__KCC) && __KCC_VERSION < 3400)
 #  include <mcompile.h>

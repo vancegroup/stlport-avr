@@ -557,10 +557,6 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_SIMPLE_TYPE(T) T
 #endif
 
-#ifndef _STLP_RAND48
-#  define _STLP_NO_DRAND48
-#endif
-
 /* advanced keywords usage */
 #define __C_CAST(__x, __y) ((__x)(__y))
 #ifndef  _STLP_NO_NEW_STYLE_CASTS

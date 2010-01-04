@@ -527,7 +527,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Distance>
 inline _Distance __random_number(_Distance __n) {
-#ifdef _STLP_NO_DRAND48
+#ifndef _STLP_RAND48
   return rand() % __n;
 #else
   return lrand48() % __n;

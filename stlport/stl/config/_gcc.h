@@ -55,8 +55,6 @@
 /* For gcc before version 3 this macro is defined below */
 #    define _STLP_VENDOR_GLOBAL_CSTD
 #  endif
-#  undef  _STLP_NO_DRAND48
-#  define _STLP_NO_DRAND48
 #  define _STLP_CALL
 #endif /* __MINGW32__ */
 
