@@ -371,9 +371,9 @@ struct _Lim<F,16>
   static F qnan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7e, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0x7e _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -421,9 +421,9 @@ struct _Lim<F,32>
   static F qnan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xe0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xc0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0xe0, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0xc0, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -471,9 +471,9 @@ struct _Lim<F,64>
   static F qnan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xfc, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xf8, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0xfc, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0xf8, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -481,9 +481,9 @@ struct _Lim<F,64>
   static F snan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xf6, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xf4, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0xf6, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0xf4, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -529,9 +529,9 @@ struct _Lim<F,80>
   static F qnan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0xc0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0x80, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xc0, 0xff, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0x80, 0xff, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -599,9 +599,9 @@ struct _Lim<F,96>
   static F snan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0x40, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0xa0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0x40, 0xff, 0x7f, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xa0, 0xff, 0x7f, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }

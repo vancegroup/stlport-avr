@@ -16,6 +16,8 @@
 
 #include <limits>
 
+#include <ieee754.h>
+
 using namespace std;
 
 bool valid_sign_info(bool, bool)
@@ -225,10 +227,120 @@ int EXAM_IMPL(test_qnan)
     * EXAM_CHECK_ASYNC(! (qnan <= 42));
     * EXAM_CHECK_ASYNC(! (qnan >= 42));
     */
+
+    if ( is_same<float,_Tp>::value ) {
+      ieee754_float v;
+      v.f = qnan;
+      EXAM_CHECK( v.ieee_nan.quiet_nan == 1 );
+    }
+
+    if ( is_same<double,_Tp>::value ) {
+      ieee754_double v;
+      v.d = qnan;
+      EXAM_CHECK( v.ieee_nan.quiet_nan == 1 );
+    }
+
+#  if !defined ( _STLP_NO_LONG_DOUBLE )
+    if ( is_same<long double,_Tp>::value ) {
+      ieee854_long_double v;
+      v.d = qnan;
+      EXAM_CHECK( v.ieee_nan.quiet_nan == 1 );
+    }
+#  endif
   }
+
   return EXAM_RESULT;
 }
 
+volatile const double& fdbl()
+{
+  volatile static ieee754_double v1;
+
+  v1.ieee.negative = 0;
+  v1.ieee.exponent = 0x7ff;
+  v1.ieee.mantissa0 = 0x40000;
+  v1.ieee.mantissa1 = 0x0;
+
+  return v1.d;
+}
+
+template <class _Tp>
+int EXAM_IMPL(test_snan)
+{
+  typedef numeric_limits<_Tp> lim;
+
+  if (lim::has_signaling_NaN) {
+    const volatile _Tp snan = lim::signaling_NaN();
+
+    //if (sizeof(_Tp) == 4) {
+    //  ostringstream str;
+    //  str << "qnan " << qnan << ", in hexa: " << showbase << hex << *((unsigned int*)&qnan);
+    //  EXAM_MESSAGE( str.str().c_str() );
+    //  str.str("");
+    //  float val = generate_nan(0.0f);
+    //  str << "val " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
+    //  EXAM_MESSAGE( str.str().c_str() );
+    //  str.str("");
+    //  val = -qnan;
+    //  str << "-qnan " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
+    //  EXAM_MESSAGE( str.str().c_str() );
+    //}
+    /* NaNs shall always compare "false" when compared for equality
+    * If one of these fail, your compiler may be optimizing incorrectly,
+    * or the STLport is incorrectly configured.
+    */
+    EXAM_CHECK( !(snan == 42));
+    EXAM_CHECK( !(snan == snan));
+    EXAM_CHECK( snan != 42);
+    EXAM_CHECK( snan != snan);
+
+    /* The following tests may cause arithmetic traps.
+    * EXAM_CHECK_ASYNC(! (snan < 42));
+    * EXAM_CHECK_ASYNC(! (snan > 42));
+    * EXAM_CHECK_ASYNC(! (snan <= 42));
+    * EXAM_CHECK_ASYNC(! (snan >= 42));
+    */
+
+    if ( is_same<float,_Tp>::value ) {
+      ieee754_float v;
+      v.f = snan;
+      EXAM_CHECK( v.ieee_nan.quiet_nan == 0 );
+    }
+
+    if ( is_same<double,_Tp>::value ) {
+      ieee754_double v;
+      v.d = snan;
+      printf( "%1x %03x %05x %08x\n", v.ieee.negative, v.ieee.exponent, v.ieee.mantissa0, v.ieee.mantissa1 );
+
+      ieee754_double v1;
+
+      v1.ieee.negative = 0;
+      v1.ieee.exponent = 0x7ff;
+      v1.ieee.mantissa0 = 0x40000;
+      v1.ieee.mantissa1 = 0x0;
+
+      printf( "%1x %03x %05x %08x\n", v1.ieee.negative, v1.ieee.exponent, v1.ieee.mantissa0, v1.ieee.mantissa1 );
+
+      // double db = v1.d;
+
+      v1.d = fdbl();
+
+      printf( "%1x %03x %05x %08x\n", v1.ieee.negative, v1.ieee.exponent, v1.ieee.mantissa0, v1.ieee.mantissa1 );
+
+      EXAM_CHECK( v.ieee_nan.quiet_nan == 0 );
+    }
+
+#  if !defined ( _STLP_NO_LONG_DOUBLE )
+    if ( is_same<long double,_Tp>::value ) {
+      ieee854_long_double v;
+      v.d = snan;
+      EXAM_CHECK( v.ieee_nan.quiet_nan == 0 );
+    }
+#  endif
+  }
+
+  return EXAM_RESULT;
+}
 
 class ArbitraryType
 {};
@@ -294,6 +406,12 @@ int EXAM_IMPL(limits_test::qnan_test)
   EXAM_RESULT |= test_qnan<double>( __exam_ts, 0 );
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
   EXAM_RESULT |= test_qnan<long double>( __exam_ts, 0 );
+#  endif
+
+  EXAM_RESULT |= test_snan<float>( __exam_ts, 0 );
+  EXAM_RESULT |= test_snan<double>( __exam_ts, 0 );
+#  if !defined ( _STLP_NO_LONG_DOUBLE )
+  EXAM_RESULT |= test_snan<long double>( __exam_ts, 0 );
 #  endif
 
 #  if defined (__BORLANDC__)
