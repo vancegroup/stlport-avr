@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/10/16 22:18:36 ptr>
+// -*- C++ -*- Time-stamp: <10/01/23 02:25:50 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -708,7 +708,17 @@ int main( int argc, const char** argv )
   limits_test lt_test;
 
   t.add( &limits_test::limits, lt_test, "limits_test::limits" );
-  t.add( &limits_test::qnan_test, lt_test, "limits_test::qnan_test" );
+
+  t.add( &limits_test::qNaN<float>, lt_test, "numeric_limits<float>::quiet_NaN()" );
+  t.add( &limits_test::qNaN<double>, lt_test, "numeric_limits<double>::quiet_NaN()" );
+#if !defined ( _STLP_NO_LONG_DOUBLE )
+  t.add( &limits_test::qNaN<long double>, lt_test, "numeric_limits<long double>::quiet_NaN()" );
+#endif
+  t.add( &limits_test::sNaN<float>, lt_test, "numeric_limits<float>::signaling_NaN()" );
+  t.add( &limits_test::sNaN<double>, lt_test, "numeric_limits<double>::signaling_NaN()" );
+#if !defined ( _STLP_NO_LONG_DOUBLE )
+  t.add( &limits_test::sNaN<long double>, lt_test, "numeric_limits<long double>::signaling_NaN()" );
+#endif
 
   mem_fun_ptr_test mf_test;
 
@@ -751,7 +761,8 @@ int main( int argc, const char** argv )
 
   num_put_get_test nmg_test;
 
-  t.add( &num_put_get_test::num_put_float, nmg_test, "num_put_float" );
+  // t.add( &num_put_get_test::scientific_precision, nmg_test, "scientific precision",
+  t.add( &num_put_get_test::num_put_float, nmg_test, "num_put_float" ); // );
   t.add( &num_put_get_test::num_put_integer, nmg_test, "num_put_integer" );
   t.add( &num_put_get_test::num_get_float, nmg_test, "num_get_float" );
   t.add( &num_put_get_test::num_get_integer, nmg_test, "num_get_integer" );
@@ -799,7 +810,7 @@ int main( int argc, const char** argv )
   t.add( &locale_test::combine, ltest, "combine" );
 
   if ( opts.is_set( 'l' ) ) {
-    t.print_graph( std::cerr );
+    t.print_graph( std::cout );
     return 0;
   }
 

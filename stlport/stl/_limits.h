@@ -631,7 +631,7 @@ struct _Lim<F,128>
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0x7f, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -639,9 +639,9 @@ struct _Lim<F,128>
   static F qnan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0xc0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0xc0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xc0, 0xff, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xc0, 0xff, 0x7f, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -649,9 +649,9 @@ struct _Lim<F,128>
   static F snan() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0x40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0xa0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0xff, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xa0, 0xff, 0x7f, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif
     return tmp.f;
   }
@@ -659,7 +659,7 @@ struct _Lim<F,128>
   static F denorm_min() _STLP_NOTHROW
   {
 #  if defined (_STLP_BIG_ENDIAN)
-    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  else /* _STLP_LITTLE_ENDIAN */
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #  endif

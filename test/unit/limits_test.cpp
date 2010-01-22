@@ -188,169 +188,16 @@ int EXAM_IMPL(test_float_limits)
   return EXAM_RESULT;
 }
 
-//float generate_nan(float f) {
-//  return 0.0f / f;
-//}
-template <class _Tp>
-int EXAM_IMPL(test_qnan)
-{
-  typedef numeric_limits<_Tp> lim;
-
-  if (lim::has_quiet_NaN) {
-    const volatile _Tp qnan = lim::quiet_NaN();
-
-    //if (sizeof(_Tp) == 4) {
-    //  ostringstream str;
-    //  str << "qnan " << qnan << ", in hexa: " << showbase << hex << *((unsigned int*)&qnan);
-    //  EXAM_MESSAGE( str.str().c_str() );
-    //  str.str("");
-    //  float val = generate_nan(0.0f);
-    //  str << "val " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
-    //  EXAM_MESSAGE( str.str().c_str() );
-    //  str.str("");
-    //  val = -qnan;
-    //  str << "-qnan " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
-    //  EXAM_MESSAGE( str.str().c_str() );
-    //}
-    /* NaNs shall always compare "false" when compared for equality
-    * If one of these fail, your compiler may be optimizing incorrectly,
-    * or the STLport is incorrectly configured.
-    */
-    EXAM_CHECK( !(qnan == 42));
-    EXAM_CHECK( !(qnan == qnan));
-    EXAM_CHECK( qnan != 42);
-    EXAM_CHECK( qnan != qnan);
-
-    /* The following tests may cause arithmetic traps.
-    * EXAM_CHECK_ASYNC(! (qnan < 42));
-    * EXAM_CHECK_ASYNC(! (qnan > 42));
-    * EXAM_CHECK_ASYNC(! (qnan <= 42));
-    * EXAM_CHECK_ASYNC(! (qnan >= 42));
-    */
-
-    if ( is_same<float,_Tp>::value ) {
-      ieee754_float v;
-      v.f = qnan;
-      EXAM_CHECK( v.ieee_nan.quiet_nan == 1 );
-    }
-
-    if ( is_same<double,_Tp>::value ) {
-      ieee754_double v;
-      v.d = qnan;
-      EXAM_CHECK( v.ieee_nan.quiet_nan == 1 );
-    }
-
-#  if !defined ( _STLP_NO_LONG_DOUBLE )
-    if ( is_same<long double,_Tp>::value ) {
-      ieee854_long_double v;
-      v.d = qnan;
-      EXAM_CHECK( v.ieee_nan.quiet_nan == 1 );
-    }
-#  endif
-  }
-
-  return EXAM_RESULT;
-}
-
-volatile const double& fdbl()
-{
-  volatile static ieee754_double v1;
-
-  v1.ieee.negative = 0;
-  v1.ieee.exponent = 0x7ff;
-  v1.ieee.mantissa0 = 0x40000;
-  v1.ieee.mantissa1 = 0x0;
-
-  return v1.d;
-}
-
-template <class _Tp>
-int EXAM_IMPL(test_snan)
-{
-  typedef numeric_limits<_Tp> lim;
-
-  if (lim::has_signaling_NaN) {
-    const volatile _Tp snan = lim::signaling_NaN();
-
-    //if (sizeof(_Tp) == 4) {
-    //  ostringstream str;
-    //  str << "qnan " << qnan << ", in hexa: " << showbase << hex << *((unsigned int*)&qnan);
-    //  EXAM_MESSAGE( str.str().c_str() );
-    //  str.str("");
-    //  float val = generate_nan(0.0f);
-    //  str << "val " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
-    //  EXAM_MESSAGE( str.str().c_str() );
-    //  str.str("");
-    //  val = -qnan;
-    //  str << "-qnan " << val << ", in hexa: " << showbase << hex << *((unsigned int*)&val);
-    //  EXAM_MESSAGE( str.str().c_str() );
-    //}
-    /* NaNs shall always compare "false" when compared for equality
-    * If one of these fail, your compiler may be optimizing incorrectly,
-    * or the STLport is incorrectly configured.
-    */
-    EXAM_CHECK( !(snan == 42));
-    EXAM_CHECK( !(snan == snan));
-    EXAM_CHECK( snan != 42);
-    EXAM_CHECK( snan != snan);
-
-    /* The following tests may cause arithmetic traps.
-    * EXAM_CHECK_ASYNC(! (snan < 42));
-    * EXAM_CHECK_ASYNC(! (snan > 42));
-    * EXAM_CHECK_ASYNC(! (snan <= 42));
-    * EXAM_CHECK_ASYNC(! (snan >= 42));
-    */
-
-    if ( is_same<float,_Tp>::value ) {
-      ieee754_float v;
-      v.f = snan;
-      EXAM_CHECK( v.ieee_nan.quiet_nan == 0 );
-    }
-
-    if ( is_same<double,_Tp>::value ) {
-      ieee754_double v;
-      v.d = snan;
-      printf( "%1x %03x %05x %08x\n", v.ieee.negative, v.ieee.exponent, v.ieee.mantissa0, v.ieee.mantissa1 );
-
-      ieee754_double v1;
-
-      v1.ieee.negative = 0;
-      v1.ieee.exponent = 0x7ff;
-      v1.ieee.mantissa0 = 0x40000;
-      v1.ieee.mantissa1 = 0x0;
-
-      printf( "%1x %03x %05x %08x\n", v1.ieee.negative, v1.ieee.exponent, v1.ieee.mantissa0, v1.ieee.mantissa1 );
-
-      // double db = v1.d;
-
-      v1.d = fdbl();
-
-      printf( "%1x %03x %05x %08x\n", v1.ieee.negative, v1.ieee.exponent, v1.ieee.mantissa0, v1.ieee.mantissa1 );
-
-      EXAM_CHECK( v.ieee_nan.quiet_nan == 0 );
-    }
-
-#  if !defined ( _STLP_NO_LONG_DOUBLE )
-    if ( is_same<long double,_Tp>::value ) {
-      ieee854_long_double v;
-      v.d = snan;
-      EXAM_CHECK( v.ieee_nan.quiet_nan == 0 );
-    }
-#  endif
-  }
-
-  return EXAM_RESULT;
-}
-
 class ArbitraryType
 {};
 
-int EXAM_IMPL(limits_test::limits) {
-#  if defined (__BORLANDC__)
+int EXAM_IMPL(limits_test::limits)
+{
+#if defined (__BORLANDC__)
   /* Ignore FPU exceptions, set FPU precision to 64 bits */
   unsigned int _float_control_word = _control87(0, 0);
   _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
-#  endif
+#endif
 
   EXAM_CHECK(test_integral_limits_base(bool()));
   EXAM_CHECK(test_integral_limits(char()));
@@ -358,9 +205,9 @@ int EXAM_IMPL(limits_test::limits) {
   EXAM_CHECK(test_signed_integral_limits(signed_char()));
   typedef unsigned char unsigned_char;
   EXAM_CHECK(test_unsigned_integral_limits(unsigned_char()));
-#  if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT)
+#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT)
   EXAM_CHECK(test_integral_limits(wchar_t()));
-#  endif
+#endif
   EXAM_CHECK(test_signed_integral_limits(short()));
   typedef unsigned short unsigned_short;
   EXAM_CHECK(test_unsigned_integral_limits(unsigned_short()));
@@ -370,7 +217,7 @@ int EXAM_IMPL(limits_test::limits) {
   EXAM_CHECK(test_signed_integral_limits(long()));
   typedef unsigned long unsigned_long;
   EXAM_CHECK(test_unsigned_integral_limits(unsigned_long()));
-#  if defined (_STLP_LONG_LONG)
+#if defined (_STLP_LONG_LONG)
   typedef _STLP_LONG_LONG long_long;
   EXAM_CHECK(test_signed_integral_limits(long_long()));
   typedef unsigned _STLP_LONG_LONG unsigned_long_long;
@@ -379,46 +226,18 @@ int EXAM_IMPL(limits_test::limits) {
 
   EXAM_RESULT |= test_float_limits<float>( __exam_ts, 0 );
   EXAM_RESULT |= test_float_limits<double>( __exam_ts, 0 );
-#  if !defined ( _STLP_NO_LONG_DOUBLE )
+#if !defined ( _STLP_NO_LONG_DOUBLE )
   EXAM_RESULT |= test_float_limits<long double>( __exam_ts, 0 );
-#  endif
+#endif
 
   EXAM_CHECK( !numeric_limits<ArbitraryType>::is_specialized );
 
-#  if defined (__BORLANDC__)
+#if defined (__BORLANDC__)
   /* Reset floating point control word */
   _clear87();
   _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
-#  endif
+#endif
 
   return EXAM_RESULT;
 }
 
-int EXAM_IMPL(limits_test::qnan_test)
-{
-#  if defined (__BORLANDC__)
-  /* Ignore FPU exceptions, set FPU precision to 64 bits */
-  unsigned int _float_control_word = _control87(0, 0);
-  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
-#  endif
-
-  EXAM_RESULT |= test_qnan<float>( __exam_ts, 0 );
-  EXAM_RESULT |= test_qnan<double>( __exam_ts, 0 );
-#  if !defined ( _STLP_NO_LONG_DOUBLE )
-  EXAM_RESULT |= test_qnan<long double>( __exam_ts, 0 );
-#  endif
-
-  EXAM_RESULT |= test_snan<float>( __exam_ts, 0 );
-  EXAM_RESULT |= test_snan<double>( __exam_ts, 0 );
-#  if !defined ( _STLP_NO_LONG_DOUBLE )
-  EXAM_RESULT |= test_snan<long double>( __exam_ts, 0 );
-#  endif
-
-#  if defined (__BORLANDC__)
-  /* Reset floating point control word */
-  _clear87();
-  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
-#  endif
-
-  return EXAM_RESULT;
-}
