@@ -292,12 +292,12 @@ float _STLP_CALL _LimG<__dummy>::get_F_inf() {
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_qNaN() {
-  typedef float_helper<float, 0x7f81u> _FloatHelper;
+  typedef float_helper<float, 0x7fc0u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_sNaN() {
-  typedef float_helper<float, 0x7fc1u> _FloatHelper;
+  typedef float_helper<float, 0x7fa0u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
@@ -317,11 +317,11 @@ public:
     return _FloatHelper::get_from_last_word();
   }
   static double get_qNaN() {
-    typedef float_helper<double, 0x7ff1u> _FloatHelper;
+    typedef float_helper<double, 0x7ff8u> _FloatHelper;
     return _FloatHelper::get_from_last_word();
   }
   static double get_sNaN() {
-    typedef float_helper<double, 0x7ff9u> _FloatHelper;
+    typedef float_helper<double, 0x7ff4u> _FloatHelper;
     return _FloatHelper::get_from_last_word();
   }
 };
@@ -347,27 +347,69 @@ class _NumericLimitsAccess<0> {
 public:
   static long double get_inf() {
 #    if defined (_STLP_BIG_ENDIAN)
-    typedef float_helper<long double, 0x7ff0u> _FloatHelper;
+    typedef float_helper<long double, 0x7fffu> _FloatHelper;
 #    else
+#     if defined(__ia64__) || defined(__x86_64__) || defined(_M_IA64) || defined(_M_AMD64)
     typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
+#     elif defined(__i386__) || defined(_M_IX86)
+    typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
+#     else
+    typedef float_helper<long double, 0x7fffu> _FloatHelper;
+#     endif
 #    endif
     return _FloatHelper::get_from_last_word();
   }
   static long double get_qNaN() {
-#    if defined (_STLP_BIG_ENDIAN)
-    typedef float_helper<long double, 0x7ff1u> _FloatHelper;
+#    if defined(__ia64__) || defined(__x86_64__) || defined(_M_IA64) || defined(_M_AMD64)
+    union _access
+    {
+      unsigned char b[sizeof(long double)];
+      long double   f;
+    };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xc0, 0xff, 0x7f, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    return tmp.f;
+#    elif defined(__i386__) || defined(_M_IX86)
+    union _access
+    {
+      unsigned char b[sizeof(long double)];
+      long double   f;
+    };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xc0, 0xff, 0x7f, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    return tmp.f;
 #    else
-    typedef float_helper2<long double, 0xc000u, 0x7fffu> _FloatHelper;
+#    if defined (_STLP_BIG_ENDIAN)
+    typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
+#    else
+    typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;                  
 #    endif
     return _FloatHelper::get_from_last_word();
+#    endif
   }
   static long double get_sNaN() {
-#    if defined (_STLP_BIG_ENDIAN)
-    typedef float_helper<long double, 0x7ff9u> _FloatHelper;
+#    if defined(__ia64__) || defined(__x86_64__) || defined(_M_IA64) || defined(_M_AMD64)
+    union _access
+    {
+      unsigned char b[sizeof(long double)];
+      long double   f;
+    };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xa0, 0xff, 0x7f, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    return tmp.f;
+#    elif defined(__i386__) || defined(_M_IX86)
+    union _access
+    {
+      unsigned char b[sizeof(long double)];
+      long double   f;
+    };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xa0, 0xff, 0x7f, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    return tmp.f;
 #    else
-    typedef float_helper2<long double, 0x9000u, 0x7fffu> _FloatHelper;
+#    if defined (_STLP_BIG_ENDIAN)
+    typedef float_helper2<long double, 0x4000u, 0x7fffu> _FloatHelper;
+#    else
+    typedef float_helper2<long double, 0x4000u, 0x7fffu> _FloatHelper;
 #    endif
     return _FloatHelper::get_from_last_word();
+#    endif
   }
 };
 
