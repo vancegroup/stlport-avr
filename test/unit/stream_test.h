@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/10/16 22:15:32 ptr>
+// -*- C++ -*- Time-stamp: <10/01/28 11:08:52 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -71,6 +71,7 @@ class fstream_test
     int EXAM_DECL(offset);
     int EXAM_DECL(big_file);
     int EXAM_DECL(custom_facet);
+    int EXAM_DECL(tell_binary_wce);
 };
 
 class strstream_buffer_test

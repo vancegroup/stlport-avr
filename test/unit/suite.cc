@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/01/23 02:25:50 ptr>
+// -*- C++ -*- Time-stamp: <10/01/28 11:11:01 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -401,7 +401,8 @@ int main( int argc, const char** argv )
         t.add( &fstream_test::input, fstrm_test, "fstream input",
           t.add( &fstream_test::output, fstrm_test, "fstream output" ) ) ) ) );
 
-  t.add( &fstream_test::tellg, fstrm_test, "fstream tellg", fstream_tc[0] );
+  t.add( &fstream_test::tell_binary_wce, fstrm_test, "fstream tellg binary WCE workaround",
+    t.add( &fstream_test::tellg, fstrm_test, "fstream tellg", fstream_tc[0] ) );
   t.add( &fstream_test::tellp, fstrm_test, "fstream tellp", fstream_tc[0] );
 
   t.add( &fstream_test::seek_wide_stream, fstrm_test, "wfstream seek",

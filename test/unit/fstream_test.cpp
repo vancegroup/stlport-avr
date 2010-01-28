@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/10/23 08:28:43 ptr>
+// -*- C++ -*- Time-stamp: <10/01/28 11:11:55 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -409,6 +409,70 @@ int EXAM_IMPL(fstream_test::seek_binary)
 
   EXAM_CHECK( s.rdbuf()->sgetn( b2, 10 ) == 10 );
   EXAM_CHECK( b2[9] == '0' );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fstream_test::tell_binary_wce)
+{
+  // Test in binary mode:
+  {
+    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
+    EXAM_REQUIRE( s );
+
+    /*
+      Patch tracker issue ID 2941143
+
+      Platform: Windows CE 5 (Windows Mobile 5.x & 6.x)
+      Compiler: Visual Studio 2008; the issue is not compiler-related
+ 
+      Problem: on files larger than 4K opened in binary mode, ifstream::tellg()
+      does not return correct values. Short snippet demonstrates the issue:
+      =================================
+      std::ifstream in( filename, std::ios_base::in | std::ios_base::binary );
+      in.get();
+      std::streampos pos = in.tellg();
+      assert( pos == 1 );
+      =================================
+ 
+      Underlying problem: the sequence
+ 
+      - create mapping
+      - SetFilePosition( file, pos, FILE_BEGIN ) // pos == file size
+      - first access to mapped page
+      - SetFilePosition( file, 0, FILE_CURRENT )
+ 
+      does not work as expected: last SetFilePosition() returns 4096 instead of
+      file size. If the first access to mapped page happens before the call to
+      SetFilePosition() that sets file pointer to EOF, everything works fine.
+ 
+      Workaround: in fstream_win32io.cpp, method
+      _Filebuf_base::_M_mmap() explicitly accesses the first page of the
+      mapping before calling _M_seek(). Note that with full & global
+      optimizations enabled, the optimizer is very aggressive and tends to cut
+      away expressions producing unused values (hence the assignment to a static
+      variable)
+     */
+
+    for ( int i = 0; i < 4096 /* PAGE_SIZE */; ++i ) {
+      s << '0';
+    }
+
+    for ( int i = 0; i < 100 /* PAGE_SIZE + 100 */; ++i ) {
+      s << '1';
+    }
+  }
+
+  fstream s( "test_file.txt", ios_base::in | ios_base::binary );
+  EXAM_CHECK( s );
+  s.get();
+  EXAM_CHECK( s );
+  EXAM_CHECK( s.tellg() == static_cast<streampos>(1) );
+  s.seekg( 4195 );
+  char c = 'a';
+  s >> c;
+  EXAM_CHECK( s );
+  EXAM_CHECK( c == '1' );
 
   return EXAM_RESULT;
 }
