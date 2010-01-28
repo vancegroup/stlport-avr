@@ -575,6 +575,10 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir) {
   return result;
 }
 
+#ifdef _STLP_WCE
+inline void access_page_aux( void* p )
+{ static char c = *static_cast<const char*>( p ); }
+#endif
 
 // Attempts to memory-map len bytes of the current file, starting
 // at position offset.  Precondition: offset is a multiple of the
@@ -605,7 +609,16 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
                          __STATIC_CAST(DWORD, len));
 #endif
     // check if mapping succeded and is usable
-    if (base == 0  || _M_seek(offset + len, ios_base::beg) < 0) {
+#ifdef _STLP_WCE
+    /* Workaround for Windows CE 5 (Windows Mobile 5.x & 6.x):
+       SetFilePosition() returns wrong number before first read;
+       access_page_aux try to read. See patch tracker ID 2941143.
+     */
+    if ( base == 0 || (access_page_aux(base), _M_seek(offset + len, ios_base::beg)) < 0 )
+#else
+    if ( base == 0 || _M_seek(offset + len, ios_base::beg) < 0 )
+#endif
+    {
       this->_M_unmap(base, len);
       base = 0;
     }
