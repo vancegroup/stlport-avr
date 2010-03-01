@@ -1,6 +1,6 @@
-# Time-stamp: <08/10/22 18:37:19 ptr>
+# Time-stamp: <10/02/18 10:07:18 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -45,16 +45,41 @@ P_ARCH := $(shell uname -p | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr '
 endif
 
 else
-OSNAME := $(shell echo ${TARGET_OS} | sed 's/^[a-z0-9_]\+-[a-z0-9]\+-\([a-z]\+\).*/\1/' | sed 's/^[a-z0-9_]\+-\([a-z]\+\).*/\1/' )
-OSREL  := $(shell echo ${TARGET_OS} | sed 's/^[[:alnum:]_]\+-[a-z0-9]\+-[a-z]\+\([a-zA-Z.0-9]*\).*/\1/' | sed 's/^[a-z0-9_]\+-[a-z]\+\([a-zA-Z.0-9]*\).*/\1/' )
+ifneq ($(TARGET_OS),arm-eabi)
+OSNAME := $(shell echo ${TARGET_OS} | sed -e 's/^[a-z0-9_]\+-[a-z0-9]\+-\([a-z]\+\).*/\1/' -e 's/^[a-z0-9_]\+-\([a-z]\+\).*/\1/' )
+OSREL  := $(shell echo ${TARGET_OS} | sed -e 's/^[[:alnum:]_]\+-[a-z0-9]\+-[a-z]\+\([a-zA-Z.0-9]*\).*/\1/' -e 's/^[a-z0-9_]\+-[a-z]\+\([a-zA-Z.0-9]*\).*/\1/' )
 M_ARCH := $(shell echo ${TARGET_OS} | sed 's/^\([a-z0-9_]\+\)-.*/\1/' )
 P_ARCH := unknown
+else
+# Assume android NDK 1.5 r1
+OSNAME := android
+# don't know, what OS release
+# Known at this time:
+#   Android 2.1 Release 1
+#   Android 1.6 Release 2
+#   Android 1.5 Release 3
+# Older:
+#   Android 2.0.1 Release 1
+#   Android 2.0 Release 1
+#   Android 1.1
+OSREL  := 
+M_ARCH := arm
+# ARM v5TE
+P_ARCH := ARM_5TE
+
+_TMP := $(shell ${TARGET_OS}-c++ -mandroid -print-file-name=libgcc.a | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname)
+# NDK 1.5 r1: android-1.5
+# NDK 1.6 r1: android-3 or android-4
+ANDROID_REV := 4
+_TMP2 := $(shell echo $(_TMP) | grep -o -- '-.\..' | sed -e s/1\.6/$(ANDROID_REV)/)
+SYSROOT ?= $(_TMP)/platforms/android$(_TMP2)/arch-arm
+endif
 # TARGET_OS
 endif
 
 NODENAME := $(shell uname -n | tr '[A-Z]' '[a-z]' )
 SYSVER := $(shell uname -v )
-USER := $(shell echo $$USER )
+USER := $(shell id -un )
 
 ifeq ($(OSNAME),freebsd)
 OSREL_MAJOR := $(shell echo ${OSREL} | tr '.-' ' ' | awk '{print $$1;}')
@@ -69,7 +94,7 @@ endif
 
 # OS_VER := $(shell uname -s | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',_')
 
-BUILD_SYSTEM := $(shell echo `uname -n` `uname -s` `uname -r` `uname -v` `uname -m` $$USER)
+BUILD_SYSTEM := $(shell { uname -n; uname -s; uname -r; uname -v; uname -m; id -un; } | tr '\n' ' ' )
 BUILD_DATE := $(shell date +'%Y/%m/%d %T %Z')
 
 BUILD_OSNAME := $(shell uname -s | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')

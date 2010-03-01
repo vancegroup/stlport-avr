@@ -67,7 +67,8 @@ inline int _FILE_fd(const FILE *__f) { return (int) __f->__pad[2]; }
 
 #elif defined (__hpux) /* && defined(__hppa) && defined(__HP_aCC)) */ || \
       defined (__MVS__) || \
-      defined (_STLP_USE_UCLIBC) /* should be before _STLP_USE_GLIBC */
+      defined (_STLP_USE_UCLIBC) || /* should be before _STLP_USE_GLIBC */ \
+      defined (__ANDROID__)         /* should be before _STLP_USE_GLIBC */
 
 inline int _FILE_fd(const FILE *__f) { return fileno(__CONST_CAST(FILE*, __f)); }
 
@@ -113,5 +114,6 @@ _STLP_END_NAMESPACE
 #endif /* _STLP_STDIO_FILE_H */
 
 /* Local Variables:
- * mode:C++
- * End: */
+ * mode: C++
+ * End:
+ */

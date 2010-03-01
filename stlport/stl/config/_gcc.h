@@ -148,8 +148,14 @@ typedef unsigned int wint_t;
 #  define _STLP_NO_VENDOR_MATH_F
 #endif
 
+#ifdef __ANDROID__
+#  define _STLP_HAS_NO_NEW_C_HEADERS 1
+#endif
+
 #if (__GNUC__ >= 3)
-#  define _STLP_HAS_NO_NEW_C_HEADERS // experiment
+#  ifndef _STLP_HAS_NO_NEW_C_HEADERS
+#    define _STLP_HAS_NO_NEW_C_HEADERS // experiment
+#  endif
 #  ifndef _STLP_HAS_NO_NEW_C_HEADERS
 /*
 #    ifndef _STLP_USE_UCLIBC
@@ -176,8 +182,10 @@ typedef unsigned int wint_t;
 #  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
 #endif
 
-#undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-#undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+#ifndef __ANDROID__
+#  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+#endif
 
 /* strict ANSI prohibits "long long" ( gcc) */
 #if defined ( __STRICT_ANSI__ )

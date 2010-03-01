@@ -74,6 +74,11 @@
 #    include <stl/config/_kai.h>
 #  endif
 */
+#elif defined (__ANDROID__)
+#  include <stl/config/_android.h>
+#  if defined (__GNUC__)
+#    include <stl/config/_gcc.h>
+#  endif
 #elif defined (__FreeBSD__)
 #  include <stl/config/_freebsd.h>
 #  if defined (__GNUC__)

@@ -43,6 +43,10 @@ using _STLP_VENDOR_CSTD::malloc;
 
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <new>
+#    ifdef __ANDROID__
+inline void* operator new(size_t, void* p) { return p; }
+inline void* operator new[](size_t, void *p) { return p; }
+#    endif
 #  else
 #    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
 #  endif
@@ -112,6 +116,9 @@ _STLP_END_NAMESPACE
 #  if !defined (_STLP_USE_EXCEPTIONS)
 #    ifndef _STLP_INTERNAL_CSTDIO
 #      include <stl/_cstdio.h>
+#    endif
+#    ifdef __ANDROID__
+#      include <stdlib.h> /* for exit() in _STLP_THROW_BAD_ALLOC */
 #    endif
 #    define _STLP_THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
 #  else

@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <08/10/22 15:51:41 ptr>
+# -*- makefile -*- Time-stamp: <10/03/05 23:16:47 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -42,10 +42,19 @@ NOT_USE_NOSTDLIB := 1
 endif
 endif
 
+# Android NDK 1.5 r1, in pre-build gcc 4.2.1 no libsupc++, is we should link with libstdc++?
+#ifeq ($(OSNAME),android)
+#NOT_USE_NOSTDLIB := 1
+#endif
+
 endif
 
 ifndef NOT_USE_NOSTDLIB
 ifeq ($(OSNAME),linux)
+_USE_NOSTDLIB := 1
+endif
+
+ifeq ($(OSNAME),android)
 _USE_NOSTDLIB := 1
 endif
 
@@ -159,6 +168,19 @@ END_OBJ := $(shell for o in crtendS.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
 
+ifeq ($(OSNAME),android)
+START_OBJ := $(shell for o in crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_A_OBJ := $(shell for o in crti.o crtbeginT.o; do ${CXX} -print-file-name=$$o; done)
+END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+# Android's libthread_db has undefined symbol:
+#   libthread_db.so: undefined reference to `ps_pglobal_lookup'
+#  U ps_pglobal_lookup
+# that never defined in shipout runtime (*.o, *.a, *.so).
+# Checked for Android NDK 1.5 r1 and 1.6 r1.
+STDLIBS = ${_LGCC_S} -Wl,-Bstatic -lthread_db -Wl,-Bdynamic -lc -lm
+# STDLIBS = ${_LGCC_S} -Wl,--whole-archive -lthread_db -Wl,--no-whole-archive -lc -lm
+endif
+
 ifeq ($(OSNAME),openbsd)
 START_OBJ := $(shell for o in crtbeginS.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtendS.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
@@ -246,6 +268,12 @@ release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),linux)
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+endif
+
+ifeq ($(OSNAME),android)
 dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
 stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
 release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}

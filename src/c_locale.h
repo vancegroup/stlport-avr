@@ -34,6 +34,7 @@
 #include "stlport_prefix.h"
 
 #include <wchar.h> /* for mbstate_t */
+#include <stddef.h>
 #include <stl/c_locale.h>
 
 struct _Locale_name_hint;

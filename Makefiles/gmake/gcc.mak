@@ -1,6 +1,6 @@
-# Time-stamp: <08/10/22 14:57:26 ptr>
+# Time-stamp: <10/02/18 10:06:21 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -105,6 +105,12 @@ CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
 CXXFLAGS = -pthread -fexceptions $(OPT)
+endif
+
+ifeq ($(OSNAME),android)
+CCFLAGS = -mandroid --sysroot=$(SYSROOT) $(OPT)
+CFLAGS = -mandroid --sysroot=$(SYSROOT) $(OPT)
+CXXFLAGS = -mandroid --sysroot=$(SYSROOT) -fno-exceptions -fno-rtti $(OPT)
 endif
 
 ifeq ($(OSNAME),openbsd)
