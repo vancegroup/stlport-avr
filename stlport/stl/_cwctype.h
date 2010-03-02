@@ -41,7 +41,7 @@ using std::wctrans;
 #    include <wctype.h>
 #  endif
 
-#  if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (__hpux)
+#  if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (__hpux) && !defined(__ANDROID__)
 
 #    if defined (_STLP_USE_GLIBC) && !(defined (_GLIBCPP_USE_WCHAR_T) || defined (_GLIBCXX_USE_WCHAR_T)) || \
         defined (__sun) || defined (__FreeBSD__) || \

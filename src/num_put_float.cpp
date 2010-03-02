@@ -43,7 +43,7 @@
 #  endif
 
 #  if defined (__QNXNTO__) || ( defined(__GNUC__) && defined(__APPLE__) ) || defined(_STLP_USE_UCLIBC) /* 0.9.26 */ || \
-      defined(__FreeBSD__)
+      defined(__FreeBSD__) || defined(__ANDROID__)
 #    define USE_SPRINTF_INSTEAD
 #  endif
 

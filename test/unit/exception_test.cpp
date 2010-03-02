@@ -68,12 +68,14 @@ void throw_except_func() throw(std::exception) {
 
 void ExceptionTest::what()
 {
+#ifdef _STLP_USE_EXCEPTIONS
   try {
     throw std::runtime_error( std::string( "message" ) );
   }
   catch ( std::runtime_error& err ) {
     CPPUNIT_CHECK( strcmp( err.what(), "message" ) == 0 );
   }
+#endif
 }
 
 void ExceptionTest::unexpected_except()

@@ -1,0 +1,10 @@
+obj
+*~
+/build/Makefiles/gmake/config.mak
+/build/lib/Makefile
+/build/test/eh/Makefile
+/build/test/unit/Makefile
+/build/test/unit/test.txt
+/build/test/unit/test_file.txt
+/build/test/unit/win32_file_format.tmp
+

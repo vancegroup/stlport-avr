@@ -104,7 +104,8 @@ typedef unsigned long uint32;
 typedef unsigned __int64 uint64;
 #  define ULL(x) x##Ui64
 #elif defined (__unix) || defined (__MINGW32__) || \
-      (defined (__DMC__) && (__LONGLONG)) || defined (__WATCOMC__)
+      (defined (__DMC__) && (__LONGLONG)) || defined (__WATCOMC__) || \
+      defined(__ANDROID__)
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 #  define ULL(x) x##ULL
