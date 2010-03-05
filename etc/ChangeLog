@@ -1,3 +1,20 @@
+2010-03-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: support for Android NDK 1.5 r1 and 1.6 r1.
+
+2010-01-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: qNaN/sNaN dirty fix for long double.
+
+2009-08-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: improved support of Windows CE
+
+2009-07-03  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: visibility hidden not work
+	on Solaris; fixed.
+
 2009-06-25  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build: fix build for ARM GNU/Linux cross;

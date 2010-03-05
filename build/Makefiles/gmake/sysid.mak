@@ -68,7 +68,10 @@ M_ARCH := arm
 P_ARCH := ARM_5TE
 
 _TMP := $(shell ${TARGET_OS}-c++ -mandroid -print-file-name=libgcc.a | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname)
-_TMP2 := $(shell echo $(_TMP) | grep -o -- '-.\..')
+# NDK 1.5 r1: android-1.5
+# NDK 1.6 r1: android-3 or android-4
+ANDROID_REV := 4
+_TMP2 := $(shell echo $(_TMP) | grep -o -- '-.\..' | sed -e s/1\.6/$(ANDROID_REV)/)
 SYSROOT ?= $(_TMP)/platforms/android$(_TMP2)/arch-arm
 endif
 # TARGET_OS
