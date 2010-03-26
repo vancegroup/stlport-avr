@@ -18,7 +18,7 @@
 #include <string>
 #include <stdexcept>
 
-#ifdef STLPORT
+#if defined(STLPORT) && ((_STLPORT_MAJOR > 5) || ((_STLPORT_MAJOR == 5) && (_STLPORT_MINOR > 1)))
 # include <type_traits>
 #else
 # if defined(__GNUC__) && (__GNUC__ < 4)
