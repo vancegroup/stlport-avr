@@ -1,2 +1,6 @@
 obj
 *~
+/Makefiles/gmake/config.mak
+/test/unit/test.txt
+/test/unit/test_file.txt
+/test/unit/win32_file_format.tmp
