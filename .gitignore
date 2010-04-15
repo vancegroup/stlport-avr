@@ -1,5 +1,9 @@
 obj
 *~
+/src/Makefile
+/test/cmp_unit/Makefile
+/test/eh/Makefile
+/test/unit/Makefile
 /Makefiles/gmake/config.mak
 /test/unit/test.txt
 /test/unit/test_file.txt
