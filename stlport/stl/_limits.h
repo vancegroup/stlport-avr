@@ -341,7 +341,7 @@ struct _Lim
 {
 };
 
-#  if defined (__GNUC__) || defined (__BORLANDC__)
+#  if defined (__GNUC__) || defined (__BORLANDC__) || (defined(__SUNPRO_CC) && (__SUNPRO_CC >= 0x590))
 #    define _STLP_ADDITIONAL_OPEN_BRACKET {
 #    define _STLP_ADDITIONAL_CLOSE_BRACKET }
 #  else
