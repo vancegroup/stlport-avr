@@ -7,6 +7,7 @@ STLPORT_ETC_DIR = ../../etc
 STLPORT_INCLUDE_DIR = ../../stlport
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
+include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
 INCLUDES += -I. -I$(STLPORT_INCLUDE_DIR)
 
@@ -14,4 +15,12 @@ INCLUDES += -I. -I$(STLPORT_INCLUDE_DIR)
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I$(STLP_BUILD_BOOST_PATH)
 endif
+
+%.SUNWCCh:
+	ln -s $(basename $(notdir $@)) $@
+
+SUBDIRS := ${SRCROOT}/test/unit
+
+check:  all
+	+$(call doinsubdirs,${SUBDIRS})
 

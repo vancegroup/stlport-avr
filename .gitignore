@@ -1,5 +1,6 @@
 obj
 *~
+*.SUNWCCh
 /build/Makefiles/gmake/config.mak
 /build/lib/Makefile
 /build/test/eh/Makefile
