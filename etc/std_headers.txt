@@ -21,6 +21,7 @@ numeric
 ostream
 pthread_alloc
 queue
+rope
 set
 slist
 sstream
