@@ -21,6 +21,7 @@ numeric
 ostream
 pthread_alloc
 queue
+rope
 set
 slist
 sstream
@@ -29,6 +30,8 @@ stdexcept
 streambuf
 string
 strstream
+unordered_map
+unordered_set
 utility
 valarray
 vector
