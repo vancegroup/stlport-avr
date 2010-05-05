@@ -33,6 +33,9 @@
 #if defined (_STLP_UNIX)
 
 #  if defined (__sun)
+#    // Bug in Solaris 9 headers: FILE used in <floatingpoint.h>, but no
+#    // definition included.
+#    include <stdio.h>
 #    include <floatingpoint.h>
 #  endif
 
