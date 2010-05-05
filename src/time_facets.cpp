@@ -162,24 +162,28 @@ void __subformat(_STLP_BASIC_IOSTRING(_Ch) &buf, const ctype<_Ch>& ct,
   }
 }
 
-static void __append(__iostring &buf, const string& name)
+namespace {
+
+void __append(__iostring &buf, const string& name)
 { buf.append(name.data(), name.data() + name.size()); }
 
 #ifndef _STLP_NO_WCHAR_T
-static void __append(__iowstring &buf, const wstring& name)
+void __append(__iowstring &buf, const wstring& name)
 { buf.append(name.data(), name.data() + name.size()); }
 #endif
 
-static void __append(__iostring &buf, char *first, char *last, const ctype<char>& /* ct */)
+void __append(__iostring &buf, char *first, char *last, const ctype<char>& /* ct */)
 { buf.append(first, last); }
 
 #ifndef _STLP_NO_WCHAR_T
-static void __append(__iowstring &buf, char *first, char *last, const ctype<wchar_t>& ct) {
+void __append(__iowstring &buf, char *first, char *last, const ctype<wchar_t>& ct) {
   wchar_t _wbuf[64];
   ct.widen(first, last, _wbuf);
   buf.append(_wbuf, _wbuf + (last - first));
 }
 #endif
+
+} // end anonymous namespace
 
 #if defined (__GNUC__)
 /* The number of days from the first day of the first ISO week of this
