@@ -155,13 +155,15 @@ ios_base::Init::~Init() {
   }
 }
 
-static int _Stl_extract_open_param(FILE* f)
+namespace {
+int _Stl_extract_open_param(FILE* f)
 { return _FILE_fd(f); }
 
 #ifdef _STLP_REDIRECT_STDSTREAMS
-static const char* _Stl_extract_open_param(const char* name)
+const char* _Stl_extract_open_param(const char* name)
 { return name; }
 #endif
+} // end anonymous namespace
 
 template <class _Tp>
 static filebuf*
