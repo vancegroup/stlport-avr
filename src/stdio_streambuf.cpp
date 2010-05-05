@@ -20,6 +20,7 @@
 #include "stdio_streambuf.h"
 
 #ifdef _STLP_UNIX
+#  include <stdio.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
 #endif
