@@ -35,6 +35,7 @@ STLPORT_ABS_INCLUDE_DIR := $(shell cd ../.. && pwd)/stlport
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
+include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
 INCLUDES += -I. -I$(STLPORT_ABS_INCLUDE_DIR)
 
@@ -58,3 +59,19 @@ create-sunwcch:	$(SUNWCCH_HEADERS)
 	ln -s $(basename $(notdir $@)) $@
 
 PHONY += create-sunwcch
+
+SUBDIRS := ${SRCROOT}/test/unit
+
+check:	all
+	+$(call doinsubdirs,${SUBDIRS})
+
+check-release-shared:	release-shared
+	+$(call doinsubdirs,${SUBDIRS})
+
+check-dbg-shared:	dbg-shared
+	+$(call doinsubdirs,${SUBDIRS})
+
+ifndef WITHOUT_STLPORT
+check-stldbg-shared:	stldbg-shared
+	+$(call doinsubdirs,${SUBDIRS})
+endif

@@ -3,14 +3,16 @@
 SRCROOT := ../..
 COMPILER_NAME := CC
 -include ${SRCROOT}/Makefiles/gmake/config.mak
-ALL_TAGS = release-shared check-release-shared
-CHECK_TAGS = check-release-shared
+ALL_TAGS = release-shared check-release-shared dbg-shared check-dbg-shared
+CHECK_TAGS = check-release-shared check-dbg-shared
 ifndef WITHOUT_STLPORT
 ALL_TAGS += stldbg-shared check-stldbg-shared
 CHECK_TAGS += check-stldbg-shared
 endif
 STLPORT_DIR ?= ../..
 
+STLPORT_INCLUDE_DIR = $(STLPORT_DIR)/stlport
+STLPORT_ABS_INCLUDE_DIR := $(shell cd $(STLPORT_DIR) && pwd)/stlport
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
@@ -23,18 +25,23 @@ ifndef WITHOUT_STLPORT
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 endif
 
+INCLUDES += -I$(STLPORT_ABS_INCLUDE_DIR)
+
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
 
 ifndef WITHOUT_STLPORT
-release-shared: LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR} -Qoption ld -R${STLPORT_DIR}/src/${OUTPUT_DIR}
-dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_DBG} -Qoption ld -R${STLPORT_DIR}/src/${OUTPUT_DIR_DBG}
-stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} -Qoption ld -R${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}
+release-shared: STLPORT_LIB_DIR = ${STLPORT_DIR}/src/${OUTPUT_DIR}
+dbg-shared:     STLPORT_LIB_DIR = ${STLPORT_DIR}/src/${OUTPUT_DIR_DBG}
+stldbg-shared:  STLPORT_LIB_DIR = ${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}
 endif
 
 check-release-shared:	release-shared
 	-${OUTPUT_DIR}/${PRGNAME}
+
+check-dbg-shared:	dbg-shared
+	-${OUTPUT_DIR_DBG}/${PRGNAME}
 
 ifndef WITHOUT_STLPORT
 check-stldbg-shared:	stldbg-shared
