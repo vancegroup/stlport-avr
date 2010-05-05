@@ -48,6 +48,12 @@
 #  define _STLP_NONTEMPL_BASE_MATCH_BUG 1
 #endif
 
+// Haven't tested anything before Sun C++ 5.9 or the compatibility mode.
+#if (__SUNPRO_CC >= 0x590) && ! (defined (__SUNPRO_CC_COMPAT) && (__SUNPRO_CC_COMPAT < 5))
+#  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+#endif
+
 #if (__SUNPRO_CC < 0x510) || (defined (__SUNPRO_CC_COMPAT) && (__SUNPRO_CC_COMPAT < 5))
 
 #  define _STLP_NO_QUALIFIED_FRIENDS 1
