@@ -24,6 +24,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
+#ifdef __SUNPRO_CC
+// Suppress warning that a derived class' rdbuf() hides basic_ios::rdbuf
+#pragma disable_warn
+#endif
+
 class ios_base;
 
 template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
@@ -148,6 +153,10 @@ typedef basic_filebuf<wchar_t, char_traits<wchar_t> >  wfilebuf;
 typedef basic_ifstream<wchar_t, char_traits<wchar_t> > wifstream;
 typedef basic_ofstream<wchar_t, char_traits<wchar_t> > wofstream;
 typedef basic_fstream<wchar_t, char_traits<wchar_t> >  wfstream;
+#endif
+
+#ifdef __SUNPRO_CC
+#pragma enable_warn
 #endif
 
 _STLP_END_NAMESPACE
