@@ -35,6 +35,11 @@ _STLP_BEGIN_NAMESPACE
 
 // ----------------------------------------------------------------------
 
+#ifdef __SUNPRO_CC
+// Suppress warning that a derived class' rdbuf() hides basic_ios::rdbuf
+#pragma disable_warn
+#endif
+
 // Class basic_ios, a subclass of ios_base.  The only important difference
 // between the two is that basic_ios is a class template, parameterized
 // by the character type.  ios_base exists to factor out all of the
@@ -138,6 +143,10 @@ private:                        // Data members
   basic_ostream<_CharT, _Traits>*   _M_tied_ostream;
 
 };
+
+#ifdef __SUNPRO_CC
+#pragma enable_warn
+#endif
 
 
 template <class _CharT, class _Traits>

@@ -110,6 +110,11 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_stringbuf<wchar_t, char_traits<wchar_t>, alloc
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
 
+#ifdef __SUNPRO_CC
+// Suppress warning that a derived class' rdbuf() hides basic_ios::rdbuf
+#pragma disable_warn
+#endif
+
 //----------------------------------------------------------------------
 // Class basic_istringstream, an input stream that uses a stringbuf.
 
@@ -240,6 +245,10 @@ private:
   _Self& operator = (_Self const&);
 #endif
 };
+
+#ifdef __SUNPRO_CC
+#pragma enable_warn
+#endif
 
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)

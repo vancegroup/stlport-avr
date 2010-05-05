@@ -96,6 +96,11 @@ private:                        // Data members.
   bool _M_constant : 1;
 };
 
+#ifdef __SUNPRO_CC
+// Suppress warning that a derived class' rdbuf() hides basic_ios::rdbuf
+#pragma disable_warn
+#endif
+
 //----------------------------------------------------------------------
 // Class istrstream, an istream that manages a strstreambuf.
 
@@ -159,6 +164,10 @@ private:
   strstream(strstream const&);
   strstream& operator = (strstream const&);
 };
+
+#ifdef __SUNPRO_CC
+#pragma enable_warn
+#endif
 
 _STLP_END_NAMESPACE
 
