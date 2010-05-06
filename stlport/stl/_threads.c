@@ -53,15 +53,12 @@ _Atomic_swap_struct<__32bits>::_S_swap_lock _STLP_MUTEX_INITIALIZER;
 #  undef _STLP_USE_ATOMIC_SWAP_MUTEX
 #endif
 
-#if defined (_STLP_THREADS) && !defined (_STLP_USE_PTHREAD_SPINLOCK)
+#if defined (_STLP_THREADS) && defined (_STLP_ATOMIC_EXCHANGE)
 template <int __inst>
 unsigned _STLP_mutex_spin<__inst>::__max = _STLP_mutex_spin<__inst>::__low_max;
 
 template <int __inst>
 unsigned _STLP_mutex_spin<__inst>::__last = 0;
-#endif // _STLP_USE_PTHREAD_SPINLOCK
-
-#if defined (_STLP_THREADS) && !defined (_STLP_USE_PTHREAD_SPINLOCK)
 
 #  if defined (_STLP_SPARC_SOLARIS_THREADS)
 // underground function in libc.so; we do not want dependance on librt
@@ -116,7 +113,6 @@ _STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec, unsigned int& __iteratio
 template <int __inst>
 void  _STLP_CALL
 _STLP_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock) {
-#  if defined(_STLP_ATOMIC_EXCHANGE)
   if (_Atomic_swap(__lock, 1)) {
     unsigned __my_spin_max = _STLP_mutex_spin<0>::__max;
     unsigned __my_last_spins = _STLP_mutex_spin<0>::__last;
@@ -153,9 +149,8 @@ _STLP_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock) {
       _S_nsec_sleep(__log_nsec, __i);
     }
   } /* first _Atomic_swap */
-#  endif
 }
-#endif // _STLP_USE_PTHREAD_SPINLOCK
+#endif // defined (_STLP_THREADS) && defined (_STLP_ATOMIC_EXCHANGE)
 
 _STLP_END_NAMESPACE
 

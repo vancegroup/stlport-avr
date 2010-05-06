@@ -244,7 +244,7 @@ typedef size_t __stl_atomic_t;
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (_STLP_THREADS) && !defined (_STLP_USE_PTHREAD_SPINLOCK)
+#if defined (_STLP_THREADS) && defined (_STLP_ATOMIC_EXCHANGE)
 // Helper struct.  This is a workaround for various compilers that don't
 // handle static variables in inline functions properly.
 template <int __inst>
@@ -256,7 +256,7 @@ struct _STLP_mutex_spin {
   static void _STLP_CALL _M_do_lock(volatile __stl_atomic_t* __lock);
   static void _STLP_CALL _S_nsec_sleep(int __log_nsec, unsigned int& __iteration);
 };
-#endif // !_STLP_USE_PTHREAD_SPINLOCK
+#endif
 
 // Locking class.  Note that this class *does not have a constructor*.
 // It must be initialized either statically, with _STLP_MUTEX_INITIALIZER,
