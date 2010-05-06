@@ -37,12 +37,11 @@ LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
 OPT += -mt +w2
-CCFLAGS = -errtags -erroff=doubunder -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT)
-CFLAGS = $(OPT)
+CFLAGS = -errtags -xildoff $(OPT) $(EXTRA_CFLAGS)
 # diffenumtype warnings seem bogus.
 # inllargeuse is not important.
 # reftotemp can issue warnings about code from the C++ standard.
-CXXFLAGS = -errtags -erroff=doubunder,diffenumtype,inllargeuse,reftotemp,notemsource -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT)
+CXXFLAGS = -errtags -erroff=doubunder,diffenumtype,inllargeuse,reftotemp,notemsource -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT) $(EXTRA_CXXFLAGS)
 CDEPFLAGS = -xM
 CCDEPFLAGS = -xM
 
