@@ -52,11 +52,21 @@
 #define _STLP_NO_LOCALE_SUPPORT
 
 #if _WIN32_WCE >= 420
+   // Turn on feature that is off by default, see host.h.
+#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+
    // SDKs built with PB5 have terminate&co in namespace std...
 #  define _STLP_VENDOR_TERMINATE_STD _STLP_VENDOR_STD
-#  define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_STD
+#  define _STLP_VENDOR_UNEXPECTED_STD _STLP_VENDOR_STD
+
    // ...and new_handler/set_new_handler in the global namespace.
 #  define _STLP_GLOBAL_NEW_HANDLER 1
+#endif
+
+#if _WIN32_WCE >= 0x500
+   // Turn on features that are off by default, see host.h.
+#  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#  define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_STD
 #endif
 
 // Always threaded in eMbedded Visual C++ 3.0 and .NET
