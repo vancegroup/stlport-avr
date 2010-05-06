@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/01/28 11:11:01 ptr>
+// -*- C++ -*- Time-stamp: <10/05/06 08:11:36 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -283,6 +283,7 @@ int main( int argc, const char** argv )
   t.add( &sstream_test::maxint, sstrm_test, "sstream maxint" );
   t.add( &sstream_test::init_in, sstrm_test, "sstream init_in" );
   t.add( &sstream_test::init_out, sstrm_test, "sstream init_out" );
+  t.add( &sstream_test::init_in_str, sstrm_test, "sstream str( \"foo\" )" );
   t.add( &sstream_test::buf, sstrm_test, "sstream buf" );
   t.add( &sstream_test::rdbuf, sstrm_test, "sstream rdbuf" );
   t.add( &sstream_test::streambuf_output, sstrm_test, "sstream streambuf_output" );

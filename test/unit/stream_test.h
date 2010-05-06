@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/01/28 11:08:52 ptr>
+// -*- C++ -*- Time-stamp: <10/05/06 08:09:58 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -37,6 +37,7 @@ class sstream_test
     int EXAM_DECL(maxint);
     int EXAM_DECL(init_in);
     int EXAM_DECL(init_out);
+    int EXAM_DECL(init_in_str);
     int EXAM_DECL(buf);
     int EXAM_DECL(rdbuf);
     int EXAM_DECL(streambuf_output);

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <09/04/06 20:21:51 ptr>
+// -*- C++ -*- Time-stamp: <10/05/06 08:37:21 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -317,10 +317,6 @@ int EXAM_IMPL(sstream_test::init_out)
   os << 67;
   EXAM_CHECK( os.good() );
 
-  // This satisfy to the Standard:
-  // EXAM_CHECK( os.str() == "67345" );
-  // But we don't know the reason, why standard state that.
-
   /*
    * 27.7.1.1: ... then copies the content of str into the basic_sringbuf
    * underlying character sequence and initializes the input and output
@@ -328,20 +324,59 @@ int EXAM_IMPL(sstream_test::init_out)
    * the output sequence with underlying sequence. ...
    *
    * I can treat this as 'like output was performed', and then I should bump
-   * put pointer... Looks like more useful then my previous treatment.
+   * put pointer...; but...
+   *
+   * Current draft (27.8.1.3) say:
+   *
+   * ...
+   * Postconditions: If mode & ios_base::out is true, pbase() points to the first
+   * underlying character and epptr() >= pbase() + s.size() holds; in addition,
+   * if mode & ios_base::in is true, pptr() == pbase() + s.data() holds,
+   * otherwise pptr() == pbase() is true. If mode & ios_base::in is
+   * true, eback() points to the first underlying character,
+   * and both gptr() == eback() and egptr() == eback() + s.size() hold.
+   * ...
+   *
+   * so bump pptr, if ios_base::in mode present, and leave pptr points to pbase
+   * otherwise.
+   *
+   * I think that os.str() == "67345" (bogus behaviour, IMO) due to key
+   * implementations already has such behaviour; words in draft with
+   * 'mode & ios_base::in' looks like 'excuse'. See also sstream_test::init_in_str
+   * below.
    *
    *          - ptr
    */
 
-  EXAM_CHECK( os.str() == "1234567" );
-  
+  EXAM_CHECK( os.str() == "67345" );
 
   os.str( "89ab" );
   EXAM_CHECK( os.str() == "89ab" );
 
   os << 10;
   EXAM_CHECK( os.good() );
-  // EXAM_CHECK( os.str() == "10ab" );
+  EXAM_CHECK( os.str() == "10ab" );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(sstream_test::init_in_str)
+{
+  stringstream os( "12345" );
+  EXAM_CHECK( os.str() == "12345" );
+
+  os << 67;
+  EXAM_CHECK( os.good() );
+
+  // See comments in sstream_test::init_out
+
+  EXAM_CHECK( os.str() == "1234567" );
+  
+  os.str( "89ab" );
+  EXAM_CHECK( os.str() == "89ab" );
+
+  os << 10;
+  EXAM_CHECK( os.good() );
   EXAM_CHECK( os.str() == "89ab10" );
 
   return EXAM_RESULT;
@@ -523,6 +558,14 @@ int EXAM_IMPL(sstream_test::tellp)
 
     o << "23456";
 
+    EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == stringstream::pos_type(5) );
+    EXAM_CHECK( o.tellp() == stringstream::pos_type(5) );
+  }
+  {
+    stringstream o( "1" );
+
+    o << "23456";
+
     EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == stringstream::pos_type(6) );
     EXAM_CHECK( o.tellp() == stringstream::pos_type(6) );
   }
@@ -536,6 +579,14 @@ int EXAM_IMPL(sstream_test::tellp)
   }
   {
     ostringstream o( "1" );
+
+    o << "23456789";
+
+    EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == stringstream::pos_type(8) );
+    EXAM_CHECK( o.tellp() == stringstream::pos_type(8) );
+  }
+  {
+    stringstream o( "1" );
 
     o << "23456789";
 
