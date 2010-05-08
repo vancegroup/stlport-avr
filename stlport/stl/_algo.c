@@ -525,6 +525,10 @@ void rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last) {
 // (not standard, but a much better choice whenever it's available).
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
+#ifdef __sun
+extern "C" long lrand48 (void);
+#endif
+
 template <class _Distance>
 inline _Distance __random_number(_Distance __n) {
 #ifndef _STLP_RAND48

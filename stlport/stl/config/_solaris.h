@@ -23,9 +23,7 @@
 #  define _STLP_HAS_NATIVE_FLOAT_ABS
 #endif
 
-#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
 # define _STLP_RAND48 1
-#endif
 
 #if (defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 == 4)) || defined (__SunOS_5_6)
 # define _STLP_WCHAR_SUNPRO_EXCLUDE 1
