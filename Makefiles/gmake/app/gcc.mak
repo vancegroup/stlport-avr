@@ -146,40 +146,40 @@ endif
 
 # ifeq ($(CXX_VERSION_MAJOR),3)
 ifeq ($(OSNAME),linux)
-START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
 
 ifeq ($(OSNAME),android)
-START_OBJ := $(shell for o in crti.o crtbegin.o crtbegin_dynamic.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crti.o crtbegin.o crtbegin_dynamic.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lc -lm
 endif
 
 ifeq ($(OSNAME),openbsd)
-START_OBJ := $(shell for o in crt0.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-END_OBJ := $(shell for o in crtend.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crt0.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#END_OBJ := $(shell for o in crtend.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
 
 ifeq ($(OSNAME),freebsd)
 # FreeBSD < 5.3 should use -lc_r, while FreeBSD >= 5.3 use -lpthread
 PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "pthread" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "c_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "c_r" ; else echo "pthread"; fi ; fi ; fi)
-START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -l${PTHR} -lc -lm
 endif
 
 ifeq ($(OSNAME),netbsd)
-START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
 
 ifeq ($(OSNAME),sunos)
-START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
 
@@ -188,11 +188,11 @@ ifeq ($(OSNAME),darwin)
 # at least in Mac OS X 10.4.10 (8R2218)
 ifeq ($(CXX_VERSION_MAJOR),3)
 # i.e. gcc 3.3
-START_OBJ := $(shell for o in crt1.o crt2.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
+#START_OBJ := $(shell for o in crt1.o crt2.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 else
-START_OBJ := -lcrt1.o
+#START_OBJ := -lcrt1.o
 endif
-END_OBJ :=
+#END_OBJ :=
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lsupc++ ${_LGCC_EH}
 #LDFLAGS += -dynamic
 endif
@@ -219,7 +219,8 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lm -lc -lpthread -lkernel32
 endif
 endif
 else
-LDFLAGS += -nostdlib
+#LDFLAGS += -nostdlib
+LDFLAGS += -nodefaultlibs
 endif
 
 # _USE_NOSTDLIB
