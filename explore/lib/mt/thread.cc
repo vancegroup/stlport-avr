@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <09/01/29 17:32:17 ptr>
+// -*- C++ -*- Time-stamp: <10/05/21 15:21:44 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2009
+ * Copyright (c) 1997-1999, 2002-2010
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
@@ -38,6 +38,7 @@
 #include <cerrno>
 #include <string>
 #include <ctime>
+#include <list>
 
 #include <stdio.h>
 #include <syscall.h>
@@ -460,15 +461,16 @@ void fork() throw( fork_in_parent, std::runtime_error )
   detail::_pid = syscall( SYS_getpid );
 
   // lock not required: it in child and only one thread yet
-  for ( detail::thread_pool_t::const_iterator i = detail::thread_pool.begin(); i != detail::thread_pool.end(); ) {
+  list<detail::thread_pool_t::key_type> trash;
+  for ( detail::thread_pool_t::const_iterator i = detail::thread_pool.begin(); i != detail::thread_pool.end(); ++i ) {
     if ( (*i)->get_id() != fthr ) {
       const_cast<thread_base*>(*i)->_id = _bad_thread_id;
-      detail::thread_pool.erase( i++ );
-    } else {
-      ++i;
+      trash.push_back( *i );
     }
   }
-
+  for ( list<detail::thread_pool_t::key_type>::const_iterator i = trash.begin(); i != trash.end(); ++i ) {
+    detail::thread_pool.erase( *i );
+  }
 #endif
 }
 
