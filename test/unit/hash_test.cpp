@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/05/21 10:46:26 ptr>
+// -*- C++ -*- Time-stamp: <10/05/21 13:24:30 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -461,17 +461,66 @@ int EXAM_IMPL(hash_test::remains)
 
   EXAM_CHECK( sz == 100 );
 
+#if 0 // incorrect program
+  /* Below is ill-formed program that looks very like
+     correct program; it ill-formed because
+
+     <snip>
+
+     The elements of an unordered associative container
+     are organized into buckets. Keys with the same hash
+     code appear in the same bucket. The number of buckets
+     is automatically increased as elements are added
+     to an unordered associative container, so that
+     the average number of elements per bucket is kept below
+     a bound. Rehashing invalidates iterators, changes
+     ordering between elements, and changes which buckets
+     elements appear in, but does not invalidate pointers
+     or references to elements. For unordered_multiset
+     and unordered_multimap, rehashing preserves the relative
+     ordering of equivalent elements.
+
+     </snip>
+
+   */
   sz = 0;
   for ( hmap::iterator i = m.begin(); i != m.end(); ) {
     m.erase( i++ );
     ++sz;
   }
 
-  // Bug ID: 3004998
+  // Bug ID: 3004998 --- not a bug, see note above
   // sz == 98, m.size() == 2
 
   EXAM_CHECK( sz == 100 );
   EXAM_CHECK( m.size() == 0 );
+#else // correct program
+  sz = 0;
+  while ( !m.empty() ) {
+    m.erase( m.begin() );
+    ++sz;
+  }
+
+  EXAM_CHECK( sz == 100 );
+  EXAM_CHECK( m.size() == 0 );
+
+  /* Another correct code: */
+
+  for ( int i = 0; i < 100; ++i ) { // re-initiate
+    m.insert( make_pair(i,i) );
+  }
+
+  EXAM_CHECK( m.size() == 100 );
+
+  sz = 0;
+  for ( int i = 0; i < 100; ++i ) {
+    m.erase( i );
+    ++sz;
+  }
+
+  EXAM_CHECK( sz == 100 );
+  EXAM_CHECK( m.size() == 0 );
+#endif
  
 #else
   throw exam::skip_exception();
