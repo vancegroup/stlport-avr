@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/05/06 08:11:36 ptr>
+// -*- C++ -*- Time-stamp: <10/05/21 10:38:04 ptr>
 
 /*
  * Copyright (c) 2008, 2009
@@ -377,6 +377,7 @@ int main( int argc, const char** argv )
   t.add( &hash_test::hset2, h_test, "hset2" );
   t.add( &hash_test::insert_erase, h_test, "hash insert_erase" );
   t.add( &hash_test::allocator_with_state, h_test, "hash allocator_with_state" );
+  t.add( &hash_test::remains, h_test, "erase in hash_map" );
 
   unordered_test uo_test;
 
@@ -389,6 +390,7 @@ int main( int argc, const char** argv )
   t.add( &unordered_test::buckets, uo_test, "unordered buckets" );
   t.add( &unordered_test::equal_range, uo_test, "unordered equal_range" );
   t.add( &unordered_test::template_methods, uo_test, "unordered template_methods" );
+  t.add( &unordered_test::remains, uo_test, "erase in unordered_map" );
 
   valarray_test val_test;
   t.add( &valarray_test::transcendentals, val_test, "transcendentals" );

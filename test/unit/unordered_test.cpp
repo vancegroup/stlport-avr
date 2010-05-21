@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/30 23:05:57 ptr>
+// -*- C++ -*- Time-stamp: <10/05/21 10:43:39 ptr>
 
 /*
  * Copyright (c) 2005-2008
@@ -685,3 +685,43 @@ class IncompleteClass
 };
 #  endif
 #endif
+
+int EXAM_IMPL(unordered_test::remains)
+{
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  typedef unordered_map<int, int> hmap;
+
+  hmap m;
+
+  for ( int i = 0; i < 100; ++i ) {
+    m.insert( make_pair(i,i) );
+  }
+  
+  EXAM_CHECK( m.size() == 100 );
+
+  int sz = 0;
+
+  for ( hmap::const_iterator i = m.begin(); i != m.end(); ++i ) {
+    ++sz;
+  }
+
+  EXAM_CHECK( sz == 100 );
+
+  sz = 0;
+  for ( hmap::iterator i = m.begin(); i != m.end(); ) {
+    m.erase( i++ );
+    ++sz;
+  }
+
+  // Bug ID: 3004998
+  // sz == 98, m.size() == 2
+
+  EXAM_CHECK( sz == 100 );
+  EXAM_CHECK( m.size() == 0 );
+
+#else
+  throw exam::skip_exception();
+#endif
+
+  return EXAM_RESULT;
+}

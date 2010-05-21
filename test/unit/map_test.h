@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/30 23:09:27 ptr>
+// -*- C++ -*- Time-stamp: <10/05/21 10:37:21 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -64,6 +64,7 @@ class hash_test
     int EXAM_DECL(hset2);
     int EXAM_DECL(insert_erase);
     int EXAM_DECL(allocator_with_state);
+    int EXAM_DECL(remains);
     // int EXAM_DECL(equality);
 };
 
@@ -81,6 +82,7 @@ class unordered_test
     // (benchmark1);
     // (benchmark2);
     int EXAM_DECL(template_methods);
+    int EXAM_DECL(remains);
 };
 
 class valarray_test
