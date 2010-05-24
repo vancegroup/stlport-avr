@@ -421,10 +421,15 @@ public:
   // hash policy
   float load_factor() const { return (float)size() / (float)bucket_count(); }
   float max_load_factor() const { return _M_max_load_factor; }
-  void max_load_factor(float __z) {
-    _M_max_load_factor = __z;
-    _M_resize();
-  }
+  void max_load_factor(float __z)
+      {
+        _STLP_STD::swap( _M_max_load_factor, __z );
+        if ( __z > _M_max_load_factor ) { // max load was decreased
+          _M_enlarge(size()); // ... have to enlarge
+        } else { // We can try to reduce size
+          _M_reduce();
+        }
+      }
 
   pair<iterator, bool> insert_unique(const value_type& __obj) {
     _M_enlarge(_M_num_elements + 1);
@@ -558,12 +563,12 @@ public:
   void erase(const_iterator __first, const_iterator __last);
 
 private:
-  void _M_enlarge(size_type __n);
-  void _M_reduce();
-  void _M_resize();
-  void _M_rehash(size_type __num_buckets);
+    void _M_enlarge( size_type );
+    void _M_reduce();
+    void _M_resize();
+    void _M_rehash(size_type __num_buckets);
 #if defined (_STLP_DEBUG)
-  void _M_check() const;
+    void _M_check() const;
 #endif
 
 public:

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/05/21 13:21:52 ptr>
+// -*- C++ -*- Time-stamp: <10/05/24 19:56:03 ptr>
 
 /*
  * Copyright (c) 2005-2008
@@ -384,6 +384,7 @@ int EXAM_IMPL(unordered_test::equal_range)
     iumset.rehash(193);
 
     size_t nbBuckets = iumset.bucket_count();
+    EXAM_CHECK( nbBuckets == 193 );
     const size_t targetedBucket = nbBuckets / 2;
 
     //Lets put 10 values in the targeted bucket:
@@ -707,10 +708,7 @@ int EXAM_IMPL(unordered_test::remains)
 
   EXAM_CHECK( sz == 100 );
 
-#if 0 // incorrect program
-  /* Below is ill-formed program that looks very like
-     correct program; it ill-formed because
-
+  /* 
      <snip>
 
      The elements of an unordered associative container
@@ -728,6 +726,20 @@ int EXAM_IMPL(unordered_test::remains)
 
      </snip>
 
+     But
+
+     <snip>
+
+     The insert members shall not affect the validity of references
+     to container elements, but may invalidate all iterators
+     to the container. The erase members shall invalidate only
+     iterators and references to the erased elements.
+
+     </snip>
+
+     Rationale: if we would rehash on erase, we can't use
+     remove_if() for unordered containers.
+
    */
   sz = 0;
   for ( hmap::iterator i = m.begin(); i != m.end(); ) {
@@ -735,12 +747,18 @@ int EXAM_IMPL(unordered_test::remains)
     ++sz;
   }
 
-  // Bug ID: 3004998 --- not a bug, see note above
+  // Bug ID: 3004998
   // sz == 98, m.size() == 2
 
   EXAM_CHECK( sz == 100 );
   EXAM_CHECK( m.size() == 0 );
-#else // correct program
+
+  for ( int i = 0; i < 100; ++i ) { // re-initiate
+    m.insert( make_pair(i,i) );
+  }
+
+  /* Another way to erase: */
+
   sz = 0;
   while ( !m.empty() ) {
     m.erase( m.begin() );
@@ -750,7 +768,7 @@ int EXAM_IMPL(unordered_test::remains)
   EXAM_CHECK( sz == 100 );
   EXAM_CHECK( m.size() == 0 );
 
-  /* Another correct code: */
+  /* Yet another correct code: */
 
   for ( int i = 0; i < 100; ++i ) { // re-initiate
     m.insert( make_pair(i,i) );
@@ -766,8 +784,6 @@ int EXAM_IMPL(unordered_test::remains)
 
   EXAM_CHECK( sz == 100 );
   EXAM_CHECK( m.size() == 0 );
-#endif
-
 #else
   throw exam::skip_exception();
 #endif
