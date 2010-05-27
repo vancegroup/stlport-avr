@@ -53,6 +53,7 @@ void callstack( std::ostream& s )
 #include <cstdlib>
 
 #ifdef __FIT_CPP_DEMANGLE
+#  include <exception>
 #  include <cxxabi.h>
 #endif
 
