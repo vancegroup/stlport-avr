@@ -1,12 +1,16 @@
-# -*- makefile -*- Time-stamp: <06/11/02 10:37:02 ptr>
+# -*- makefile -*- Time-stamp: <10/06/02 13:50:57 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
 # Petr Ovtchenkov
 #
-# Portion Copyright (c) 1999-2001
-# Parallel Graphics Ltd.
+# This material is provided "as is", with absolutely no warranty expressed
+# or implied. Any use is at your own risk.
 #
-# Licensed under the Academic Free License version 3.0
+# Permission to use or copy this software for any purpose is hereby granted
+# without fee, provided the above notices are retained on all copies.
+# Permission to modify the code and to distribute modified code is granted,
+# provided the above notices are retained, and a notice that the code was
+# modified is included with the above copyright notice.
 #
 
 DBG_SUFFIX ?= g
