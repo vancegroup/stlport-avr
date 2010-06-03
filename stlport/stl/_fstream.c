@@ -111,7 +111,7 @@ basic_filebuf<_CharT, _Traits>::close()
 
   _M_saved_eback = _M_saved_gptr = _M_saved_egptr = 0;
 
-  int_flags_ &= ~(_in_input_mode | _in_output_mode & _in_error_mode | _in_putback_mode );
+  int_flags_ &= ~(_in_input_mode | _in_output_mode | _in_error_mode | _in_putback_mode );
 
   return __ok ? this : 0;
 }
