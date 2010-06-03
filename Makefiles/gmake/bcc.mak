@@ -1,4 +1,4 @@
-# Time-stamp: <10/06/02 15:17:35 ptr>
+# Time-stamp: <10/06/03 13:08:44 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -242,13 +242,8 @@ BASE_INSTALL_DIR ?= ${SRCROOT}/..
 
 endif # linux
 
-ifdef EXTRA_CXXFLAGS
 CXXFLAGS += $(EXTRA_CXXFLAGS)
-endif
-
-ifdef EXTRA_CFLAGS
 CFLAGS += $(EXTRA_CFLAGS)
-endif
 
 # dependency output parser (dependencies collector)
 DP_OUTPUT_DIR = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR)/\1.o $@ : |g' > $@; \

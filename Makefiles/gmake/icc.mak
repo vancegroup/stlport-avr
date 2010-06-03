@@ -1,4 +1,4 @@
-# Time-stamp: <10/06/02 15:17:35 ptr>
+# Time-stamp: <10/06/03 13:09:16 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -52,6 +52,9 @@ CFLAGS = $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
 CXXFLAGS = $(OPT)
 endif
+
+CXXFLAGS += ${EXTRA_CXXFLAGS}
+CFLAGS += ${EXTRA_CFLAGS}
 
 CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M

@@ -1,6 +1,6 @@
-# Time-stamp: <10/06/02 15:17:35 ptr>
+# Time-stamp: <10/06/03 13:05:48 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
 # Petr Ovtchenkov
 #
 # This material is provided "as is", with absolutely no warranty expressed
@@ -41,11 +41,15 @@ LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
 OPT += -mt +w2
-CFLAGS = -errtags -xildoff $(OPT) $(EXTRA_CFLAGS)
+CFLAGS = -errtags -xildoff $(OPT)
 # diffenumtype warnings seem bogus.
 # inllargeuse is not important.
 # reftotemp can issue warnings about code from the C++ standard.
-CXXFLAGS = -errtags -erroff=doubunder,diffenumtype,inllargeuse,reftotemp,notemsource -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT) $(EXTRA_CXXFLAGS)
+CXXFLAGS = -errtags -erroff=doubunder,diffenumtype,inllargeuse,reftotemp,notemsource -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT)
+
+CXXFLAGS += ${EXTRA_CXXFLAGS}
+CFLAGS += ${EXTRA_CFLAGS}
+
 CDEPFLAGS = -xM
 CCDEPFLAGS = -xM
 

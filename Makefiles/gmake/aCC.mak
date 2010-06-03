@@ -1,6 +1,6 @@
-# Time-stamp: <10/06/02 15:17:35 ptr>
+# Time-stamp: <10/06/03 13:05:42 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
 # Petr Ovtchenkov
 #
 # This material is provided "as is", with absolutely no warranty expressed
@@ -42,6 +42,9 @@ CPPFLAGS = $(DEFS) $(INCLUDES)
 
 CFLAGS = -Aa +z $(OPT)
 CXXFLAGS = -Aa +z -mt $(OPT)
+
+CXXFLAGS += ${EXTRA_CXXFLAGS}
+CFLAGS += ${EXTRA_CFLAGS}
 
 CDEPFLAGS = -E +Md
 CCDEPFLAGS = -E +Md

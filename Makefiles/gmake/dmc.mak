@@ -1,4 +1,4 @@
-# Time-stamp: <10/06/02 15:17:35 ptr>
+# Time-stamp: <10/06/03 13:08:29 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -64,13 +64,8 @@ OUTPUT_OPTION = -o$@
 LINK_OUTPUT_OPTION = $@
 CPPFLAGS = $(DEFS) $(OPT) $(INCLUDES) 
 
-ifdef EXTRA_CXXFLAGS
 CXXFLAGS += $(EXTRA_CXXFLAGS)
-endif
-
-ifdef EXTRA_CFLAGS
 CFLAGS += $(EXTRA_CFLAGS)
-endif
 
 CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
