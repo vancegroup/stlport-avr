@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <10/06/03 13:51:55 ptr>
 
 /*
- * Copyright (c) 2007-2009
+ * Copyright (c) 2007-2010
  * Petr Ovtchenkov
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -44,7 +44,7 @@ struct call_impl
 {
     virtual ~call_impl()
       { }
-    // virtual int invoke() = 0;
+
     virtual int invoke( test_suite *, int = 0 ) = 0;
 };
 
@@ -57,9 +57,6 @@ class call_impl_t :
         _f( f )
       { }
 
-    // virtual int invoke()
-    //  { return _f(); }
-
     virtual int invoke( test_suite *s, int count = 0 )
       { return _f( s, count ); }
 
@@ -71,9 +68,6 @@ class call_impl_t :
 class dummy
 {
   public:
-    // virtual int f()
-    //   { return 0; }
-
     virtual int f( test_suite *, int count = 0 )
       { return count; }
 
@@ -85,7 +79,6 @@ template <class TC>
 class method_invoker
 {
   public:
-    // typedef int (TC::*mf_type_a)();
     typedef int (TC::*mf_type)( test_suite *, int );
 
     explicit method_invoker( TC& instance, mf_type f ) :
@@ -97,9 +90,6 @@ class method_invoker
         _inst( m._inst ),
         _func( m._func )
       { }
-
-    // int operator()()
-    //   { return (_inst.*_func)(); }
 
     int operator()( test_suite *ts, int count = 0 )
       { return (_inst.*_func)( ts, count ); }
@@ -122,14 +112,12 @@ class call
     call( F f )
       { new (&_buf[0]) call_impl_t<F>(f); }
 
-    // int operator()()
-    //   { return reinterpret_cast<call_impl *>(&_buf[0])->invoke(); }
 
     int operator()( test_suite *ts, int count = 0 )
-      { return reinterpret_cast<call_impl *>(&_buf[0])->invoke( ts, count ); }
+      { call_impl* tmp = reinterpret_cast<call_impl*>(&_buf[0]); return tmp->invoke( ts, count ); }
+      // { return reinterpret_cast<call_impl *>(&_buf[0])->invoke( ts, count ); }
 
   private:
-    // call_impl *_f;
     char _buf[((sizeof(call_impl_t<method_invoker<dummy> >)+64) / 64) << 6];
 };
 
@@ -140,9 +128,6 @@ class test_case
     test_case( const call& f ) :
         _tc( f )
       { }
-
-    // int operator ()()
-    //   { return _tc(); }
 
     int operator ()( test_suite *ts, int count = 0 )
       { return _tc( ts, count ); }
