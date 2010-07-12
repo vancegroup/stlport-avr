@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/03/26 01:58:08 ptr>
+// -*- C++ -*- Time-stamp: <10/07/12 10:46:51 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2008
@@ -627,7 +627,8 @@ using tr2::get_id;
 inline void yield()
 {
 #ifdef __FIT_PTHREADS
-  sched_yield();
+  // sched_yield();
+  pthread_yield();
 #endif
 }
 
