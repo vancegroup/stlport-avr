@@ -421,26 +421,26 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 
 __FIT_DECLSPEC
 Thread::Thread( unsigned __f ) :
+    uw_alloc_size( 0 ),
     _id( bad_thread_id ),
     _state( badbit ),
     _entrance( 0 ),
     _param( 0 ),
     _param_sz( 0 ),
     _flags( __f ),
-    _stack_sz( 0 ),
-    uw_alloc_size( 0 )
+    _stack_sz( 0 )
 {
   new( Init_buf ) Init();
 }
 
 __FIT_DECLSPEC
 Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsigned __f, size_t stack_sz ) :
+    uw_alloc_size( 0 ),
     _entrance( entrance ),
     _param( 0 ),
     _param_sz( 0 ),
     _flags( __f ),
-    _stack_sz( stack_sz ),
-    uw_alloc_size( 0 )
+    _stack_sz( stack_sz )
 {
   new( Init_buf ) Init();
   _create( p, psz );
