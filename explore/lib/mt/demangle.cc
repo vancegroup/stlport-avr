@@ -33,7 +33,6 @@ string demangle( const char* symname )
 
   // char* buf = static_cast<char *>(malloc( 1024 ));
   int status = 0;
-  size_t len = 0;
 
   char* tmp = abi::__cxa_demangle( symname, 0, 0, &status );
   if ( status == 0 && tmp != 0 ) {
