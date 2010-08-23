@@ -13,6 +13,10 @@ INCLUDES += -I../include
 # DEFS += -D_STLP_DESIGNATED_DLL
 # CXXFLAGS += -fvisibility=hidden
 
+ifeq (${OSNAME},android)
+# CXXFLAGS += -fexceptions -frtti
+endif
+
 release-shared:	LDFLAGS += -L${SRCROOT}/src/${OUTPUT_DIR}
 
 dbg-shared:	LDFLAGS += -L${SRCROOT}/src/${OUTPUT_DIR_DBG}

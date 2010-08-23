@@ -27,7 +27,9 @@
 
 #include <limits>
 #include <type_traits>
-#include <ieee754.h>
+#ifndef __ANDROID__
+#  include <ieee754.h>
+#endif
 
 class limits_test
 {

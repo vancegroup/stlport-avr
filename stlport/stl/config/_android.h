@@ -16,6 +16,7 @@
 #endif
 
 /* No RTTI support in runtime */
+/* in NDK 1.5 and 1.6 no RTTI, even if typeinfo header present */
 #define _STLP_NO_TYPEINFO 1
 /* No exceptions in runtime */
 #define _STLP_NO_RTTI 1

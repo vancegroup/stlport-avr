@@ -29,6 +29,10 @@ endif
 endif
 endif
 
+ifeq (${OSNAME},android)
+# CXXFLAGS += -fexceptions -frtti
+endif
+
 dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 ifndef WITHOUT_STLPORT
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED

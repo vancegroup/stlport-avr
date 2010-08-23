@@ -9,6 +9,10 @@ include ${SRCROOT}/Makefiles/gmake/top.mak
 
 STLPORT_DIR := ../..
 
+ifeq (${OSNAME},android)
+# CXXFLAGS += -fexceptions
+endif
+
 INCLUDES += -I../include
 
 release-shared:	LDFLAGS += -L${SRCROOT}/src/${OUTPUT_DIR}

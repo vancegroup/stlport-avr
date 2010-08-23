@@ -114,7 +114,9 @@ endif
 ifeq ($(OSNAME),android)
 CCFLAGS = -mandroid --sysroot=$(SYSROOT) $(OPT)
 CFLAGS = -mandroid --sysroot=$(SYSROOT) $(OPT)
+# NDK 1.5 and 1.6 was shipout without exceptions and rtti
 CXXFLAGS = -mandroid --sysroot=$(SYSROOT) -fno-exceptions -fno-rtti $(OPT)
+# CXXFLAGS = -mandroid --sysroot=$(SYSROOT) $(OPT)
 endif
 
 ifeq ($(OSNAME),openbsd)
