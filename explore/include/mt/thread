@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/07/12 10:46:51 ptr>
+// -*- C++ -*- Time-stamp: <10/08/25 18:04:56 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2008
@@ -176,6 +176,9 @@ class thread_base
     __FIT_DECLSPEC ~thread_base();
 
     __FIT_DECLSPEC void join();
+
+    native_handle_type native_handle()
+      { return _id; }
 
     bool joinable() const; // if true, you can (and should) use join()
     id get_id() const
