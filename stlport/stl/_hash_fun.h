@@ -125,20 +125,52 @@ _STLP_TEMPLATE_NULL struct hash<unsigned _STLP_LONG_LONG> {
 };
 #endif
 
+template <int L>
+inline size_t __stl_pointer_hash(const void* __s)
+{
+  size_t __h = 0;
+  size_t __len = L;
+  const unsigned char* __data = reinterpret_cast<const unsigned char*>(__s);
+  while ( __len-- > 0 ) {
+    __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  }
+
+  return __h;
+}
+
+template <>
+inline size_t __stl_pointer_hash<4>(const void* __s)
+{
+  const unsigned char* __data = reinterpret_cast<const unsigned char*>(__s);
+  size_t __h = *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *__data; // __h = 33 * __h + __s[i]
+
+  return __h;
+}
+
+template <>
+inline size_t __stl_pointer_hash<8>(const void* __s)
+{
+  const unsigned char* __data = reinterpret_cast<const unsigned char*>(__s);
+  size_t __h = *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *(__data++); // __h = 33 * __h + __s[i]
+  __h += (__h << 5) + *__data; // __h = 33 * __h + __s[i]
+
+  return __h;
+}
+
 _STLP_TEMPLATE_NULL
 struct hash<void *>
 {
-    union __vp {
-        size_t s;
-        void  *p;
-    };
-
-    size_t operator()(void *__x) const
-      {
-        __vp vp;
-        vp.p = __x;
-        return vp.s;
-      }
+    size_t operator()(const void* __x) const
+      { return __stl_pointer_hash<sizeof(const void*)>(__x); }
 };
 
 _STLP_END_NAMESPACE
