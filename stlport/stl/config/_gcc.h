@@ -203,3 +203,26 @@ typedef unsigned int wint_t;
  */
 #  define _STLP_NO_FORCE_INSTANTIATE
 #endif
+
+#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 5))
+#  define _STLP_IS_POD(T)             __is_pod(T)
+#  define _STLP_IS_STANDARD_LAYOUT(T) __is_standard_layout(T)
+#  define _STLP_IS_ABSTRACT(T)        __is_abstract(T)
+#  define _STLP_IS_POLYMORPHIC(T)     __is_polymorphic(T)
+#  define _STLP_IS_TRIVIAL(T)         __is_trivial(T)
+#  define _STLP_IS_EMPTY(T)           __is_empty(T)
+#  define _STLP_IS_CLASS(T)           __is_class(T)
+#  define _STLP_IS_UNION(T)           __is_union(T)
+#  define _STLP_IS_ENUM(T)            __is_enum(T)
+#  define _STLP_IS_BASE_OF(B,D)       __is_base_of(B,D)
+/* in 4.5.1 known, but not implemented: */
+/* #  define _STLP_IS_CONVERTIBLE(F,T)  __is_convertible_to(F,T) */
+#  define _STLP_HAS_VIRTUAL_DESTRUCTOR(T) __has_virtual_destructor(T)
+#  define _STLP_HAS_TRIVIAL_DESTRUCTOR(T) __has_trivial_destructor(T)
+#  define _STLP_HAS_TRIVIAL_COPY(T)   __has_trivial_copy(T)
+#  define _STLP_HAS_NOTHROW_COPY(T)   __has_nothrow_copy(T)
+#  define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) __has_trivial_constructor(T)
+#  define _STLP_HAS_NOTHROW_CONSTRUCTOR(T) __has_nothrow_constructor(T)
+#  define _STLP_HAS_TRIVIAL_ASSIGN(T) __has_trivial_assign(T)
+#  define _STLP_HAS_NOTHROW_ASSIGN(T) __has_nothrow_assign(T)
+#endif

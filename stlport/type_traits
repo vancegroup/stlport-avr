@@ -1,7 +1,7 @@
 // -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
 
 /*
- * Copyright (c) 2007, 2008
+ * Copyright (c) 2007, 2008, 2010
  * Petr Ovtchenkov
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -16,7 +16,7 @@
  * Derived from original <misc/type_traits.h> of 'complement' project
  * [http://complement.sourceforge.net]
  * to make it close to JTC1/SC22/WG21 C++ 0x working draft
- * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2723.pdf]
+ * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2010/n3126.pdf]
  */
 
 #ifndef __STLP_TYPE_TRAITS
@@ -134,6 +134,16 @@ template <class T, bool B>
 const bool __virtual_aux<T,B>::__value = B ? (sizeof(__inheritance_aux<T,B>) == sizeof(T)) : false;
 #endif
 #endif
+
+template <std::size_t L>
+struct __aligned_aux
+{
+    union __type
+    {
+        unsigned char __data[L];
+        struct __attribute__((__aligned__)) { } __align;
+    };
+};
 
 } // namespace detail
 
@@ -379,21 +389,41 @@ struct is_fundamental :
 
 template <class _Tp>
 struct is_enum :
-    public integral_constant<bool, !(is_fundamental<_Tp>::value
-                                     || is_array<_Tp>::value
-                                     || is_pointer<_Tp>::value
-                                     || is_lvalue_reference<_Tp>::value
-                                     || is_member_pointer<_Tp>::value
-                                     || is_function<_Tp>::value
-                                     || detail::__is_union_or_class<_Tp>::value) >
+    public integral_constant<bool,
+#ifndef _STLP_IS_ENUM
+                             !(is_fundamental<_Tp>::value
+                               || is_array<_Tp>::value
+                               || is_pointer<_Tp>::value
+                               || is_lvalue_reference<_Tp>::value
+                               || is_member_pointer<_Tp>::value
+                               || is_function<_Tp>::value
+                               || detail::__is_union_or_class<_Tp>::value)
+#else
+                             _STLP_IS_ENUM(_Tp)
+#endif
+                             >
 { };
 
-template <class T>
-struct is_union
+template <class _Tp>
+struct is_union :
+    public integral_constant<bool,
+#ifndef _STLP_IS_UNION
+                             detail::__is_union_or_class<_Tp>::value
+#else
+                             _STLP_IS_UNION(_Tp)
+#endif
+                             >
 { };
 
-template <class T>
-struct is_class
+template <class _Tp>
+struct is_class :
+    public integral_constant<bool,
+#ifndef _STLP_IS_CLASS
+                             detail::__is_union_or_class<_Tp>::value
+#else
+                             _STLP_IS_CLASS(_Tp)
+#endif
+                             >
 { };
 
 // is_function (above)
@@ -491,69 +521,155 @@ struct remove_all_extents<_Tp[]>
 
 template <class _Tp>
 struct is_trivial :
-    public integral_constant<bool, (is_void<_Tp>::value
-                                    || is_scalar<typename remove_all_extents<_Tp>::type>::value)>
+    public integral_constant<bool,
+#if !defined(_STLP_IS_TRIVIAL)
+                             (is_void<_Tp>::value || is_scalar<typename remove_all_extents<_Tp>::type>::value)
+#else
+                             _STLP_IS_TRIVIAL(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct is_standard_layout :
-    public integral_constant<bool, (is_void<_Tp>::value
-                                    || is_scalar<typename remove_all_extents<_Tp>::type>::value)>
+    public integral_constant<bool,
+#if !defined(_STLP_IS_STANDARD_LAYOUT)
+                             (is_void<_Tp>::value || is_scalar<typename remove_all_extents<_Tp>::type>::value)
+#else
+                             _STLP_IS_STANDARD_LAYOUT(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct is_pod :
-    public integral_constant<bool, (is_void<_Tp>::value
-                                    || is_scalar<typename remove_all_extents<_Tp>::type>::value)>
+    public integral_constant<bool,
+#if !defined(_STLP_IS_POD)
+                             (is_void<_Tp>::value || is_scalar<typename remove_all_extents<_Tp>::type>::value)
+#else
+                             _STLP_IS_POD(_Tp)
+#endif
+                             >
 { };
 
 template<typename _Tp>
 struct is_empty
-    : public integral_constant<bool, (detail::__is_union_or_class<_Tp>::value
-                                      && (sizeof(detail::__empty<_Tp>) == sizeof(_Tp)))>
+    : public integral_constant<bool,
+#if !defined(_STLP_IS_EMPTY)
+                               (detail::__is_union_or_class<_Tp>::value && (sizeof(detail::__empty<_Tp>) == sizeof(_Tp)))
+#else
+                               _STLP_IS_EMPTY(_Tp)
+#endif
+                               >
 { };
 
-// is_polimorphic
-// is_abstract
+template <class _Tp>
+struct is_polymorphic :
+    public integral_constant<bool,
+#if !defined(_STLP_IS_POLYMORPHIC)
+                             false_type::value // no way to detect
+#else
+                             _STLP_IS_POLYMORPHIC(_Tp)
+#endif
+                             >
+{ };
+
+template <class _Tp>
+struct is_abstract :
+    public integral_constant<bool,
+#if !defined(_STLP_IS_ABSTRACT)
+                             false_type::value // no way to detect
+#else
+                             _STLP_IS_ABSTRACT(_Tp)
+#endif
+                             >
+{ };
 
 template <class _Tp>
 struct has_trivial_default_constructor :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_TRIVIAL_CONSTRUCTOR
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_CONSTRUCTOR(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_trivial_copy_constructor :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_TRIVIAL_COPY
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_COPY(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_trivial_assign :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_TRIVIAL_ASSIGN
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_ASSIGN(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_trivial_destructor :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_TRIVIAL_DESTRUCTOR
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_DESTRUCTOR(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_nothrow_default_constructor :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_NOTHROW_CONSTRUCTOR
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_NOTHROW_CONSTRUCTOR(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_nothrow_copy_constructor :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_NOTHROW_COPY
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_NOTHROW_COPY(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_nothrow_assign :
-    public integral_constant<bool, is_pod<_Tp>::value>
+    public integral_constant<bool,
+#ifndef _STLP_HAS_NOTHROW_ASSIGN
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_NOTHROW_ASSIGN(_Tp)
+#endif
+                             >
 { };
 
 template <class _Tp>
 struct has_virtual_destructor :
-    public false_type
+    public
+#ifndef _STLP_HAS_VIRTUAL_DESTRUCTOR
+           false_type
+#else
+           integral_constant<bool, _STLP_HAS_VIRTUAL_DESTRUCTOR(_Tp)>
+#endif
 { };
 
 template <class _Tp>
@@ -594,8 +710,15 @@ struct is_same<_Tp, _Tp> :
     public true_type
 { };
 
-// is_base_of
-// is_convertible
+template <class _Base, class _Derived>
+struct is_base_of :
+    public
+#ifndef _STLP_IS_BASE_OF
+            false_type
+#else
+            integral_constant<bool, _STLP_IS_BASE_OF(_Base,_Derived)>
+#endif
+{ };
 
 // [20.5.6.1] const-volatile modifications
 
@@ -691,17 +814,21 @@ struct add_lvalue_reference<_Tp&>
     typedef _Tp& type;
 };
  
-// template <class _Tp>
-// struct add_rvalue_reference
-// {
-//     typedef _Tp&& type;
-// };
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
 
-// template <class _Tp>
-// struct add_rvalue_reference<_Tp&&>
-// {
-//     typedef _Tp&& type;
-// };
+template <class _Tp>
+struct add_rvalue_reference
+{
+    typedef _Tp&& type;
+};
+
+template <class _Tp>
+struct add_rvalue_reference<_Tp&&>
+{
+    typedef _Tp&& type;
+};
+
+#endif // __GXX_EXPERIMENTAL_CXX0X__ 
 
 // [20.5.6.3] sign modifications
 
@@ -889,8 +1016,70 @@ struct add_pointer
 
 // [20.5.7] other transformations:
 
-// template <std::size_t Len, std::size_t Align> struct aligned_storage;
+template <std::size_t L, std::size_t Align = __alignof__(typename detail::__aligned_aux<L>::__type)>
+struct aligned_storage
+{
+    union type
+    {
+        unsigned char __data[L];
+        struct __attribute__((__aligned__((Align))))
+        { } __align;
+    };
+};
+
 // template <std::size_t Len, class... Types> struct aligned_union;
+
+namespace detail {
+
+template <class _From, class _To, bool>
+struct __is_converible_aux
+{ };
+
+template <class _From, class _To>
+struct __is_converible_aux<_From,_To,true> :
+    public integral_constant<bool, is_void<_From>::value && is_void<_To>::value>
+{ };
+
+template <class _From, class _To>
+struct __is_converible_aux<_From,_To,false> :
+    public __select_types
+{
+  private:
+    static __t1 __test(_To);
+    static __t2 __test(...);
+
+  public:
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+    static const bool __value;
+#else
+#  ifndef __GXX_EXPERIMENTAL_CXX0X__
+    static const bool __value = sizeof(__test(_From())) == sizeof(__select_types::__t1);
+#  else
+    static const bool __value = sizeof(__test(declval<_From>())) == sizeof(__select_types::__t1);
+#  endif
+#endif
+};
+
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+template <class _From, class _To>
+const bool __is_converible_aux<_From,_To,false>::__value = sizeof(__is_converible_aux<_From,_To,false>::__test<_From>(0)) == sizeof(__select_types::__t1);
+#endif
+
+} // namespace detail
+
+template <class _From, class _To>
+struct is_convertible :
+    public
+#ifndef _STLP_IS_CONVERTIBLE
+           integral_constant<bool, detail::__is_converible_aux<_From,_To,
+                 is_void<_From>::value ||
+                 is_void<_To>::value ||
+                 is_function<_To>::value ||
+                 is_array<_To>::value>::__value>
+#else
+            integral_constant<bool, _STLP_IS_CONVERTIBLE(_From,_To)>
+#endif
+{ };
 
 namespace detail {
 
