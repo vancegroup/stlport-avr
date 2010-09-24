@@ -226,3 +226,10 @@ typedef unsigned int wint_t;
 #  define _STLP_HAS_TRIVIAL_ASSIGN(T) __has_trivial_assign(T)
 #  define _STLP_HAS_NOTHROW_ASSIGN(T) __has_nothrow_assign(T)
 #endif
+
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#  define _STLP_RVR /* we have rvalue reference, T&& */
+#  if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))
+#    define _STLP_VARIADIC_TEMPLATES
+#  endif
+#endif
