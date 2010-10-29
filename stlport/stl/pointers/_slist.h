@@ -149,6 +149,7 @@ private:
   }
 
 public:
+#  endif /* _STLP_USE_ITERATOR_WRAPPER */
 
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
