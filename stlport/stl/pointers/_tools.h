@@ -20,8 +20,8 @@
 #ifndef _STLP_POINTERS_SPEC_TOOLS_H
 #define _STLP_POINTERS_SPEC_TOOLS_H
 
-#ifndef _STLP_TYPE_TRAITS_H
-#  include <stl/type_traits.h>
+#ifndef __STLP_TYPE_TRAITS
+#  include <type_traits>
 #endif
 
 _STLP_BEGIN_NAMESPACE
