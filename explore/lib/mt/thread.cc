@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/05/21 15:21:44 ptr>
+// -*- C++ -*- Time-stamp: <2010-11-10 15:20:01 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2010
@@ -41,7 +41,9 @@
 #include <list>
 
 #include <stdio.h>
-#include <syscall.h>
+#ifdef __FIT_SYSCALL
+#  include <syscall.h>
+#endif
 
 #ifdef STLPORT
 // #  include <unordered_map>
@@ -116,11 +118,24 @@ static thread_pool_t thread_pool;
 
 int Init_count = 0;
 
-// problem: ::getpid() really return cached value, so pid returned may be
-// parent's pid really. I use syscall here and rewrite it during Thread::fork().
+#ifdef __FIT_SYSCALL
+
+/*
+  Problem: ::getpid() really return cached value, so pid returned may be
+  parent's pid really. I use syscall here and rewrite it during std::tr2::fork().
+  This workaround really not correct: looks that glibc's getpid() problem
+  was inspired by call from signal handler while the thread executes fork;
+  i) syscall is a bad way in this case too; ii) looks, this problem is fixed.
+
+  See also glibc's ./nptl/sysdeps/unix/sysv/linux/getpid.c and
+  ./nptl/sysdeps/unix/sysv/linux/fork.c.
+
+  BTW, syscall is treated as deprecated.
+*/
 
 static pid_t _pid  = syscall( SYS_getpid );
 static pid_t _ppid = syscall( SYS_getppid );
+#endif // __FIT_SYSCALL
 
 #ifdef __FIT_PSHARED_MUTEX
 std::string _notpshared( "Platform not support process shared mutex" );
@@ -427,12 +442,20 @@ void thread_base::detach()
 
 pid_t getpid()
 {
+#ifdef __FIT_SYSCALL
   return detail::_pid;
+#else
+  return ::getpid();
+#endif
 }
 
 pid_t getppid()
 {
+#ifdef __FIT_SYSCALL
   return detail::_ppid;
+#else
+  return ::getppid();
+#endif
 }
 
 thread_base::id get_id()
@@ -457,8 +480,10 @@ void fork() throw( fork_in_parent, std::runtime_error )
   if ( f.pid() == -1 ) {
     throw std::runtime_error( msg2 );
   }
+#ifdef __FIT_SYSCALL
   detail::_ppid = detail::_pid;
   detail::_pid = syscall( SYS_getpid );
+#endif
 
   // lock not required: it in child and only one thread yet
   list<detail::thread_pool_t::key_type> trash;
