@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-11-17 13:49:45 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2008, 2010
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -39,6 +39,7 @@ class list_test
     int EXAM_DECL(allocator_with_state);
     int EXAM_DECL(swap);
     int EXAM_DECL(adl);
+    int EXAM_DECL(insert);
     //int EXAM_DECL(const_list);
 };
 

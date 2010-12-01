@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-11-17 13:52:40 ptr>
 
 /*
- * Copyright (c) 2004-2009
+ * Copyright (c) 2004-2009, 2010
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -471,3 +471,21 @@ class IncompleteClass
   typedef list<IncompleteClass>::iterator it;
 };
 #endif
+
+int EXAM_IMPL(list_test::insert)
+{
+  list<int> l;
+
+  l.insert( l.end(), 0 );
+  l.insert( l.end(), 1 );
+
+  list<int>::const_iterator i = l.begin();
+
+  EXAM_CHECK( *i == 0 );
+
+  ++i;
+
+  EXAM_CHECK( *i == 1 );
+
+  return EXAM_RESULT;
+}
