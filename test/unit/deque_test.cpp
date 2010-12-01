@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-01 16:26:55 ptr>
 
 /*
- * Copyright (c) 2004-2009
+ * Copyright (c) 2004-2010
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -328,6 +328,56 @@ int EXAM_IMPL(deque_test::erase)
 
   dint.erase(dint.end() - 2, dint.end());
   EXAM_CHECK( *it == 4 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(deque_test::fill_trivial)
+{
+  deque<char> dx02( 2, 'z' );
+  deque<char>::const_iterator ix02 = dx02.begin();
+
+  EXAM_REQUIRE( ix02 != dx02.end() );
+  EXAM_CHECK( *ix02 == 'z' );
+  ++ix02;
+  EXAM_REQUIRE( ix02 != dx02.end() );
+  EXAM_CHECK( *ix02 == 'z' );
+  ++ix02;
+  EXAM_CHECK( ix02 == dx02.end() );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(deque_test::fill_non_trivial)
+{
+  struct z
+  {
+      z() :
+          z_( 'z' )
+        { }
+
+      z( const z& other ) :
+          z_( other.z_ )
+        { }
+
+      z& operator =( const z& other )
+        { z_ = other.z_; return *this; }
+
+      char z_;
+  };
+
+  z zz;
+
+  deque<z> dx02( 2, zz );
+  deque<z>::const_iterator ix02 = dx02.begin();
+
+  EXAM_REQUIRE( ix02 != dx02.end() );
+  EXAM_CHECK( ix02->z_ == 'z' );
+  ++ix02;
+  EXAM_REQUIRE( ix02 != dx02.end() );
+  EXAM_CHECK( ix02->z_ == 'z' );
+  ++ix02;
+  EXAM_CHECK( ix02 == dx02.end() );
 
   return EXAM_RESULT;
 }

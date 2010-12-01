@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-01 16:19:12 ptr>
 
 /*
- * Copyright (c) 2008, 2009
+ * Copyright (c) 2008-2010
  * Petr Ovtchenkov
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -121,9 +121,13 @@ int main( int argc, const char** argv )
 
   deque_test deq_test;
 
+  exam::test_suite::test_case_type deque_test_dep[5];
+
   t.add( &deque_test::deque1, deq_test, "deque1" );
   t.add( &deque_test::at, deq_test, "deque at" );
-  t.add( &deque_test::insert, deq_test, "deque insert" );
+  t.add( &deque_test::fill_trivial, deq_test, "deque fill by type with trivial ctor",
+    deque_test_dep[0] = t.add( &deque_test::insert, deq_test, "deque insert" ) );
+  t.add( &deque_test::fill_non_trivial, deq_test, "deque fill by type with non-trivial ctor", deque_test_dep[0] );
   t.add( &deque_test::erase, deq_test, "deque erase" );
   t.add( &deque_test::auto_ref, deq_test, "deque auto_ref" );
   t.add( &deque_test::allocator_with_state, deq_test, "deque allocator_with_state" );
@@ -152,6 +156,7 @@ int main( int argc, const char** argv )
   t.add( &list_test::allocator_with_state, lst_test, "list allocator_with_state" );
   t.add( &list_test::swap, lst_test, "list swap" );
   t.add( &list_test::adl, lst_test, "list adl" );
+  t.add( &list_test::insert, lst_test, "list insert" );
   // t.add( &list_test::const_list, lst_test, "const_list" );
 
   slist_test slst_test;
