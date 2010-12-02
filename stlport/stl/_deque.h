@@ -527,26 +527,20 @@ class deque :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__x.get_allocator(), __x.size())
       { _STLP_PRIV __ucopy(__x.begin(), __x.end(), this->_M_start); }
 
-  private:
-    void _M_initialize(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp))
-      {
-        typedef typename has_trivial_default_constructor<_Tp>::type _TrivialInit;
-        _M_fill_initialize(__val, _TrivialInit());
-      }
   public:
     explicit deque(size_type __n) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
-      { _M_initialize(__n); }
-    deque(size_type __n, const value_type& __val, const allocator_type& __a = allocator_type()) :
+      { /* _M_initialize(__n); */ _M_fill_initialize( _STLP_DEFAULT_CONSTRUCTED(_Tp) ); }
+    deque( size_type __n, const value_type& __val, const allocator_type& __a = allocator_type()) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __n)
-      { _M_fill_initialize(__val, typename has_trivial_default_constructor<_Tp>::type()); }
+      { _M_fill_initialize( __val ); }
 
   protected:
     template <class _Integer>
     void _M_initialize_dispatch( _Integer __n, _Integer __x, const true_type& )
       {
         this->_M_initialize_map(__n);
-        _M_fill_initialize(__x, true_type());
+        _M_fill_initialize( __x );
       }
 
     template <class _InputIter>
@@ -558,20 +552,7 @@ class deque :
     template <class _InputIterator>
     deque( _InputIterator __first, _InputIterator __last, const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a)
-      {
-        typedef typename is_integral<_InputIterator>::type _Integral;
-        _M_initialize_dispatch(__first, __last, _Integral());
-      }
-
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-    template <class _InputIterator>
-    deque(_InputIterator __first, _InputIterator __last) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type())
-      {
-        typedef typename is_integral<_InputIterator>::type _Integral;
-        _M_initialize_dispatch(__first, __last, _Integral());
-      }
-#  endif
+      { _M_initialize_dispatch(__first, __last, typename is_integral<_InputIterator>::type() ); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     deque(__move_source<_Self> src) :
@@ -797,10 +778,7 @@ class deque :
     void clear();
 
   protected:                        // Internal construction/destruction
-
-    void _M_fill_initialize(const value_type& __val, const true_type& /*_TrivialInit*/)
-      { }
-    void _M_fill_initialize(const value_type& __val, const false_type& /*_TrivialInit*/);
+    void _M_fill_initialize( const value_type& __val );
 
     template <class _InputIterator>
     void _M_range_initialize( _InputIterator __first, _InputIterator __last,

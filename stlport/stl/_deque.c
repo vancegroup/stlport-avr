@@ -295,7 +295,7 @@ void deque<_Tp,_Alloc>::clear()
 // Precondition: this->_M_start and this->_M_finish have already been initialized,
 // but none of the deque's elements have yet been constructed.
 template <class _Tp, class _Alloc >
-void deque<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val, const false_type& /*_TrivialInit*/)
+void deque<_Tp,_Alloc>::_M_fill_initialize( const value_type& __val )
 {
   _Map_pointer __cur = this->_M_start._M_node;
   _STLP_TRY {
