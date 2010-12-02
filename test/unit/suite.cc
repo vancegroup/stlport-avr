@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-01 16:19:12 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-02 12:14:53 ptr>
 
 /*
  * Copyright (c) 2008-2010
@@ -132,6 +132,8 @@ int main( int argc, const char** argv )
   t.add( &deque_test::auto_ref, deq_test, "deque auto_ref" );
   t.add( &deque_test::allocator_with_state, deq_test, "deque allocator_with_state" );
   t.add( &deque_test::optimizations_check, deq_test, "deque optimizations_check" );
+  t.add( &deque_test::init_integral, deq_test, "deque ctor for deque(size,value)" );
+  t.add( &deque_test::init_range, deq_test, "deque ctor for deque(from,to)" );
 
   queue_test que_test;
 

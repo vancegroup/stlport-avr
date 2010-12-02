@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-01 16:26:55 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-02 12:56:00 ptr>
 
 /*
  * Copyright (c) 2004-2010
@@ -378,6 +378,34 @@ int EXAM_IMPL(deque_test::fill_non_trivial)
   EXAM_CHECK( ix02->z_ == 'z' );
   ++ix02;
   EXAM_CHECK( ix02 == dx02.end() );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(deque_test::init_integral)
+{
+  // compare with deque_test::init_range
+  int b = 2;
+
+  deque<int> d( b, b + 2 ); // should be deque( size_type, const value_type&, const allocator_type& )
+
+  EXAM_CHECK( d.size() == 2 );
+  EXAM_CHECK( d[0] == 4 );
+  EXAM_CHECK( d[1] == 4 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(deque_test::init_range)
+{
+  // compare with deque_test::init_integral
+  int a[2] = { 1, 2 };
+
+  deque<int> d( a, a + 2 ); // should be deque( _InputIterator, _InputIterator, const allocator_type& )
+
+  EXAM_CHECK( d.size() == 2 );
+  EXAM_CHECK( d[0] == 1 );
+  EXAM_CHECK( d[1] == 2 );
 
   return EXAM_RESULT;
 }

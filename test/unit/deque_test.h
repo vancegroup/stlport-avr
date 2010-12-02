@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-01 16:16:31 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-02 12:12:36 ptr>
 
 /*
  * Copyright (c) 2004-2010
@@ -37,6 +37,8 @@ class deque_test
     int EXAM_DECL(optimizations_check);
     int EXAM_DECL(fill_trivial);
     int EXAM_DECL(fill_non_trivial);
+    int EXAM_DECL(init_integral);
+    int EXAM_DECL(init_range);
 };
 
 class queue_test
