@@ -23,11 +23,6 @@
 
 #include <config/feature.h>
 
-// #define _GNU_SOURCE
-// #include <memory.h>
-// #include <stdlib.h>
-// #include <stdio.h>
-
 #ifndef __FIT_PRESENT_BFD
 
 #include <mt/callstack.h>
@@ -57,7 +52,6 @@ void callstack( std::ostream& s )
 #  include <cxxabi.h>
 #endif
 
-#if 1
 #if defined(REG_RIP)
 # define SIGSEGV_STACK_IA64
 // # define REGFORMAT "%016lx"
@@ -67,7 +61,6 @@ void callstack( std::ostream& s )
 #else
 # define SIGSEGV_STACK_GENERIC
 // # define REGFORMAT "%x"
-#endif
 #endif
 
 #include <cstring>

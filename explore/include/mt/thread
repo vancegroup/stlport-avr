@@ -27,14 +27,6 @@
 #include <climits>
 #include <stdexcept>
 
-#ifdef WIN32
-# include <windows.h>
-# include <memory>
-# include <limits>
-# define ETIME   62      /* timer expired */
-# pragma warning( disable : 4290)
-#endif // WIN32
-
 #ifdef __unix
 # include <pthread.h>
 # include <semaphore.h>
@@ -59,7 +51,6 @@ namespace detail {
 void _dealloc_uw();
 } // namespace detail
 
-#ifndef _WIN32
 class fork_in_parent :
         public std::exception
 {
@@ -78,7 +69,6 @@ class fork_in_parent :
   private:
     pid_t _pid;
 };
-#endif // !_WIN32
 
 __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
 
