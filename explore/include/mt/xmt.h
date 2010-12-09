@@ -26,14 +26,6 @@
 # define __STATIC_CAST(t,v) static_cast<t>(v)
 #endif
 
-#ifdef WIN32
-# include <windows.h>
-# include <memory>
-# include <limits>
-# define ETIME   62      /* timer expired */
-# pragma warning( disable : 4290)
-#endif // WIN32
-
 #ifdef __unix
 # if defined( _REENTRANT ) && !defined(_NOTHREADS)
 #  ifdef _PTHREADS
@@ -47,7 +39,6 @@
 # elif !defined(_NOTHREADS) // !_REENTRANT
 #  define _NOTHREADS
 # endif
-// #  define __DLLEXPORT
 #endif // __unix
 
 #include <cerrno>
@@ -160,7 +151,6 @@ extern std::string _notrecursive;
 using std::runtime_error;
 #endif
 
-#ifndef _WIN32
 class fork_in_parent :
         public std::exception
 {
@@ -179,8 +169,6 @@ class fork_in_parent :
   private:
     pid_t _pid;
 };
-#endif // !_WIN32
-
 
 template <bool SCOPE> class __condition;
 
