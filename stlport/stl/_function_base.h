@@ -85,39 +85,6 @@ struct less : public binary_function<_Tp,_Tp,bool>
 #endif
 };
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _Tp>
-struct has_trivial_default_constructor<less<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct has_trivial_copy_constructor<less<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct has_trivial_assign<less<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct has_trivial_destructor<less<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct is_pod<less<_Tp> > :
-    public true_type
-{ };
-
-_STLP_END_NAMESPACE
-
-#endif
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Tp>

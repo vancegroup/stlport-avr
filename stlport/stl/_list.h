@@ -139,36 +139,6 @@ struct _List_iterator : public _List_iterator_base {
       { return this->_M_node != __y._M_node; }
 };
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-_STLP_MOVE_TO_STD_NAMESPACE
-
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _Tp, class _Traits>
-struct has_trivial_default_constructor<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
-    public false_type
-{ };
-
-template <class _Tp, class _Traits>
-struct has_trivial_copy_constructor<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
-    public true_type
-{ };
-
-template <class _Tp, class _Traits>
-struct has_trivial_assign<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
-    public true_type
-{ };
-
-template <class _Tp, class _Traits>
-struct has_trivial_destructor<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
-    public true_type
-{ };
-
-_STLP_END_NAMESPACE
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif
-
 // Base class that encapsulates details of allocators and helps
 // to simplify EH
 

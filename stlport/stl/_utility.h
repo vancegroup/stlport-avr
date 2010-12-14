@@ -75,38 +75,36 @@ _STLP_END_NAMESPACE
 namespace rel_ops {
 } // namespace rel_ops
 
+// template <class T>
+// struct identity
+// {
+//     typedef T type;
+//    const T& operator ()( const T& v ) const
+//       { return v; }
+// };
+
+#ifdef _STLP_RVR
+
 template <class T>
-struct identity
+inline T&& forward( typename _STLP_STD::remove_reference<T>::type& t ) throw() // noexcept
+{ return static_cast<T&&>(t); }
+
+template <class T>
+inline T&& forward( typename _STLP_STD::remove_reference<T>::type&& t ) throw() // noexcept
 {
-    typedef T type;
-    const T& operator ()( const T& v ) const
-      { return v; }
-};
-
-/*
-template <class T>
-T&& forward( typename identity<T>::type&& t )
-{ return t; }
-*/
-
-// Well, forward is unuseful without rvalue reference
-template <class T>
-inline const T& forward( const typename identity<T>::type& t )
-{ return t; }
-
-template <class T>
-inline T& forward( typename identity<T>::type& t )
-{ return t; }
+  _STLP_STATIC_ASSERT( !_STLP_STD::is_lvalue_reference<T>::value )
+  return static_cast<T&&>(t);
+}
 
 // template <class T>
-// inline __move_source<T>& forward( __move_source<typename identity<T>::type>& t )
-// { return t; }
+// inline typename remove_reference<T>::type&& move( T&& t ) throw() // noexcept
+// { return static_cast<typename remove_reference<T>::type&&>(t); }
 
-/*
-template <class T>
-typename remove_reference<T>::type&& move( T&& t )
-{ return t; }
-*/
+//template <class T>
+//inline typename _STLP_STD::conditional<!_STLP_STD::is_nothrow_move_constructible<T>::value && _STLP_STD::is_copy_constructible<T>::value, const T&, T&&>::type move_if_noexcept(T& x) throw() // noexcept
+//{ return move(x); }
+
+#endif
 
 template <class T>
 __move_source<typename remove_const<typename remove_reference<T>::type>::type> move( const T& t )
@@ -221,53 +219,36 @@ inline bool _STLP_CALL  operator>=(const _Tp& __x, const _Tp& __y)
 _STLP_END_RELOPS_NAMESPACE
 #endif
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#ifdef _STLP_RVR
+
 _STLP_BEGIN_NAMESPACE
 
 _STLP_BEGIN_TR1_NAMESPACE
 
-template <class _T1, class _T2>
-struct has_trivial_default_constructor<pair<_T1, _T2> > :
-    public integral_constant<bool, has_trivial_default_constructor<_T1>::value && has_trivial_default_constructor<_T2>::value>
-{ };
+namespace detail {
 
-template <class _T1, class _T2>
-struct has_trivial_copy_constructor<pair<_T1, _T2> > :
-    public integral_constant<bool, has_trivial_copy_constructor<_T1>::value && has_trivial_copy_constructor<_T2>::value>
-{ };
+template <class _Tp>
+struct __declval_aux
+{
+    static const bool __instance = false;
+    static typename add_rvalue_reference<_Tp>::type __dummy();
+};
 
-template <class _T1, class _T2>
-struct has_trivial_assign<pair<_T1, _T2> > :
-    public integral_constant<bool, has_trivial_assign<_T1>::value && has_trivial_assign<_T2>::value>
-{ };
+} // namespace detail
 
-template <class _T1, class _T2>
-struct has_trivial_destructor<pair<_T1, _T2> > :
-    public integral_constant<bool, has_trivial_destructor<_T1>::value && has_trivial_destructor<_T2>::value>
-{ };
-
-_STLP_END_NAMESPACE
-
-#  if !defined (_STLP_NO_MOVE_SEMANTIC)
-
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _T1, class _T2>
-struct __has_trivial_move<pair<_T1, _T2> > :
-   public integral_constant<bool, __has_trivial_move<_T1>::value && __has_trivial_move<_T2>::value>
-{ };
-
-template <class _T1, class _T2>
-struct __has_move_constructor<pair<_T1, _T2> > :
-    public integral_constant<bool, __has_move_constructor<_T1>::value && __has_move_constructor<_T2>::value>
-{ };
+template <class _Tp>
+inline typename add_rvalue_reference<_Tp>::type declval() throw()
+{
+  // protect declval() from call:
+  _STLP_STATIC_ASSERT(detail::__declval_aux<_Tp>::__instance);
+  return detail::__declval_aux<_Tp>::__dummy();
+}
 
 _STLP_END_NAMESPACE
 
-#  endif
-
 _STLP_END_NAMESPACE
-#endif
+
+#endif // _STLP_RVR
 
 #endif /* _STLP_INTERNAL_UTILITY_H */
 

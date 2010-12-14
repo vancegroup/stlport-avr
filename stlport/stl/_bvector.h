@@ -88,35 +88,6 @@ inline void swap(_STLP_PRIV _Bit_reference& __x, _STLP_PRIV _Bit_reference& __y)
   __y = __tmp;
 }
 
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <>
-struct has_trivial_default_constructor<_STLP_PRIV _Bit_reference> :
-    public false_type
-{ };
-
-template <>
-struct has_trivial_copy_constructor<_STLP_PRIV _Bit_reference> :
-    public true_type
-{ };
-
-template <>
-struct has_trivial_assign<_STLP_PRIV _Bit_reference> :
-    public false_type
-{ };
-
-template <>
-struct has_trivial_destructor<_STLP_PRIV _Bit_reference> :
-    public true_type
-{ };
-
-template <>
-struct is_pod<_STLP_PRIV _Bit_reference> :
-    public false_type
-{ };
-
-_STLP_END_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 struct _Bit_iterator_base {
@@ -253,39 +224,6 @@ operator+(ptrdiff_t __n, const _Bit_iter<_Ref, _Ptr>& __x) {
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _Ref, class _Ptr>
-struct has_trivial_default_constructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
-    public false_type
-{ };
-
-template <class _Ref, class _Ptr>
-struct has_trivial_copy_constructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
-    public true_type
-{ };
-
-template <class _Ref, class _Ptr>
-struct has_trivial_assign<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
-    public true_type
-{ };
-
-template <class _Ref, class _Ptr>
-struct has_trivial_destructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
-    public true_type
-{ };
-
-template <class _Ref, class _Ptr>
-struct is_pod<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
-    public false_type
-{ };
-
-_STLP_END_NAMESPACE
-
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 inline random_access_iterator_tag iterator_category(const _STLP_PRIV _Bit_iterator_base&)

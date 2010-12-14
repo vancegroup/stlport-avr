@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-13 20:52:50 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010
@@ -531,6 +531,21 @@ struct is_trivial :
 { };
 
 template <class _Tp>
+struct is_trivially_copyable :
+    public integral_constant<bool,
+#if !defined(_STLP_HAS_TRIVIAL_COPY) || !defined(_STLP_HAS_TRIVIAL_DESTRUCTOR) || !defined(_STLP_HAS_TRIVIAL_ASSIGN)
+                             (is_void<_Tp>::value || is_scalar<typename remove_all_extents<_Tp>::type>::value)
+#else
+                             _STLP_HAS_TRIVIAL_COPY(_Tp) &&
+                             /* _STLP_HAS_TRIVIAL_MOVE(_Tp) && */
+                             _STLP_HAS_TRIVIAL_DESTRUCTOR(_Tp) &&
+                             _STLP_HAS_TRIVIAL_ASSIGN(_Tp)
+                             /* && _STLP_HAS_TRIVIAL_MOVE_ASSIGN(_Tp) */
+#endif
+                             >
+{ };
+
+template <class _Tp>
 struct is_standard_layout :
     public integral_constant<bool,
 #if !defined(_STLP_IS_STANDARD_LAYOUT)
@@ -581,28 +596,6 @@ struct is_abstract :
                              false_type::value // no way to detect
 #else
                              _STLP_IS_ABSTRACT(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_trivial_default_constructor :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_TRIVIAL_CONSTRUCTOR
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_TRIVIAL_CONSTRUCTOR(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_trivial_copy_constructor :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_TRIVIAL_COPY
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_TRIVIAL_COPY(_Tp)
 #endif
                              >
 { };
@@ -828,26 +821,254 @@ struct add_rvalue_reference<_Tp&&>
     typedef _Tp&& type;
 };
 
+template <class _Tp>
+typename add_rvalue_reference<_Tp>::type declval() throw();
+
+#ifdef _STLP_VARIADIC_TEMPLATES
+
+namespace detail {
+
+template <class _Tp, class... _Args>
+struct __is_constructible :
+    public __select_types
+{
+  private:
+    template <class _Up, class... _UpArgs>
+    static decltype(_Up( declval<_UpArgs>()... ), __t1()) __test(int);
+
+    template <class, class...>
+    static __t2 __test(...);
+    
+  public:
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+    static const bool __value;
+#else
+    static const bool __value = sizeof(__test<_Tp, _Args...>(0)) == sizeof(__select_types::__t1);
+#endif
+};
+
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+template <class _Tp, class... _Args>
+const bool __is_constructible<_Tp,_Args...>::__value = sizeof(__is_constructible<_Tp,_Args...>::__test<_Tp,_Args...>(0)) == sizeof(__select_types::__t1);
+#endif
+
+} // detail
+
+template <class _Tp, class... _Args>
+struct is_constructible :
+    public integral_constant<bool, detail::__is_constructible<_Tp,_Args...>::__value>
+{ };
+
+template <class _Tp>
+struct is_default_constructible :
+    public is_constructible<_Tp>
+{ };
+
+template <class _Tp>
+struct is_copy_constructible :
+    public is_constructible<_Tp,const _Tp&>
+{ };
+
+template <class _Tp>
+struct is_move_constructible :
+    public is_constructible<_Tp,_Tp&&>
+{ };
+
+#endif
+
+#endif // _STLP_RVR
+
+namespace detail {
+
+template <class _T1, class _T2>
+struct __is_assignable :
+    public __select_types
+{
+  private:
+    template <class _U1, class _U2>
+    static decltype((declval<_U1>() = declval<_U2>()), __t1()) __test(int);
+
+    template <class, class>
+    static __t2 __test(...);
+    
+  public:
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+    static const bool __value;
+#else
+    static const bool __value = sizeof(__test<_T1,_T2>(0)) == sizeof(__select_types::__t1);
+#endif
+};
+
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+template <class _T1, class _T2>
+  const bool __is_assignable<_T1,_T2>::__value = sizeof(__is_assignable<_T1,_T2>::__test<_T1,_T2>(0)) == sizeof(__select_types::__t1);
+#endif
+
+} // detail
+
+template <class _Tp, class _Up>
+struct is_assignable :
+    public integral_constant<bool, detail::__is_assignable<_Tp,_Up>::__value>
+{ };
+
+template <class _Tp>
+struct is_copy_assignable :
+    public is_assignable<_Tp, const _Tp&>
+{ };
+
+#ifdef _STLP_RVR
+
+template <class _Tp>
+struct is_move_assignable :
+    public is_assignable<_Tp, _Tp&&>
+{ };
+
+#endif
+
 namespace detail {
 
 template <class _Tp>
-struct __declval_aux
+struct __is_destructible :
+    public __select_types
 {
-    static const bool __instance = false;
-    static typename add_rvalue_reference<_Tp>::type __dummy();
+  private:
+    template <class _Up>
+    struct test_
+    {
+        _Up u;
+    };
+
+    template <class _Up>
+    static decltype( reinterpret_cast<test_<_Up>*>(0)->~test_<_Up>(), __t1()) __test(int);
+
+    template <class>
+    static __t2 __test(...);
+    
+  public:
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+    static const bool __value;
+#else
+    static const bool __value = sizeof(__test<_Tp>(0)) == sizeof(__select_types::__t1);
+#endif
 };
+
+#ifdef _STLP_STATIC_CONST_INIT_BUG
+template <class _Tp>
+const bool __is_destructible<_Tp>::__value = sizeof(__is_destructible<_Tp>::__test<_Tp>(0)) == sizeof(__select_types::__t1);
+#endif
 
 } // namespace detail
 
 template <class _Tp>
-inline typename add_rvalue_reference<_Tp>::type declval()
-{
-  // protect declval() from call:
-  _STLP_STATIC_ASSERT(detail::__declval_aux<_Tp>::__instance);
-  return detail::__declval_aux<_Tp>::__dummy();
-}  
+struct is_destructible :
+    public integral_constant<bool, detail::__is_destructible<_Tp>::__value>
+{ };
 
-#endif // _STLP_RVR
+#ifdef _STLP_VARIADIC_TEMPLATES
+
+// Fix it: how to check that only trivial functions was used during construction?
+template <class _Tp, class... _Args>
+struct is_trivially_constructible :
+    public integral_constant<bool, (is_constructible<_Tp,_Args...>::value &&
+                                    !detail::__is_vtbl<_Tp>::value)>
+{ };
+
+// Fix it
+template <class _Tp>
+struct is_trivially_default_constructible :
+    public integral_constant<bool, is_trivially_constructible<_Tp>::value &&
+#ifndef _STLP_HAS_TRIVIAL_CONSTRUCTOR
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_CONSTRUCTOR(_Tp)
+#endif
+                             >
+{ };
+
+// Fix it
+template <class _Tp>
+struct is_trivially_copy_constructible :
+    public integral_constant<bool, is_trivially_constructible<_Tp,const _Tp&>::value &&
+#ifndef _STLP_HAS_TRIVIAL_COPY
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_COPY(_Tp)
+#endif
+                             >
+{ };
+
+// Fix it
+template <class _Tp>
+struct is_trivially_move_constructible :
+    public integral_constant<bool, is_trivially_constructible<_Tp,_Tp&&>::value &&
+// #ifndef _STLP_HAS_TRIVIAL_COPY
+                             is_pod<_Tp>::value
+// #else
+//                             _STLP_HAS_TRIVIAL_COPY(_Tp)
+// #endif
+                             >
+{ };
+
+/*
+10 A type is a literal type if it is:
+  - a scalar type; or
+  - a class type (Clause 9) with
+        - a trivial copy constructor,
+        - no non-trivial move constructor,
+        - a trivial destructor,
+        - a trivial default constructor or at least one constexpr
+          constructor other than the copy or move constructor, and
+        - all non-static data members and base classes of literal types; or
+  - an array of literal type.
+*/
+
+template <class _Tp>
+struct is_literal_type :
+    public integral_constant<bool, (is_scalar<_Tp>::value ||
+                                    (is_class<_Tp>::value && 
+                                     is_trivially_copy_constructible<_Tp>::value &&
+                                     _STLP_HAS_TRIVIAL_DESTRUCTOR(_Tp) &&
+                                     is_trivially_default_constructible<_Tp>::value) ||
+                                    (is_array<_Tp>::value && is_literal_type<typename remove_all_extents<_Tp>::type>::value)
+                                    )>
+{ };
+
+#else // _STLP_VARIADIC_TEMPLATES
+
+template <class _Tp>
+struct is_trivially_default_constructible :
+    public integral_constant<bool,
+#ifndef _STLP_HAS_TRIVIAL_CONSTRUCTOR
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_CONSTRUCTOR(_Tp)
+#endif
+                             >
+{ };
+
+template <class _Tp>
+struct is_trivially_copy_constructible :
+    public integral_constant<bool,
+#ifndef _STLP_HAS_TRIVIAL_COPY
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_TRIVIAL_COPY(_Tp)
+#endif
+                             >
+{ };
+
+template <class _Tp>
+struct is_trivially_move_constructible :
+    public integral_constant<bool,
+// #ifndef _STLP_HAS_TRIVIAL_COPY
+                             is_pod<_Tp>::value
+// #else
+//                             _STLP_HAS_TRIVIAL_COPY(_Tp)
+// #endif
+                             >
+{ };
+
+#endif // _STLP_VARIADIC_TEMPLATES
 
 // [20.5.6.3] sign modifications
 

@@ -97,28 +97,23 @@ private:
     }
   }
 
-  void _M_initialize_buffer(const _Tp&, const true_type&) {}
-  void _M_initialize_buffer(const _Tp& val, const false_type&) {
-    uninitialized_fill_n(_M_buffer, _M_len, val);
-  }
-
 public:
   ptrdiff_t size() const { return _M_len; }
   ptrdiff_t requested_size() const { return _M_original_len; }
   _Tp* begin() { return _M_buffer; }
   _Tp* end() { return _M_buffer + _M_len; }
 
-  _Temporary_buffer(_ForwardIterator __first, _ForwardIterator __last) {
-    // Workaround for a __type_traits bug in the pre-7.3 compiler.
-    typedef typename has_trivial_default_constructor<_Tp>::type  _Trivial;
-    _STLP_TRY {
-      _M_len = _STLP_STD::distance(__first, __last);
-      _M_allocate_buffer();
-      if (_M_len > 0)
-        _M_initialize_buffer(*__first, _Trivial());
-    }
-    _STLP_UNWIND(free(_M_buffer); _M_buffer = 0; _M_len = 0)
-  }
+  _Temporary_buffer(_ForwardIterator __first, _ForwardIterator __last)
+      {
+        _STLP_TRY {
+          _M_len = _STLP_STD::distance(__first, __last);
+          _M_allocate_buffer();
+          if (_M_len > 0) {
+            uninitialized_fill_n(_M_buffer, _M_len, *__first );
+          }
+        }
+        _STLP_UNWIND(free(_M_buffer); _M_buffer = 0; _M_len = 0)
+      }
 
   ~_Temporary_buffer() {
     _STLP_STD::_Destroy_Range(_M_buffer, _M_buffer + _M_len);

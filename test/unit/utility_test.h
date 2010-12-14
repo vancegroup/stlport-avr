@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-06 20:28:44 ptr>
 
 /*
- * Copyright (c) 2004-2009
+ * Copyright (c) 2004-2010
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -30,6 +30,8 @@ class utility_test
   public:
     int EXAM_DECL(pair0);
     int EXAM_DECL(init);
+
+    int EXAM_DECL(forward);
 };
 
 #endif // __TEST_UTILITY_TEST_H

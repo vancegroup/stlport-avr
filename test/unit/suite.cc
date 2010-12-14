@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-02 12:14:53 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-13 20:42:46 ptr>
 
 /*
  * Copyright (c) 2008-2010
@@ -21,6 +21,7 @@
 #include <string>
 #include <sstream>
 
+#include "type_traits_test.h"
 #include "vector_test.h"
 #include "deque_test.h"
 #include "list_test.h"
@@ -94,6 +95,58 @@ int main( int argc, const char** argv )
   }
 
   exam::test_suite t( "STLport test" );
+
+  type_traits_test ttt;
+  exam::test_suite::test_case_type tt_tc[10];
+
+  tt_tc[0] = t.add( &type_traits_test::type_traits_internals, ttt, "traits_internals" );
+
+  t.add( &type_traits_test::type_traits_is_void, ttt, "is_void", tt_tc[0] );
+  tt_tc[1] = t.add( &type_traits_test::type_traits_is_integral, ttt, "is_integral", tt_tc[0] );
+  tt_tc[2] = t.add( &type_traits_test::type_traits_is_floating_point, ttt, "is_floating_point", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_array, ttt, "is_array", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_pointer, ttt, "is_pointer", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_lvalue_reference, ttt, "is_lvalue_reference",
+    t.add( &type_traits_test::type_traits_is_rvalue_reference_neg, ttt, "is_rvalue_reference negative", tt_tc[0] ) );
+
+  t.add( &type_traits_test::type_traits_is_member_object_pointer, ttt, "is_member_object_pointer", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_member_function_pointer, ttt, "is_member_function_pointer", tt_tc[0] );
+
+  t.add( &type_traits_test::type_traits_is_enum, ttt, "is_enum", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_function, ttt, "is_function", tt_tc[0] );
+
+  // [20.4.4.2]
+  t.add( &type_traits_test::type_traits_is_reference, ttt, "is_reference", tt_tc[0] );
+  tt_tc[3] = t.add( &type_traits_test::type_traits_is_arithmetic, ttt, "is_arithmetic", tt_tc + 1, tt_tc + 3 );
+  t.add( &type_traits_test::type_traits_is_fundamental, ttt, "is_fundamental", tt_tc[3] );
+
+  t.add( &type_traits_test::type_traits_is_object, ttt, "is_object", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_scalar, ttt, "is_scalar", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_compound, ttt, "is_compound", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_member_pointer, ttt, "is_member_pointer", tt_tc[0] );
+
+  // [20.4.4.3]
+  t.add( &type_traits_test::type_traits_is_const, ttt, "is_const", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_volatile, ttt, "is_volatile", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_trivial, ttt, "is_trivial", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_standard_layout, ttt, "is_standard_layout", tt_tc[0] );
+  tt_tc[4] = t.add( &type_traits_test::type_traits_is_pod, ttt, "is_pod", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_pod_compiler_supp, ttt, "is_pod_compiler_supp", tt_tc[4] );
+  t.add( &type_traits_test::type_traits_is_empty, ttt, "is_empty", tt_tc[0] );
+
+  t.add( &type_traits_test::type_traits_is_union, ttt, "is_union", tt_tc[0] );
+  t.add( &type_traits_test::type_traits_is_union, ttt, "is_class", tt_tc[0] );
+
+  t.add( &type_traits_test::is_constructible, ttt, "is_constructible", tt_tc[0] );
+
+  t.add( &type_traits_test::is_assignable, ttt, "is_assignable", tt_tc[0] );
+
+  t.add( &type_traits_test::is_destructible, ttt, "is_destructible", tt_tc[0] );
+
+  t.add( &type_traits_test::is_trivially_copyable, ttt, "is_trivially_copyable", tt_tc[0] );
+  // t.add( &type_traits_test::ratio, test, "ratio", tt_tc[0] );
+
+
   vector_test vec_test;
 
   exam::test_suite::test_case_type vec_tc[16];
@@ -638,6 +691,7 @@ int main( int argc, const char** argv )
 
   t.add( &utility_test::pair0, pr_test, "pair0" );
   t.add( &utility_test::init, pr_test, "init" );
+  t.add( &utility_test::forward, pr_test, "forward<A>" );
 
   rnd_shuffle_test rnd_test;
 

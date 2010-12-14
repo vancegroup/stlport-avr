@@ -321,36 +321,6 @@ inline bool _STLP_CALL operator <=( const _Deque_iterator<_Tp, _Nonconst_traits<
 { return !(__y < __x); }
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-_STLP_MOVE_TO_STD_NAMESPACE
-
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _Tp, class _Traits>
-struct has_trivial_default_constructor<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
-    public false_type
-{ };
-
-template <class _Tp, class _Traits>
-struct has_trivial_copy_constructor<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
-    public true_type
-{ };
-
-template <class _Tp, class _Traits>
-struct has_trivial_assign<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
-    public true_type
-{ };
-
-template <class _Tp, class _Traits>
-struct has_trivial_destructor<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
-    public true_type
-{ };
-
-_STLP_END_NAMESPACE
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
 /* Deque base class.  It has two purposes.  First, its constructor
  *  and destructor allocate (but don't initialize) storage.  This makes
  *  exception safety easier.  Second, the base class encapsulates all of

@@ -153,38 +153,6 @@ struct _Ht_iterator {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _BaseIte, class _Traits>
-struct has_trivial_default_constructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
-    public false_type
-{ };
-
-template <class _BaseIte, class _Traits>
-struct has_trivial_copy_constructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
-    public true_type
-{ };
-
-template <class _BaseIte, class _Traits>
-struct has_trivial_assign<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
-    public true_type
-{ };
-
-template <class _BaseIte, class _Traits>
-struct has_trivial_destructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
-    public true_type
-{ };
-
-template <class _BaseIte, class _Traits>
-struct is_pod<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
-    public false_type
-{ };
-
-_STLP_END_NAMESPACE
-
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 template <class _BaseIte, class _Traits>
 inline

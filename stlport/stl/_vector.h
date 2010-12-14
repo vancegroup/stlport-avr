@@ -252,7 +252,7 @@ class vector :
     vector(const _Self& __x) :
         _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator())
       {
-        typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
+        typedef typename is_trivially_copyable<_Tp>::type _TrivialUCopy;
         this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCopy());
       }
 

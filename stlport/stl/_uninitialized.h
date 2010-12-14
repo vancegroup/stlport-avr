@@ -140,12 +140,8 @@ inline _OutputIter __ucopy_aux( _InputIter __first, _InputIter __last,
 
   return __ucopy_ptrs(__first, __last, __result,
                       integral_constant<bool,
-                      has_trivial_copy_constructor<_in_t>::value &&
-                      has_trivial_assign<_in_t>::value &&
-                      has_trivial_destructor<_in_t>::value &&
-                      has_trivial_copy_constructor<_out_t>::value &&
-                      has_trivial_assign<_out_t>::value &&
-                      has_trivial_destructor<_out_t>::value &&
+                      is_trivially_copyable<_in_t>::value &&
+                      is_trivially_copyable<_in_t_nc>::value &&
                       is_same<_in_t_nc,_out_t>::value &&
                       !is_volatile<_in_t>::value && !is_volatile<_out_t>::value>() );
 }

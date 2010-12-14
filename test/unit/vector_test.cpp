@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-13 21:29:32 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -393,59 +393,69 @@ int EXAM_IMPL(vector_test::allocator_with_state)
   return EXAM_RESULT;
 }
 
-struct Point {
+struct Point
+{
   int x, y;
 };
 
-struct PointEx : public Point {
-  PointEx() : builtFromBase(false) {}
-  PointEx(const Point&) : builtFromBase(true) {}
+struct PointEx :
+    public Point
+{
+    PointEx() :
+        builtFromBase(false)
+      { }
+    PointEx( const Point& p ) :
+        builtFromBase( true )
+      {
+        x = p.x;
+        y = p.y;
+      }
 
   bool builtFromBase;
 };
-
-#if defined (STLPORT)
-#  if defined (_STLP_USE_NAMESPACES)
-namespace std {
-#  endif
-namespace tr1 {
-
-  template <>
-  struct has_trivial_default_constructor<PointEx> :
-        public false_type
-  { };
-
-  template <>
-  struct has_trivial_copy_constructor<PointEx> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_assign<PointEx> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_destructor<PointEx> :
-        public true_type
-  { };
-} // namespace tr1
-
-#  if defined (_STLP_USE_NAMESPACES)
-}
-#  endif
-#endif
 
 //This test check that vector implementation do not over optimize
 //operation as PointEx copy constructor is trivial
 int EXAM_IMPL(vector_test::optimizations_check)
 {
   vector<Point> v1(1);
-  EXAM_CHECK( v1.size() == 1 );
+  EXAM_REQUIRE( v1.size() == 1 );
 
-  vector<PointEx> v2(v1.begin(), v1.end());
-  EXAM_CHECK( v2.size() == 1 );
+  v1[0].x = 1;
+  v1[0].y = 2;
+
+  EXAM_CHECK( std::tr1::is_trivially_copyable<Point>::value == true );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<vector<Point>::const_iterator>::value == true );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<PointEx>::value == true );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<vector<PointEx>::const_iterator>::value == true );
+
+  vector<PointEx> v2(v1.begin(), v1.end()); // non-trivial 
+  EXAM_REQUIRE( v2.size() == 1 );
   EXAM_CHECK( v2[0].builtFromBase == true );
+  EXAM_CHECK( v2[0].x == 1 );
+  EXAM_CHECK( v2[0].y == 2 );
+
+  v1[0].x = 3;
+  v1[0].y = 4;
+
+  v2.insert(v2.end(), v1.begin(), v1.end()); // non-trivial
+  EXAM_REQUIRE( v2.size() == 2 );
+  EXAM_CHECK( v2[1].builtFromBase == true );
+  EXAM_CHECK( v2[0].x == 1 );
+  EXAM_CHECK( v2[0].y == 2 );
+  EXAM_CHECK( v2[1].x == 3 );
+  EXAM_CHECK( v2[1].y == 4 );
+
+  v2[1].builtFromBase = false; // change it
+
+  vector<PointEx> v3(v2.begin(), v2.end()); // should be trivial copy ctor
+  EXAM_REQUIRE( v3.size() == 2 );
+  EXAM_CHECK( v3[0].x == 1 );
+  EXAM_CHECK( v3[0].y == 2 );
+  EXAM_CHECK( v3[1].x == 3 );
+  EXAM_CHECK( v3[1].y == 4 );
+  EXAM_CHECK( v2[0].builtFromBase == true );
+  EXAM_CHECK( v2[1].builtFromBase == false ); // was changed above
 
   return EXAM_RESULT;
 }

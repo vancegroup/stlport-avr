@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-06 20:43:50 ptr>
 
 /*
- * Copyright (c) 2004-2009
+ * Copyright (c) 2004-2010
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -50,6 +50,36 @@ int EXAM_IMPL(utility_test::init)
     EXAM_CHECK( PAIR_ARRAY[i].second == "0" );
     PAIR_ARRAY[i].second = "1";
   }
+
+  return EXAM_RESULT;
+}
+
+struct A
+{
+    A( int&, const double& )
+      { }
+};
+
+#ifdef _STLP_RVR
+
+template <class T, class A1, class A2>
+T* factory( A1&& a1, A2&& a2 )
+{ return new T( std::forward<A1>(a1), std::forward<A2>(a2) ); }
+
+#endif
+
+int EXAM_IMPL(utility_test::forward)
+{
+#ifndef _STLP_RVR
+  throw exam::skip_exception( /* "no rvalue reference" */ );
+#else
+
+  int i = -1;
+  A* a = factory<A>( i, 3.1415 );
+  // A* b = factory<A>( -1, 3.1415 ); // shouldn't compile
+  delete a;
+
+#endif
 
   return EXAM_RESULT;
 }

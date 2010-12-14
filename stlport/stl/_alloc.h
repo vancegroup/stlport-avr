@@ -572,46 +572,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_BEGIN_TR1_NAMESPACE
 
-template <class _Tp>
-struct has_trivial_default_constructor<allocator<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct has_trivial_copy_constructor<allocator<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct has_trivial_assign<allocator<_Tp> > :
-    public true_type
-{ };
-
-template <class _Tp>
-struct has_trivial_destructor<allocator<_Tp> > :
-    public true_type
-{ };
-
-// template <class _Tp>
-// struct is_pod<allocator<_Tp> > :
-//     public true_type
-// { };
-
-template <class _Tp>
-struct is_trivial<allocator<_Tp> > :
-    public true_type
-{ };
-
-// template <class _Tp>
-// struct is_standard_layout<allocator<_Tp> > :
-//     public false_type
-// { };
-
-template <class _Tp>
-struct __has_move_constructor<allocator<_Tp> > :
-    public true_type
-{ };
-
 template <class T>
 struct __is_stateless_alloc :
     public integral_constant<bool,is_trivial<T>::value || is_empty<T>::value>

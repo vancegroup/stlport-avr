@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-02 12:56:00 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-13 21:28:58 ptr>
 
 /*
  * Copyright (c) 2004-2010
@@ -230,63 +230,69 @@ int EXAM_IMPL(deque_test::allocator_with_state)
   return EXAM_RESULT;
 }
 
-struct Point {
+struct Point
+{
   int x, y;
 };
 
-struct PointEx : public Point {
-  PointEx() : builtFromBase(false) {}
-  PointEx(const Point&) : builtFromBase(true) {}
+struct PointEx :
+    public Point
+{
+    PointEx() :
+        builtFromBase(false)
+      { }
+    PointEx( const Point& p ) :
+        builtFromBase( true )
+      {
+        x = p.x;
+        y = p.y;
+      }
 
   bool builtFromBase;
 };
-
-#if defined (STLPORT)
-#  if defined (_STLP_USE_NAMESPACES)
-namespace std {
-#  endif
-namespace tr1 {
-
-  template <>
-  struct has_trivial_default_constructor<PointEx> :
-        public false_type
-  { };
-
-  template <>
-  struct has_trivial_copy_constructor<PointEx> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_assign<PointEx> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_destructor<PointEx> :
-        public true_type
-  { };
-} // namespace tr1
-
-#  if defined (_STLP_USE_NAMESPACES)
-}
-#  endif
-#endif
 
 //This test check that deque implementation do not over optimize
 //operation as PointEx copy constructor is trivial
 int EXAM_IMPL(deque_test::optimizations_check)
 {
   deque<Point> d1(1);
-  EXAM_CHECK( d1.size() == 1 );
+  EXAM_REQUIRE( d1.size() == 1 );
 
-  deque<PointEx> d2(d1.begin(), d1.end());
-  EXAM_CHECK( d2.size() == 1 );
+  d1[0].x = 1;
+  d1[0].y = 2;
+
+  EXAM_CHECK( std::tr1::is_trivially_copyable<Point>::value == true );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<deque<Point>::const_iterator>::value == true );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<PointEx>::value == true );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<deque<PointEx>::const_iterator>::value == true );
+
+  deque<PointEx> d2(d1.begin(), d1.end()); // non-trivial 
+  EXAM_REQUIRE( d2.size() == 1 );
   EXAM_CHECK( d2[0].builtFromBase == true );
+  EXAM_CHECK( d2[0].x == 1 );
+  EXAM_CHECK( d2[0].y == 2 );
 
-  d2.insert(d2.end(), d1.begin(), d1.end());
-  EXAM_CHECK( d2.size() == 2 );
+  d1[0].x = 3;
+  d1[0].y = 4;
+
+  d2.insert(d2.end(), d1.begin(), d1.end()); // non-trivial
+  EXAM_REQUIRE( d2.size() == 2 );
   EXAM_CHECK( d2[1].builtFromBase == true );
+  EXAM_CHECK( d2[0].x == 1 );
+  EXAM_CHECK( d2[0].y == 2 );
+  EXAM_CHECK( d2[1].x == 3 );
+  EXAM_CHECK( d2[1].y == 4 );
+
+  d2[1].builtFromBase = false; // change it
+
+  deque<PointEx> d3(d2.begin(), d2.end()); // should be trivial copy ctor
+  EXAM_REQUIRE( d3.size() == 2 );
+  EXAM_CHECK( d3[0].x == 1 );
+  EXAM_CHECK( d3[0].y == 2 );
+  EXAM_CHECK( d3[1].x == 3 );
+  EXAM_CHECK( d3[1].y == 4 );
+  EXAM_CHECK( d2[0].builtFromBase == true );
+  EXAM_CHECK( d2[1].builtFromBase == false ); // was changed above
 
   return EXAM_RESULT;
 }

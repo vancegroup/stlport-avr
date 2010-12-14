@@ -8,89 +8,43 @@
 using namespace std;
 #endif
 
-struct NotTrivialCopyStruct {
-  NotTrivialCopyStruct() : member(0) {}
-  NotTrivialCopyStruct(NotTrivialCopyStruct const&) : member(1) {}
+struct NotTrivialCopyStruct
+{
+    NotTrivialCopyStruct() :
+        member(0)
+      { }
+    NotTrivialCopyStruct( NotTrivialCopyStruct const& ) :
+        member(1)
+      { }
 
-  int member;
+    int member;
 };
 
-struct TrivialCopyStruct {
-  TrivialCopyStruct() : member(0) {}
-  TrivialCopyStruct(TrivialCopyStruct const&) : member(1) {}
-
-  int member;
+struct TrivialCopyStruct
+{
+    // TrivialCopyStruct() : member(0) {}
+    // TrivialCopyStruct(TrivialCopyStruct const&) : member(1) {}
+    int member;
 };
 
-struct TrivialInitStruct {
-  TrivialInitStruct()
-  { ++nbConstructorCalls; }
+struct TrivialInitStruct
+{
+    TrivialInitStruct()
+      { ++nbConstructorCalls; }
 
-  static size_t nbConstructorCalls;
+    static size_t nbConstructorCalls;
 };
 
 size_t TrivialInitStruct::nbConstructorCalls = 0;
-
-#if defined (STLPORT)
-#  if defined (_STLP_USE_NAMESPACES)
-namespace std {
-#  endif
-namespace tr1 {
-
-  template <>
-  struct has_trivial_default_constructor<TrivialCopyStruct> :
-        public false_type
-  { };
-
-  //This is a wrong declaration just to check that internaly a simple memcpy is called:
-  template <>
-  struct has_trivial_copy_constructor<TrivialCopyStruct> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_assign<TrivialCopyStruct> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_destructor<TrivialCopyStruct> :
-        public true_type
-  { };
-
-  //This is a wrong declaration just to check that internaly no initialization is done:
-  template <>
-  struct has_trivial_default_constructor<TrivialInitStruct> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_copy_constructor<TrivialInitStruct> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_assign<TrivialInitStruct> :
-        public true_type
-  { };
-
-  template <>
-  struct has_trivial_destructor<TrivialInitStruct> :
-        public true_type
-  { };
-
-} // namespace tr1
-
-#  if defined (_STLP_USE_NAMESPACES)
-}
-#  endif
-#endif
 
 struct base {};
 struct derived : public base {};
 
 int EXAM_IMPL(uninitialized_test::copy_test)
 {
+  EXAM_CHECK( std::tr1::is_trivially_copyable<NotTrivialCopyStruct>::value == false );
+  EXAM_CHECK( std::tr1::is_trivially_copyable<TrivialCopyStruct>::value == true );
+
   {
     //Random iterators
     {
@@ -112,18 +66,17 @@ int EXAM_IMPL(uninitialized_test::copy_test)
       TrivialCopyStruct* it = src + 0;
       TrivialCopyStruct* end = src + count;
       for (; it != end; ++it) {
-        (*it).member = 0;
+        (*it).member = 1;
+      }
+
+      // fill (used as marker)
+      for ( TrivialCopyStruct* i = dst; i != dst + count; ++i ) {
+        (*i).member = -1;
       }
 
       uninitialized_copy(src+0, src+count, dst+0);
       for (it = dst+0, end = dst+count; it != end; ++it) {
-#if defined (STLPORT)
-        /* If the member is 1, it means that library has not found any
-        optimization oportunity and called the regular copy-ctor instead. */
-        EXAM_CHECK( (*it).member == 0 );
-#else
         EXAM_CHECK( (*it).member == 1 );
-#endif
       }
     }
   }
@@ -228,6 +181,8 @@ int EXAM_IMPL(uninitialized_test::copy_test)
       }
     }
   }
+
+  EXAM_CHECK( std::tr1::is_trivially_copyable<TrivialInitStruct>::value == true );
 
   {
     //Vector initialization:
