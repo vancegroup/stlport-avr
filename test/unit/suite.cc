@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-13 20:42:46 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-24 16:08:39 ptr>
 
 /*
  * Copyright (c) 2008-2010
@@ -354,7 +354,8 @@ int main( int argc, const char** argv )
   t.add( &sstream_test::buf, sstrm_test, "sstream buf" );
   t.add( &sstream_test::rdbuf, sstrm_test, "sstream rdbuf" );
   t.add( &sstream_test::streambuf_output, sstrm_test, "sstream streambuf_output" );
-  t.add( &sstream_test::seek, sstrm_test, "sstream seek" );
+  t.add( &sstream_test::fail_bit, sstrm_test, "sstream throw ios_base::failure exception for invalid seekg",
+    t.add( &sstream_test::seek, sstrm_test, "sstream seek" ) );
   t.add( &sstream_test::seekp, sstrm_test, "sstream seekp" );
   t.add( &sstream_test::seek_gp, sstrm_test, "sstream seek_gp" );
   t.add( &sstream_test::tellp, sstrm_test, "sstream tellp" );

@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2010-12-27 14:30:58 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2008, 2010
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -634,6 +634,32 @@ int EXAM_IMPL(sstream_test::extra0_bug_id_2728232) // bug ID: 2728232
   s << spaces.c_str();
 
   EXAM_CHECK( s.str() == (str_ref + spaces) );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(sstream_test::fail_bit)
+{
+  try {
+    stringstream s;
+
+    s.exceptions( ios_base::failbit );
+    /*
+      In N3225 27.7.1.3 paragraph 43 explicitly stated
+      "In case of failure, the function calls setstate(failbit)
+      (which may throw ios_base::failure).", as for seekg(pos_type pos),
+      27.7.1.3 paragraph 41.
+
+      This statement missing in ISO/IEC 14882:2003 27.6.1.3 paragraph 40
+      (but stated in 27.6.1.3 paragraph 38 for seekg(pos_type pos)).
+     */
+    s.seekg( -2, ios_base::cur );
+
+    EXAM_ERROR( "ios_base::failure exception expected" );
+  }
+  catch ( const ios_base::failure& e ) {
+    EXAM_MESSAGE( "ios_base::failure exception, as expected" );
+  }
 
   return EXAM_RESULT;
 }
