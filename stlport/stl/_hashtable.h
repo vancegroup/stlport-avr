@@ -586,9 +586,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_hashtable.c>
-#endif
+#include <stl/_hashtable.c>
 
 #if defined (_STLP_DEBUG)
 #  include <stl/debug/_hashtable.h>

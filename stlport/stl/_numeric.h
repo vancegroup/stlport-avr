@@ -180,9 +180,7 @@ void iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __val) {
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_numeric.c>
-#endif
+#include <stl/_numeric.c>
 
 #endif /* _STLP_INTERNAL_NUMERIC_H */
 

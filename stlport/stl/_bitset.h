@@ -837,9 +837,7 @@ _STLP_END_NAMESPACE
 #undef __BITS_PER_WORD
 #undef __BITSET_WORDS
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_bitset.c>
-#endif
+#include <stl/_bitset.c>
 
 #endif /* _STLP_BITSET_H */
 

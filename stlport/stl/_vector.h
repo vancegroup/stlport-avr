@@ -706,9 +706,7 @@ _STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_vector.c>
-#endif
+#include <stl/_vector.c>
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 #  include <stl/pointers/_vector.h>

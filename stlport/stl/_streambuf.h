@@ -276,7 +276,7 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_streambuf<wchar_t, char_traits<wchar_t> >;
 
 _STLP_END_NAMESPACE
 
-#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 #  include <stl/_streambuf.c>
 #endif
 

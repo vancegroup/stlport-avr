@@ -924,9 +924,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL tanh(const complex<long double>&)
 
 _STLP_END_NAMESPACE
 
-#ifndef _STLP_LINK_TIME_INSTANTIATION
-#  include <stl/_complex.c>
-#endif
+#include <stl/_complex.c>
 
 #endif
 

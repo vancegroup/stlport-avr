@@ -645,7 +645,7 @@ inline void swap( _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& _
 
 _STLP_END_NAMESPACE
 
-#if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 #  include <stl/_alloc.c>
 #endif
 

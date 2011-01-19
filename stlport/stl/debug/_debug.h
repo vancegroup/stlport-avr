@@ -462,7 +462,7 @@ extern  void __stl_debug_terminate();
 
 #endif
 
-#if defined (_STLP_ASSERTIONS) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_ASSERTIONS)
 #  include <stl/debug/_debug.c>
 #endif
 

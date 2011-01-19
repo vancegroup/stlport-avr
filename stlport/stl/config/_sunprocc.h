@@ -5,14 +5,6 @@
 
 #define _STLP_LONG_LONG  long long
 
-// GAB: 11/09/05
-// Starting with 5.0 the STLport code expects to be
-// instantiated during compile time. This is due to undefing
-// a number of defines that are also used in the c versions
-// of the file. When they are undefed the c version fails to
-// compile.
-// #  define _STLP_LINK_TIME_INSTANTIATION 1
-
 #if ! defined(_BOOL)
 #  define _STLP_NO_BOOL 1
 #endif

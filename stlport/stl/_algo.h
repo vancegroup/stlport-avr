@@ -733,9 +733,7 @@ inline bool is_sorted(_ForwardIter __first, _ForwardIter __last,
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_algo.c>
-#endif
+#include <stl/_algo.c>
 
 #endif /* _STLP_INTERNAL_ALGO_H */
 

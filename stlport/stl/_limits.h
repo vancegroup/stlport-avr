@@ -832,9 +832,7 @@ class numeric_limits<long double> :
 // cast the the appropriate floating-point types.
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_limits.c>
-#endif
+#include <stl/_limits.c>
 
 #endif
 

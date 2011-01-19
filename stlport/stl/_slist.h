@@ -736,9 +736,7 @@ _STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_slist.c>
-#endif
+#include <stl/_slist.c>
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 #  include <stl/pointers/_slist.h>

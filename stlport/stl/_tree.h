@@ -624,9 +624,7 @@ _STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_tree.c>
-#endif
+#include <stl/_tree.c>
 
 #if defined (_STLP_DEBUG)
 #  include <stl/debug/_tree.h>

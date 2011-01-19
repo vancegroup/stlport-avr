@@ -114,9 +114,7 @@ sort_heap(_RandomAccessIterator __first,
 
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_heap.c>
-# endif
+#include <stl/_heap.c>
 
 #endif /* _STLP_INTERNAL_HEAP_H */
 

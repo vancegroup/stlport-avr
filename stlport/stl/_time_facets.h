@@ -318,7 +318,7 @@ _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_
 
 _STLP_END_NAMESPACE
 
-#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 #  include <stl/_time_facets.c>
 #endif
 

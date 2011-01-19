@@ -158,7 +158,7 @@ private:
   codecvt<intern_type, extern_type, state_type>& operator = (const codecvt<intern_type, extern_type, state_type>&);
 };
 
-#  if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#  if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 #    if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)
 template <class _InternT, class _ExternT, class _StateT>
 locale::id codecvt<_InternT, _ExternT, _StateT>::id;

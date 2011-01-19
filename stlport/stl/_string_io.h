@@ -70,8 +70,6 @@ getline(basic_istream<_CharT, _Traits>& __is,
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_string_io.c>
-#endif
+#include <stl/_string_io.c>
 
 #endif /* _STLP_STRING_IO_H */

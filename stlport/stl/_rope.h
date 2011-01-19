@@ -2335,9 +2335,7 @@ _STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_rope.c>
-#endif
+#include <stl/_rope.c>
 
 #endif /* _STLP_INTERNAL_ROPE_H */
 

@@ -147,9 +147,7 @@ struct temporary_buffer : public _Temporary_buffer<_ForwardIterator, _Tp>
 
 _STLP_END_NAMESPACE
 
-# ifndef _STLP_LINK_TIME_INSTANTIATION
-#  include <stl/_tempbuf.c>
-# endif
+#include <stl/_tempbuf.c>
 
 #endif /* _STLP_INTERNAL_TEMPBUF_H */
 

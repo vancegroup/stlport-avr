@@ -676,9 +676,7 @@ inline void _STLP_mutex_base::_M_acquire_lock() {
 
 _STLP_END_NAMESPACE
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_threads.c>
-#endif
+#include <stl/_threads.c>
 
 #endif /* _STLP_INTERNAL_THREADS_H */
 

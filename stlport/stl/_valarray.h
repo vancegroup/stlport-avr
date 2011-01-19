@@ -1660,9 +1660,7 @@ valarray<_Tp>::operator[](const _Valarray_size_t& __addr)
 
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_valarray.c>
-# endif
+#include <stl/_valarray.c>
 
 #endif /* _STLP_VALARRAY */
 
