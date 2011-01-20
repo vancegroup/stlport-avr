@@ -120,8 +120,6 @@
 #    include <stl/config/_bc.h>
 #  elif defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)  /* Watcom C++ */
 #    include <stl/config/_watcom.h>
-#  elif defined (__COMO__) || defined (__COMO_VERSION_)
-#    include <stl/config/_como.h>
 #  elif defined (__DMC__)   /* Digital Mars C++ */
 #    include <stl/config/_dm.h>
 #  elif defined (__ICL) /* Intel reference compiler for Win */
