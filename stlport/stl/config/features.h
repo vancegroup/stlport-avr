@@ -95,12 +95,35 @@
 
 /* ========================================================= */
 
+/* If, by any chance, C compiler gets there, try to help it to pass smoothly */
+
+#if ! defined (__cplusplus) && ! defined (_STLP_HAS_NO_NAMESPACES)
+#  define _STLP_HAS_NO_NAMESPACES
+#endif
+
 /* some fixes to configuration. This also includes modifications
  * of STLport switches depending on compiler flags,
  * or settings applicable to a group of compilers, such as
- * to all who use EDG front-end.
+ * to all who use EDG front-end. The last EDG front-end
+ * remains in HP aCC.
  */
-#include <stl/config/stl_confix.h>
+
+/* __EDG_VERSION__ is an official EDG macro, compilers based
+ * on EDG have to define it. */
+#if defined (__EDG_VERSION__)
+#  if (__EDG_VERSION__ >= 244) && !defined (_STLP_HAS_INCLUDE_NEXT)
+#    define _STLP_HAS_INCLUDE_NEXT
+#  endif
+#  if (__EDG_VERSION__ <= 240) && !defined (_STLP_DONT_RETURN_VOID)
+#    define _STLP_DONT_RETURN_VOID
+#  endif
+#  if !defined (__EXCEPTIONS) && !defined (_STLP_HAS_NO_EXCEPTIONS)
+#    define _STLP_HAS_NO_EXCEPTIONS
+#  endif
+#  if !defined (__NO_LONG_LONG) && !defined (_STLP_LONG_LONG)
+#    define _STLP_LONG_LONG long long
+#  endif
+#endif
 
 #if !defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  define _STLP_CLASS_PARTIAL_SPECIALIZATION 1
