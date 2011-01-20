@@ -187,7 +187,7 @@
 #endif
 
 /* Operating system recognition (basic) */
-#if (defined(__unix) || defined(__linux__) || defined(__QNX__) || defined(_AIX)  || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__Lynx__) || defined(__hpux) || defined(__sgi)) && \
+#if (defined(__unix) || defined(__linux__) || defined(__QNX__) || defined(_AIX)  || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__Lynx__) || defined(__hpux)) && \
      !defined (_STLP_UNIX)
 #  define _STLP_UNIX 1
 #endif /* __unix */
@@ -238,7 +238,7 @@
 #    define _STLP_UITHREADS
 #  else
 #    define _STLP_PTHREADS
-#  endif /* __sgi */
+#  endif
 #  define _STLP_THREADS_DEFINED
 #endif
 
@@ -685,7 +685,7 @@ namespace _STL = _STLP_STD_NAME;
 #    define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
    typedef typename _STLP_STD :: reverse_iterator<const_iterator> const_reverse_iterator; \
    typedef typename _STLP_STD :: reverse_iterator<iterator> reverse_iterator
-#  elif (defined (__sgi) && ! defined (__GNUC__)) || defined (__SUNPRO_CC) || defined (__xlC__)
+#  elif defined (__SUNPRO_CC) || defined (__xlC__)
 #    define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<const_iterator> const_reverse_iterator; \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<iterator> reverse_iterator

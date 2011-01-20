@@ -22,10 +22,6 @@
 #ifndef _STLP_INTERNAL_FSTREAM_H
 #define _STLP_INTERNAL_FSTREAM_H
 
-#if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
-#  error This header file requires the -LANG:std option
-#endif
-
 #ifndef _STLP_INTERNAL_STREAMBUF
 #  include <stl/_streambuf.h>
 #endif

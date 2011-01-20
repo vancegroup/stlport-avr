@@ -1,10 +1,6 @@
 #ifndef _STLP_INTERNAL_IOSFWD
 #define _STLP_INTERNAL_IOSFWD
 
-#if defined (__sgi) && !defined (__GNUC__) && !defined (_STANDARD_C_PLUS_PLUS)
-#  error This header file requires the -LANG:std option
-#endif
-
 // This file provides forward declarations of the most important I/O
 // classes.  Note that almost all of those classes are class templates,
 // with default template arguments.  According to the C++ standard,

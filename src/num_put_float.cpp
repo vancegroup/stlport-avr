@@ -39,7 +39,7 @@
 #    include <floatingpoint.h>
 #  endif
 
-#  if defined (__sun) || defined (__digital__) || defined (__sgi) || defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
+#  if defined (__sun) || defined (__digital__) || defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
 // DEC, SGI & Solaris need this
 #    include <values.h>
 #    include <nan.h>

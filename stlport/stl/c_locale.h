@@ -25,55 +25,7 @@
  * from the outside world when building the STLport library. So this header
  * should not reference internal headers (stlport/stl/_*.h) directly.
  */
-#if defined (__sgi)
-#  if defined (ROOT_65) /* IRIX 6.5.x */
-#    include <sgidefs.h>
-#    include <standards.h>
-#    include <wchar.h>
-#    include <ctype.h>
-#  else /* IRIX pre-6.5 */
-#    include <sgidefs.h>
-#    include <standards.h>
-#    if !defined(_SIZE_T) && !defined(_SIZE_T_)
-#      define _SIZE_T
-#      if (_MIPS_SZLONG == 32)
-typedef unsigned int size_t;
-#      endif
-#      if (_MIPS_SZLONG == 64)
-typedef unsigned long size_t;
-#      endif
-#    endif
-#    if !defined (_WCHAR_T)
-#      define _WCHAR_T
-#      if (_MIPS_SZLONG == 32)
-typedef long wchar_t;
-#      endif
-#      if (_MIPS_SZLONG == 64)
-typedef __int32_t wchar_t;
-#      endif
-#    endif /* _WCHAR_T */
-#    if !defined (_WINT_T)
-#      define _WINT_T
-#      if (_MIPS_SZLONG == 32)
-typedef long wint_t;
-#      endif
-#      if (_MIPS_SZLONG == 64)
-typedef __int32_t wint_t;
-#      endif
-#    endif /* _WINT_T */
-#    if !defined (_MBSTATE_T)
-#      define _MBSTATE_T
-/* _MSC_VER check is here for historical reason and seems wrong as it is the macro defined
- * by Microsoft compilers to give their version. But we are in a SGI platform section so it
- * is weird. However _MSC_VER might also be a SGI compiler macro so we keep it this way.*/
-#      if defined (_MSC_VER)
-typedef int mbstate_t;
-#      else
-typedef char mbstate_t;
-#      endif
-#    endif /* _MBSTATE_T */
-#  endif /* ROOT65 */
-#elif defined (_STLP_USE_GLIBC)
+#if defined (_STLP_USE_GLIBC)
 #  include <ctype.h>
 #endif
 

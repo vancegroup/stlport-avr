@@ -79,13 +79,6 @@
 #  if defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
-#elif defined (__sgi) /* IRIX? */
-#  define _STLP_PLATFORM "SGI Irix"
-#  if defined (__GNUC__)
-#    include <stl/config/_gcc.h>
-#  else
-#    include <stl/config/_sgi.h>
-#  endif
 #elif defined (__OS400__) /* AS/400 C++ */
 #  define _STLP_PLATFORM "OS 400"
 #  if defined (__GNUC__)

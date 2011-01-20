@@ -180,16 +180,11 @@ template<class _Sequence
 # if !(defined (_STLP_NON_TYPE_TMPL_PARAM_BUG) || \
        defined ( _STLP_NO_DEFAULT_NON_TYPE_PARAM ))
          , size_t _Buf_sz = 100
-#   if defined(__sgi) && !defined(__GNUC__)
-#   define __TYPEDEF_WORKAROUND
-         ,class _V = typename _Sequence::value_type
-#   endif /* __sgi */
 # endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
          >
 // The 3rd parameter works around a common compiler bug.
 class sequence_buffer : public iterator <output_iterator_tag, void, void, void, void> {
 public:
-# ifndef __TYPEDEF_WORKAROUND
   typedef typename _Sequence::value_type value_type;
   typedef sequence_buffer<_Sequence
 # if !(defined (_STLP_NON_TYPE_TMPL_PARAM_BUG) || \
@@ -200,11 +195,6 @@ public:
   > _Self;
   enum { _Buf_sz = 100};
 # endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
-  // # endif
-# else /* __TYPEDEF_WORKAROUND */
-  typedef _V value_type;
-  typedef sequence_buffer<_Sequence, _Buf_sz, _V> _Self;
-# endif /* __TYPEDEF_WORKAROUND */
 protected:
   _Sequence* _M_prefix;
   value_type _M_buffer[_Buf_sz];

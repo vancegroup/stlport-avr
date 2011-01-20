@@ -18,14 +18,6 @@
 #  pragma option -Vx- -Ve- -a8 -b -pc
 #  include <stl/config/_warnings_off.h>
 
-#elif defined (__sgi) && !defined (__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
-
-#  pragma set woff 1209
-#  pragma set woff 1174
-#  pragma set woff 1375
-/* from iterator_base.h */
-#  pragma set woff 1183
-
 #elif defined (__DECCXX)
 
 #  ifdef __PRAGMA_ENVIRONMENT

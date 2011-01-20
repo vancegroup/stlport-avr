@@ -67,8 +67,7 @@ typedef ptrdiff_t streamoff;
 #else // __unix
 #  ifdef _STLP_USE_DEFAULT_FILE_OFFSET
 typedef off_t streamoff;
-#  elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
-       /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined (__sgi) && defined (_STLP_HAS_NO_NEW_C_HEADERS) */
+#  elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE)
 typedef off64_t streamoff;
 #  elif defined(__ANDROID__)
 typedef long streamoff;
