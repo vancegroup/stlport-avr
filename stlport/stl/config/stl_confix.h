@@ -30,10 +30,10 @@
 #endif
 
 /* Modena C++ library  */
-#if defined (__MWERKS__) && __MWERKS__ <= 0x2303 || (defined (__KCC) && __KCC_VERSION < 3400)
+#if defined (__MWERKS__) && __MWERKS__ <= 0x2303
 #  include <mcompile.h>
 #  define _STLP_USE_MSIPL 1
-#  if defined (__KCC) || (defined(__MSL_CPP__) && \
+#  if (defined(__MSL_CPP__) && \
        ( (__MSL_CPP__ >= 0x5000 && defined( _MSL_NO_MESSAGE_FACET )) || \
        (__MSL_CPP__ < 0x5000 && defined( MSIPL_NL_TYPES ))))
 #    define _STLP_NO_NATIVE_MESSAGE_FACET 1

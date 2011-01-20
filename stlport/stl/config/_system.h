@@ -42,11 +42,6 @@
 #    include <stl/config/_gcc.h>
 #  elif defined (__SUNPRO_CC) || defined (__SUNPRO_C)
 #    include <stl/config/_sunprocc.h>
-/*
-#  ifdef __KCC
-#    include <stl/config/_kai.h>
-#  endif
-*/
 #  elif defined (__APOGEE__)  /* Apogee 4.x */
 #    include <stl/config/_apcc.h>
 #  elif defined (__FCC_VERSION) /* Fujitsu Compiler, v4.0 assumed */
@@ -69,11 +64,6 @@
 #  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
-/*
-#  ifdef __KCC
-#    include <stl/config/_kai.h>
-#  endif
-*/
 #elif defined (__ANDROID__)
 #  include <stl/config/_android.h>
 #  if defined (__GNUC__)

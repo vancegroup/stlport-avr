@@ -191,7 +191,7 @@ using _STLP_VENDOR_MB_NAMESPACE::mbstate_t;
 #      if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE) && \
          (!defined(__MSL__) || __MSL__ > 0x6001)
 #        if defined (__MINGW32__) && ((__MINGW32_MAJOR_VERSION > 3) || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION >= 8))) || \
-          !(defined (__KCC) || defined (__GNUC__)) && !defined(_STLP_WCE_NET)
+          !defined (__GNUC__) && !defined(_STLP_WCE_NET)
 using _STLP_VENDOR_MB_NAMESPACE::btowc;
 #          if (!defined(__MSL__) || __MSL__ > 0x7001)
 using _STLP_VENDOR_MB_NAMESPACE::mbsinit;
