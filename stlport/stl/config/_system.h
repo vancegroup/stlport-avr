@@ -93,13 +93,6 @@
 #elif defined (_CRAY) /* Cray C++ 3.4 or 3.5 */
 #  define _STLP_PLATFORM "Cray"
 #  include <config/_cray.h>
-#elif defined (__DECCXX) || defined (__DECC)
-#  define _STLP_PLATFORM "DECC"
-#  ifdef __vms
-#    include <stl/config/_dec_vms.h>
-#  else
-#    include <stl/config/_dec.h>
-#  endif
 #elif defined (macintosh) || defined (_MAC)
 #  include <stl/config/_mac.h>
 #  if defined (__MWERKS__)

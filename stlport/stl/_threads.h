@@ -143,14 +143,6 @@ typedef size_t __stl_atomic_t;
 #    endif
 typedef long __stl_atomic_t;
 
-#  elif defined (__DECC) || defined (__DECCXX)
-
-#    include <machine/builtins.h>
-#    define _STLP_ATOMIC_EXCHANGE __ATOMIC_EXCH_LONG
-#    define _STLP_ATOMIC_INCREMENT(__x) __ATOMIC_ADD_LONG(__x, 1)
-#    define _STLP_ATOMIC_DECREMENT(__x) __ATOMIC_ADD_LONG(__x, -1)
-typedef long __stl_atomic_t;
-
 #  elif defined (_STLP_SPARC_SOLARIS_THREADS)
 
 typedef long __stl_atomic_t;

@@ -8,12 +8,6 @@
 #  pragma option pop
 #  pragma option -w-pow     // -w-8062 Previous options and warnings not restored
 
-#elif defined (__DECCXX)
-
-#  ifdef __PRAGMA_ENVIRONMENT
-#    pragma __environment __restore
-#  endif
-
 #elif defined (__IBMCPP__)
 
 #  pragma info(restore)

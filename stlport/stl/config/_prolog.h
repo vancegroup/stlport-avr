@@ -18,13 +18,6 @@
 #  pragma option -Vx- -Ve- -a8 -b -pc
 #  include <stl/config/_warnings_off.h>
 
-#elif defined (__DECCXX)
-
-#  ifdef __PRAGMA_ENVIRONMENT
-#    pragma __environment __save
-#    pragma __environment __header_defaults
-#  endif
-
 #elif defined (__IBMCPP__)
 /* supress EDC3130: A constant is being used as a conditional expression */
 #  pragma info(nocnd)

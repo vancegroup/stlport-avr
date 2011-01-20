@@ -990,10 +990,6 @@ typedef int bool;
 
 #ifndef _STLP_USE_NO_IOSTREAMS
 
-#  if defined (__DECCXX) && ! defined (__USE_STD_IOSTREAM)
-#    define __USE_STD_IOSTREAM
-#  endif
-
 /* We only need to expose details of streams implementation
    if we use non-standard i/o or are building STLport*/
 #  if defined (__BUILDING_STLPORT) || defined (_STLP_NO_FORCE_INSTANTIATE) || !defined(_STLP_NO_CUSTOM_IO)

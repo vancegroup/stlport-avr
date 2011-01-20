@@ -220,9 +220,7 @@ using _STLP_VENDOR_CSTD::fputws;
 
 #      if !(defined (_STLP_WCHAR_SUNPRO_EXCLUDE) || defined (_STLP_WCHAR_BORLAND_EXCLUDE) || \
             defined(_STLP_WCHAR_HPACC_EXCLUDE) )
-#        if !defined (__DECCXX)
 using _STLP_VENDOR_CSTD::fwide;
-#        endif
 using _STLP_VENDOR_CSTD::fwprintf;
 using _STLP_VENDOR_CSTD::fwscanf;
 using _STLP_VENDOR_CSTD::getwchar;
