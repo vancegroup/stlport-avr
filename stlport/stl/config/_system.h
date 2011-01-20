@@ -42,8 +42,6 @@
 #    include <stl/config/_gcc.h>
 #  elif defined (__SUNPRO_CC) || defined (__SUNPRO_C)
 #    include <stl/config/_sunprocc.h>
-#  elif defined (__APOGEE__)  /* Apogee 4.x */
-#    include <stl/config/_apcc.h>
 #  elif defined (__FCC_VERSION) /* Fujitsu Compiler, v4.0 assumed */
 #    include <stl/config/_fujitsu.h>
 #  endif
