@@ -174,8 +174,6 @@ _STLP_BEGIN_NAMESPACE
 typedef int wint_t;
 #    else
 // gcc 3.0 has a glitch : wint_t only sucked into the global namespace if _GLIBCPP_USE_WCHAR_T is defined
-// __MWERKS__ has definition in wchar_t.h (MSL C++), but ones differ from definition
-// in stdio.h; I prefer settings from last file.
 #      if (defined (__GNUC__) && ! defined (_GLIBCPP_USE_WCHAR_T))
 using ::wint_t;
 #      else

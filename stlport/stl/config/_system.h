@@ -95,9 +95,6 @@
 #  include <config/_cray.h>
 #elif defined (macintosh) || defined (_MAC)
 #  include <stl/config/_mac.h>
-#  if defined (__MWERKS__)
-#    include <stl/config/_mwerks.h>
-#  endif
 #elif defined (__APPLE__)
 #  include <stl/config/_macosx.h>
 #  ifdef __GNUC__
@@ -124,8 +121,6 @@
 #    include <stl/config/_dm.h>
 #  elif defined (__ICL) /* Intel reference compiler for Win */
 #    include <stl/config/_intel.h>
-#  elif defined (__MWERKS__)
-#    include <stl/config/_mwerks.h>
 #  elif defined (_MSC_VER) && (_MSC_VER >= 1200) && defined (UNDER_CE)
      /* Microsoft eMbedded Visual C++ 3.0, 4.0 (.NET) */
 #    include <stl/config/_evc.h>

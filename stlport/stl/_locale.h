@@ -164,7 +164,7 @@ public:
   bool operator==(const locale&) const;
   bool operator!=(const locale&) const;
 
-#if defined (_STLP_INLINE_MEMBER_TEMPLATES) || (defined(__MWERKS__) && __MWERKS__ <= 0x2301)
+#if defined (_STLP_INLINE_MEMBER_TEMPLATES)
   bool operator()(const string& __x, const string& __y) const;
 #  ifndef _STLP_NO_WCHAR_T
   bool operator()(const wstring& __x, const wstring& __y) const;

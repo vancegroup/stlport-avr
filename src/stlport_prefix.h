@@ -14,7 +14,7 @@
 
 /* Please add extra compilation switches for particular compilers here */
 
-#if defined (_MSC_VER) && !defined (__MWERKS__)
+#if defined (_MSC_VER)
 #  include "warning_disable.h"
 #endif
 

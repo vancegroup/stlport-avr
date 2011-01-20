@@ -80,20 +80,6 @@ inline int _FILE_fd(const FILE *__f) { return __f->_fileno; }
 
 inline int _FILE_fd(const FILE *__f) { return __f->fd; }
 
-#elif defined (__MWERKS__)
-
-/* using MWERKS-specific defines here to detect other OS targets
- * dwa: I'm not sure they provide fileno for all OS's, but this should
- * work for Win32 and WinCE
-
- * Hmm, at least for Novell NetWare __dest_os == __mac_os true too..
- * May be both __dest_os and __mac_os defined and empty?   - ptr */
-#  if __dest_os == __mac_os
-inline int _FILE_fd(const FILE *__f) { return ::fileno(__CONST_CAST(FILE*, __f)); }
-#  else
-inline int _FILE_fd(const FILE *__f) { return ::_fileno(__CONST_CAST(FILE*, __f)); }
-#  endif
-
 #elif defined (__QNXNTO__) || defined (__WATCOMC__) || defined (__EMX__)
 
 inline int _FILE_fd(const FILE *__f) { return __f->_handle; }

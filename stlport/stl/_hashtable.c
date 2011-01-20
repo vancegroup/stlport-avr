@@ -48,11 +48,7 @@ template <class _Dummy>
 const size_t* _STLP_CALL
 _Stl_prime<_Dummy>::_S_primes(size_t &__size) {
   static const size_t _list[] = __PRIME_LIST_BODY;
-#  ifndef __MWERKS__
   __size =  sizeof(_list) / sizeof(_list[0]);
-#  else
-  __size =  30;
-#  endif
   return _list;
 }
 

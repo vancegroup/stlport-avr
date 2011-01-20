@@ -91,7 +91,7 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-#if defined (__MWERKS__) || defined(__BEOS__)
+#if defined(__BEOS__)
 #  define USE_SPRINTF_INSTEAD
 #endif
 

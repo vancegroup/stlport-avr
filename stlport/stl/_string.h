@@ -47,16 +47,6 @@
 #  include <stl/_string_sum.h>
 #endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 
-#if defined (__MWERKS__) && ! defined (_STLP_USE_OWN_NAMESPACE)
-
-// MSL implementation classes expect to see the definition of streampos
-// when this header is included. We expect this to be fixed in later MSL
-// implementations
-#  if !defined( __MSL_CPP__ ) || __MSL_CPP__ < 0x4105
-#    include <stl/msl_string.h>
-#  endif
-#endif // __MWERKS__
-
 /*
  * Standard C++ string class.  This class has performance
  * characteristics very much like vector<>, meaning, for example, that
