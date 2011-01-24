@@ -26,10 +26,6 @@
 #ifndef _STLP_ALGO_C
 #define _STLP_ALGO_C
 
-#if !defined (_STLP_INTERNAL_ALGO_H)
-#  include <stl/_algo.h>
-#endif
-
 #ifndef _STLP_INTERNAL_TEMPBUF_H
 #  include <stl/_tempbuf.h>
 #endif

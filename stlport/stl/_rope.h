@@ -49,9 +49,7 @@
 #  include <stl/_iterator.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ALGO_H
-#  include <stl/_algo.h>
-#endif
+#include <algorithm>
 
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>

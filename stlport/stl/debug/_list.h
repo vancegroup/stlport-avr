@@ -30,9 +30,7 @@
 #ifndef _STLP_INTERNAL_DBG_LIST_H
 #define _STLP_INTERNAL_DBG_LIST_H
 
-#ifndef _STLP_INTERNAL_ALGO_H
-#  include <stl/_algo.h>
-#endif
+#include <algorithm>
 
 #ifndef _STLP_DBG_ITERATOR_H
 #  include <stl/debug/_iterator.h>

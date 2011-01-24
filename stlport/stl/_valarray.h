@@ -27,9 +27,7 @@
 #  include <stl/_new.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ALGO_H
-#  include <stl/_algo.h>
-#endif
+#include <algorithm>
 
 #ifndef _STLP_INTERNAL_NUMERIC_H
 #  include <stl/_numeric.h>
