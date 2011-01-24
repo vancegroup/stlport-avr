@@ -32,10 +32,7 @@
 #endif
 
 #  include <deque>
-
-#ifndef _STLP_INTERNAL_VECTOR_H
-# include <stl/_vector.h>
-#endif
+#  include <vector>
 
 #ifndef _STLP_INTERNAL_HEAP_H
 #  include <stl/_heap.h>

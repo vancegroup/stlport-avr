@@ -30,9 +30,7 @@
 #ifndef _STLP_INTERNAL_HASHTABLE_H
 #define _STLP_INTERNAL_HASHTABLE_H
 
-#ifndef _STLP_INTERNAL_VECTOR_H
-#  include <stl/_vector.h>
-#endif
+#  include <vector>
 
 #ifndef _STLP_INTERNAL_SLIST_H
 #  include <stl/_slist.h>
