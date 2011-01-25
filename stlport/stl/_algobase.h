@@ -46,8 +46,8 @@
 #  include <stl/_cstdlib.h>
 #endif
 
-#ifndef _STLP_INTERNAL_UTILITY_H
-#  include <stl/_utility.h>
+#ifndef _STLP_UTILITY
+#  include <utility>
 #endif
 
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H

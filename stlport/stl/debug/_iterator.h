@@ -20,8 +20,8 @@
 #ifndef _STLP_DBG_ITERATOR_H
 #define _STLP_DBG_ITERATOR_H
 
-#ifndef _STLP_INTERNAL_UTILITY_H
-#  include <stl/_utility.h>
+#ifndef _STLP_UTILITY
+#  include <utility>
 #endif
 
 #ifndef _STLP_INTERNAL_ALLOC_H

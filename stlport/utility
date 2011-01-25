@@ -21,36 +21,235 @@
  */
 
 #ifndef _STLP_UTILITY
+#  define _STLP_UTILITY
+
+#ifndef _STLP_TYPE_TRAITS
+#  include <type_traits>
+#endif
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x75
 #  include <stl/_prolog.h>
-#elif (_STLP_OUTERMOST_HEADER_ID == 0x75) && !defined (_STLP_DONT_POP_HEADER_ID)
-#  define _STLP_DONT_POP_HEADER_ID
-#  define _STLP_UTILITY
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x75) && !defined (_STLP_DONT_POP_HEADER_ID)
-#  ifndef _STLP_INTERNAL_UTILITY_H
-#    include <stl/_utility.h>
-#  endif
+_STLP_BEGIN_NAMESPACE
+
+template <class _Tp>
+class __move_source
+{
+  public:
+    explicit __move_source( _Tp& _src ) :
+        _M_data(_src)
+      { }
+
+    _Tp& get() const
+      { return _M_data; }
+  private:
+    _Tp& _M_data;
+
+    //We explicitely forbid assignment to avoid warning:
+    typedef __move_source<_Tp> _Self;
+
+    _Self& operator = ( _Self const& );
+};
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+//Class used to signal move constructor support, implementation and type.
+
+template <class _Tp>
+struct __has_trivial_move :
+    public integral_constant<bool, is_trivial<_Tp>::value>
+{ };
+
+template <class _Tp>
+struct __has_move_constructor :
+    public false_type
+{ };
+
+_STLP_END_NAMESPACE
+
+namespace rel_ops {
+} // namespace rel_ops
+
+// template <class T>
+// struct identity
+// {
+//     typedef T type;
+//    const T& operator ()( const T& v ) const
+//       { return v; }
+// };
+
+#ifdef _STLP_RVR
+
+template <class T>
+inline T&& forward( typename _STLP_STD::remove_reference<T>::type& t ) throw() // noexcept
+{ return static_cast<T&&>(t); }
+
+template <class T>
+inline T&& forward( typename _STLP_STD::remove_reference<T>::type&& t ) throw() // noexcept
+{
+  _STLP_STATIC_ASSERT( !_STLP_STD::is_lvalue_reference<T>::value )
+  return static_cast<T&&>(t);
+}
+
+// template <class T>
+// inline typename remove_reference<T>::type&& move( T&& t ) throw() // noexcept
+// { return static_cast<typename remove_reference<T>::type&&>(t); }
+
+//template <class T>
+//inline typename _STLP_STD::conditional<!_STLP_STD::is_nothrow_move_constructible<T>::value && _STLP_STD::is_copy_constructible<T>::value, const T&, T&&>::type move_if_noexcept(T& x) throw() // noexcept
+//{ return move(x); }
+
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x75) || defined (_STLP_DONT_POP_HEADER_ID) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <utility>
-#  else
-#    include _STLP_NATIVE_HEADER(utility)
-#  endif
+template <class T>
+__move_source<typename remove_const<typename remove_reference<T>::type>::type> move( const T& t )
+{ return __move_source<typename remove_const<typename remove_reference<T>::type>::type>( const_cast<T&>(t) ); }
+
+template <class T>
+__move_source<typename remove_reference<T>::type> move( T& t )
+{ return __move_source<typename remove_reference<T>::type>( t ); }
+
+
+template <class _T1, class _T2>
+struct pair {
+  typedef _T1 first_type;
+  typedef _T2 second_type;
+
+  _T1 first;
+  _T2 second;
+#if defined (_STLP_CONST_CONSTRUCTOR_BUG)
+  pair() {}
+#else
+  pair() : first(_T1()), second(_T2()) {}
 #endif
+  pair(const _T1& __a, const _T2& __b) : first(__a), second(__b) {}
+
+  template <class _U1, class _U2>
+  pair(const pair<_U1, _U2>& __p) : first(__p.first), second(__p.second) {}
+
+  pair(const pair<_T1,_T2>& __o) : first(__o.first), second(__o.second) {}
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+  pair(__move_source<pair<_T1, _T2> > src) :
+      first(src.get().first),
+      second(src.get().second)
+    { }
+#endif
+
+  __TRIVIAL_DESTRUCTOR(pair)
+};
+
+template <class _T1, class _T2>
+inline bool _STLP_CALL operator==(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+{ return __x.first == __y.first && __x.second == __y.second; }
+
+template <class _T1, class _T2>
+inline bool _STLP_CALL operator<(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
+  return __x.first < __y.first ||
+         (!(__y.first < __x.first) && __x.second < __y.second);
+}
+
+#if defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
+template <class _T1, class _T2>
+inline bool _STLP_CALL operator!=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+{ return !(__x == __y); }
+
+template <class _T1, class _T2>
+inline bool _STLP_CALL operator>(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+{ return __y < __x; }
+
+template <class _T1, class _T2>
+inline bool _STLP_CALL operator<=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+{ return !(__y < __x); }
+
+template <class _T1, class _T2>
+inline bool _STLP_CALL operator>=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+{ return !(__x < __y); }
+#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
+
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_NO_EXTENSIONS)
+template <class _T1, class _T2, int _Sz>
+inline pair<_T1, _T2 const*> make_pair(_T1 const& __x,
+                                       _T2 const (&__y)[_Sz])
+{ return pair<_T1, _T2 const*>(__x, static_cast<_T2 const*>(__y)); }
+
+template <class _T1, class _T2, int _Sz>
+inline pair<_T1 const*, _T2> make_pair(_T1 const (&__x)[_Sz],
+                                       _T2 const& __y)
+{ return pair<_T1 const*, _T2>(static_cast<_T1 const*>(__x), __y); }
+
+template <class _T1, class _T2, int _Sz1, int _Sz2>
+inline pair<_T1 const*, _T2 const*> make_pair(_T1 const (&__x)[_Sz1],
+                                              _T2 const (&__y)[_Sz2]) {
+  return pair<_T1 const*, _T2 const*>(static_cast<_T1 const*>(__x),
+                                      static_cast<_T2 const*>(__y));
+}
+#endif
+
+template <class _T1, class _T2>
+inline pair<_T1, _T2> _STLP_CALL make_pair(_T1 __x, _T2 __y)
+{ return pair<_T1, _T2>(__x, __y); }
+
+_STLP_END_NAMESPACE
+
+#if defined (_STLP_USE_NAMESPACES) || !defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
+_STLP_BEGIN_RELOPS_NAMESPACE
+
+template <class _Tp>
+inline bool _STLP_CALL operator!=(const _Tp& __x, const _Tp& __y)
+{ return !(__x == __y); }
+
+template <class _Tp>
+inline bool _STLP_CALL operator>(const _Tp& __x, const _Tp& __y)
+{ return __y < __x; }
+
+template <class _Tp>
+inline bool _STLP_CALL operator<=(const _Tp& __x, const _Tp& __y)
+{ return !(__y < __x); }
+
+template <class _Tp>
+inline bool _STLP_CALL  operator>=(const _Tp& __x, const _Tp& __y)
+{ return !(__x < __y); }
+
+_STLP_END_RELOPS_NAMESPACE
+#endif
+
+#ifdef _STLP_RVR
+
+_STLP_BEGIN_NAMESPACE
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+namespace detail {
+
+template <class _Tp>
+struct __declval_aux
+{
+    static const bool __instance = false;
+    static typename add_rvalue_reference<_Tp>::type __dummy();
+};
+
+} // namespace detail
+
+template <class _Tp>
+inline typename add_rvalue_reference<_Tp>::type declval() throw()
+{
+  // protect declval() from call:
+  _STLP_STATIC_ASSERT(detail::__declval_aux<_Tp>::__instance);
+  return detail::__declval_aux<_Tp>::__dummy();
+}
+
+_STLP_END_NAMESPACE
+
+_STLP_END_NAMESPACE
+
+#endif // _STLP_RVR
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x75)
-#  if !defined (_STLP_DONT_POP_HEADER_ID)
-#    include <stl/_epilog.h>
-#    undef _STLP_OUTERMOST_HEADER_ID
-#  else
-#    undef _STLP_DONT_POP_HEADER_ID
-#  endif
+#  include <stl/_epilog.h>
+#  undef _STLP_OUTERMOST_HEADER_ID
 #endif
 
 #endif /* _STLP_UTILITY */
