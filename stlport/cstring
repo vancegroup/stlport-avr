@@ -14,26 +14,82 @@
  */
 
 #ifndef _STLP_CSTRING
+#  define _STLP_CSTRING
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x117
-#  define _STLP_CSTRING
 #  include <stl/_prolog.h>
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x117)
-#  ifndef _STLP_INTERNAL_CSTRING
-#    include <stl/_cstring.h>
-#  endif
-#endif
+#  include <string.h>
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x117) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cstring>
+#ifdef _STLP_IMPORT_VENDOR_CSTD
+_STLP_BEGIN_NAMESPACE
+
+using _STLP_VENDOR_CSTD::size_t;
+
+#if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
+#  if defined (__MSL__) && __MC68K__ && !_No_BlockMove && __dest_os == __mac_os
+#    undef memcpy
+#    undef memmove
+inline void* memcpy(void* dst, const void* src, size_t len)
+{	return _STLP_VENDOR_CSTD::__memcpy(dst, src, len); }
+inline void* memmove(void* dst, const void* src, size_t len)
+{	return _STLP_VENDOR_CSTD::__memmove(dst, src, len); }
 #  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstring)
+using _STLP_VENDOR_CSTD::memmove;
+using _STLP_VENDOR_CSTD::memcpy;
 #  endif
-#endif
+
+#  if !defined (_STLP_WCE)
+// these functions just don't exist on Windows CE
+using _STLP_VENDOR_CSTD::strcoll;
+using _STLP_VENDOR_CSTD::strerror;
+using _STLP_VENDOR_CSTD::strxfrm;
+#  endif
+
+#  if defined (__BORLANDC__)
+extern "C++" {
+#  endif
+using _STLP_VENDOR_CSTD::memchr;
+using _STLP_VENDOR_CSTD::strchr;
+using _STLP_VENDOR_CSTD::strpbrk;
+using _STLP_VENDOR_CSTD::strrchr;
+using _STLP_VENDOR_CSTD::strstr;
+#  if defined (__BORLANDC__)
+}
+#  endif
+
+using _STLP_VENDOR_CSTD::memcmp;
+using _STLP_VENDOR_CSTD::memset;
+
+using _STLP_VENDOR_CSTD::strcat;
+
+#  if !defined (strcmp) || !defined (__BORLANDC__)
+using _STLP_VENDOR_CSTD::strcmp;
+#  else
+using ::strcmp;
+#  endif
+
+#  if !defined (strcpy) || !defined (__BORLANDC__)
+using _STLP_VENDOR_CSTD::strcpy;
+#  else
+using ::strcpy;
+#  endif
+using _STLP_VENDOR_CSTD::strcspn;
+using _STLP_VENDOR_CSTD::strlen;
+using _STLP_VENDOR_CSTD::strncat;
+using _STLP_VENDOR_CSTD::strncmp;
+
+using _STLP_VENDOR_CSTD::strncpy;
+using _STLP_VENDOR_CSTD::strspn;
+
+using _STLP_VENDOR_CSTD::strtok;
+#endif /* _STLP_NO_CSTD_FUNCTION_IMPORTS */
+
+_STLP_END_NAMESPACE
+
+#endif /* _STLP_IMPORT_VENDOR_CSTD */
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x117)
 #  include <stl/_epilog.h>

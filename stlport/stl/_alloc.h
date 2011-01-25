@@ -37,8 +37,8 @@
 #  include <stl/_cstdlib.h>
 #endif
 
-#ifndef _STLP_INTERNAL_CSTRING
-#  include <stl/_cstring.h>
+#ifndef _STLP_CSTRING
+#  include <cstring>
 #endif
 
 #ifndef _STLP_INTERNAL_NEW_HEADER

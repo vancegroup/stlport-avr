@@ -30,8 +30,8 @@
 #ifndef _STLP_INTERNAL_UNINITIALIZED_H
 #define _STLP_INTERNAL_UNINITIALIZED_H
 
-#ifndef _STLP_INTERNAL_CSTRING
-#  include <stl/_cstring.h>
+#ifndef _STLP_CSTRING
+#  include <cstring>
 #endif
 
 #ifndef _STLP_INTERNAL_ALGOBASE_H
