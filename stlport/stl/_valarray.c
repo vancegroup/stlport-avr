@@ -26,10 +26,6 @@
 #ifndef _STLP_VALARRAY_C
 #define _STLP_VALARRAY_C
 
-#ifndef _STLP_VALARRAY_H
-# include <stl/_valarray.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
