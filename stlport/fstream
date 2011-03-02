@@ -523,9 +523,8 @@ public:                         // File and buffer operations.
   basic_filebuf<_CharT, _Traits>* rdbuf() const
     { return __CONST_CAST(_Buf*,&_M_buf); }
 
-  bool is_open() {
-    return this->rdbuf()->is_open();
-  }
+  bool is_open() const
+      { return this->rdbuf()->is_open(); }
 
   void open(const char* __s, ios_base::openmode __mod = ios_base::in) {
     if (!this->rdbuf()->open(__s, __mod | ios_base::in))
@@ -602,9 +601,8 @@ public:                         // File and buffer operations.
   basic_filebuf<_CharT, _Traits>* rdbuf() const
     { return __CONST_CAST(_Buf*,&_M_buf); }
 
-  bool is_open() {
-    return this->rdbuf()->is_open();
-  }
+  bool is_open() const
+      { return this->rdbuf()->is_open(); }
 
   void open(const char* __s, ios_base::openmode __mod= ios_base::out) {
     if (!this->rdbuf()->open(__s, __mod | ios_base::out))
@@ -683,9 +681,8 @@ public:                         // File and buffer operations.
   basic_filebuf<_CharT, _Traits>* rdbuf() const
     { return __CONST_CAST(_Buf*,&_M_buf); }
 
-  bool is_open() {
-    return this->rdbuf()->is_open();
-  }
+  bool is_open() const
+      { return this->rdbuf()->is_open(); }
 
   void open(const char* __s,
       ios_base::openmode __mod =
