@@ -27,7 +27,6 @@
 // those are tested and proved not to work...
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1 /* support removed */
-#  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 #endif
 
 #ifdef _STLP_USE_NO_IOSTREAMS

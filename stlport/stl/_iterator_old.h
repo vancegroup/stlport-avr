@@ -36,20 +36,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
-
-template <class _Container>
-inline output_iterator_tag _STLP_CALL
-iterator_category(const back_insert_iterator<_Container>&) { return output_iterator_tag(); }
-template <class _Container>
-inline output_iterator_tag _STLP_CALL
-iterator_category(const front_insert_iterator<_Container>&) { return output_iterator_tag(); }
-template <class _Container>
-inline output_iterator_tag _STLP_CALL
-iterator_category(const insert_iterator<_Container>&) { return output_iterator_tag(); }
-
-#endif
-
 template <class _BidirectionalIterator, class _Tp,
           _STLP_DFL_TMPL_PARAM(_Reference, _Tp& ),
 #if defined (_STLP_MSVC50_COMPATIBILITY)
@@ -108,24 +94,6 @@ public:
     return __tmp;
   }
 };
-
-#ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
-template <class _BidirectionalIterator, class _Tp, class __Reference,
-          class _Distance>
-inline bidirectional_iterator_tag _STLP_CALL
-iterator_category(const reverse_bidirectional_iterator<_BidirectionalIterator, _Tp, Reference__, _Distance>&)
-{ return bidirectional_iterator_tag(); }
-template <class _BidirectionalIterator, class _Tp, class __Reference,
-  class _Distance>
-inline _Tp* _STLP_CALL
-value_type(const reverse_bidirectional_iterator<_BidirectionalIterator, _Tp, Reference__, _Distance>&)
-{ return (_Tp*) 0; }
-template <class _BidirectionalIterator, class _Tp, class __Reference,
-          class _Distance>
-inline _Distance* _STLP_CALL
-distance_type(const reverse_bidirectional_iterator<_BidirectionalIterator, _Tp, Reference__, _Distance>&)
-{ return (_Distance*) 0; }
-#endif
 
 template <class _BidirectionalIterator, class _Tp, class __Reference,
           class _Distance>
@@ -216,23 +184,6 @@ public:
   }
   _Reference operator[](_Distance __n) const { return *(*this + __n); }
 };
-
-#  ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
-template <class _RandomAccessIterator, class _Tp,
-          class __Reference, class _Distance>
-inline random_access_iterator_tag _STLP_CALL
-iterator_category(const reverse_iterator<_RandomAccessIterator, _Tp, Reference__, _Distance>&)
-{ return random_access_iterator_tag(); }
-template <class _RandomAccessIterator, class _Tp,
-  class __Reference, class _Distance>
-inline _Tp*  _STLP_CALL value_type(const reverse_iterator<_RandomAccessIterator, _Tp, Reference__, _Distance>&)
-{ return (_Tp*) 0; }
-template <class _RandomAccessIterator, class _Tp,
-          class __Reference, class _Distance>
-inline _Distance*  _STLP_CALL
-distance_type(const reverse_iterator<_RandomAccessIterator, _Tp, Reference__, _Distance>&)
-{ return (_Distance*) 0; }
-#  endif
 
 template <class _RandomAccessIterator, class _Tp,
           class __Reference, class _Distance>

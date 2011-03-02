@@ -149,30 +149,6 @@ struct _Ht_iterator {
   _BaseIte _M_ite;
 };
 
-_STLP_MOVE_TO_STD_NAMESPACE
-
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-template <class _BaseIte, class _Traits>
-inline
-#  if defined (_STLP_NESTED_TYPE_PARAM_BUG)
-_STLP_TYPENAME_ON_RETURN_TYPE _Traits::value_type *
-#  else
-_STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type *
-#  endif
-value_type(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&) {
-  typedef _STLP_TYPENAME _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type _Val;
-  return (_Val*) 0;
-}
-template <class _BaseIte, class _Traits>
-inline forward_iterator_tag iterator_category(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&)
-{ return forward_iterator_tag(); }
-template <class _BaseIte, class _Traits>
-inline ptrdiff_t* distance_type(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&)
-{ return (ptrdiff_t*) 0; }
-#endif
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
 template <class _Dummy>
 class _Stl_prime {
   // Returns begining of primes list and size by reference.

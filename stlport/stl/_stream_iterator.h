@@ -190,18 +190,6 @@ private:
   const _CharT* _M_string;
 };
 
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-#  if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
-template <class _TpP>
-inline output_iterator_tag _STLP_CALL
-iterator_category(const ostream_iterator<_TpP>&) { return output_iterator_tag(); }
-#  else
-template <class _TpP, class _CharT, class _Traits>
-inline output_iterator_tag _STLP_CALL
-iterator_category(const ostream_iterator<_TpP, _CharT, _Traits>&) { return output_iterator_tag(); }
-#  endif
-#endif
-
 _STLP_END_NAMESPACE
 
 // form-independent definiotion of stream iterators
@@ -219,26 +207,6 @@ inline bool _STLP_CALL
 operator!=(const istream_iterator< __ISI_TMPL_ARGUMENTS >& __x,
            const istream_iterator< __ISI_TMPL_ARGUMENTS >& __y)
 { return !__x._M_equal(__y); }
-#endif
-
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-template < __ISI_TMPL_HEADER_ARGUMENTS >
-inline input_iterator_tag _STLP_CALL
-iterator_category(const istream_iterator< __ISI_TMPL_ARGUMENTS >&)
-{ return input_iterator_tag(); }
-template < __ISI_TMPL_HEADER_ARGUMENTS >
-inline _Tp* _STLP_CALL
-value_type(const istream_iterator< __ISI_TMPL_ARGUMENTS >&) { return (_Tp*) 0; }
-
-#  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS) && !defined (_STLP_DEFAULT_TYPE_PARAM)
-template < __ISI_TMPL_HEADER_ARGUMENTS >
-inline ptrdiff_t* _STLP_CALL
-distance_type(const istream_iterator< __ISI_TMPL_ARGUMENTS >&) { return (ptrdiff_t*)0; }
-#  else
-template < __ISI_TMPL_HEADER_ARGUMENTS >
-inline _Dist* _STLP_CALL
-distance_type(const istream_iterator< __ISI_TMPL_ARGUMENTS >&) { return (_Dist*)0; }
-#  endif /* _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS */
 #endif
 
 _STLP_END_NAMESPACE

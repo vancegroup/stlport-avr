@@ -130,7 +130,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #    define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 /* There is no partial spec, and MSVC breaks on simulating it for iterator_traits queries */
-#    define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 #    define _STLP_NO_TYPENAME_IN_TEMPLATE_HEADER
 #    define _STLP_NO_METHOD_SPECIALIZATION 1
 #    define _STLP_DEF_CONST_PLCT_NEW_BUG 1

@@ -221,21 +221,6 @@ operator+(ptrdiff_t __n, const _Bit_iter<_Ref, _Ptr>& __x) {
    return __x + __n;
 }
 
-_STLP_MOVE_TO_STD_NAMESPACE
-
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-inline random_access_iterator_tag iterator_category(const _STLP_PRIV _Bit_iterator_base&)
-{ return random_access_iterator_tag(); }
-inline ptrdiff_t* distance_type(const _STLP_PRIV _Bit_iterator_base&)
-{ return (ptrdiff_t*)0; }
-inline bool* value_type(const _STLP_PRIV _Bit_iter<_STLP_PRIV _Bit_reference, _STLP_PRIV _Bit_reference*>&)
-{ return (bool*)0; }
-inline bool* value_type(const _STLP_PRIV _Bit_iter<bool, const bool*>&)
-{ return (bool*)0; }
-#endif
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
 typedef _Bit_iter<bool, const bool*> _Bit_const_iterator;
 typedef _Bit_iter<_Bit_reference, _Bit_reference*> _Bit_iterator;
 

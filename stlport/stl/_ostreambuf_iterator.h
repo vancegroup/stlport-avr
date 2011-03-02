@@ -86,12 +86,6 @@ _STLP_EXPORT_TEMPLATE_CLASS ostreambuf_iterator<wchar_t, char_traits<wchar_t> >;
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-template <class _CharT, class _Traits>
-inline output_iterator_tag _STLP_CALL
-iterator_category(const ostreambuf_iterator<_CharT, _Traits>&) { return output_iterator_tag(); }
-#endif
-
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H */

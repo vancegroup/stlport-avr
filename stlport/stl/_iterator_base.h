@@ -78,53 +78,9 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) false_type()
 #  endif
 
-#if defined (_STLP_DONT_REDEFINE_STD) && defined (_STLP_WHOLE_NATIVE_STD)
-/* In this mode we will see both STLport implementation and native
- * one. To allow some interaction between both implementations through
- * iterators we have to map std iterator categories to stlport ones. This
- * way we will be able to initialize STLport containers with native
- * iterators, the other side won't work except when STLport iterators are
- * simple pointers. */
-
-_STLP_END_NAMESPACE
-
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <iterator>
-#  else
-#    include _STLP_NATIVE_HEADER(iterator)
-#  endif
-
-_STLP_BEGIN_NAMESPACE
-
-template <class _IteCat>
-struct _CategoryMapping
-{ typedef _IteCat _Tag; };
-
-_STLP_TEMPLATE_NULL
-struct _CategoryMapping<::std::input_iterator_tag>
-{ typedef input_iterator_tag _Tag; };
-_STLP_TEMPLATE_NULL
-struct _CategoryMapping<::std::output_iterator_tag>
-{ typedef output_iterator_tag _Tag; };
-_STLP_TEMPLATE_NULL
-struct _CategoryMapping<::std::forward_iterator_tag>
-{ typedef forward_iterator_tag _Tag; };
-_STLP_TEMPLATE_NULL
-struct _CategoryMapping<::std::bidirectional_iterator_tag>
-{ typedef bidirectional_iterator_tag _Tag; };
-_STLP_TEMPLATE_NULL
-struct _CategoryMapping<::std::random_access_iterator_tag>
-{ typedef random_access_iterator_tag _Tag; };
-
-template <class _Iterator>
-struct iterator_traits {
-  typedef typename _Iterator::iterator_category _OriginalTag;
-  typedef typename _CategoryMapping<_OriginalTag>::_Tag iterator_category;
-#else
 template <class _Iterator>
 struct iterator_traits {
   typedef typename _Iterator::iterator_category iterator_category;
-#endif
   typedef typename _Iterator::value_type        value_type;
   typedef typename _Iterator::difference_type   difference_type;
   typedef typename _Iterator::pointer           pointer;
@@ -175,14 +131,13 @@ _STLP_END_NAMESPACE
 #include <stl/_ptrs_specialize.h>
 _STLP_BEGIN_NAMESPACE
 
-#ifndef _STLP_USE_OLD_HP_ITERATOR_QUERIES
 // The overloaded functions iterator_category, distance_type, and
 // value_type are not part of the C++ standard.  (They have been
 // replaced by struct iterator_traits.)  They are included for
 // backward compatibility with the HP STL.
 // We introduce internal names for these functions.
 
-#  ifndef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#ifndef _STLP_CLASS_PARTIAL_SPECIALIZATION
 
 template <class _Tp>
 inline _STLP_STD::random_access_iterator_tag
@@ -220,71 +175,7 @@ __value_type(const _Iter&, const false_type&) {
   return __STATIC_CAST(_value_type*,0);
 }
 
-#  endif
-
-#else /* _STLP_USE_OLD_HP_ITERATOR_QUERIES */
-template <class _Category, class _Tp, class _Distance, class _Pointer, class _Reference>
-inline _Category _STLP_CALL iterator_category(const iterator<_Category,_Tp,_Distance,_Pointer,_Reference>&) { return _Category(); }
-template <class _Category, class _Tp, class _Distance, class _Pointer, class _Reference>
-inline _Tp* _STLP_CALL value_type(const iterator<_Category,_Tp,_Distance,_Pointer,_Reference>&) { return __STATIC_CAST(_Tp*, 0); }
-template <class _Category, class _Tp, class _Distance, class _Pointer, class _Reference>
-inline _Distance* _STLP_CALL distance_type(const iterator<_Category,_Tp,_Distance,_Pointer,_Reference>&) { return __STATIC_CAST(_Distance*, 0); }
-template <class _Tp>
-inline random_access_iterator_tag _STLP_CALL iterator_category(const _Tp*) { return random_access_iterator_tag(); }
-template <class _Tp>
-inline _Tp* _STLP_CALL value_type(const _Tp*) { return __STATIC_CAST(_Tp*, 0); }
-template <class _Tp>
-inline ptrdiff_t* _STLP_CALL distance_type(const _Tp*) { return __STATIC_CAST(ptrdiff_t*, 0); }
-#endif /* _STLP_USE_OLD_HP_ITERATOR_QUERIES */
-
-#if !defined (_STLP_NO_ANACHRONISMS)
-// The base classes input_iterator, output_iterator, forward_iterator,
-// bidirectional_iterator, and random_access_iterator are not part of
-// the C++ standard.  (They have been replaced by struct iterator.)
-// They are included for backward compatibility with the HP STL.
-template <class _Tp, class _Distance> struct input_iterator :
-  public iterator <input_iterator_tag, _Tp, _Distance, _Tp*, _Tp&> {};
-struct output_iterator : public iterator <output_iterator_tag, void, void, void, void> {};
-template <class _Tp, class _Distance> struct forward_iterator :
-  public iterator<forward_iterator_tag, _Tp, _Distance, _Tp*, _Tp&> {};
-template <class _Tp, class _Distance> struct bidirectional_iterator :
-  public iterator<bidirectional_iterator_tag, _Tp, _Distance, _Tp*, _Tp&> {};
-template <class _Tp, class _Distance> struct random_access_iterator :
-  public iterator<random_access_iterator_tag, _Tp, _Distance, _Tp*, _Tp&> {};
-
-#  if defined (_STLP_BASE_MATCH_BUG) && defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-template <class _Tp, class _Distance>
-inline input_iterator_tag _STLP_CALL
-iterator_category(const input_iterator<_Tp, _Distance>&) { return input_iterator_tag(); }
-inline output_iterator_tag _STLP_CALL
-iterator_category(const output_iterator&) { return output_iterator_tag(); }
-template <class _Tp, class _Distance>
-inline forward_iterator_tag _STLP_CALL
-iterator_category(const forward_iterator<_Tp, _Distance>&) { return forward_iterator_tag(); }
-template <class _Tp, class _Distance>
-inline bidirectional_iterator_tag _STLP_CALL
-iterator_category(const bidirectional_iterator<_Tp, _Distance>&) { return bidirectional_iterator_tag(); }
-template <class _Tp, class _Distance>
-inline random_access_iterator_tag _STLP_CALL
-iterator_category(const random_access_iterator<_Tp, _Distance>&) { return random_access_iterator_tag(); }
-template <class _Tp, class _Distance>
-inline _Tp*  _STLP_CALL value_type(const input_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Tp*, 0); }
-template <class _Tp, class _Distance>
-inline _Tp* _STLP_CALL value_type(const forward_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Tp*, 0); }
-template <class _Tp, class _Distance>
-inline _Tp* _STLP_CALL value_type(const bidirectional_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Tp*, 0); }
-template <class _Tp, class _Distance>
-inline _Tp* _STLP_CALL value_type(const random_access_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Tp*, 0); }
-template <class _Tp, class _Distance>
-inline _Distance* _STLP_CALL distance_type(const input_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Distance*, 0); }
-template <class _Tp, class _Distance>
-inline _Distance* _STLP_CALL distance_type(const forward_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Distance*, 0); }
-template <class _Tp, class _Distance>
-inline _Distance* _STLP_CALL distance_type(const bidirectional_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Distance*, 0);}
-template <class _Tp, class _Distance>
-inline _Distance* _STLP_CALL distance_type(const random_access_iterator<_Tp, _Distance>&) { return __STATIC_CAST(_Distance*, 0); }
-#  endif
-#endif
+#endif // !_STLP_CLASS_PARTIAL_SPECIALIZATION
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 

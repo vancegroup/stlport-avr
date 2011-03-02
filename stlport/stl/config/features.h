@@ -661,14 +661,6 @@ namespace _STL = _STLP_STD_NAME;
 #  if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 #    define _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
 #  endif
-/* For your own iterators, please use inheritance from iterator<> instead of these obsolete queries. */
-#  if  (defined (_STLP_NESTED_TYPE_PARAM_BUG) || !defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS))
-#    if ! defined ( _STLP_USE_OLD_HP_ITERATOR_QUERIES )
-#      define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-#    endif
-#  elif defined ( _STLP_NO_ANACHRONISMS )
-#    undef _STLP_USE_OLD_HP_ITERATOR_QUERIES
-#  endif
 #endif
 
 #ifndef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS

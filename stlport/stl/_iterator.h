@@ -252,7 +252,7 @@ inserter(_Container& __x, _Iterator __i) {
 
 _STLP_END_NAMESPACE
 
-#if ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
+#if ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  include <stl/_iterator_old.h>
 #endif
 
