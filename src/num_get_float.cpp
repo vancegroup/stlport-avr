@@ -23,7 +23,7 @@
 #include <istream>
 
 #if (defined (__GNUC__) && !defined (__sun) && !defined (__hpux)) || \
-    defined (__DMC__)
+    defined (__DMC__) || defined (__ARMCC_VERSION)
 #  include <stdint.h>
 #endif
 
@@ -105,7 +105,7 @@ typedef unsigned __int64 uint64;
 #  define ULL(x) x##Ui64
 #elif defined (__unix) || defined (__MINGW32__) || \
       (defined (__DMC__) && (__LONGLONG)) || defined (__WATCOMC__) || \
-      defined(__ANDROID__)
+    defined(__ANDROID__) || defined(__ARMCC_VERSION)
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 #  define ULL(x) x##ULL

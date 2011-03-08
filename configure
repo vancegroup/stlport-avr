@@ -77,6 +77,7 @@ Available options:
                         aCC      HP's aCC compilers
                         CC       SunPro's CC compilers
                         bcc      Borland's compilers
+                        armcc    ARM's C/C++ compiler
   --without-debug       don't build debug variant
   --without-stldebug    don't build STLport's STLP_DEBUG mode
   --enable-static       build static
@@ -247,7 +248,7 @@ do
       ;;
     --use-compiler-family=*)
       case `echo $option | sed -e 's/^[^=]*=//'` in
-        gcc|icc|aCC|CC|bcc|dmc)
+        gcc|icc|aCC|CC|bcc|dmc|armcc)
           target=`echo $option | sed -e 's/^[^=]*=//'`
           echo COMPILER_NAME := $target >> ${configmak}
           echo include $target.mak > ${base}/build/lib/Makefile

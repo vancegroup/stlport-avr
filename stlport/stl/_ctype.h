@@ -143,6 +143,12 @@ private:
   bool _M_delete;
 };
 
+// Workaround, as __ctype is defined as symbol in ARMCC libraries
+#ifdef __ARMCC_VERSION
+#define __old_ctype __ctype
+#undef __ctype
+#endif
+
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
   friend class _Locale_impl;
@@ -269,6 +275,12 @@ private:
 };
 
 #  endif /* WCHAR_T */
+
+// Workaround, as __ctype is defined as symbol in ARMCC libraries
+#ifdef __ARMCC_VERSION
+#define __ctype __old_ctype
+#undef __old_ctype
+#endif
 
 _STLP_END_NAMESPACE
 

@@ -28,7 +28,7 @@
 #endif
 
 #include <cstdio>
-#if !defined(__ISCPP__)
+#if !defined(__ISCPP__) && !defined(_STLP_NO_STAT_H)
 extern "C" {
 #  include <sys/stat.h>
 }
@@ -121,10 +121,28 @@ _STLP_BEGIN_NAMESPACE
 #  define FTELL ftello64
 #endif
 
+#if defined (__ARMCC_VERSION) && !defined(_GNU_SOURCE)
+int fileno(FILE* stream)
+{
+    return INVALID_STLP_FD;
+}
+#endif
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
+#if defined (__ARMCC_VERSION)
+bool __is_regular_file(_STLP_fd fd) 
+{ return true; }
+
+streamoff __file_size(FILE* f) {
+    streamoff old_ofs = FTELL(f);
+    FSEEK(f, 0, SEEK_END);
+    streamoff size = FTELL(f);
+    FSEEK(f, old_ofs, SEEK_SET);
+    return size;
+}
+#else
 static bool __is_regular_file(_STLP_fd fd) {
   struct STAT buf;
   return FSTAT(fd, &buf) == 0 && (buf.st_mode & S_IFREG) != 0 ;
@@ -140,6 +158,7 @@ static streamoff __file_size(_STLP_fd fd) {
 
   return ret;
 }
+#endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -166,7 +185,12 @@ void _Filebuf_base::_S_initialize()
 // Returns zero if the size cannot be determined or is ill-defined.
 streamoff _Filebuf_base::_M_file_size()
 {
-  return _STLP_PRIV __file_size(_M_file_id);
+#if !defined (__ARMCC_VERSION)
+    return _STLP_PRIV __file_size(_M_file_id);
+#else
+    // armcc accepts as a paramater stdio handle so we make a special case here
+    return _STLP_PRIV __file_size(_M_file);
+#endif
 }
 
 bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
@@ -263,8 +287,13 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode)
   // This doesn't really grant everyone in the world read/write
   // access.  On Unix, file-creation system calls always clear
   // bits that are set in the umask from the permissions flag.
+#if !defined (__ARMCC_VERSION) 
   return this->_M_open(name, openmode, S_IRUSR | S_IWUSR | S_IRGRP |
                                        S_IWGRP | S_IROTH | S_IWOTH);
+#else
+  // this is OK to do, as last parameter is not used
+  return this->_M_open(name, openmode, 0);
+#endif
 }
 
 // Associated the filebuf with a file descriptor pointing to an already-
@@ -275,6 +304,11 @@ bool _Filebuf_base::_M_open( int file_no, ios_base::openmode )
   if (_M_is_open || file_no < 0)
     return false;
 
+#ifdef __ARMCC_VERSION
+// Here we assume that the openmode is reflecting how the file was opened
+// this is due to lack posix calls
+#else
+  _M_openmode = openmode;
   struct STAT buf;
   if (FSTAT(file_no, &buf) != 0)
     return false;
@@ -293,6 +327,7 @@ bool _Filebuf_base::_M_open( int file_no, ios_base::openmode )
     default:
       return false;
   }
+#endif
   _M_file_id = file_no;
   _M_is_open = true;
   _M_should_close = false;

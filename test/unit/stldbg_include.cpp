@@ -35,6 +35,6 @@
  *           - ptr, 2007-04-05
  */
 
-#ifdef __unix
+#if defined(__unix) && !defined (__ARMCC_VERSION)
 # include <sys/types.h>
 #endif

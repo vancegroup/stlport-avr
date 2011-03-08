@@ -29,10 +29,13 @@
 #  include <stl/_cstring.h>
 #endif
 
-#if defined (__unix)
+#if (defined (__unix) && !defined (__ARMCC_VERSION)) || (defined (__ARMCC_VERSION) && defined(_GNU_SOURCE)) 
 #  include <sys/types.h>         // For off_t
 #endif /* __unix */
 
+#if defined (__ARMCC_VERSION) && !defined(_GNU_SOURCE)
+typedef unsigned int off_t;
+#endif
 #if defined (__BORLANDC__)
 #  include <mem.h>
 #  include <string.h>

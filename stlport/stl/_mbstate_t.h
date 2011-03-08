@@ -16,11 +16,15 @@
 #ifndef _STLP_INTERNAL_MBSTATE_T
 #define _STLP_INTERNAL_MBSTATE_T
 
-#if (defined (__OpenBSD__) || defined (__FreeBSD__) || defined (__hpux)) && defined (__GNUC__) && !defined (_GLIBCPP_HAVE_MBSTATE_T)
+#ifdef __ARMCC_VERSION
+// mbstate defined in wchar.h in case of armcc
+#    include <wchar.h>
+#endif
+#if (defined (__OpenBSD__) || defined (__FreeBSD__) || defined (__hpux)) && defined (__GNUC__)  && !defined (_GLIBCPP_HAVE_MBSTATE_T)
 #  define _STLP_CPP_MBSTATE_T /* mbstate_t defined in native <cwchar>, so not defined in C! */
 #endif
 
-#if defined (_STLP_NO_NATIVE_MBSTATE_T) || defined (_STLP_CPP_MBSTATE_T) && !defined (_MBSTATE_T)
+#if defined (_STLP_NO_NATIVE_MBSTATE_T) || defined (_STLP_CPP_MBSTATE_T) && !defined (_MBSTATE_T) && !defined(__ARMCC_VERSION)
 #  define _STLP_USE_OWN_MBSTATE_T
 #  define _MBSTATE_T
 #endif

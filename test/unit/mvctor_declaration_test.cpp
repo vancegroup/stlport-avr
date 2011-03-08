@@ -40,10 +40,22 @@ using namespace std::tr1;
 #    define __false_type std::__false_type
 #  endif
 
-static bool type_to_bool(__true_type)
-{ return true; }
-static bool type_to_bool(__false_type)
-{ return false; }
+// This is a workaround for failing compilation with armcc due to
+// static function lookup from within the template (according to
+// the C++ standard it is the correct behavior)
+#if defined(__ARMCC_VERSION) && defined(_STLP_USE_NAMESPACES)
+namespace { 
+    bool type_to_bool(__true_type) 
+    { return true; }
+    bool type_to_bool(__false_type)
+    { return false; }
+}
+#else
+inline bool type_to_bool(__true_type) 
+    { return true; }
+inline bool type_to_bool(__false_type)
+    { return false; }
+#endif
 
 template <class _Tp>
 static bool is_movable(const _Tp&) {

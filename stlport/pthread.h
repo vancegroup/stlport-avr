@@ -22,7 +22,7 @@
 
 #if defined (__SUNPRO_CC) || defined (__HP_aCC)
 #  include "/usr/include/pthread.h"
-#else
+#elif !defined(__ARMCC_VERSION)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <pthread.h>
 #  else

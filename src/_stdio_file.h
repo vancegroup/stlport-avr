@@ -103,8 +103,11 @@ inline int _FILE_fd(const FILE *__f) { return __f->_handle; }
 /* the prototypes are taken from LynxOS patch for STLport 4.0 */
 inline int _FILE_fd(const FILE *__f) { return __f->_fd; }
 
-#else  /* The most common access to file descriptor. */
+#elif defined (__ARMCC_VERSION)
+// Special case for armcc libraries, possibly dangerous
+inline int _FILE_fd(const FILE *__f) { return ((int*)__f)[0]; }
 
+#else  /* The most common access to file descriptor. */
 inline int _FILE_fd(const FILE *__f) { return __f->_file; }
 
 #endif

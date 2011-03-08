@@ -59,7 +59,7 @@
 #  elif defined (__HP_aCC)
 #    include <stl/config/_hpacc.h>
 #  endif
-#elif defined (linux) || defined (__linux__)
+#elif (defined (linux) || defined (__linux__)) && !defined (__ARMCC_VERSION)
 #  include <stl/config/_linux.h>
 #  if defined (__BORLANDC__)
 #    include <stl/config/_bc.h> /* Borland C++ 0x570 */
@@ -163,6 +163,8 @@
 #  endif
 
 #  include <stl/config/_windows.h>
+#  elif defined ( __ARMCC_VERSION) 
+#    include <stl/config/_armcc.h>
 #else
 #  error Unknown platform !!
 #endif
@@ -172,5 +174,6 @@
  * Edit <config/stl_mycomp.h> to set STLport up for your compiler. */
 #  include <stl/config/stl_mycomp.h>
 #endif
+
 
 #endif /* __stl_config__system_h */

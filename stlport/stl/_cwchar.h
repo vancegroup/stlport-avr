@@ -185,7 +185,7 @@ using _STLP_VENDOR_CSTD::wint_t;
 
 using _STLP_VENDOR_CSTD::size_t;
 
-#    if !defined (_STLP_NO_NATIVE_MBSTATE_T) && !defined (_STLP_USE_OWN_MBSTATE_T)
+#    if !defined (_STLP_NO_NATIVE_MBSTATE_T) && !defined (_STLP_USE_OWN_MBSTATE_T) && !defined (__ARMCC_VERSION)
 using _STLP_VENDOR_MB_NAMESPACE::mbstate_t;
 
 #      if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE) && \

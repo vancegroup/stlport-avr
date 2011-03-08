@@ -242,6 +242,11 @@ __get_decimal_integer(_InputIter& __first, _InputIter& __last, _Integer& __val, 
   return __get_integer(__first, __last, 10, __val, 0, false, _CharT() /*separator*/, __grp, __false_type());
 }
 
+#ifdef __ARMCC_VERSION
+#define __old_ctype __ctype
+#undef __ctype
+#endif
+
 template <class _InputIter, class _Integer, class _CharT>
 _InputIter _STLP_CALL
 __do_get_integer(_InputIter& __in_ite, _InputIter& __end, ios_base& __str,
@@ -444,6 +449,11 @@ __do_get_float(_InputIter& __in_ite, _InputIter& __end, ios_base& __str,
   return __in_ite;
 }
 
+#ifdef __ARMCC_VERSION
+#define __ctype __old_ctype
+#undef __old_ctype
+#endif
+
 template <class _InputIter, class _CharT>
 _InputIter _STLP_CALL
 __do_get_alphabool(_InputIter& __in_ite, _InputIter& __end, ios_base& __str,
@@ -587,7 +597,7 @@ _InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     void*& __p) const {
-#if defined (_STLP_LONG_LONG) && !defined (__MRC__)    //*ty 12/07/2001 - MrCpp can not cast from long long to void*
+#if defined (_STLP_LONG_LONG) && !defined (__MRC__) && !defined (__ARMCC_VERSION)    //*ty 12/07/2001 - MrCpp can not cast from long long to void*
   unsigned _STLP_LONG_LONG __val;
 #else
   unsigned long __val;

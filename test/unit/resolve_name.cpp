@@ -1,7 +1,7 @@
 #define _STLP_DO_IMPORT_CSTD_FUNCTIONS
 #include <cmath>
 
-#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+#if (!defined (STLPORT) || defined (_STLP_USE_NAMESPACES)) && !defined (__ARMCC_VERSION)
 
 namespace NS1 {
 

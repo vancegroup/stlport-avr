@@ -27,6 +27,7 @@
 #  define __int64 long long
 #endif
 
+#ifndef _STLP_NO_STAT_H
 extern "C" {
 // open/close/read/write
 #include <sys/stat.h>           // For stat
@@ -34,6 +35,7 @@ extern "C" {
 #  include <sys/mman.h>           // For mmap
 #endif
 
+#endif
 //  on HP-UX 11, this one contradicts with pthread.h on pthread_atfork, unless we unset this
 #if defined (__hpux) && defined (__GNUC__)
 #  undef _INCLUDE_POSIX1C_SOURCE
