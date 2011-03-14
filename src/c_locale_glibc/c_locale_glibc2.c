@@ -62,12 +62,10 @@ struct _Locale_ctype *_Locale_ctype_create(const char *nm, struct _Locale_name_h
   return (struct _Locale_ctype*)newlocale(LC_CTYPE_MASK, nm, NULL);
 }
 
-struct _Locale_codecvt *_Locale_codecvt_create(const char *nm, struct _Locale_name_hint* hint,
-                                               int *__err_code) {
-  // Glibc do not support multibyte manipulation for the moment, it simply implements "C".
-  if (nm[0] == 'C' && nm[1] == 0)
-  { return (struct _Locale_codecvt*)0x01; }
-  *__err_code = _STLP_LOC_NO_PLATFORM_SUPPORT; return 0;
+struct _Locale_codecvt *_Locale_codecvt_create(const char *nm, struct _Locale_name_hint* hint, int *__err_code)
+{
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_codecvt*)newlocale( 1 << LC_ALL, nm, NULL );
 }
 
 struct _Locale_numeric *_Locale_numeric_create(const char *nm, struct _Locale_name_hint* hint,
@@ -335,7 +333,15 @@ wint_t _WLocale_toupper( struct _Locale_ctype *__loc, wint_t c )
 }
 #endif
 
-int _WLocale_mb_cur_max( struct _Locale_codecvt * lcodecvt) { return 1; }
+int _WLocale_mb_cur_max( struct _Locale_codecvt* lcodecvt )
+{
+  locale_t old = uselocale((locale_t)lcodecvt);
+  int retval = MB_CUR_MAX; 
+  uselocale(old);
+
+  return retval;
+}
+
 int _WLocale_mb_cur_min( struct _Locale_codecvt * lcodecvt) { return 1; }
 int _WLocale_is_stateless( struct _Locale_codecvt * lcodecvt) { return 1; }
 
@@ -344,13 +350,25 @@ size_t _WLocale_mbtowc(struct _Locale_codecvt *lcodecvt,
                        wchar_t *to,
                        const char *from, size_t n,
                        mbstate_t *st)
-{ *to = *from; return 1; }
+{
+  locale_t old = uselocale((locale_t)lcodecvt);
+  size_t retval = mbrtowc(to,from,n,st);
+  uselocale(old);
+
+  return retval;
+}
 
 size_t _WLocale_wctomb(struct _Locale_codecvt *lcodecvt,
                        char *to, size_t n,
                        const wchar_t c,
                        mbstate_t *st)
-{ *to = (char)c; return 1; }
+{
+  locale_t old = uselocale((locale_t)lcodecvt);
+  size_t retval = wcrtomb(to,c,st);
+  uselocale(old);
+
+  return retval;
+}
 #endif
 
 size_t _WLocale_unshift(struct _Locale_codecvt *lcodecvt,

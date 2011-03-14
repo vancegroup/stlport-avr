@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-24 16:08:39 ptr>
+// -*- C++ -*- Time-stamp: <2011-03-14 15:42:14 ptr>
 
 /*
  * Copyright (c) 2008-2010
@@ -845,12 +845,20 @@ int main( int argc, const char** argv )
   t.add( &num_put_get_test::custom_numpunct, nmg_test, "custom_numpunct" );
 
   codecvt_test cvt_test;
+  exam::test_suite::test_case_type cvt_tc[10];
 
   t.add( &codecvt_test::variable_encoding, cvt_test, "variable_encoding", fstream_tc[2] );
   t.add( &codecvt_test::in_out_test, cvt_test, "in_out_test" );
   t.add( &codecvt_test::length_test, cvt_test, "length_test" );
   t.add( &codecvt_test::imbue_while_reading, cvt_test, "imbue_while_reading" );
-  t.add( &codecvt_test::special_encodings, cvt_test, "special_encodings" );
+
+  t.add( &codecvt_test::_936_to_wchar, cvt_test, "convert CP936 to wchar",
+    cvt_tc[0] = t.add( &codecvt_test::eol, cvt_test, "convert \\0" ) );
+
+  t.add( &codecvt_test::bad_utf8, cvt_test, "convert bad UTF-8 to wchar",
+    cvt_tc[1] = t.add( &codecvt_test::utf8_to_wchar, cvt_test, "convert UTF-8 to wchar", cvt_tc[0] ) );
+  t.add( &codecvt_test::partial_conversion, cvt_test, "codecvt partial conversion", cvt_tc[1] );
+
 
   shared_ptr_test shp_test;
   t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );
