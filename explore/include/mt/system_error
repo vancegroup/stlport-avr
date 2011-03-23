@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <08/08/04 16:09:09 yeti>
+// -*- C++ -*- Time-stamp: <2011-03-23 16:27:03 ptr>
 
 /*
- * Copyright (c) 2007-2008
+ * Copyright (c) 2007-2011
  * Petr Ovtchenkov
  *
  * Licensed under the Academic Free License version 3.0
@@ -18,85 +18,10 @@
 #include <string>
 #include <stdexcept>
 
-#if defined(STLPORT) && ((_STLPORT_MAJOR > 5) || ((_STLPORT_MAJOR == 5) && (_STLPORT_MINOR > 1)))
+#if (defined(STLPORT) && ((_STLPORT_MAJOR > 5) || ((_STLPORT_MAJOR == 5) && (_STLPORT_MINOR > 1)))) || (defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))) && defined(__GXX_EXPERIMENTAL_CXX0X__))
 # include <type_traits>
 #else
-# if defined(__GNUC__) && (__GNUC__ < 4)
-#  include <misc/type_traits.h>
-# else
-#  include <tr1/type_traits>
-
-namespace std {
-
-namespace tr1 {
-
-namespace detail {
-
-template <bool,class _U>
-struct _decay_aux2
-{
-    typedef typename remove_cv<_U>::type type;
-};
-
-template <class _U>
-struct _decay_aux2<true,_U>
-{
-    typedef typename add_pointer<_U>::type type;
-};
-
-template <bool, class _U>
-struct _decay_aux1
-{
-    typedef typename _decay_aux2<is_function<_U>::value,_U>::type type; 
-};
-
-template <class _U>
-struct _decay_aux1<true,_U>
-{
-    typedef typename remove_extent<_U>::type* type;
-};
-
-} // namespace detail
-
-template <class _Tp>
-class decay
-{
-  private:
-    typedef typename remove_reference<_Tp>::type _U;
-
-  public:
-    typedef typename detail::_decay_aux1<is_array<_U>::value,_U>::type type;
-};
-
-template <bool, class _Tp = void>
-struct enable_if
-{
-};
-
-template <class _Tp>
-struct enable_if<true,_Tp>
-{
-    typedef _Tp type;
-};
-
-template <bool, class _Tp1, class _Tp2>
-struct conditional
-{
-    typedef _Tp2 type;
-};
-
-template <class _Tp1, class _Tp2>
-struct conditional<true,_Tp1,_Tp2>
-{
-    typedef _Tp1 type;
-};
-
-} // namespace tr1
-
-} // namesapce std
-
-# endif // gcc after 3.x
-
+# include <misc/type_traits.h>
 #endif
 
 #include <cerrno>
@@ -111,12 +36,12 @@ class system_error;
 
 template <class T>
 struct is_error_code_enum :
-        public std::tr1::false_type
+        public false_type
 { };
 
 template <class T>
 struct is_error_condition_enum :
-        public std::tr1::false_type
+        public false_type
 { };
 
 namespace posix_error {
@@ -440,7 +365,7 @@ enum posix_errno {
 
 template <>
 struct is_error_condition_enum<posix_error::posix_errno> :
-    public std::tr1::true_type
+    public true_type
 { };
 
 namespace posix_error {
@@ -496,11 +421,11 @@ class error_condition
     error_condition( int val, const error_category& category );
     template <class ErrorConditionEnum>
     error_condition( ErrorConditionEnum err,
-                     typename std::tr1::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
+                     typename std::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
 
     void assign( int val, const error_category& category );
     template <class ErrorConditionEnum>
-    typename std::tr1::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
+    typename std::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
     void clear();
 
     int value() const
@@ -525,11 +450,11 @@ class error_code
     error_code();
     error_code( int val, const error_category& );
     template <class ErrorCodeEnum>
-    error_code( ErrorCodeEnum err, typename std::tr1::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
+    error_code( ErrorCodeEnum err, typename std::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
 
     void assign( int val, const error_category& );
     template <class ErrorCodeEnum>
-    typename std::tr1::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
+    typename std::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
     void clear();
 
     int value() const
