@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-03-14 15:42:14 ptr>
+// -*- C++ -*- Time-stamp: <2011-03-23 18:31:27 ptr>
 
 /*
  * Copyright (c) 2008-2010
@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "type_traits_test.h"
+#include "ratio_test.h"
 #include "vector_test.h"
 #include "deque_test.h"
 #include "list_test.h"
@@ -144,8 +145,10 @@ int main( int argc, const char** argv )
   t.add( &type_traits_test::is_destructible, ttt, "is_destructible", tt_tc[0] );
 
   t.add( &type_traits_test::is_trivially_copyable, ttt, "is_trivially_copyable", tt_tc[0] );
-  // t.add( &type_traits_test::ratio, test, "ratio", tt_tc[0] );
 
+  ratio_test ratio_tst;
+
+  t.add( &ratio_test::ratio, ratio_tst, "ratio", tt_tc[0] );
 
   vector_test vec_test;
 
