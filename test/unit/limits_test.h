@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2011-03-23 19:17:41 ptr>
 
 /*
  * Copyright (c) 2004-2010
@@ -42,6 +42,10 @@ class limits_test
 
     template <class _Tp>
     int EXAM_DECL(sNaN);
+
+    int EXAM_DECL(l_float);
+    int EXAM_DECL(l_double);
+    int EXAM_DECL(l_long_double);
 };
 
 template <class _Tp>

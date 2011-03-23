@@ -18,9 +18,7 @@
 #ifndef _STLP_FSTREAM_C
 #define _STLP_FSTREAM_C
 
-#ifndef _STLP_INTERNAL_LIMITS
-#  include <stl/_limits.h>
-#endif
+#include <limits>
 
 _STLP_BEGIN_NAMESPACE
 

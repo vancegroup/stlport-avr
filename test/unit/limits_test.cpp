@@ -224,12 +224,6 @@ int EXAM_IMPL(limits_test::limits)
   EXAM_CHECK(test_unsigned_integral_limits(unsigned_long_long()));
 #endif
 
-  EXAM_RESULT |= test_float_limits<float>( __exam_ts, 0 );
-  EXAM_RESULT |= test_float_limits<double>( __exam_ts, 0 );
-#if !defined ( _STLP_NO_LONG_DOUBLE )
-  EXAM_RESULT |= test_float_limits<long double>( __exam_ts, 0 );
-#endif
-
   EXAM_CHECK( !numeric_limits<ArbitraryType>::is_specialized );
 
 #if defined (__BORLANDC__)
@@ -241,3 +235,21 @@ int EXAM_IMPL(limits_test::limits)
   return EXAM_RESULT;
 }
 
+int EXAM_IMPL(limits_test::l_float)
+{
+  return test_float_limits<float>( __exam_ts, 0 );
+}
+
+int EXAM_IMPL(limits_test::l_double)
+{
+  return test_float_limits<double>( __exam_ts, 0 );
+}
+
+int EXAM_IMPL(limits_test::l_long_double)
+{
+#if !defined ( _STLP_NO_LONG_DOUBLE )
+  return test_float_limits<long double>( __exam_ts, 0 );
+#else
+  throw exam::skip_exception();
+#endif
+}

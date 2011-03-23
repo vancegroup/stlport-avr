@@ -22,9 +22,7 @@
 #  include <stl/_istream.h>
 #endif
 
-#ifndef _STLP_INTERNAL_LIMITS
-#  include <stl/_limits.h>
-#endif
+#include <limits>
 
 #ifndef _STLP_INTERNAL_NUM_GET_H
 #  include <stl/_num_get.h>

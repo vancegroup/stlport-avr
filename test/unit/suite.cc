@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-03-23 18:31:27 ptr>
+// -*- C++ -*- Time-stamp: <2011-03-23 19:27:27 ptr>
 
 /*
  * Copyright (c) 2008-2010
@@ -782,8 +782,13 @@ int main( int argc, const char** argv )
   t.add( &ptrspec_test::function_pointer, pts_test, "function_pointer" );
 
   limits_test lt_test;
+  exam::test_suite::test_case_type limits_tc[10];
 
-  t.add( &limits_test::limits, lt_test, "limits_test::limits" );
+  limits_tc[0] = t.add( &limits_test::limits, lt_test, "limits_test::limits" );
+
+  t.add( &limits_test::l_float, lt_test, "float limits", limits_tc[0] );
+  t.add( &limits_test::l_double, lt_test, "double limits", limits_tc[0] );
+  t.add( &limits_test::l_long_double, lt_test, "long double limits", limits_tc[0] );
 
   t.add( &limits_test::qNaN<float>, lt_test, "numeric_limits<float>::quiet_NaN()" );
   t.add( &limits_test::qNaN<double>, lt_test, "numeric_limits<double>::quiet_NaN()" );

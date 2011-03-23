@@ -19,6 +19,9 @@
 #ifndef _STLP_VALARRAY
 #  define _STLP_VALARRAY
 
+#include <algorithm>
+#include <limits>
+
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x76
 #  include <stl/_prolog.h>
@@ -32,14 +35,8 @@
 #  include <stl/_new.h>
 #endif
 
-#include <algorithm>
-
 #ifndef _STLP_INTERNAL_NUMERIC_H
 #  include <stl/_numeric.h>
-#endif
-
-#ifndef _STLP_INTERNAL_LIMITS
-#  include <stl/_limits.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
