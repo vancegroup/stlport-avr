@@ -1,6 +1,6 @@
-# Time-stamp: <10/06/02 15:17:35 ptr>
+# Time-stamp: <2011-04-12 12:43:47 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2011
 # Petr Ovtchenkov
 #
 # This material is provided "as is", with absolutely no warranty expressed
@@ -13,7 +13,7 @@
 # modified is included with the above copyright notice.
 #
 
-INSTALL := /usr/bin/install
+INSTALL := $(shell if [ -e /usr/bin/install ]; then echo -n "/usr/bin/install"; else if [ -e /bin/install ]; then echo -n "/bin/install"; fi fi )
 
 STRIP := /usr/bin/strip
 
