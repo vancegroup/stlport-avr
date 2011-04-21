@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-13 20:52:50 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-21 11:52:05 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010
@@ -1272,16 +1272,16 @@ struct aligned_storage
 namespace detail {
 
 template <class _From, class _To, bool>
-struct __is_converible_aux
+struct __is_convertible_aux
 { };
 
 template <class _From, class _To>
-struct __is_converible_aux<_From,_To,true> :
+struct __is_convertible_aux<_From,_To,true> :
     public integral_constant<bool, is_void<_From>::value && is_void<_To>::value>
 { };
 
 template <class _From, class _To>
-struct __is_converible_aux<_From,_To,false> :
+struct __is_convertible_aux<_From,_To,false> :
     public __select_types
 {
   private:
@@ -1302,7 +1302,7 @@ struct __is_converible_aux<_From,_To,false> :
 
 #ifdef _STLP_STATIC_CONST_INIT_BUG
 template <class _From, class _To>
-const bool __is_converible_aux<_From,_To,false>::__value = sizeof(__is_converible_aux<_From,_To,false>::__test<_From>(0)) == sizeof(__select_types::__t1);
+const bool __is_convertible_aux<_From,_To,false>::__value = sizeof(__is_convertible_aux<_From,_To,false>::__test<_From>(0)) == sizeof(__select_types::__t1);
 #endif
 
 } // namespace detail
@@ -1311,7 +1311,7 @@ template <class _From, class _To>
 struct is_convertible :
     public
 #ifndef _STLP_IS_CONVERTIBLE
-           integral_constant<bool, detail::__is_converible_aux<_From,_To,
+           integral_constant<bool, detail::__is_convertible_aux<_From,_To,
                  is_void<_From>::value ||
                  is_void<_To>::value ||
                  is_function<_To>::value ||
