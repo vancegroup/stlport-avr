@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-03-23 18:26:40 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-21 16:39:22 ptr>
 
 /*
  * Copyright (c) 2007-2011
@@ -33,15 +33,15 @@ int EXAM_IMPL(ratio_test::ratio)
   typedef std::ratio<3,5> three_five;
   typedef std::ratio<2,7> two_seven;
 
-  EXAM_CHECK( (std::ratio_add<three_five,two_seven>::type::num == 31LL) && (std::ratio_add<three_five,two_seven>::type::den == 35LL) );
+  EXAM_CHECK( (std::ratio_add<three_five,two_seven>::num == 31LL) && (std::ratio_add<three_five,two_seven>::den == 35LL) );
 
-  EXAM_CHECK( (std::ratio_add<std::atto,std::atto>::type::num == 1LL) && (std::ratio_add<std::atto,std::atto>::type::den == 500000000000000000LL) );
+  EXAM_CHECK( (std::ratio_add<std::atto,std::atto>::num == 1LL) && (std::ratio_add<std::atto,std::atto>::den == 500000000000000000LL) );
 
-  EXAM_CHECK( (std::ratio_subtract<std::femto,std::atto>::type::num == 999LL) && (std::ratio_subtract<std::femto,std::atto>::type::den == 1000000000000000000LL) );
+  EXAM_CHECK( (std::ratio_subtract<std::femto,std::atto>::num == 999LL) && (std::ratio_subtract<std::femto,std::atto>::den == 1000000000000000000LL) );
 
-  EXAM_CHECK( (std::ratio_multiply<std::femto,std::peta>::type::num == 1LL) && (std::ratio_multiply<std::femto,std::peta>::type::den == 1LL) );
+  EXAM_CHECK( (std::ratio_multiply<std::femto,std::peta>::num == 1LL) && (std::ratio_multiply<std::femto,std::peta>::den == 1LL) );
 
-  EXAM_CHECK( (std::ratio_divide<std::micro,std::nano>::type::num == 1000LL) && (std::ratio_divide<std::micro,std::nano>::type::den == 1LL) );
+  EXAM_CHECK( (std::ratio_divide<std::micro,std::nano>::num == 1000LL) && (std::ratio_divide<std::micro,std::nano>::den == 1LL) );
 
   EXAM_CHECK( (std::ratio_equal<std::milli,std::milli>::value) );
 

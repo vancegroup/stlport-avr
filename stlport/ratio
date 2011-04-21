@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-03-23 18:42:26 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-21 16:37:26 ptr>
 
 /*
  * Copyright (c) 2009-2011
@@ -110,34 +110,77 @@ class ratio
 //#endif
 };
 
+namespace detail {
+
+template <class T>
+struct __is_ratio :
+        public _STLP_STD::false_type
+{ };
+
+template <intmax_t N, intmax_t D>
+struct __is_ratio<ratio<N,D> > :
+        public _STLP_STD::true_type
+{ };
+
 template <class R1, class R2>
-struct ratio_add // ratio<R1::num * R2::den + R2::num * R1::den, R1::den * R2::den>
+struct _ratio_add // ratio<R1::num * R2::den + R2::num * R1::den, R1::den * R2::den>
 {
     typedef _STLP_STD::ratio<R1::num * (R2::den/_STLP_STD::detail::__gcd<R1::den,R2::den>::value) + R2::num * (R1::den/_STLP_STD::detail::__gcd<R1::den,R2::den>::value), R1::den * (R2::den/_STLP_STD::detail::__gcd<R1::den,R2::den>::value)> type;
 };
 
 template <class R1, class R2>
-struct ratio_subtract // ratio<R1::num * R2::den - R2::num * R1::den, R1::den * R2::den>
+struct _ratio_subtract // ratio<R1::num * R2::den - R2::num * R1::den, R1::den * R2::den>
 {
     typedef _STLP_STD::ratio<R1::num * (R2::den/_STLP_STD::detail::__gcd<R1::den,R2::den>::value) - R2::num * (R1::den/_STLP_STD::detail::__gcd<R1::den,R2::den>::value), R1::den * (R2::den/_STLP_STD::detail::__gcd<R1::den,R2::den>::value)> type;
 };
 
 template <class R1, class R2>
-struct ratio_multiply // ratio<R1::num * R2::num, R1::den * R2::den>
+struct _ratio_multiply // ratio<R1::num * R2::num, R1::den * R2::den>
 {
     typedef _STLP_STD::ratio<(R1::num/_STLP_STD::detail::__gcd<R1::num,R2::den>::value)*(R2::num/_STLP_STD::detail::__gcd<R2::num,R1::den>::value),(R1::den/_STLP_STD::detail::__gcd<R2::num,R1::den>::value) * (R2::den/_STLP_STD::detail::__gcd<R1::num,R2::den>::value)> type;
 };
 
 template <class R1, class R2>
-struct ratio_divide // ratio<R1::num * R2::den, R2::num * R1::den>
+struct _ratio_divide // ratio<R1::num * R2::den, R2::num * R1::den>
 {
     typedef _STLP_STD::ratio<(R1::num/_STLP_STD::detail::__gcd<R1::num,R2::num>::value) * (R2::den/_STLP_STD::detail::__gcd<R2::den,R1::den>::value),(R2::num/_STLP_STD::detail::__gcd<R1::num,R2::num>::value) * (R1::den/_STLP_STD::detail::__gcd<R2::den,R1::den>::value)> type;
+};
+
+} // namespace detail
+
+template <class R1, class R2>
+struct ratio_add : // ratio<R1::num * R2::den + R2::num * R1::den, R1::den * R2::den>
+    public _STLP_STD::detail::_ratio_add<R1,R2>::type
+{
+    static_assert( _STLP_STD::detail::__is_ratio<R1>::value && _STLP_STD::detail::__is_ratio<R2>::value, "paramers must be a ratio" );
+};
+
+template <class R1, class R2>
+struct ratio_subtract : // ratio<R1::num * R2::den - R2::num * R1::den, R1::den * R2::den>
+    public _STLP_STD::detail::_ratio_subtract<R1,R2>::type
+{
+    static_assert( _STLP_STD::detail::__is_ratio<R1>::value && _STLP_STD::detail::__is_ratio<R2>::value, "paramers must be a ratio" );
+};
+
+template <class R1, class R2>
+struct ratio_multiply : // ratio<R1::num * R2::num, R1::den * R2::den>
+    public _STLP_STD::detail::_ratio_multiply<R1,R2>::type
+{
+    static_assert( _STLP_STD::detail::__is_ratio<R1>::value && _STLP_STD::detail::__is_ratio<R2>::value, "paramers must be a ratio" );
+};
+
+template <class R1, class R2>
+struct ratio_divide : // ratio<R1::num * R2::den, R2::num * R1::den>
+    public _STLP_STD::detail::_ratio_divide<R1,R2>::type
+{
+    static_assert( _STLP_STD::detail::__is_ratio<R1>::value && _STLP_STD::detail::__is_ratio<R2>::value, "paramers must be a ratio" );
 };
 
 template <class R1, class R2>
 struct ratio_equal :
     public integral_constant<bool, (R1::num == R2::num) && (R1::den == R2::den)>
 {
+    static_assert( _STLP_STD::detail::__is_ratio<R1>::value && _STLP_STD::detail::__is_ratio<R2>::value, "paramers must be a ratio" );
 };
 
 template <class R1, class R2>
@@ -149,7 +192,7 @@ struct ratio_not_equal :
 template <class R1, class R2>
 struct ratio_less :
     // public integral_constant<bool, (R1::num * R2::den) < (R2::num * R1::den)>
-    public integral_constant<bool, (ratio_divide<R1,R2>::type::num < ratio_divide<R1,R2>::type::den)>
+    public integral_constant<bool, (ratio_divide<R1,R2>::num < ratio_divide<R1,R2>::den)>
 {
 };
 
