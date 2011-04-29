@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2010-11-10 15:20:01 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-29 18:27:33 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2010
+ * Copyright (c) 1997-1999, 2002-2011
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
@@ -45,20 +45,14 @@
 #  include <syscall.h>
 #endif
 
-#ifdef STLPORT
-// #  include <unordered_map>
+#if defined(STLPORT) || defined(__FIT_CPP_0X)
 #  include <unordered_set>
-// #  include <hash_map>
-// #  include <hash_set>
-// #  define __USE_STLPORT_HASH
 #  define __USE_STLPORT_TR1
 #else
 #  if defined(__GNUC__) && (__GNUC__ < 4)
-// #    include <ext/hash_map>
 #    include <ext/hash_set>
 #    define __USE_STD_HASH
 #  else
-// #    include <tr1/unordered_map>
 #    include <tr1/unordered_set>
 #    define __USE_STD_TR1
 #  endif
@@ -70,7 +64,7 @@
 // using namespace std;
 #endif
 
-#if defined(__USE_STLPORT_HASH) || defined(__USE_STLPORT_TR1) || defined(__USE_STD_TR1)
+#if defined(__USE_STLPORT_TR1) || defined(__USE_STD_TR1)
 #  define __HASH_NAMESPACE std
 #endif
 #if defined(__USE_STD_HASH)
@@ -103,13 +97,13 @@ namespace tr2 {
 
 namespace detail {
 
-#ifdef __USE_STLPORT_HASH
-typedef std::hash_set<thread_base*> thread_pool_t;
-#endif
 #ifdef __USE_STD_HASH
 typedef __gnu_cxx::hash_set<thread_base*> thread_pool_t;
 #endif
-#if defined(__USE_STLPORT_TR1) || defined(__USE_STD_TR1)
+#if defined(__USE_STLPORT_TR1)
+typedef std::unordered_set<thread_base*> thread_pool_t;
+#endif
+#if defined(__USE_STD_TR1)
 typedef std::tr1::unordered_set<thread_base*> thread_pool_t;
 #endif
 
