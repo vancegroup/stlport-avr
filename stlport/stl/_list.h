@@ -622,7 +622,6 @@ public:
 #if defined (list)
 _STLP_MOVE_TO_STD_NAMESPACE
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 // template <class _Tp, class _Alloc>
 // struct __has_trivial_move<_STLP_PRIV list<_Tp, _Alloc> > :
@@ -634,13 +633,11 @@ struct __has_move_constructor<_STLP_PRIV list<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #  undef list
 #else // list
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 // template <class _Tp, class _Alloc>
 // struct __has_trivial_move<list<_Tp, _Alloc> > :
@@ -652,7 +649,6 @@ struct __has_move_constructor<list<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 #endif // list
 

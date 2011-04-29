@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2011-04-21 11:52:05 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-29 17:47:39 ptr>
 
 /*
- * Copyright (c) 2007, 2008, 2010
+ * Copyright (c) 2007, 2008, 2010-2011
  * Petr Ovtchenkov
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -31,14 +31,7 @@
 #  include <stl/_cstddef.h>
 #endif
 
-// libstdc++ v3, timestamp 20050519 (3.4.4) has __type_traits,
-// libstdc++ v3, timestamp 20060306 (3.4.6) has __type_traits,
-// while libstdc++ v3, 20050921 (4.0.2) not; use libstdc++ instead
-// # if defined(STLPORT) || (defined(__GNUC__) && (__GNUC__ < 4)) /* !defined(__GLIBCXX__) || (defined(__GNUC__) && (__GNUC__ < 4)) */
-
 _STLP_BEGIN_NAMESPACE
-
-_STLP_BEGIN_TR1_NAMESPACE
 
 namespace detail {
 
@@ -1413,10 +1406,6 @@ struct common_type<_T1,_T2,_T3...>
 #undef __SPEC_1
 #undef __CV_SPEC_2
 #undef __SPEC_2
-
-_STLP_END_NAMESPACE // tr1
-
-using namespace tr1;
 
 _STLP_END_NAMESPACE
 

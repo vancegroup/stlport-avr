@@ -2287,7 +2287,6 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const {
 }
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _CharT, class _Alloc>
 struct __has_trivial_move<rope<_CharT, _Alloc> > :
@@ -2298,8 +2297,6 @@ template <class _CharT, class _Alloc>
 struct __has_move_constructor<rope<_CharT, _Alloc> > :
     public true_type
 { };
-
-_STLP_END_NAMESPACE
 
 #endif
 

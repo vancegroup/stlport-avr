@@ -668,7 +668,6 @@ class vector :
 #if defined (vector)
 _STLP_MOVE_TO_STD_NAMESPACE
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
 struct __has_trivial_move<_STLP_PRIV vector<_Tp, _Alloc> > :
@@ -680,13 +679,11 @@ struct __has_move_constructor<_STLP_PRIV vector<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #  undef vector
 #else // vector
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
 struct __has_trivial_move<vector<_Tp, _Alloc> > :
@@ -698,7 +695,6 @@ struct __has_move_constructor<vector<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 #endif // vector
 

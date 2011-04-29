@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-13 21:29:32 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-29 17:36:52 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -424,10 +424,10 @@ int EXAM_IMPL(vector_test::optimizations_check)
   v1[0].x = 1;
   v1[0].y = 2;
 
-  EXAM_CHECK( std::tr1::is_trivially_copyable<Point>::value == true );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<vector<Point>::const_iterator>::value == true );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<PointEx>::value == true );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<vector<PointEx>::const_iterator>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<Point>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<vector<Point>::const_iterator>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<PointEx>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<vector<PointEx>::const_iterator>::value == true );
 
   vector<PointEx> v2(v1.begin(), v1.end()); // non-trivial 
   EXAM_REQUIRE( v2.size() == 1 );

@@ -701,8 +701,6 @@ public:
 #if defined (slist)
 _STLP_MOVE_TO_STD_NAMESPACE
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 // template <class _Tp, class _Alloc>
 // struct __has_trivial_move<_STLP_PRIV slist<_Tp, _Alloc> > :
 //   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
@@ -713,12 +711,8 @@ struct __has_move_constructor<_STLP_PRIV slist<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
-
 #  undef slist
 #else // slist
-
-_STLP_BEGIN_TR1_NAMESPACE
 
 // template <class _Tp, class _Alloc>
 // struct __has_trivial_move<slist<_Tp, _Alloc> > :
@@ -729,8 +723,6 @@ template <class _Tp, class _Alloc>
 struct __has_move_constructor<slist<_Tp, _Alloc> > :
     public true_type
 { };
-
-_STLP_END_NAMESPACE
 
 #endif // slist
 

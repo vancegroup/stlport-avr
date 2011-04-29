@@ -731,7 +731,7 @@ class deque :
   public:                         // Erase
     iterator erase(iterator __pos)
       {
-        return _M_erase(__pos, /* _Movable() */ typename _STLP_TR1 __has_trivial_move<value_type>::type() );
+        return _M_erase(__pos, /* _Movable() */ typename __has_trivial_move<value_type>::type() );
       }
     iterator erase(iterator __first, iterator __last)
       {
@@ -963,7 +963,6 @@ class deque :
 #if defined (deque)
 _STLP_MOVE_TO_STD_NAMESPACE
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
 struct __has_trivial_move<_STLP_PRIV deque<_Tp, _Alloc> > :
@@ -975,13 +974,11 @@ struct __has_move_constructor<_STLP_PRIV deque<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #  undef deque
 #else // deque
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
 struct __has_trivial_move<deque<_Tp, _Alloc> > :
@@ -993,7 +990,6 @@ struct __has_move_constructor<deque<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 #endif // deque
 

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-13 21:28:58 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-29 17:31:47 ptr>
 
 /*
  * Copyright (c) 2004-2010
@@ -261,10 +261,10 @@ int EXAM_IMPL(deque_test::optimizations_check)
   d1[0].x = 1;
   d1[0].y = 2;
 
-  EXAM_CHECK( std::tr1::is_trivially_copyable<Point>::value == true );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<deque<Point>::const_iterator>::value == true );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<PointEx>::value == true );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<deque<PointEx>::const_iterator>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<Point>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<deque<Point>::const_iterator>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<PointEx>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<deque<PointEx>::const_iterator>::value == true );
 
   deque<PointEx> d2(d1.begin(), d1.end()); // non-trivial 
   EXAM_REQUIRE( d2.size() == 1 );

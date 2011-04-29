@@ -335,7 +335,6 @@ _STLP_BEGIN_NAMESPACE
 #undef  _STLP_TEMPLATE_HEADER
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Key, class _Compare, class _Alloc>
 struct __has_trivial_move<set<_Key,_Compare,_Alloc> > :
@@ -357,7 +356,6 @@ struct __has_move_constructor<multiset<_Key,_Compare,_Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 

@@ -29,8 +29,6 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedSetTraitsT, Const_traits)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
           _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Value>) >
@@ -149,12 +147,8 @@ public:
   void rehash(size_type __hint) { _M_ht.rehash(__hint); }
 };
 
-_STLP_END_NAMESPACE
-
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultisetTraitsT, Const_traits)
-
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
@@ -286,44 +280,38 @@ public:
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
-_STLP_END_NAMESPACE
-
 // Specialization of insert_iterator so that it will work for unordered_set
 // and unordered_multiset.
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Value, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_trivial_move<_STLP_TR1 unordered_set<_Value, _HashFn, _EqKey, _Alloc> > :
-  public integral_constant<bool, __has_trivial_move<typename _STLP_TR1 unordered_set<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_trivial_move<unordered_set<_Value, _HashFn, _EqKey, _Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename unordered_set<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
 
 template <class _Value, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_move_constructor<_STLP_TR1 unordered_set<_Value, _HashFn, _EqKey, _Alloc> > :
-    public integral_constant<bool, __has_move_constructor<typename _STLP_TR1 unordered_set<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_move_constructor<unordered_set<_Value, _HashFn, _EqKey, _Alloc> > :
+    public integral_constant<bool, __has_move_constructor<typename unordered_set<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
 
 template <class _Value, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_trivial_move<_STLP_TR1 unordered_multiset<_Value, _HashFn, _EqKey, _Alloc> > :
-  public integral_constant<bool, __has_trivial_move<typename _STLP_TR1 unordered_multiset<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_trivial_move<unordered_multiset<_Value, _HashFn, _EqKey, _Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename unordered_multiset<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
 
 template <class _Value, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_move_constructor<_STLP_TR1 unordered_multiset<_Value, _HashFn, _EqKey, _Alloc> > :
-    public integral_constant<bool, __has_move_constructor<typename _STLP_TR1 unordered_multiset<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_move_constructor<unordered_multiset<_Value, _HashFn, _EqKey, _Alloc> > :
+    public integral_constant<bool, __has_move_constructor<typename unordered_multiset<_Value, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
-
-_STLP_END_NAMESPACE
 
 #  endif
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
-class insert_iterator<_STLP_TR1 unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
+class insert_iterator<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
 protected:
-  typedef _STLP_TR1 unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
+  typedef unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
   _Container* container;
 public:
   typedef _Container          container_type;
@@ -347,9 +335,9 @@ public:
 };
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
-class insert_iterator<_STLP_TR1 unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > {
+class insert_iterator<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > {
 protected:
-  typedef _STLP_TR1 unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
+  typedef unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
   _Container* container;
   typename _Container::iterator iter;
 public:

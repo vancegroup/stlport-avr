@@ -505,7 +505,6 @@ namespace _STLP_STD_NAME { }
 #  endif /* _STLP_USE_OWN_NAMESPACE */
 
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD_NAME {
-#  define _STLP_BEGIN_TR1_NAMESPACE namespace tr1 {
 #  define _STLP_END_NAMESPACE }
 
 /* decide whether or not we use separate namespace for rel ops */
@@ -520,9 +519,6 @@ namespace _STLP_STD_NAME { }
 #  endif /* Use std::rel_ops namespace */
 
 #  define _STLP_STD ::_STLP_STD_NAME
-#  if !defined (_STLP_TR1)
-#    define _STLP_TR1 _STLP_STD::tr1::
-#  endif
 
 #  if !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
 #    define _STLP_PRIV_NAME priv
@@ -553,9 +549,7 @@ namespace _STL = _STLP_STD_NAME;
 /* STLport is being put into global namespace */
 #  define _STLP_STD
 #  define _STLP_PRIV
-#  define _STLP_TR1
 #  define _STLP_BEGIN_NAMESPACE
-#  define _STLP_BEGIN_TR1_NAMESPACE
 #  define _STLP_END_NAMESPACE
 #  define _STLP_MOVE_TO_PRIV_NAMESPACE
 #  define _STLP_MOVE_TO_STD_NAMESPACE

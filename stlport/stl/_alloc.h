@@ -570,14 +570,10 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class T>
 struct __is_stateless_alloc :
     public integral_constant<bool,is_trivial<T>::value || is_empty<T>::value>
 { };
-
-_STLP_END_NAMESPACE
 
 #endif
 

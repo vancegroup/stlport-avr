@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-29 18:01:07 ptr>
 
 /*
  * Copyright (c) 2005-2008
@@ -28,9 +28,6 @@
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  if defined (STLPORT)
-using namespace std::tr1;
-#  endif
 #endif
 
 const int NB_ELEMS = 2000;

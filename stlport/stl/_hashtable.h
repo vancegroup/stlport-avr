@@ -576,14 +576,10 @@ _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
 struct __has_move_constructor<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > :
     public true_type
 { };
-
-_STLP_END_NAMESPACE
 
 #endif
 

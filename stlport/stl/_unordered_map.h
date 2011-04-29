@@ -29,8 +29,6 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMapTraitsT, traits)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
@@ -167,12 +165,8 @@ public:
 #endif
 };
 
-_STLP_END_NAMESPACE
-
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultimapTraitsT, traits)
-
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Key>),
@@ -311,44 +305,38 @@ public:
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
-_STLP_END_NAMESPACE
-
 // Specialization of insert_iterator so that it will work for unordered_map
 // and unordered_multimap.
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_trivial_move<_STLP_TR1 unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  public integral_constant<bool, __has_trivial_move<typename _STLP_TR1 unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_trivial_move<unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_move_constructor<_STLP_TR1 unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-    public integral_constant<bool, __has_move_constructor<typename _STLP_TR1 unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_move_constructor<unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+    public integral_constant<bool, __has_move_constructor<typename unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_trivial_move<_STLP_TR1 unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  public integral_constant<bool, __has_trivial_move<typename _STLP_TR1 unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_trivial_move<unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct __has_move_constructor<_STLP_TR1 unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-    public integral_constant<bool, __has_move_constructor<typename _STLP_TR1 unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+struct __has_move_constructor<unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+    public integral_constant<bool, __has_move_constructor<typename unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
-
-_STLP_END_NAMESPACE
 
 #  endif
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-class insert_iterator<_STLP_TR1 unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
+class insert_iterator<unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
 protected:
-  typedef _STLP_TR1 unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> _Container;
+  typedef unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> _Container;
   _Container* container;
 public:
   typedef _Container          container_type;
@@ -372,9 +360,9 @@ public:
 };
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-class insert_iterator<_STLP_TR1 unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
+class insert_iterator<unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
 protected:
-  typedef _STLP_TR1 unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> _Container;
+  typedef unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> _Container;
   _Container* container;
   typename _Container::iterator iter;
 public:

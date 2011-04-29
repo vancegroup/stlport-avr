@@ -429,14 +429,12 @@ public:
 };
 
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
 struct __has_move_constructor<list<_Tp, _Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE

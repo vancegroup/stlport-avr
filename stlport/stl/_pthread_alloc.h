@@ -349,8 +349,6 @@ struct _Alloc_traits<_Tp, per_thread_allocator<_Atype> >
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 /*
 template <class _Tp>
 struct has_trivial_copy_constructor<per_thread_allocator<_Tp> > :
@@ -367,8 +365,6 @@ struct has_trivial_destructor<per_thread_allocator<_Tp> > :
     public true_type
 { };
 */
-
-_STLP_END_NAMESPACE
 
 #endif
 

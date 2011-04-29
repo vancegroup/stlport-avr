@@ -42,8 +42,8 @@ struct derived : public base {};
 
 int EXAM_IMPL(uninitialized_test::copy_test)
 {
-  EXAM_CHECK( std::tr1::is_trivially_copyable<NotTrivialCopyStruct>::value == false );
-  EXAM_CHECK( std::tr1::is_trivially_copyable<TrivialCopyStruct>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<NotTrivialCopyStruct>::value == false );
+  EXAM_CHECK( std::is_trivially_copyable<TrivialCopyStruct>::value == true );
 
   {
     //Random iterators
@@ -182,7 +182,7 @@ int EXAM_IMPL(uninitialized_test::copy_test)
     }
   }
 
-  EXAM_CHECK( std::tr1::is_trivially_copyable<TrivialInitStruct>::value == true );
+  EXAM_CHECK( std::is_trivially_copyable<TrivialInitStruct>::value == true );
 
   {
     //Vector initialization:

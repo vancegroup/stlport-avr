@@ -334,8 +334,6 @@ public:
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __has_trivial_move<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
   public integral_constant<bool, __has_trivial_move<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
@@ -355,8 +353,6 @@ template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __has_move_constructor<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
     public integral_constant<bool, __has_move_constructor<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
 { };
-
-_STLP_END_NAMESPACE
 
 #  endif
 

@@ -356,7 +356,6 @@ public:
 #undef  _STLP_TEMPLATE_HEADER
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Key, class _Tp, class _Compare, class _Alloc>
 struct __has_trivial_move<map<_Key,_Tp,_Compare,_Alloc> > :
@@ -378,7 +377,6 @@ struct __has_move_constructor<multimap<_Key,_Tp,_Compare,_Alloc> > :
     public true_type
 { };
 
-_STLP_END_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE

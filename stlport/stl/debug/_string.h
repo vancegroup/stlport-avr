@@ -764,14 +764,11 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_string<wchar_t, char_traits<wchar_t>, allocato
 
 
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _CharT, class _Traits, class _Alloc>
 struct __has_move_constructor<basic_string<_CharT, _Traits, _Alloc> > :
     public true_type
 { };
-
-_STLP_END_NAMESPACE
 
 #  endif
 

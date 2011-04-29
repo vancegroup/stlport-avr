@@ -408,14 +408,10 @@ class vector :
       }
 };
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 template <class _Tp, class _Alloc>
 struct __has_move_constructor<vector<_Tp, _Alloc> > :
     public true_type
 { };
-
-_STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 

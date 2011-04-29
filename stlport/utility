@@ -53,8 +53,6 @@ class __move_source
     _Self& operator = ( _Self const& );
 };
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 //Class used to signal move constructor support, implementation and type.
 
 template <class _Tp>
@@ -66,8 +64,6 @@ template <class _Tp>
 struct __has_move_constructor :
     public false_type
 { };
-
-_STLP_END_NAMESPACE
 
 namespace rel_ops {
 } // namespace rel_ops
@@ -220,8 +216,6 @@ _STLP_END_RELOPS_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 namespace detail {
 
 template <class _Tp>
@@ -240,8 +234,6 @@ inline typename add_rvalue_reference<_Tp>::type declval() throw()
   _STLP_STATIC_ASSERT(detail::__declval_aux<_Tp>::__instance);
   return detail::__declval_aux<_Tp>::__dummy();
 }
-
-_STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 
