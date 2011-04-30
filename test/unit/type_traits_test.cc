@@ -370,7 +370,7 @@ int EXAM_IMPL(type_traits_test::type_traits_is_object)
   EXAM_CHECK( std::is_object<int (void)>::value == false );
   EXAM_CHECK( std::is_object<int&>::value == false );
   EXAM_CHECK( std::is_object<void>::value == false );
-  EXAM_CHECK( std::is_object<enum_type>::value == false );
+  EXAM_CHECK( std::is_object<enum_type>::value == true );
   EXAM_CHECK( std::is_object<int (&)()>::value == false );
 
   return EXAM_RESULT;

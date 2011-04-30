@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-04-29 17:47:39 ptr>
+// -*- C++ -*- Time-stamp: <2011-04-30 23:51:15 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -429,6 +429,7 @@ struct is_class :
 template <class _Tp>
 struct is_object :
     public integral_constant<bool, (is_arithmetic<_Tp>::value ||
+                                    is_enum<_Tp>::value ||
                                     is_array<_Tp>::value ||
                                     is_pointer<_Tp>::value ||
                                     is_member_pointer<_Tp>::value ||
