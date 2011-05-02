@@ -231,5 +231,6 @@ typedef unsigned int wint_t;
 #  define _STLP_RVR /* we have rvalue reference, T&& */
 #  if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))
 #    define _STLP_VARIADIC_TEMPLATES
+#    define _STLP_CPP_0X
 #  endif
 #endif
