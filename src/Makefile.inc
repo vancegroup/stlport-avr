@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <06/09/08 11:50:49 ptr>
+# -*- Makefile -*- Time-stamp: <2011-05-02 11:31:21 ptr>
 
 LIBNAME = stlport
 MAJOR = 6
@@ -34,6 +34,8 @@ SRC_CPP = dll_main.cpp \
           string.cpp \
           bitset.cpp \
           allocators.cpp
+
+SRC_CC = chrono.cc
 
 SRC_C = c_locale.c \
         cxa.c

@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2011-03-23 19:27:27 ptr>
+// -*- C++ -*- Time-stamp: <2011-05-02 11:28:45 ptr>
 
 /*
- * Copyright (c) 2008-2010
+ * Copyright (c) 2008-2011
  * Petr Ovtchenkov
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -68,6 +68,7 @@
 #include "reference_wrapper_test.h"
 #include "errno_test.h"
 #include "locale_test.h"
+#include "chrono_test.h"
 
 int main( int argc, const char** argv )
 {
@@ -147,8 +148,15 @@ int main( int argc, const char** argv )
   t.add( &type_traits_test::is_trivially_copyable, ttt, "is_trivially_copyable", tt_tc[0] );
 
   ratio_test ratio_tst;
+  exam::test_suite::test_case_type r_tc[2];
 
-  t.add( &ratio_test::ratio, ratio_tst, "ratio", tt_tc[0] );
+  r_tc[0] = t.add( &ratio_test::ratio, ratio_tst, "ratio", tt_tc[0] );
+
+  chrono_test chrono_tst;
+
+  t.add( &chrono_test::system_clock, chrono_tst, "system clock",
+    t.add( &chrono_test::duration_arithmetic, chrono_tst, "duration arithmetic",
+      t.add( &chrono_test::duration_ctor, chrono_tst, "duration ctor", r_tc[0] ) ) );
 
   vector_test vec_test;
 

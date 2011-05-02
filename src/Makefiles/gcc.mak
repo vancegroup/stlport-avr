@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <10/03/05 23:06:25 ptr>
+# -*- Makefile -*- Time-stamp: <2011-05-02 11:32:37 ptr>
 
 SRCROOT := ..
 COMPILER_NAME := gcc
@@ -15,7 +15,7 @@ include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
 ifeq ($(OSNAME),linux)
 DEFS += -D_GNU_SOURCE
-STDLIBS = -Wl,--whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGCC_S} -lpthread -lc -lm
+STDLIBS = -Wl,--whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGCC_S} -lpthread -lc -lm -lrt
 endif
 
 ifeq ($(OSNAME),android)
@@ -36,7 +36,7 @@ STDLIBS = -Wl,--whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGC
 endif
 
 ifeq ($(OSNAME),sunos)
-STDLIBS = -Wl,-zallextract -lsupc++ ${_LGCC_EH} -Wl,-zdefaultextract ${_LGCC_S} -lpthread -lc -lm
+STDLIBS = -Wl,-zallextract -lsupc++ ${_LGCC_EH} -Wl,-zdefaultextract ${_LGCC_S} -lpthread -lc -lm -lrt
 endif
 
 ifeq ($(OSNAME),darwin)
