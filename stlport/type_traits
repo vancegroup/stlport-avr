@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-04-30 23:51:15 ptr>
+// -*- C++ -*- Time-stamp: <2011-05-02 17:13:36 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -33,7 +33,32 @@
 
 _STLP_BEGIN_NAMESPACE
 
+template <class _Tp, _Tp __v>
+struct integral_constant
+{
+    static const _Tp                    value = __v;
+    // enum { value = __v }; ?
+
+    typedef _Tp                         value_type;
+    typedef integral_constant<_Tp, __v> type;
+};
+
+typedef integral_constant<bool, true>   true_type;
+typedef integral_constant<bool, false>  false_type;
+
+template <class _Tp1, class _Tp2>
+struct is_same :
+    public false_type
+{ };
+
+template <class _Tp>
+struct is_same<_Tp, _Tp> :
+    public true_type
+{ };
+
 namespace detail {
+
+#ifndef _STLP_CPP_0X
 
 struct __select_types
 {
@@ -44,22 +69,35 @@ struct __select_types
     };
 };
 
+#endif // _STLP_CPP_0X
+
 template <class _Tp>
-struct __instance :
-    public __select_types
+struct __instance
 {
   private:
+#ifdef _STLP_CPP_0X
     template <class _Up>
-    static __t1 __test(_Up(*)[1]);
+    static true_type __test(_Up(*)[1]);
 
     template <class>
-    static __t2 __test(...);
+    static false_type __test(...);
+#else // _STLP_CPP_0X
+    template <class _Up>
+    static typename __select_types::__t1 __test(_Up(*)[1]);
+
+    template <class>
+    static typename __select_types::__t2 __test(...);
+#endif // _STLP_CPP_0X
     
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
+#ifdef _STLP_CPP_0X
+    static const bool __value = is_same<decltype(__test<_Tp>(0)),true_type>::value;
+#else // _STLP_CPP_0X
     static const bool __value = sizeof(__test<_Tp>(0)) == sizeof(__select_types::__t1);
+#endif // _STLP_CPP_0X
 #endif
 
 };
@@ -70,21 +108,32 @@ const bool __instance<_Tp>::__value = sizeof(__instance<_Tp>::__test<_Tp>(0)) ==
 #endif
 
 template <class T>
-struct __uoc_aux : // union or class
-    public __select_types
+struct __uoc_aux // union or class
 {
   private:
+#ifdef _STLP_CPP_0X
     template <class _Up>
-    static __t1 __test( int _Up::* );
+    static true_type __test( int _Up::* );
 
     template <class>
-    static __t2 __test(...);
+    static false_type __test(...);
+#else // _STLP_CPP_0X
+    template <class _Up>
+    static __select_types::__t1 __test( int _Up::* );
+
+    template <class>
+    static __select_types::__t2 __test(...);
+#endif // _STLP_CPP_0X
     
   public:
 #ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
     static const bool __value;
 #else
+#ifdef _STLP_CPP_0X
+    static const bool __value = is_same<decltype(__test<T>(0)),true_type>::value;
+#else // _STLP_CPP_0X
     static const bool __value = sizeof(__test<T>(0)) == sizeof(__select_types::__t1);
+#endif // _STLP_CPP_0X
 #endif
 };
 
@@ -137,23 +186,6 @@ struct __aligned_aux
         struct __attribute__((__aligned__)) { } __align;
     };
 };
-
-} // namespace detail
-
-template <class _Tp, _Tp __v>
-struct integral_constant
-{
-    static const _Tp                    value = __v;
-    // enum { value = __v }; ?
-
-    typedef _Tp                         value_type;
-    typedef integral_constant<_Tp, __v> type;
-};
-
-typedef integral_constant<bool, true>   true_type;
-typedef integral_constant<bool, false>  false_type;
-
-namespace detail {
 
 template <typename _Tp>
 struct __is_union_or_class :
@@ -687,16 +719,6 @@ __CV_SPEC(is_unsigned,unsigned long long,true);
 
 // [20.5.5] type relations:
 
-template <class _Tp1, class _Tp2>
-struct is_same :
-    public false_type
-{ };
-
-template <class _Tp>
-struct is_same<_Tp, _Tp> :
-    public true_type
-{ };
-
 template <class _Base, class _Derived>
 struct is_base_of :
     public
@@ -823,21 +845,32 @@ typename add_rvalue_reference<_Tp>::type declval() throw();
 namespace detail {
 
 template <class _Tp, class... _Args>
-struct __is_constructible :
-    public __select_types
+struct __is_constructible
 {
   private:
+#ifdef _STLP_CPP_0X
     template <class _Up, class... _UpArgs>
-    static decltype(_Up( declval<_UpArgs>()... ), __t1()) __test(int);
+    static decltype(_Up( declval<_UpArgs>()... ), declval<true_type>()) __test(int);
 
     template <class, class...>
-    static __t2 __test(...);
+    static false_type __test(...);
+#else // _STLP_CPP_0X
+    template <class _Up, class... _UpArgs>
+    static decltype(_Up( declval<_UpArgs>()... ), __select_types::__t1()) __test(int);
+
+    template <class, class...>
+    static __select_types::__t2 __test(...);
+#endif // _STLP_CPP_0X
     
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
+# ifdef _STLP_CPP_0X
+    static const bool __value = is_same<decltype(__test<_Tp, _Args...>(0)),true_type>::value;
+# else // _STLP_CPP_0X
     static const bool __value = sizeof(__test<_Tp, _Args...>(0)) == sizeof(__select_types::__t1);
+# endif // _STLP_CPP_0X
 #endif
 };
 
@@ -875,21 +908,32 @@ struct is_move_constructible :
 namespace detail {
 
 template <class _T1, class _T2>
-struct __is_assignable :
-    public __select_types
+struct __is_assignable
 {
   private:
+#ifdef _STLP_CPP_0X
     template <class _U1, class _U2>
-    static decltype((declval<_U1>() = declval<_U2>()), __t1()) __test(int);
+    static decltype((declval<_U1>() = declval<_U2>()), declval<true_type>()) __test(int);
 
     template <class, class>
-    static __t2 __test(...);
+    static false_type __test(...);
+#else // _STLP_CPP_0X
+    template <class _U1, class _U2>
+    static decltype((declval<_U1>() = declval<_U2>()), __select_types::__t1()) __test(int);
+
+    template <class, class>
+    static typename __select_types::__t2 __test(...);
+#endif // _STLP_CPP_0X
     
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
+# ifdef _STLP_CPP_0X
+    static const bool __value = is_same<decltype(__test<_T1,_T2>(0)),true_type>::value;
+# else // _STLP_CPP_0X
     static const bool __value = sizeof(__test<_T1,_T2>(0)) == sizeof(__select_types::__t1);
+# endif // _STLP_CPP_0X
 #endif
 };
 
@@ -922,8 +966,7 @@ struct is_move_assignable :
 namespace detail {
 
 template <class _Tp>
-struct __is_destructible :
-    public __select_types
+struct __is_destructible
 {
   private:
     template <class _Up>
@@ -932,17 +975,29 @@ struct __is_destructible :
         _Up u;
     };
 
+#ifdef _STLP_CPP_0X
     template <class _Up>
-    static decltype( reinterpret_cast<test_<_Up>*>(0)->~test_<_Up>(), __t1()) __test(int);
+    static decltype( declval<test_<_Up>&>().~test_<_Up>(), declval<true_type>() ) __test(int);
 
     template <class>
-    static __t2 __test(...);
+    static false_type __test(...);
+#else // _STLP_CPP_0X
+    template <class _Up>
+    static decltype( reinterpret_cast<test_<_Up>*>(0)->~test_<_Up>(), __select_types::__t1()) __test(int);
+
+    template <class>
+    static __select_types::__t2 __test(...);
+#endif // _STLP_CPP_0X
     
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
+#ifdef _STLP_CPP_0X
+    static const bool __value = is_same<decltype(__test<_Tp>(0)),true_type>::value;
+#else // _STLP_CPP_0X
     static const bool __value = sizeof(__test<_Tp>(0)) == sizeof(__select_types::__t1);
+#endif // _STLP_CPP_0X
 #endif
 };
 
@@ -1275,22 +1330,26 @@ struct __is_convertible_aux<_From,_To,true> :
 { };
 
 template <class _From, class _To>
-struct __is_convertible_aux<_From,_To,false> :
-    public __select_types
+struct __is_convertible_aux<_From,_To,false>
 {
   private:
-    static __t1 __test(_To);
-    static __t2 __test(...);
+#ifdef _STLP_CPP_0X
+    static true_type __test(_To);
+    static false_type __test(...);
+#else // _STLP_CPP_0X
+    static __select_types::__t1 __test(_To);
+    static __select_types::__t2 __test(...);
+#endif // _STLP_CPP_0X
 
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
-#  ifndef _STLP_RVR
+# ifdef _STLP_CPP_0X
+    static const bool __value = is_same<decltype(__test(declval<_From>())),true_type>::value;
+# else // _STLP_CPP_0X
     static const bool __value = sizeof(__test(_From())) == sizeof(__select_types::__t1);
-#  else
-    static const bool __value = sizeof(__test(declval<_From>())) == sizeof(__select_types::__t1);
-#  endif
+# endif // _STLP_CPP_0X
 #endif
 };
 

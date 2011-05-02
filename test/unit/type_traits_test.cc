@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-04-29 17:30:57 ptr>
+// -*- C++ -*- Time-stamp: <2011-05-02 17:19:38 ptr>
 
 /*
  * Copyright (c) 2007, 2009-2011
@@ -18,8 +18,6 @@
 #include "type_traits_test.h"
 
 #include <type_traits>
-
-// #include <misc/ratio>
 
 using namespace std;
 
@@ -777,85 +775,5 @@ int EXAM_IMPL(type_traits_test::is_trivially_copyable)
   return EXAM_RESULT;
 }
 
-struct X
-{
-};
 
-struct Y
-{
-    Y()
-      { }
-    Y( const X& )
-      { }
-};
 
-#if defined(STLPORT) || (defined(__GNUC__) && (__GNUC__ < 4))
-template <class T>
-struct __ctor_aux : // union or class
-    public std::detail::__select_types
-{
-  private:
-    template <class _Up>
-    static __t1 __test( int (_Up::*)() );
-
-    template <class>
-    static __t2 __test(...);
-    
-  public:
-#ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
-    static const bool __value;
-#else
-    static const bool __value = sizeof(__test<T>(0)) == sizeof(std::detail::__select_types::__t1);
-#endif
-};
-
-#ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
-template <class T>
-const bool __ctor_aux<T>::__value = sizeof(__ctor_aux<T>::__test<T>(0)) == sizeof(std::detail::__select_types::__t1);
-#endif
-
-#endif // used misc/type_traits.h or STLport's implementation (it's same)
-
-#if 0
-
-int EXAM_IMPL(type_traits_has_x_ctor)
-{
-  return EXAM_RESULT;
-}
-
-int EXAM_IMPL(type_traits_test::ratio)
-{
-  EXAM_CHECK( (std::ratio<1,1>::num == 1LL) && (std::ratio<1,1>::den == 1LL) );
-  EXAM_CHECK( (std::ratio<2,1>::num == 2LL) && (std::ratio<2,1>::den == 1LL) );
-  EXAM_CHECK( (std::ratio<1,2>::num == 1LL) && (std::ratio<1,2>::den == 2LL) );
-  EXAM_CHECK( (std::ratio<2,2>::num == 1LL) && (std::ratio<2,2>::den == 1LL) );
-  EXAM_CHECK( (std::ratio<100,5>::num == 20LL) && (std::ratio<100,5>::den == 1LL) );
-  EXAM_CHECK( (std::ratio<-10,100>::num == -1LL) && (std::ratio<-10,100>::den == 10LL) );
-  EXAM_CHECK( (std::ratio<3,-5>::num == -3LL) && (std::ratio<3,-5>::den == 5LL) );
-  EXAM_CHECK( (std::ratio<7>::num == 7LL) && (std::ratio<7>::den == 1LL) );
-
-  typedef std::ratio<3,5> three_five;
-  typedef std::ratio<2,7> two_seven;
-
-  EXAM_CHECK( (std::ratio_add<three_five,two_seven>::type::num == 31LL) && (std::ratio_add<three_five,two_seven>::type::den == 35LL) );
-
-  EXAM_CHECK( (std::ratio_add<std::atto,std::atto>::type::num == 1LL) && (std::ratio_add<std::atto,std::atto>::type::den == 500000000000000000LL) );
-
-  EXAM_CHECK( (std::ratio_subtract<std::femto,std::atto>::type::num == 999LL) && (std::ratio_subtract<std::femto,std::atto>::type::den == 1000000000000000000LL) );
-
-  EXAM_CHECK( (std::ratio_multiply<std::femto,std::peta>::type::num == 1LL) && (std::ratio_multiply<std::femto,std::peta>::type::den == 1LL) );
-
-  EXAM_CHECK( (std::ratio_divide<std::micro,std::nano>::type::num == 1000LL) && (std::ratio_divide<std::micro,std::nano>::type::den == 1LL) );
-
-  EXAM_CHECK( (std::ratio_equal<std::milli,std::milli>::value) );
-
-  EXAM_CHECK( (!std::ratio_equal<std::milli,std::kilo>::value) );
-
-  EXAM_CHECK( (std::ratio_not_equal<std::milli,std::kilo>::value) );
-
-  EXAM_CHECK( (std::ratio_less<std::mega,std::giga>::value) );
-
-  return EXAM_RESULT;
-}
-
-#endif // 0
