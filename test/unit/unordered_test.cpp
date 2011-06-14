@@ -1,3 +1,17 @@
+
+// -*- C++ -*- Time-stamp: <10/05/24 19:56:03 ptr>
+
+/*
+ * Copyright (c) 2005-2008
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2005-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
 #include <vector>
 #include <algorithm>
 #include <string>
@@ -34,6 +48,7 @@ class UnorderedTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(hash_policy);
   CPPUNIT_TEST(buckets);
   CPPUNIT_TEST(equal_range);
+  CPPUNIT_TEST(remains);
   CPPUNIT_EXPLICIT_TEST(benchmark1);
   CPPUNIT_EXPLICIT_TEST(benchmark2);
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
@@ -54,6 +69,7 @@ protected:
   void benchmark1();
   void benchmark2();
   void template_methods();
+  void remains();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UnorderedTest);
@@ -391,6 +407,7 @@ void UnorderedTest::equal_range()
     iumset.rehash(193);
 
     size_t nbBuckets = iumset.bucket_count();
+    CPPUNIT_ASSERT( nbBuckets == 193 );
     const size_t targetedBucket = nbBuckets / 2;
 
     //Lets put 10 values in the targeted bucket:
@@ -674,3 +691,106 @@ class IncompleteClass
 };
 #  endif
 #endif
+
+
+void UnorderedTest::remains()
+{
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  typedef unordered_map<int, int> hmap;
+
+  hmap m;
+
+  for ( int i = 0; i < 100; ++i ) {
+    m.insert( make_pair(i,i) );
+  }
+  
+  CPPUNIT_ASSERT( m.size() == 100 );
+
+  int sz = 0;
+
+  for ( hmap::const_iterator i = m.begin(); i != m.end(); ++i ) {
+    ++sz;
+  }
+
+  CPPUNIT_ASSERT( sz == 100 );
+
+  /* 
+     <snip>
+
+     The elements of an unordered associative container
+     are organized into buckets. Keys with the same hash
+     code appear in the same bucket. The number of buckets
+     is automatically increased as elements are added
+     to an unordered associative container, so that
+     the average number of elements per bucket is kept below
+     a bound. Rehashing invalidates iterators, changes
+     ordering between elements, and changes which buckets
+     elements appear in, but does not invalidate pointers
+     or references to elements. For unordered_multiset
+     and unordered_multimap, rehashing preserves the relative
+     ordering of equivalent elements.
+
+     </snip>
+
+     But
+
+     <snip>
+
+     The insert members shall not affect the validity of references
+     to container elements, but may invalidate all iterators
+     to the container. The erase members shall invalidate only
+     iterators and references to the erased elements.
+
+     </snip>
+
+     Rationale: if we would rehash on erase, we can't use
+     remove_if() for unordered containers.
+
+   */
+  sz = 0;
+  for ( hmap::iterator i = m.begin(); i != m.end(); ) {
+    m.erase( i++ );
+    ++sz;
+  }
+
+  // Bug ID: 3004998
+  // sz == 98, m.size() == 2
+
+  CPPUNIT_ASSERT( sz == 100 );
+  CPPUNIT_ASSERT( m.size() == 0 );
+
+  for ( int i = 0; i < 100; ++i ) { // re-initiate
+    m.insert( make_pair(i,i) );
+  }
+
+  /* Another way to erase: */
+
+  sz = 0;
+  while ( !m.empty() ) {
+    m.erase( m.begin() );
+    ++sz;
+  }
+
+  CPPUNIT_ASSERT( sz == 100 );
+  CPPUNIT_ASSERT( m.size() == 0 );
+
+  /* Yet another correct code: */
+
+  for ( int i = 0; i < 100; ++i ) { // re-initiate
+    m.insert( make_pair(i,i) );
+  }
+
+  CPPUNIT_ASSERT( m.size() == 100 );
+
+  sz = 0;
+  for ( int i = 0; i < 100; ++i ) {
+    m.erase( i );
+    ++sz;
+  }
+
+  CPPUNIT_ASSERT( sz == 100 );
+  CPPUNIT_ASSERT( m.size() == 0 );
+#else
+  throw exam::skip_exception();
+#endif
+}

@@ -249,9 +249,8 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
-__reference__
-hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::_M_insert(const value_type& __obj) {
+__reference__ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>::_M_insert(const value_type& __obj)
+{
   _M_enlarge(_M_num_elements + 1);
   return *insert_unique_noresize(__obj).first;
 }
@@ -293,7 +292,7 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   }
 
   _M_num_elements -= __erased;
-  _M_reduce();
+
   return __erased;
 }
 
@@ -325,7 +324,6 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   }
 
   _M_num_elements -= __erased;
-  _M_reduce();
 }
 
 template <class _Val, class _Key, class _HF,
@@ -356,35 +354,29 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   }
   fill(_M_buckets.begin() + __f_bucket, _M_buckets.begin() + __l_bucket + 1, __cur._M_node);
   _M_num_elements -= __erased;
-  _M_reduce();
 }
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
-void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::rehash(size_type __num_buckets_hint) {
-  if (bucket_count() >= __num_buckets_hint) {
-    // We are trying to reduce number of buckets, we have to validate it:
-    size_type __limit_num_buckets = (size_type)((float)size() / max_load_factor());
-    if (__num_buckets_hint < __limit_num_buckets) {
-      // Targetted number of buckets __num_buckets_hint would break
-      // load_factor() <= max_load_factor() rule.
-      return;
-    }
+void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>::rehash(size_type __num_buckets_hint)
+{
+  if ( bucket_count() <  __num_buckets_hint ) {
+    _M_rehash(__num_buckets_hint);
+  } else {
+    _M_reduce();
   }
-
-  _M_rehash(__num_buckets_hint);
 }
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
-void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::_M_enlarge(size_type __to_size) {
+void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>::_M_enlarge( size_type __to_size )
+{
   size_type __num_buckets = bucket_count();
   size_type __num_buckets_hint = (size_type)((float)__to_size / max_load_factor());
-  if (__num_buckets_hint <= __num_buckets) {
+  if ( __num_buckets_hint <= __num_buckets ) {
     return;
   }
+
   __num_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__num_buckets_hint);
 
   _M_rehash(__num_buckets);
@@ -432,20 +424,6 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   }
 
   _M_rehash(*__prev);
-}
-
-template <class _Val, class _Key, class _HF,
-          class _Traits, class _ExK, class _EqK, class _All>
-void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::_M_resize() {
-  if (load_factor() > max_load_factor()) {
-    // We have to enlarge
-    _M_enlarge(size());
-  }
-  else {
-    // We can try to reduce size:
-    _M_reduce();
-  }
 }
 
 template <class _Val, class _Key, class _HF,
