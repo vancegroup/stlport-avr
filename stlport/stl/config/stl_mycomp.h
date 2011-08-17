@@ -195,10 +195,6 @@
 // In default function parameter like _M_method(_Tp __x = _Tp())
 //# define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 
-// Defined if constructor
-// required to explicitly call member's default constructors for const objects
-// #  define _STLP_CONST_CONSTRUCTOR_BUG    1
-
 // Defined if the compiler has trouble calling POD-types constructors/destructors
 // #  define _STLP_TRIVIAL_CONSTRUCTOR_BUG    1
 // #  define _STLP_TRIVIAL_DESTRUCTOR_BUG    1
