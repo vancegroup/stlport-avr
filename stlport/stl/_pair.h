@@ -50,11 +50,7 @@ struct pair {
 
   _T1 first;
   _T2 second;
-#if defined (_STLP_CONST_CONSTRUCTOR_BUG)
-  pair() {}
-#else
   pair() : first(_T1()), second(_T2()) {}
-#endif
   pair(const _T1& __a, const _T2& __b) : first(__a), second(__b) {}
 
 #if defined (_STLP_MEMBER_TEMPLATES)
