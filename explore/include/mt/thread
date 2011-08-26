@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <10/08/25 18:04:56 ptr>
+// -*- C++ -*- Time-stamp: <2011-08-26 07:41:24 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2008
+ * Copyright (c) 1997-1999, 2002-2011
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
@@ -47,10 +47,6 @@ namespace tr2 {
 namespace this_thread
 { }
 
-namespace detail {
-void _dealloc_uw();
-} // namespace detail
-
 class fork_in_parent :
         public std::exception
 {
@@ -89,9 +85,7 @@ class thread_base
     // typedef unsigned long thread_id_type;
 #endif
 #ifdef __FIT_PTHREADS
-    typedef pthread_key_t thread_key_type;
     typedef pthread_t     native_handle_type;
-    // typedef pthread_t     thread_id_type;
 #endif
 
     class id
@@ -148,18 +142,6 @@ class thread_base
       suspended = CREATE_SUSPENDED,
       daemon    = detached
 #endif
-    };
-
-    class Init
-    {
-      public:
-        Init();
-        ~Init();
-      private:
-        static void __at_fork_prepare();
-        static void __at_fork_parent();
-        static void __at_fork_child();
-        static int& _count;
     };
 
     __FIT_DECLSPEC thread_base();
@@ -340,11 +322,9 @@ class basic_thread :
 
          try {
            entry();
-           std::tr2::detail::_dealloc_uw();
          }
          catch ( ... ) {
            me.print_stack();
-           std::tr2::detail::_dealloc_uw();
            std::terminate();
          }
 
@@ -368,11 +348,9 @@ class basic_thread :
 
          try {
            entry( arg1 );
-           std::tr2::detail::_dealloc_uw();
          }
          catch ( ... ) {
            me.print_stack();
-           std::tr2::detail::_dealloc_uw();
            std::terminate();
          }
 
@@ -470,11 +448,9 @@ class basic_thread<0,0> :
 
          try {
            entry( arg1 );
-           std::tr2::detail::_dealloc_uw();
          }
          catch ( ... ) {
            me.print_stack();
-           std::tr2::detail::_dealloc_uw();
            std::terminate();
          }
 
@@ -565,11 +541,9 @@ class basic_thread<0,S> :
 
          try {
            entry();
-           std::tr2::detail::_dealloc_uw();
          }
          catch ( ... ) {
            me.print_stack();
-           std::tr2::detail::_dealloc_uw();
            std::terminate();
          }
 
@@ -588,11 +562,9 @@ class basic_thread<0,S> :
 
          try {
            entry( arg1 );
-           std::tr2::detail::_dealloc_uw();
          }
          catch ( ... ) {
            me.print_stack();
-           std::tr2::detail::_dealloc_uw();
            std::terminate();
          }
 
@@ -632,11 +604,6 @@ __FIT_DECLSPEC void sleep( const std::tr2::nanoseconds& rel_t );
 template <class Duration>
 void sleep( const Duration& rel_t )
 { std::tr2::this_thread::sleep( static_cast<std::tr2::nanoseconds>(rel_t) ); }
-
-__FIT_DECLSPEC int xalloc();
-
-__FIT_DECLSPEC long& iword( int __idx );
-__FIT_DECLSPEC void*& pword( int __idx );
 
 __FIT_DECLSPEC void block_signal( int sig );
 __FIT_DECLSPEC void unblock_signal( int sig );
