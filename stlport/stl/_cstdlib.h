@@ -156,7 +156,7 @@ inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return _STLP_VEND
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return ::llabs(__x); }
 inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return ::lldiv(__x, __y); }
 #    endif
-#  elif  !defined (__ARMCC_VERSION)
+#  elif  !defined (__ARMCC_VERSION) && (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1600))
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return __x < 0 ? -__x : __x; }
 #  endif
 #endif
