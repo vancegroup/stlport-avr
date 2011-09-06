@@ -69,7 +69,7 @@ protected:
   _Tp* _M_End()
   { return _M_using_static_buf() ? _M_buffers._M_static_buf + _DEFAULT_SIZE : _M_buffers._M_end_of_storage; }
   size_type _M_capacity() const
-  { return _M_using_static_buf() ? _DEFAULT_SIZE : _M_buffers._M_end_of_storage - _M_start_of_storage._M_data; }
+  { return _M_using_static_buf() ? size_type(_DEFAULT_SIZE) : _M_buffers._M_end_of_storage - _M_start_of_storage._M_data; }
   size_type _M_rest() const
   { return  _M_using_static_buf() ? _DEFAULT_SIZE - (_M_finish - _M_buffers._M_static_buf) : _M_buffers._M_end_of_storage - _M_finish; }
 #else
