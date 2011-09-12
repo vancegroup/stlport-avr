@@ -45,12 +45,14 @@ class _String_base
     _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   public:
     //dums: Some compiler(MSVC6) require it to be public not simply protected!
-    enum {_DEFAULT_SIZE = 4 * sizeof( void * )};
+    // enum {_DEFAULT_SIZE = 4 * sizeof( void * )};
     //This is needed by the full move framework
     typedef _Alloc allocator_type;
     typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
     typedef size_t size_type;
 
+  protected:
+    static const size_type _DEFAULT_SIZE = 4 * sizeof( void * );
   private:
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
   union _Buffers
