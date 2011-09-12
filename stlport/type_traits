@@ -126,7 +126,7 @@ struct __uoc_aux // union or class
 #endif // _STLP_CPP_0X
     
   public:
-#ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
+#ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
 #ifdef _STLP_CPP_0X
@@ -137,7 +137,7 @@ struct __uoc_aux // union or class
 #endif
 };
 
-#ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
+#ifdef _STLP_STATIC_CONST_INIT_BUG
 template <class T>
 const bool __uoc_aux<T>::__value = sizeof(__uoc_aux<T>::__test<T>(0)) == sizeof(__select_types::__t1);
 #endif
