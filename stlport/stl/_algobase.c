@@ -332,7 +332,7 @@ inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
 template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
 inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
-                                       _Tp1* __pt1, _Tp2* __pt2) {
+                                       _Tp1*, _Tp2* __pt2) {
   typedef _STLP_TYPENAME _STLP_STD::integral_constant<bool, is_integral<_Tp1>::value && _STLP_PRIV is_char<_Tp2>::value>::type _UseStrcspnLikeAlgo;
   return _STLP_PRIV __find_first_of_aux2(__first1, __last1,
                                          __first2, __last2,
