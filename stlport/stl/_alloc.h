@@ -581,10 +581,10 @@ struct __is_stateless_alloc :
 #  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
 
-template <class _Tp> void swap(_Tp& __a, _Tp& __b);
+template <class _Tp> void swap(_Tp&, _Tp&);
 
 template <class _Tp>
-inline void swap(allocator<_Tp>& __a, allocator<_Tp>& __b)
+inline void swap(allocator<_Tp>&, allocator<_Tp>&)
 { }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

@@ -455,7 +455,11 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2, class _Distance>
 _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-                           _Compare1 __comp1, _Compare2 __comp2, _Distance*) {
+                           _Compare1 __comp1, _Compare2
+#ifdef _STLP_DEBUG
+                                                        __comp2
+#endif
+                                                               , _Distance*) {
   _Distance __len = _STLP_STD::distance(__first, __last);
   _Distance __half;
   _ForwardIter __middle;
