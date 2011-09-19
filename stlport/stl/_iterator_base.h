@@ -30,8 +30,8 @@
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H
 #define _STLP_INTERNAL_ITERATOR_BASE_H
 
-#ifndef _STLP_INTERNAL_CSTDDEF
-#  include <stl/_cstddef.h>
+#ifndef _STLP_CSTDDEF
+#  include <cstddef>
 #endif
 
 _STLP_BEGIN_NAMESPACE

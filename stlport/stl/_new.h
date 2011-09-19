@@ -16,9 +16,9 @@
 #ifndef _STLP_INTERNAL_NEW
 #define _STLP_INTERNAL_NEW
 
-#ifndef _STLP_INTERNAL_CSTDDEF
+#ifndef _STLP_CSTDDEF
 // size_t
-#  include <stl/_cstddef.h>
+#  include <cstddef>
 #endif
 
 #if defined (__BORLANDC__) && (__BORLANDC__ < 0x570)

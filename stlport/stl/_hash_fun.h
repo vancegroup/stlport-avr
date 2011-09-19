@@ -31,8 +31,8 @@
 #ifndef _STLP_HASH_FUN_H
 #define _STLP_HASH_FUN_H
 
-#ifndef _STLP_INTERNAL_CSTDDEF
-#  include <stl/_cstddef.h>
+#ifndef _STLP_CSTDDEF
+#  include <cstddef>
 #endif
 
 #include <stdint.h>

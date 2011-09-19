@@ -29,8 +29,8 @@
 
 #include <stdint.h>
 
-#ifndef _STLP_INTERNAL_CSTDDEF
-#  include <stl/_cstddef.h>
+#ifndef _STLP_CSTDDEF
+#  include <cstddef>
 #endif
 
 #ifndef _STLP_INTERNAL_CSTDLIB
