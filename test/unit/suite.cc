@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-05-02 11:28:45 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-19 14:04:14 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -69,6 +69,7 @@
 #include "errno_test.h"
 #include "locale_test.h"
 #include "chrono_test.h"
+#include "null_ptr.h"
 
 int main( int argc, const char** argv )
 {
@@ -146,6 +147,10 @@ int main( int argc, const char** argv )
   t.add( &type_traits_test::is_destructible, ttt, "is_destructible", tt_tc[0] );
 
   t.add( &type_traits_test::is_trivially_copyable, ttt, "is_trivially_copyable", tt_tc[0] );
+
+  null_ptr_test np_tst;
+
+  t.add( &null_ptr_test::convert, np_tst, "null_ptr compare" );
 
   ratio_test ratio_tst;
   exam::test_suite::test_case_type r_tc[2];

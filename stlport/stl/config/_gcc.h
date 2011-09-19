@@ -233,4 +233,7 @@ typedef unsigned int wint_t;
 #    define _STLP_VARIADIC_TEMPLATES
 #    define _STLP_CPP_0X
 #  endif
+#  if ((__GNUC__ == 4) && (__GNUC_MINOR__ < 6))
+#    define _STLP_NULLPTR
+#  endif
 #endif

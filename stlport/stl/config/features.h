@@ -1060,5 +1060,56 @@ void _STLP_DECLSPEC _STLP_CALL _STLP_CHECK_RUNTIME_COMPATIBILITY();
 #  include <stl/config/_wince_windows_suffix.h>
 #endif
 
+#if defined(_STLP_NULLPTR) && defined (__cplusplus)
+_STLP_BEGIN_NAMESPACE
+
+class nullptr_t
+{
+  public:
+    template <class T>
+    operator T* () const
+    { return 0; }
+
+    template <class C, class T>
+    operator T C::*() const
+    { return 0; }
+
+    operator bool () const
+    { return false; }
+
+    operator void* () const
+    { return 0; }
+
+#ifndef _STLP_CPP_0X
+  private:
+    void operator & () const;
+#else
+    void operator & () const = delete;
+#endif
+
+  private:
+    const void* _zero; // = (void*)0;
+};
+
+template <class C, class T>
+bool operator ==( T C::*pmf, const nullptr_t& )
+{ return pmf == 0; }
+
+template <class C, class T>
+bool operator !=( T C::*pmf, const nullptr_t& )
+{ return pmf != 0; }
+
+template <class C, class T>
+bool operator ==( const nullptr_t&, T C::*pmf )
+{ return pmf == 0; }
+
+template <class C, class T>
+bool operator !=( const nullptr_t&, T C::*pmf )
+{ return pmf != 0; }
+
+extern const nullptr_t nullptr; // = {};
+
+_STLP_END_NAMESPACE
+#endif /* _STLP_NULLPTR */
 
 #endif /* _STLP_FEATURES_H */
