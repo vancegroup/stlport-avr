@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-19 23:09:49 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-20 00:35:22 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -177,7 +177,7 @@ const bool __virtual_aux<T,B>::__value = B ? (sizeof(__inheritance_aux<T,B>) == 
 #endif
 #endif
 
-template <std::size_t L>
+template <_STLP_STD_NAME::size_t L>
 struct __aligned_aux
 {
     union __type
@@ -1305,7 +1305,7 @@ struct add_pointer
 
 // [20.5.7] other transformations:
 
-template <std::size_t L, std::size_t Align = __alignof__(typename detail::__aligned_aux<L>::__type)>
+template <_STLP_STD_NAME::size_t L, _STLP_STD_NAME::size_t Align = __alignof__(typename detail::__aligned_aux<L>::__type)>
 struct aligned_storage
 {
     union type
