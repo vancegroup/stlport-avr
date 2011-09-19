@@ -200,6 +200,16 @@ _STLP_END_NAMESPACE
 #    include <stl/_threads.h>
 #  endif
 
+#  ifndef _STLP_STDDEF_H
+#    include <stddef.h>
+#  endif
+
+_STLP_BEGIN_NAMESPACE
+using ::ptrdiff_t;
+using ::size_t;
+_STLP_END_NAMESPACE
+
+
 #  ifndef _STLP_INTERNAL_ITERATOR_BASE_H
 #    include <stl/_iterator_base.h>
 #  endif

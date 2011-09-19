@@ -60,10 +60,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#ifdef _STLP_NULLPTR
-const nullptr_t nullptr = {};
-#endif
-
 #if defined (_STLP_NO_EXCEPTION_HEADER) || defined (_STLP_BROKEN_EXCEPTION_CLASS)
 exception::exception() _STLP_NOTHROW {}
 exception::~exception() _STLP_NOTHROW {}
