@@ -301,9 +301,13 @@ class basic_thread :
          }
       }
 
+#ifdef __FIT_CPP_0X
+    basic_thread( const basic_thread& ) = delete;
+#else
   private:
-    basic_thread( const basic_thread& )
-      { }
+    basic_thread( const basic_thread& );
+#endif
+  private:
 
     void *_entry;
     semaphore sem;
@@ -412,9 +416,13 @@ class basic_thread<0,0> :
     ~basic_thread()
       { }
 
+#ifdef __FIT_CPP_0X
+    basic_thread( const basic_thread& ) = delete;
+#else
   private:
-    basic_thread( const basic_thread& )
-      { }
+    basic_thread( const basic_thread& );
+#endif
+  private:
 
     void *_entry;
 
@@ -526,9 +534,13 @@ class basic_thread<0,S> :
     ~basic_thread()
       { }
 
+#ifdef __FIT_CPP_0X
+    basic_thread( const basic_thread& ) = delete;
+#else
   private:
-    basic_thread( const basic_thread& )
-      { }
+    basic_thread( const basic_thread& );
+#endif
+  private:
 
     void *_entry;
 
