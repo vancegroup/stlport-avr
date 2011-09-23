@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-19 14:04:14 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-20 16:26:31 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -883,6 +883,11 @@ int main( int argc, const char** argv )
 
   shared_ptr_test shp_test;
   t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );
+
+  exam::test_suite::test_case_type shp_tc[10];
+  t.add( &shared_ptr_test::alias, shp_test, "shared_ptr alias",
+    shp_tc[0] = t.add( &shared_ptr_test::shared_ptr_base, shp_test, "shared_ptr basic" ) );
+  t.add( &shared_ptr_test::convert, shp_test, "shared_ptr convertions", shp_tc[0] );
 
   ref_wrapper_test ref_test;
 
