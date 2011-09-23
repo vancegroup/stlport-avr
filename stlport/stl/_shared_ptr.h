@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-23 16:07:08 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-23 17:25:03 ptr>
 
 /*
  * Copyright (c) 2011
@@ -16,27 +16,25 @@
  */
 
 #include <type_traits>
-#include <iostream>
-#include <iomanip>
 
 _STLP_BEGIN_NAMESPACE
 
 namespace detail {
 
-struct __owner_aux_abstract
+struct __shared_ref_base
 {
     virtual void unlink() = 0;
     virtual void link() = 0;
     virtual long count() = 0;
-    virtual __owner_aux_abstract* ref() = 0;
+    virtual __shared_ref_base* ref() = 0;
 };
 
 template <class T>
-class __owner_aux :
-    public __owner_aux_abstract
+class __shared_ref :
+    public __shared_ref_base
 {
   public:
-    __owner_aux( T* p ) :
+    __shared_ref( T* p ) :
         _p( p ),
         _n( 1 )
       { }
@@ -55,7 +53,7 @@ class __owner_aux :
     virtual long count()
       { return _n; }
 
-    virtual __owner_aux_abstract* ref()
+    virtual __shared_ref_base* ref()
       { return this; }
 
   protected:
@@ -64,11 +62,11 @@ class __owner_aux :
 };
 
 template <class Y>
-class __owner_alias_aux :
-        public __owner_aux_abstract
+class __alias_shared_ref :
+        public __shared_ref_base
 {
   public:
-    __owner_alias_aux( __owner_aux_abstract* r ) :
+    __alias_shared_ref( __shared_ref_base* r ) :
         _parent( r == NULL ? NULL : r->ref() )
       {
         if ( _parent != NULL ) {
@@ -95,27 +93,27 @@ class __owner_alias_aux :
      virtual long count()
       { return _parent == NULL ? 0L : _parent->count(); }
 
-    virtual __owner_aux_abstract* ref()
+    virtual __shared_ref_base* ref()
       { return _parent == NULL ? NULL : _parent->ref(); }
 
   protected:
-    __owner_aux_abstract* _parent;
+    __shared_ref_base* _parent;
 };
 
 template <class T, class D>
-class __owner_aux_deleter :
-    public __owner_aux<T>
+class __shared_ref_deleter :
+    public __shared_ref<T>
 {
   public:
-    __owner_aux_deleter( T* p, D d ) :
-        __owner_aux<T>( p ),
+    __shared_ref_deleter( T* p, D d ) :
+        __shared_ref<T>( p ),
         _d( d )
       { }
 
     virtual void unlink()
       {
-        if ( --__owner_aux<T>::_n == 0 ) {
-          __owner_aux_deleter<T,D>::_d( __owner_aux<T>::_p );
+        if ( --__shared_ref<T>::_n == 0 ) {
+          __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
           delete this;
         }
       }
@@ -126,18 +124,18 @@ class __owner_aux_deleter :
 
 template <class T, class D, class A>
 class __owner_aux_alloc :
-    public __owner_aux_deleter<T,D>
+    public __shared_ref_deleter<T,D>
 {
   public:
     __owner_aux_alloc( T* p, D d, A a ) :
-        __owner_aux_deleter<T,D>( p, d ),
+        __shared_ref_deleter<T,D>( p, d ),
         _a( a )
       { }
 
     virtual void unlink()
       {
-        if ( --__owner_aux<T>::_n == 0 ) {
-          __owner_aux_deleter<T,D>::_d( __owner_aux<T>::_p );
+        if ( --__shared_ref<T>::_n == 0 ) {
+          __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
           _a.deallocate( this, 1 );
         }
       }
@@ -167,7 +165,7 @@ class shared_ptr
       {
         try {
           _p = static_cast<T*>(p);
-          _ref = new detail::__owner_aux<T>(_p);
+          _ref = new detail::__shared_ref<T>(_p);
         }
         catch ( ... ) {
           delete p;
@@ -182,7 +180,7 @@ class shared_ptr
       {
         try {
           _p = static_cast<T*>(p);
-          _ref = new detail::__owner_aux_deleter<T,D>( _p, d );
+          _ref = new detail::__shared_ref_deleter<T,D>( _p, d );
         }
         catch ( ... ) {
           d( p );
@@ -214,7 +212,7 @@ class shared_ptr
       {
         try {
           _p = NULL;
-          _ref = new detail::__owner_aux_deleter<T,D>( NULL, d );
+          _ref = new detail::__shared_ref_deleter<T,D>( NULL, d );
         }
         catch ( ... ) {
           d( NULL );
@@ -245,7 +243,7 @@ class shared_ptr
       {
         try {
           _p = p;
-          _ref = new detail::__owner_alias_aux<Y>( r._ref );
+          _ref = new detail::__alias_shared_ref<Y>( r._ref );
         }
         catch ( ... ) {
           _ref = NULL;
@@ -396,7 +394,7 @@ class shared_ptr
     // friend template <class Y> class shared_ptr<Y>;
     template <class Y> friend class shared_ptr;
     T* _p;
-    detail::__owner_aux_abstract* _ref;
+    detail::__shared_ref_base* _ref;
 };
 
 // 20.7.2.2.6, shared_ptr creation
