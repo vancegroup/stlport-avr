@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-06 20:28:44 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-23 19:44:32 ptr>
 
 /*
  * Copyright (c) 2004-2010
@@ -32,6 +32,7 @@ class utility_test
     int EXAM_DECL(init);
 
     int EXAM_DECL(forward);
+    int EXAM_DECL(move);
 };
 
 #endif // __TEST_UTILITY_TEST_H

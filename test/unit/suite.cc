@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-20 16:26:31 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-23 20:09:01 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -708,7 +708,8 @@ int main( int argc, const char** argv )
 
   t.add( &utility_test::pair0, pr_test, "pair0" );
   t.add( &utility_test::init, pr_test, "init" );
-  t.add( &utility_test::forward, pr_test, "forward<A>" );
+  t.add( &utility_test::move, pr_test, "move<A>",
+    t.add( &utility_test::forward, pr_test, "forward<A>" ) );
 
   rnd_shuffle_test rnd_test;
 
