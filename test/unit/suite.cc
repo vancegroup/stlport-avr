@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-23 20:09:01 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 09:32:20 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -705,10 +705,11 @@ int main( int argc, const char** argv )
   t.add( &mismatch_test::mismatch2, mis_test, "mismatch2" );
 
   utility_test pr_test;
+  exam::test_suite::test_case_type utility_tc[10];
 
   t.add( &utility_test::pair0, pr_test, "pair0" );
   t.add( &utility_test::init, pr_test, "init" );
-  t.add( &utility_test::move, pr_test, "move<A>",
+  utility_tc[0] = t.add( &utility_test::move, pr_test, "move<A>",
     t.add( &utility_test::forward, pr_test, "forward<A>" ) );
 
   rnd_shuffle_test rnd_test;
@@ -889,6 +890,10 @@ int main( int argc, const char** argv )
   t.add( &shared_ptr_test::alias, shp_test, "shared_ptr alias",
     shp_tc[0] = t.add( &shared_ptr_test::shared_ptr_base, shp_test, "shared_ptr basic" ) );
   t.add( &shared_ptr_test::convert, shp_test, "shared_ptr convertions", shp_tc[0] );
+  shp_tc[1] = utility_tc[0];
+  t.add( &shared_ptr_test::allocate, shp_test, "shared_ptr allocate_shared",
+    t.add( &shared_ptr_test::make, shp_test, "shared_ptr make_shared",
+       t.add( &shared_ptr_test::move, shp_test, "shared_ptr move", shp_tc, shp_tc + 2 ) ) );
 
   ref_wrapper_test ref_test;
 

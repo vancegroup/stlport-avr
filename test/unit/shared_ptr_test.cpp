@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-23 16:17:27 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 09:54:36 ptr>
 
 /*
  * Copyright (c) 2011
@@ -50,7 +50,23 @@ int EXAM_IMPL(shared_ptr_test::shared_from_this)
 
 struct Test
 {
-    Test()
+    Test() :
+        i( 0 ),
+        d( 0.0 )
+      {
+        ++cnt;
+      }
+
+    Test( int v ) :
+        i( v ),
+        d( 0.0 )
+      {
+        ++cnt;
+      }
+
+    Test( int v, double& vd ) :
+        i( v ),
+        d( vd )
       {
         ++cnt;
       }
@@ -59,6 +75,9 @@ struct Test
       {
         --cnt;
       }
+
+    int i;
+    double d;
 
     static int cnt;
 };
@@ -299,6 +318,246 @@ int EXAM_IMPL(shared_ptr_test::convert)
 
   // shared_ptr<A> pa2( new A() );
   // shared_ptr<B> pb2( pa2 ); // <<-- compilation fail (should be fail)
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(shared_ptr_test::move)
+{
+  struct A
+  {
+      A() :
+          flag( 0 )
+        { }
+
+      A( const A& ) :
+          flag( 1 )
+        { }
+
+      A( A&& a ) :
+          flag( 2 )
+        { a.flag = 3; }
+
+      virtual ~A()
+        { }
+
+      int flag;
+  };
+
+  struct B :
+     public A
+  {
+      B() :
+          A()
+        { }
+
+      B( const B& b ) :
+          A( static_cast<const A&>( b ) )
+        { }
+
+      B( B&& b ) :
+          A( static_cast<A&&>( b ) )
+        { }
+
+      virtual ~B()
+        { }
+  };
+
+  shared_ptr<A> a( new A );
+
+  EXAM_CHECK( a.use_count() == 1 );
+
+  shared_ptr<A> a1( a );
+
+  EXAM_CHECK( a.use_count() == 2 );
+  EXAM_CHECK( a1.use_count() == 2 );
+  EXAM_CHECK( a == a1 );
+
+  EXAM_CHECK( a->flag == 0 );
+
+  shared_ptr<A> a2( std::move( a ) );
+
+  EXAM_CHECK( a.use_count() == 0 );
+  EXAM_CHECK( a1.use_count() == 2 );
+  EXAM_CHECK( a2.use_count() == 2 );
+  EXAM_CHECK( a1 == a2 );
+
+  EXAM_CHECK( a1->flag == 0 ); // it shared and moved from a!
+  EXAM_CHECK( a2->flag == 0 ); // it shared!
+
+  shared_ptr<B> b;
+
+  EXAM_CHECK( b.use_count() == 0 );
+
+  b.reset( new B );
+
+  EXAM_CHECK( b.use_count() == 1 );
+
+  b->flag = 4; // assign something...
+ 
+  shared_ptr<A> a3( std::move( b ) );
+
+  EXAM_CHECK( b.use_count() == 0 );
+  EXAM_CHECK( a3.use_count() == 1 );
+
+  EXAM_CHECK( a3->flag == 4 ); // it shared and moved, so see what assign before!
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(shared_ptr_test::make)
+{
+  Test::cnt = 0;
+
+  {
+    // shared_ptr<Test> pi;
+
+    EXAM_CHECK( Test::cnt == 0 );
+    shared_ptr<Test> pi = make_shared<Test>();
+    EXAM_CHECK( Test::cnt == 1 );  // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+    EXAM_CHECK( pi->i == 0 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    shared_ptr<Test> pi = make_shared<Test>( 1 );
+    EXAM_CHECK( Test::cnt == 1 );  // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+    EXAM_CHECK( pi->i == 1 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    shared_ptr<Test> pi = make_shared<Test>( 3, 3.1415926542 );
+    EXAM_CHECK( Test::cnt == 1 );  // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+    EXAM_CHECK( pi->i == 3 );
+    EXAM_CHECK( pi->d > 3.14 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  return EXAM_RESULT;
+}
+
+struct my_allocator_counter
+{
+    static int counter;
+};
+
+int my_allocator_counter::counter = 0;
+
+template <class _Tp>
+class my_allocator :
+    public my_allocator_counter
+{
+  public:
+    typedef _Tp        value_type;
+    typedef _Tp*       pointer;
+    typedef const _Tp* const_pointer;
+    typedef _Tp&       reference;
+    typedef const _Tp& const_reference;
+    typedef size_t     size_type;
+    typedef ptrdiff_t  difference_type;
+
+    template <class _Tp1>
+    struct rebind
+    {
+        typedef my_allocator<_Tp1> other;
+    };
+
+    my_allocator() _STLP_NOTHROW
+      { }
+    template <class _Tp1>
+    my_allocator(const my_allocator<_Tp1>&) _STLP_NOTHROW
+      { }
+    my_allocator(const my_allocator<_Tp>&) _STLP_NOTHROW
+      { }
+    my_allocator( my_allocator<_Tp>&& ) _STLP_NOTHROW
+      { }
+    ~my_allocator() _STLP_NOTHROW
+      { }
+    pointer address( reference __x ) const
+      { return &__x; }
+    const_pointer address( const_reference __x ) const
+      { return &__x; }
+
+    _Tp* allocate(size_type __n, const void* = 0)
+      {
+        if ( __n > max_size() ) {
+          throw std::bad_alloc();
+        }
+        if ( __n != 0 ) {
+          size_type __buf_size = __n * sizeof(value_type);
+          _Tp* __ret = reinterpret_cast<_Tp*>( ::new char [__buf_size] );
+          ++my_allocator_counter::counter;
+          return __ret;
+        }
+
+        return 0;
+      }
+
+    void deallocate(pointer __p, size_type __n)
+      {
+        if ( __p != 0 ) {
+          delete [] reinterpret_cast<char *>(__p);
+          --my_allocator_counter::counter;
+        }
+      }
+
+    size_type max_size() const _STLP_NOTHROW
+      { return size_t(-1) / sizeof(value_type); }
+    void construct(pointer __p, const_reference __val)
+      { _STLP_STD::_Copy_Construct(__p, __val); }
+    void destroy(pointer __p)
+      { _STLP_STD::_Destroy(__p); }
+};
+
+int EXAM_IMPL(shared_ptr_test::allocate)
+{
+  Test::cnt = 0;
+
+  {
+    // shared_ptr<Test> pi;
+
+    EXAM_CHECK( Test::cnt == 0 );
+    shared_ptr<Test> pi = allocate_shared<Test,my_allocator<Test> >( my_allocator<Test>() );
+    EXAM_CHECK( my_allocator_counter::counter == 1 );  // allocate called
+    EXAM_CHECK( Test::cnt == 1 );  // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+    EXAM_CHECK( pi->i == 0 );
+  }
+
+  EXAM_CHECK( my_allocator_counter::counter == 0 );  // deallocate called
+  EXAM_CHECK( Test::cnt == 0 );
+
+  my_allocator<Test> a;
+
+  {
+    shared_ptr<Test> pi = allocate_shared<Test,my_allocator<Test> >( a, 1 );
+    EXAM_CHECK( my_allocator_counter::counter == 1 );  // allocate called
+    EXAM_CHECK( Test::cnt == 1 );  // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+    EXAM_CHECK( pi->i == 1 );
+  }
+
+  EXAM_CHECK( my_allocator_counter::counter == 0 );  // deallocate called
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    shared_ptr<Test> pi = allocate_shared<Test,my_allocator<Test> >( a, 3, 3.1415926542 );
+    EXAM_CHECK( my_allocator_counter::counter == 1 );  // allocate called
+    EXAM_CHECK( Test::cnt == 1 );  // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+    EXAM_CHECK( pi->i == 3 );
+    EXAM_CHECK( pi->d > 3.14 );
+  }
+
+  EXAM_CHECK( my_allocator_counter::counter == 0 );  // deallocate called
+  EXAM_CHECK( Test::cnt == 0 );
 
   return EXAM_RESULT;
 }

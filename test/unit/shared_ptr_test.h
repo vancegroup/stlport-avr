@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-20 16:27:24 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 09:31:16 ptr>
 
 /*
  * Copyright (c) 2011
@@ -29,6 +29,9 @@ class shared_ptr_test
     int EXAM_DECL(shared_from_this);
     int EXAM_DECL(alias);
     int EXAM_DECL(convert);
+    int EXAM_DECL(move);
+    int EXAM_DECL(make);
+    int EXAM_DECL(allocate);
 };
 
 #endif // __TEST_SHARED_PTR_TEST_H

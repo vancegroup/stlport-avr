@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-23 17:25:03 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 09:38:28 ptr>
 
 /*
  * Copyright (c) 2011
@@ -18,6 +18,14 @@
 #include <type_traits>
 
 _STLP_BEGIN_NAMESPACE
+
+template <class T> class shared_ptr;
+
+template <class T, class... Args>
+shared_ptr<T> make_shared( Args&&... args );
+
+template <class T, class A, class... Args>
+shared_ptr<T> allocate_shared( const A& a, Args&&... args );
 
 namespace detail {
 
@@ -144,6 +152,46 @@ class __owner_aux_alloc :
     A _a;
 };
 
+template <class T, class A>
+class __shared_ref_intrusive :
+    public __shared_ref_base
+{
+  private:
+    typedef typename A::template rebind<__shared_ref_intrusive>::other allocator_type;
+
+  public:
+    template <class... Args >
+    __shared_ref_intrusive( A a, Args ... args ) :
+        _p( args... ),
+        _n( 1 ),
+        _a( _STLP_STD::move( a ) )
+      { }
+
+    virtual void unlink()
+      {
+        if ( --_n == 0 ) {
+          _p.~T();
+          _a.deallocate( this, 1 );
+        }
+      }
+
+    virtual void link()
+      { ++_n; }
+
+    virtual long count()
+      { return _n; }
+
+    virtual __shared_ref_base* ref()
+      { return this; }
+
+  protected:
+    friend class shared_ptr<T>;
+
+    T _p;
+    long _n;
+    allocator_type _a;
+};
+
 } // namespace detail
 
 template <class T> class weak_ptr;
@@ -193,14 +241,18 @@ class shared_ptr
               class = typename enable_if<is_convertible<Y*,T*>::value && is_copy_constructible<D>::value>::type>
     shared_ptr( Y* p, D d, A a )
       {
+        typedef typename A::template rebind<detail::__owner_aux_alloc<T,D,A> >::other allocator_type;
+        allocator_type _a( _STLP_STD::move(a) );
+        void* m;
+
         try {
-          void* m = a.allocate(1);
+          m = _a.allocate(1);
           _p = static_cast<T*>(p);
-          _ref = new (m) detail::__owner_aux_alloc<T,D,A>( _p, d, a );
+          _ref = new (m) detail::__owner_aux_alloc<T,D,A>( _p, d, _STLP_STD::move(_a) );
         }
         catch ( ... ) {
           d( p );
-          a.deallocate();
+          _a.deallocate( m, 1 );
           _ref = NULL;
           throw;
         }
@@ -228,7 +280,7 @@ class shared_ptr
         try {
           void* m = a.allocate(1);
           _p = NULL;
-          _ref = new (m) detail::__owner_aux_alloc<T,D,A>( NULL, d, a );
+          _ref = new (m) detail::__owner_aux_alloc<T,D,A>( NULL, d, _STLP_STD::move(a) );
         }
         catch ( ... ) {
           d( NULL );
@@ -274,30 +326,39 @@ class shared_ptr
       }
 
     shared_ptr( shared_ptr&& r ) /* noexcept */ :
-        _p( NULL ),
-        _ref( NULL )
+        _p( r._p ),
+        _ref( r._ref )
       {
-        _STLP_STD::swap( _p, r._p );
-        _STLP_STD::swap( _ref, r._ref );
+        r._p = NULL;
+        r._ref = NULL;
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr(shared_ptr<Y>&& r) /* noexcept */ :
-        _p( NULL ),
-        _ref( NULL )
+    shared_ptr( shared_ptr<Y>&& r ) /* noexcept */ :
+        _p( r._p ),
+        _ref( r._ref )
       {
-        _STLP_STD::swap( _p, r._p );
-        _STLP_STD::swap( _ref, r._ref );
+        r._p = NULL;
+        r._ref = NULL;
       }
 
-    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    explicit shared_ptr(const weak_ptr<Y>& r);
+  private:
+    template <class A>
+    shared_ptr( detail::__shared_ref_intrusive<T,A>* r ) :
+        _p( &r->_p ),
+        _ref( r )
+      { }
+
+  public:
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr(auto_ptr<Y>&& r);
+    explicit shared_ptr( const weak_ptr<Y>& r );
+
+    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
+    shared_ptr( auto_ptr<Y>&& r );
 
     template <class Y, class D>
-    shared_ptr(unique_ptr<Y, D>&& r);
+    shared_ptr( unique_ptr<Y, D>&& r );
 
     /* constexpr */ shared_ptr( nullptr_t ) : shared_ptr()
       { }
@@ -311,7 +372,7 @@ class shared_ptr
       }
 
     // 20.7.2.2.3, assignment:
-    shared_ptr& operator =(const shared_ptr& r) /* noexcept */
+    shared_ptr& operator =( const shared_ptr& r ) /* noexcept */
       { // shared_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _ref, r._ref );
@@ -367,7 +428,7 @@ class shared_ptr
 
     template<class Y, class D, class A>
     void reset( Y* p, D d, A a )
-      { shared_ptr(p, d, a).swap( *this ); }
+      { shared_ptr(p, d, _STLP_STD::move(a)).swap( *this ); }
 
     // 20.7.2.2.5, observers:
     T* get() const /* noexcept */
@@ -391,77 +452,149 @@ class shared_ptr
     bool owner_before(weak_ptr<U> const& b) const;
 
   private:
-    // friend template <class Y> class shared_ptr<Y>;
     template <class Y> friend class shared_ptr;
+    template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
+    template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
+
     T* _p;
     detail::__shared_ref_base* _ref;
 };
 
 // 20.7.2.2.6, shared_ptr creation
-template<class T, class... Args>
-shared_ptr<T> make_shared(Args&&... args);
 
 template<class T, class A, class... Args>
-shared_ptr<T> allocate_shared(const A& a, Args&&... args);
+shared_ptr<T> allocate_shared(const A& a, Args&&... args)
+{
+  typedef typename detail::__shared_ref_intrusive<T,A> iptr_type;
+  typedef typename A::template rebind<iptr_type>::other allocator_type;
+
+  allocator_type _a( _STLP_STD::move(a) );
+
+  void* m = _a.allocate( 1 );
+  try {
+    iptr_type* ip = ::new (m) iptr_type( _a, _STLP_STD::forward<Args>(args)... );
+
+    return shared_ptr<T>( ip );
+  }
+  catch ( ... ) {
+    _a.deallocate( static_cast<iptr_type*>(m), 1 );
+    throw;
+  }
+/*
+  A _a( a );
+  void* pv = _a.allocate( 1 );
+
+  try {
+    T* p = ::new(pv) T( _STLP_STD::forward<Args>( args ) ... );
+    return shared_ptr<T>( p );
+  }
+  catch ( ... ) {
+    _a.deallocate( 1, pv );
+    throw;
+  }
+*/
+}
+
+template <class T, class... Args>
+shared_ptr<T> make_shared(Args&&... args)
+{
+  typedef typename detail::__shared_ref_intrusive<T,_STLP_STD::allocator<typename _STLP_STD::remove_const<T>::type> > iptr_type;
+  _STLP_STD::allocator<iptr_type> _a;
+
+  void* m = _a.allocate( 1 );
+  try {
+    iptr_type* ip = ::new (m) iptr_type( _a, _STLP_STD::forward<Args>(args)... );
+
+    return shared_ptr<T>( ip );
+  }
+  catch ( ... ) {
+    _a.deallocate( static_cast<iptr_type*>(m), 1 );
+    throw;
+  }
+
+  // return allocate_shared<T>(
+  //   _STLP_STD::allocator<typename _STLP_STD::remove_const<T>::type>(),
+  //   _STLP_STD::forward<Args>( args ) ... );
+}
 
 // 20.7.2.2.7, shared_ptr comparisons:
 template<class T, class U>
-bool operator ==(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */;
+bool operator ==(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+{ return a.get() == b.get(); }
 
 template<class T, class U>
-bool operator !=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */;
+bool operator !=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+{ return !(a == b); }
 
 template<class T, class U>
-bool operator <(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */;
+bool operator <(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+{ return less<typename common_type<T*,U*>::type>()( a.get(), b.get() ); }
 
 template<class T, class U>
-bool operator >(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */;
+bool operator >(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+{ return b < a; }
 
 template<class T, class U>
-bool operator <=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */;
+bool operator <=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+{ return !(a > b); }
 
 template<class T, class U>
-bool operator >=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */;
+bool operator >=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+{ return !(a < b); }
 
 template <class T>
-bool operator ==(const shared_ptr<T>& a, nullptr_t) /* noexcept */;
+bool operator ==(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+{ return !(bool)a; }
 
 template <class T>
-bool operator ==(nullptr_t, const shared_ptr<T>& b) /* noexcept */;
+bool operator ==(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+{ return !(bool)b; }
 
 template <class T>
-bool operator !=(const shared_ptr<T>& a, nullptr_t) /* noexcept */;
+bool operator !=(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+{ return (bool)a; }
 
 template <class T>
-bool operator !=(nullptr_t, const shared_ptr<T>& b) /* noexcept */;
+bool operator !=(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+{ return (bool)b; }
 
 template <class T>
-bool operator <(const shared_ptr<T>& a, nullptr_t) /* noexcept */;
+bool operator <(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+{ return less<T*>()( a.get(), nullptr ); }
 
 template <class T>
-bool operator <(nullptr_t, const shared_ptr<T>& b) /* noexcept */;
+bool operator <(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+{ return less<T*>()( nullptr, b.get() ); }
 
 template <class T>
-bool operator <=(const shared_ptr<T>& a, nullptr_t) /* noexcept */;
+bool operator <=(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+{ return !(a > nullptr); }
 
 template <class T>
-bool operator <=(nullptr_t, const shared_ptr<T>& b) /* noexcept */;
+bool operator <=(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+{ return !(nullptr > b); }
 
 template <class T>
-bool operator >(const shared_ptr<T>& a, nullptr_t) /* noexcept */;
+bool operator >(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+{ return less<T*>()( nullptr, a.get() ); }
 
 template <class T>
-bool operator >(nullptr_t, const shared_ptr<T>& b) /* noexcept */;
+bool operator >(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+{ return less<T*>()( b.get(), nullptr ); }
 
 template <class T>
-bool operator >=(const shared_ptr<T>& a, nullptr_t) /* noexcept */;
+bool operator >=(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+{ return !(a < nullptr); }
 
 template <class T>
-bool operator >=(nullptr_t, const shared_ptr<T>& b) /* noexcept */;
+bool operator >=(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+{ return !(nullptr < b); }
+
 
 // 20.7.2.2.8, shared_ptr specialized algorithms:
 template<class T>
-void swap(shared_ptr<T>& a, shared_ptr<T>& b) /* noexcept */;
+void swap(shared_ptr<T>& a, shared_ptr<T>& b) /* noexcept */
+{ a.swap( b ); }
 
 // 20.7.2.2.9, shared_ptr casts:
 template<class T, class U>
