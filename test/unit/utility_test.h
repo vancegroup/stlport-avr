@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2011-09-23 19:44:32 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-23 20:35:41 ptr>
 
 /*
- * Copyright (c) 2004-2010
+ * Copyright (c) 2004-2011
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008

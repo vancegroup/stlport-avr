@@ -76,7 +76,7 @@ namespace rel_ops {
 //       { return v; }
 // };
 
-#ifdef _STLP_RVR
+#ifdef _STLP_CPP_0X
 
 template <class T>
 inline T&& forward( typename _STLP_STD::remove_reference<T>::type& t ) throw() // noexcept
@@ -89,15 +89,15 @@ inline T&& forward( typename _STLP_STD::remove_reference<T>::type&& t ) throw() 
   return static_cast<T&&>(t);
 }
 
-// template <class T>
-// inline typename remove_reference<T>::type&& move( T&& t ) throw() // noexcept
-// { return static_cast<typename remove_reference<T>::type&&>(t); }
+template <class T>
+inline typename remove_reference<T>::type&& move( T&& t ) throw() // noexcept
+{ return static_cast<typename remove_reference<T>::type&&>(t); }
 
 //template <class T>
 //inline typename _STLP_STD::conditional<!_STLP_STD::is_nothrow_move_constructible<T>::value && _STLP_STD::is_copy_constructible<T>::value, const T&, T&&>::type move_if_noexcept(T& x) throw() // noexcept
-//{ return move(x); }
+//{ return _STLP_STD::move(x); }
 
-#endif
+#else // !_STLP_CPP_0X
 
 template <class T>
 __move_source<typename remove_const<typename remove_reference<T>::type>::type> move( const T& t )
@@ -107,6 +107,7 @@ template <class T>
 __move_source<typename remove_reference<T>::type> move( T& t )
 { return __move_source<typename remove_reference<T>::type>( t ); }
 
+#endif // !_STLP_CPP_0X
 
 template <class _T1, class _T2>
 struct pair {
