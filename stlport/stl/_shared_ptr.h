@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 09:38:28 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 10:13:54 ptr>
 
 /*
  * Copyright (c) 2011
@@ -131,11 +131,11 @@ class __shared_ref_deleter :
 };
 
 template <class T, class D, class A>
-class __owner_aux_alloc :
+class __shared_ref_alloc :
     public __shared_ref_deleter<T,D>
 {
   public:
-    __owner_aux_alloc( T* p, D d, A a ) :
+    __shared_ref_alloc( T* p, D d, A a ) :
         __shared_ref_deleter<T,D>( p, d ),
         _a( a )
       { }
@@ -241,14 +241,14 @@ class shared_ptr
               class = typename enable_if<is_convertible<Y*,T*>::value && is_copy_constructible<D>::value>::type>
     shared_ptr( Y* p, D d, A a )
       {
-        typedef typename A::template rebind<detail::__owner_aux_alloc<T,D,A> >::other allocator_type;
+        typedef typename A::template rebind<detail::__shared_ref_alloc<T,D,A> >::other allocator_type;
         allocator_type _a( _STLP_STD::move(a) );
         void* m;
 
         try {
           m = _a.allocate(1);
           _p = static_cast<T*>(p);
-          _ref = new (m) detail::__owner_aux_alloc<T,D,A>( _p, d, _STLP_STD::move(_a) );
+          _ref = new (m) detail::__shared_ref_alloc<T,D,A>( _p, d, _STLP_STD::move(_a) );
         }
         catch ( ... ) {
           d( p );
@@ -280,7 +280,7 @@ class shared_ptr
         try {
           void* m = a.allocate(1);
           _p = NULL;
-          _ref = new (m) detail::__owner_aux_alloc<T,D,A>( NULL, d, _STLP_STD::move(a) );
+          _ref = new (m) detail::__shared_ref_alloc<T,D,A>( NULL, d, _STLP_STD::move(a) );
         }
         catch ( ... ) {
           d( NULL );
