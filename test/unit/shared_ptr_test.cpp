@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 09:54:36 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-01 00:46:34 ptr>
 
 /*
  * Copyright (c) 2011
@@ -18,12 +18,52 @@
 #include "shared_ptr_test.h"
 
 #include <memory>
+#include <type_traits>
+
 // #include <typeinfo>
 #include <stl/_shared_ptr.h>
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
+
+struct P1
+{
+    typedef int element_type;
+};
+
+struct P2
+{
+    // typedef int element_type;
+};
+
+struct P3
+{
+    typedef int element_type;
+    typedef short difference_type;
+};
+
+int EXAM_IMPL(pointer_traits_test::base)
+{
+  pointer_traits<int*>::pointer p;
+  pointer_traits<int*>::element_type e;
+
+  EXAM_CHECK( (is_same<int*,decltype(p)>::value) );
+  EXAM_CHECK( (is_same<int,decltype(e)>::value) );
+
+#ifdef STLPORT
+  // implementation details
+  EXAM_CHECK( (is_same<true_type,decltype(detail::__has_type_selector::__test<P1>(0))>::value) );
+  EXAM_CHECK( (is_same<false_type,decltype(detail::__has_type_selector::__test<P2>(0))>::value) );
+  EXAM_CHECK( (is_same<P3::difference_type,decltype(detail::__has_type_selector::__test_d<P3>(0))>::value) );
+#endif
+
+  EXAM_CHECK( (is_same<std::ptrdiff_t,pointer_traits<P1>::difference_type>::value) );
+  EXAM_CHECK( (is_same<P3::difference_type,pointer_traits<P3>::difference_type>::value) );
+  EXAM_CHECK( (is_same<std::ptrdiff_t,pointer_traits<int*>::difference_type>::value) );
+
+  return EXAM_RESULT;
+}
 
 #if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
 struct X;

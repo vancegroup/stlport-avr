@@ -18,11 +18,145 @@
 
 #ifndef _STLP_MEMORY
 
+#include <type_traits>
+
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x46
 #  include <stl/_prolog.h>
 #  define _STLP_MEMORY
 #endif
+
+_STLP_BEGIN_NAMESPACE
+
+template <class T>
+inline T* addressof(T& r) /* noexcept */
+{ return reinterpret_cast<T*>( &const_cast<char&>( reinterpret_cast<const volatile char&>(r) ) ); }
+
+// 20.6.3, pointer traits
+template <class Ptr> struct pointer_traits;
+// template <class T> struct pointer_traits<T*>;
+
+namespace detail {
+
+struct __has_type_selector
+{
+    template <class T>
+    static decltype( declval<typename T::element_type*>(), declval<true_type>()) __test( int );
+
+    template <class>
+    static false_type __test( ... );
+
+    template <class T>
+    static typename T::difference_type __test_d( int );
+
+    template <class>
+    static typename _STLP_STD::ptrdiff_t __test_d( ... );
+
+    template <class T, class U>
+    static decltype( declval<typename T::template rebind<U>::type*>(), declval<true_type>()) __test_r( int );
+
+    template <class, class>
+    static false_type __test_r( ... );
+};
+
+template <bool, class T>
+struct __element_type
+{
+};
+
+template <class T>
+struct __element_type<true,T>
+{
+    typedef typename T::element_type element_type;
+};
+
+template <bool, class T, class U>
+struct __rebind_type
+{
+};
+
+template <class T, class U>
+struct __rebind_type<true,T,U>
+{
+    typedef typename T::template rebind<U>::type type;
+};
+
+} // detail
+
+template <class Ptr>
+struct pointer_traits
+{
+    typedef Ptr pointer;
+    // typedef typename Ptr::element_type element_type;
+    typedef typename detail::__element_type<is_same<true_type,decltype(detail::__has_type_selector::__test<Ptr>(0))>::value,Ptr>::element_type element_type;
+    // typedef typename Ptr::difference_type difference_type;
+    typedef decltype(detail::__has_type_selector::__test_d<Ptr>(0)) difference_type;
+    // template <class U> using rebind = see below;
+    template <class U>
+    struct rebind
+    {
+        // typedef typename Ptr::template rebind<U>::type type;
+        typedef typename detail::__rebind_type<is_same<true_type,decltype(detail::__has_type_selector::__test_r<Ptr,U>(0))>::value,Ptr,U>::type type;
+    };
+
+    static pointer pointer_to( element_type& r )
+      { return Ptr::pointer_to(r); }
+};
+
+template <class T>
+struct pointer_traits<T*>
+{
+    typedef T* pointer;
+    typedef T element_type;
+    typedef ptrdiff_t difference_type;
+    // template <class U> using rebind = U*;
+    template <class U>
+    struct rebind
+    {
+        typedef U* type;
+    };
+
+    static pointer pointer_to( T& r ) /* noexcept */
+      { return _STLP_STD::addressof(r); }
+};
+
+template <>
+struct pointer_traits<void*>
+{
+    typedef void* pointer;
+    typedef void element_type;
+    typedef ptrdiff_t difference_type;
+    // template <class U> using rebind = U*;
+    template <class U>
+    struct rebind
+    {
+        typedef U* type;
+    };
+
+    // static pointer pointer_to( void ) /* noexcept */ // unspecified
+    //  { return NULL; }
+};
+
+enum class pointer_safety
+{ relaxed, preferred, strict };
+
+void declare_reachable(void *p);
+
+namespace detail {
+
+void* __undeclare_reachable( void* ) /* noexcept */;
+
+} // detail
+
+template <class T>
+T *undeclare_reachable( T* p ) /* noexcept */
+{ return reinterpret_cast<T*>( detail::__undeclare_reachable(reinterpret_cast<void*>(p)) ); }
+
+void declare_no_pointers(char *p, size_t n) /* noexcept */;
+void undeclare_no_pointers(char *p, size_t n) /* noexcept */;
+pointer_safety get_pointer_safety() /* noexcept */;
+
+_STLP_END_NAMESPACE
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x46)
 #  ifndef _STLP_INTERNAL_ALLOC_H
@@ -40,34 +174,12 @@
 #  include <stl/_auto_ptr.h>
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x46) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (__MSL__)
-#    include _STLP_NATIVE_HEADER(limits)
-#  endif
-
-#  if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
-#    define BOOST_TR1_MEMORY_INCLUDED
-#    define BOOST_TR1_FULL_MEMORY_INCLUDED
-#  endif
-
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <memory>
-#  else
-#    include _STLP_NATIVE_HEADER(memory)
-#  endif
-
-#  if defined (__MSL__) && (__MSL__ >= 0x2405   && __MSL__ < 0x5201) 
-/*  980401 vss  MSL 2.4  Pro 3 Release  */  
-#    include <new_mem.h>
-#  endif
-#endif
-
 #if (_STLP_OUTERMOST_HEADER_ID == 0x46)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
 #endif
 
-#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
+#if defined(_STLP_USE_BOOST_SUPPORT)
 
 namespace boost {
 

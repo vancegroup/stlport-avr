@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 09:32:20 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 19:11:55 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -882,6 +882,9 @@ int main( int argc, const char** argv )
     cvt_tc[1] = t.add( &codecvt_test::utf8_to_wchar, cvt_test, "convert UTF-8 to wchar", cvt_tc[0] ) );
   t.add( &codecvt_test::partial_conversion, cvt_test, "codecvt partial conversion", cvt_tc[1] );
 
+
+  pointer_traits_test pntt_test;
+  t.add( &pointer_traits_test::base, pntt_test, "pointer_traits basic" );
 
   shared_ptr_test shp_test;
   t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );

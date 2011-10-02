@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 09:31:16 ptr>
+// -*- C++ -*- Time-stamp: <2011-09-29 18:57:47 ptr>
 
 /*
  * Copyright (c) 2011
@@ -21,6 +21,12 @@
 #define __FIT_EXAM
 
 #include <exam/suite.h>
+
+class pointer_traits_test
+{
+  public:
+    int EXAM_DECL(base);
+};
 
 class shared_ptr_test
 {
