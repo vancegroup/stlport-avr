@@ -140,11 +140,11 @@ struct pointer_traits<void*>
 enum class pointer_safety
 { relaxed, preferred, strict };
 
-void declare_reachable(void *p);
+_STLP_DECLSPEC void declare_reachable(void *p);
 
 namespace detail {
 
-void* __undeclare_reachable( void* ) /* noexcept */;
+_STLP_DECLSPEC void* __undeclare_reachable( void* ) /* noexcept */;
 
 } // detail
 
@@ -152,9 +152,11 @@ template <class T>
 T *undeclare_reachable( T* p ) /* noexcept */
 { return reinterpret_cast<T*>( detail::__undeclare_reachable(reinterpret_cast<void*>(p)) ); }
 
-void declare_no_pointers(char *p, size_t n) /* noexcept */;
-void undeclare_no_pointers(char *p, size_t n) /* noexcept */;
-pointer_safety get_pointer_safety() /* noexcept */;
+_STLP_DECLSPEC void declare_no_pointers(char *p, size_t n) /* noexcept */;
+_STLP_DECLSPEC void undeclare_no_pointers(char *p, size_t n) /* noexcept */;
+_STLP_DECLSPEC pointer_safety get_pointer_safety() /* noexcept */;
+
+_STLP_DECLSPEC void *align( _STLP_STD::size_t alignment, _STLP_STD::size_t size, void *&ptr, _STLP_STD::size_t& space );
 
 _STLP_END_NAMESPACE
 

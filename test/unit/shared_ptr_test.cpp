@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-01 00:46:34 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-02 15:10:42 ptr>
 
 /*
  * Copyright (c) 2011
@@ -43,10 +43,10 @@ struct P3
     typedef short difference_type;
 };
 
-int EXAM_IMPL(pointer_traits_test::base)
+int EXAM_IMPL(memory1_test::pointer_traits)
 {
-  pointer_traits<int*>::pointer p;
-  pointer_traits<int*>::element_type e;
+  std::pointer_traits<int*>::pointer p;
+  std::pointer_traits<int*>::element_type e;
 
   EXAM_CHECK( (is_same<int*,decltype(p)>::value) );
   EXAM_CHECK( (is_same<int,decltype(e)>::value) );
@@ -58,9 +58,45 @@ int EXAM_IMPL(pointer_traits_test::base)
   EXAM_CHECK( (is_same<P3::difference_type,decltype(detail::__has_type_selector::__test_d<P3>(0))>::value) );
 #endif
 
-  EXAM_CHECK( (is_same<std::ptrdiff_t,pointer_traits<P1>::difference_type>::value) );
-  EXAM_CHECK( (is_same<P3::difference_type,pointer_traits<P3>::difference_type>::value) );
-  EXAM_CHECK( (is_same<std::ptrdiff_t,pointer_traits<int*>::difference_type>::value) );
+  EXAM_CHECK( (is_same<std::ptrdiff_t,std::pointer_traits<P1>::difference_type>::value) );
+  EXAM_CHECK( (is_same<P3::difference_type,std::pointer_traits<P3>::difference_type>::value) );
+  EXAM_CHECK( (is_same<std::ptrdiff_t,std::pointer_traits<int*>::difference_type>::value) );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(memory1_test::align)
+{
+  struct S {
+      char buf[64];
+  };
+
+  char b[1024];
+
+  void* p1 = b;
+  size_t sz = 1024;
+
+  EXAM_CHECK( std::align( 1, sizeof(S), p1, sz ) != NULL );
+  EXAM_CHECK( p1 == b );
+
+  p1 = &b[1];
+  sz = 1024 - 1;
+
+  EXAM_CHECK( std::align( 1, sizeof(S), p1, sz ) != NULL );
+  EXAM_CHECK( p1 == &b[1] );
+
+  EXAM_CHECK( std::align( 8, sizeof(S), p1, sz ) != NULL );
+  EXAM_CHECK( p1 != &b[1] );
+  EXAM_CHECK( p1 >= &b[1] );
+  EXAM_CHECK( (reinterpret_cast<char*>(p1) - &b[1]) < 8 );
+  EXAM_CHECK( sz <= 1023 );
+
+  p1 = b;
+  sz = 1024;
+
+  EXAM_CHECK( std::align( 8, sizeof(S) * 20, p1, sz ) == NULL );
+  EXAM_CHECK( p1 == b );
+  EXAM_CHECK( sz == 1024 );
 
   return EXAM_RESULT;
 }

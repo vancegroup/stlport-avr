@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 19:11:55 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-02 14:49:43 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -883,8 +883,9 @@ int main( int argc, const char** argv )
   t.add( &codecvt_test::partial_conversion, cvt_test, "codecvt partial conversion", cvt_tc[1] );
 
 
-  pointer_traits_test pntt_test;
-  t.add( &pointer_traits_test::base, pntt_test, "pointer_traits basic" );
+  memory1_test m1_test;
+  t.add( &memory1_test::pointer_traits, m1_test, "pointer_traits" );
+  t.add( &memory1_test::align, m1_test, "align" );
 
   shared_ptr_test shp_test;
   t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );

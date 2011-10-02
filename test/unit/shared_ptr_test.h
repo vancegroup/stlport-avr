@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 18:57:47 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-02 14:49:15 ptr>
 
 /*
  * Copyright (c) 2011
@@ -22,10 +22,11 @@
 
 #include <exam/suite.h>
 
-class pointer_traits_test
+class memory1_test
 {
   public:
-    int EXAM_DECL(base);
+    int EXAM_DECL(align);
+    int EXAM_DECL(pointer_traits);
 };
 
 class shared_ptr_test

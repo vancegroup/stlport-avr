@@ -53,6 +53,25 @@ extern "C" {
 }
 #endif
 
+_STLP_BEGIN_NAMESPACE
+
+void *align( _STLP_STD::size_t alignment, _STLP_STD::size_t size, void*& ptr, _STLP_STD::size_t& space )
+{
+  void* tmp = reinterpret_cast<void*>( reinterpret_cast<intptr_t>((reinterpret_cast<char*>(ptr) + alignment - 1)) & ~(alignment - 1) );
+
+  if ( (reinterpret_cast<char*>(tmp) + size) <= (reinterpret_cast<char*>(ptr) + space) ) {
+    if ( ptr != tmp ) {
+      space -= reinterpret_cast<char*>(tmp) - reinterpret_cast<char*>(ptr);
+      ptr = tmp;
+    }
+    return ptr;
+  }
+
+  return NULL;
+}
+
+_STLP_END_NAMESPACE
+
 // Specialised debug form of new operator which does not provide "false"
 // memory leaks when run with debug CRT libraries.
 #if defined (_STLP_MSVC) && (_STLP_MSVC >= 1020 && defined (_STLP_DEBUG_ALLOC)) && !defined (_STLP_WCE)
