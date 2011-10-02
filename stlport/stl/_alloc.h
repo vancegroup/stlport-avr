@@ -59,6 +59,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
+struct allocator_arg_t
+{ };
+
+constexpr allocator_arg_t allocator_arg = allocator_arg_t();
+
 template <class _Tp>
 inline void __destroy_aux(_Tp* __pointer, const false_type& /*_Trivial_destructor*/)
 { __pointer->~_Tp(); }
