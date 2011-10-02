@@ -57,6 +57,12 @@ struct __has_type_selector
 
     template <class, class>
     static false_type __test_r( ... );
+
+    template <class T>
+    static decltype( declval<typename T::allocator_type>(), declval<true_type>()) __test_a( int );
+
+    template <class>
+    static false_type __test_a( ... );
 };
 
 template <bool, class T>
@@ -157,6 +163,34 @@ _STLP_DECLSPEC void undeclare_no_pointers(char *p, size_t n) /* noexcept */;
 _STLP_DECLSPEC pointer_safety get_pointer_safety() /* noexcept */;
 
 _STLP_DECLSPEC void *align( _STLP_STD::size_t alignment, _STLP_STD::size_t size, void *&ptr, _STLP_STD::size_t& space );
+
+namespace detail {
+
+//template <class T>
+//struct __has_allocator_type :
+//        integral_constant<bool,is_same<true_type,decltype(detail::__has_type_selector::__test_a<T>(0))>::value>
+//{
+//};
+
+template <class T, class Alloc, bool>
+struct __uses_allocator_aux :
+    public false_type
+{
+};
+
+template <class T, class Alloc>
+struct __uses_allocator_aux<T,Alloc,true> :
+    public integral_constant<bool,is_convertible<Alloc,typename T::allocator_type>::value>
+{
+};
+
+} // namespace detail
+
+template <class T, class Alloc>
+struct uses_allocator :
+    public detail::__uses_allocator_aux<T,Alloc,is_same<true_type,decltype(detail::__has_type_selector::__test_a<T>(0))>::value>
+{
+};
 
 _STLP_END_NAMESPACE
 

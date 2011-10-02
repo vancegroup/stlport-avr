@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-02 15:10:42 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-02 19:14:57 ptr>
 
 /*
  * Copyright (c) 2011
@@ -97,6 +97,35 @@ int EXAM_IMPL(memory1_test::align)
   EXAM_CHECK( std::align( 8, sizeof(S) * 20, p1, sz ) == NULL );
   EXAM_CHECK( p1 == b );
   EXAM_CHECK( sz == 1024 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(memory1_test::uses_allocator)
+{
+  struct A
+  {
+  };
+
+  struct AA
+  {
+  };
+
+  struct AAA :
+    public AA
+  {
+  };
+
+  struct B
+  {
+      typedef AA allocator_type;
+  };
+
+  EXAM_CHECK( (std::uses_allocator<A,AA>::value == false) );
+  EXAM_CHECK( (std::uses_allocator<A,AAA>::value == false) );
+  EXAM_CHECK( (std::uses_allocator<B,AA>::value == true) );
+  EXAM_CHECK( (std::uses_allocator<B,AAA>::value == true) );
+  EXAM_CHECK( (std::uses_allocator<B,A>::value == false) );
 
   return EXAM_RESULT;
 }
