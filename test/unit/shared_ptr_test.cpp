@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-02 19:14:57 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-03 00:09:25 ptr>
 
 /*
  * Copyright (c) 2011
@@ -19,9 +19,6 @@
 
 #include <memory>
 #include <type_traits>
-
-// #include <typeinfo>
-#include <stl/_shared_ptr.h>
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;

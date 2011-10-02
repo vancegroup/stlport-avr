@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-29 10:13:54 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-03 00:11:15 ptr>
 
 /*
  * Copyright (c) 2011
@@ -604,15 +604,16 @@ template<class T, class U>
 shared_ptr<T> dynamic_pointer_cast(const shared_ptr<U>& r) /* noexcept */;
 
 template<class T, class U>
-shared_ptr<T>
-const_pointer_cast(const shared_ptr<U>& r) /* noexcept */;
+shared_ptr<T> const_pointer_cast(const shared_ptr<U>& r) /* noexcept */;
 
 // 20.7.2.2.10, shared_ptr get_deleter:
-template<class D, class T>
+template <class D, class T>
 D* get_deleter(const shared_ptr<T>& p) /* noexcept */;
 
 // 20.7.2.2.11, shared_ptr I/O:
-template<class E, class T, class Y>
+template <class E, class T> class basic_ostream;
+
+template <class E, class T, class Y>
 basic_ostream<E,T>& operator<< (basic_ostream<E,T>& os, const shared_ptr<Y>& p);
 
 _STLP_END_NAMESPACE
