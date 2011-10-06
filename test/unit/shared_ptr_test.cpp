@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-03 00:09:25 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-04 00:05:52 ptr>
 
 /*
  * Copyright (c) 2011
@@ -97,6 +97,20 @@ int EXAM_IMPL(memory1_test::align)
 
   return EXAM_RESULT;
 }
+
+template <class T>
+struct TAlloc
+{
+};
+
+struct x_selector
+{
+    template <template <class U, class ... Args> class T, class U, class ... Args>
+    static decltype( declval<T<U,Args...> >(), declval<true_type>())  __test( int );
+
+    template <class, class, class ... >
+    static false_type __test( ... );
+};
 
 int EXAM_IMPL(memory1_test::uses_allocator)
 {

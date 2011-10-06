@@ -71,29 +71,103 @@ namespace detail {
 
 struct __has_type_selector
 {
+    // T::element_type?
     template <class T>
     static decltype( declval<typename T::element_type*>(), declval<true_type>()) __test( int );
 
     template <class>
     static false_type __test( ... );
 
+    // T::difference_type?
     template <class T>
     static typename T::difference_type __test_d( int );
 
     template <class>
     static typename _STLP_STD::ptrdiff_t __test_d( ... );
 
+    // T::rebind<U>?
     template <class T, class U>
     static decltype( declval<typename T::template rebind<U>::type*>(), declval<true_type>()) __test_r( int );
 
     template <class, class>
     static false_type __test_r( ... );
 
+    // T::allocator_type?
     template <class T>
     static decltype( declval<typename T::allocator_type>(), declval<true_type>()) __test_a( int );
 
     template <class>
     static false_type __test_a( ... );
+
+    // T::pointer?
+    template <class T>
+    static decltype( declval<typename T::pointer>(), declval<true_type>()) __test_p( int );
+
+    template <class>
+    static false_type __test_p( ... );
+
+    // T::const_pointer?
+    template <class T>
+    static decltype( declval<typename T::const_pointer>(), declval<true_type>()) __test_cp( int );
+
+    template <class>
+    static false_type __test_cp( ... );
+
+    // T::void_pointer?
+    template <class T>
+    static decltype( declval<typename T::void_pointer>(), declval<true_type>()) __test_vp( int );
+
+    template <class>
+    static false_type __test_vp( ... );
+
+    // T::const_void_pointer?
+    template <class T>
+    static decltype( declval<typename T::const_void_pointer>(), declval<true_type>()) __test_cvp( int );
+
+    template <class>
+    static false_type __test_cvp( ... );
+
+    // T::difference_type, another?
+    template <class T>
+    static decltype( declval<typename T::difference_type>(), declval<true_type>()) __test_dp( int );
+
+    template <class>
+    static false_type __test_dp( ... );
+
+    // T::size_type?
+    template <class T>
+    static decltype( declval<typename T::size_type>(), declval<true_type>()) __test_sz( int );
+
+    template <class>
+    static false_type __test_sz( ... );
+
+    // T::propagate_on_container_copy_assignment?
+    template <class T>
+    static decltype( declval<typename T::propagate_on_container_copy_assignment>() ) __test_pcca( int );
+
+    template <class>
+    static false_type __test_pcca( ... );
+
+    // T::propagate_on_container_move_assignment?
+    template <class T>
+    static decltype( declval<typename T::propagate_on_container_move_assignment>() ) __test_pcma( int );
+
+    template <class>
+    static false_type __test_pcma( ... );
+
+    // T::propagate_on_container_swap?
+    template <class T>
+    static decltype( declval<typename T::propagate_on_container_swap>() ) __test_pcs( int );
+
+    template <class>
+    static false_type __test_pcs( ... );
+
+    // T::rebind<U>::other?
+    template <class T, class U>
+    static decltype( declval<typename T::template rebind<U>::other>(), declval<true_type>()) __test_ro( int );
+
+    template <class, class>
+    static false_type __test_ro( ... );
 };
 
 template <bool, class T>
@@ -215,6 +289,106 @@ struct __uses_allocator_aux<T,Alloc,true> :
 {
 };
 
+template <bool, class Alloc>
+struct __pointer_type
+{
+    typedef typename Alloc::value_type* pointer;
+};
+
+template <class Alloc>
+struct __pointer_type<true,Alloc>
+{
+    typedef typename Alloc::pointer pointer;
+};
+
+template <bool, class Alloc>
+struct __const_pointer_type
+{
+    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<typename add_const<typename Alloc::value_type>::type>::type const_pointer;
+};
+
+template <class Alloc>
+struct __const_pointer_type<true,Alloc>
+{
+    typedef typename Alloc::const_pointer const_pointer;
+};
+
+template <bool, class Alloc>
+struct __void_pointer_type
+{
+    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<void>::type void_pointer;
+};
+
+template <class Alloc>
+struct __void_pointer_type<true,Alloc>
+{
+    typedef typename Alloc::void_pointer void_pointer;
+};
+
+template <bool, class Alloc>
+struct __const_void_pointer_type
+{
+    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<const void>::type const_void_pointer;
+};
+
+template <class Alloc>
+struct __const_void_pointer_type<true,Alloc>
+{
+    typedef typename Alloc::const_void_pointer const_void_pointer;
+};
+
+template <bool, class Alloc>
+struct __difference_pointer_type
+{
+    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::difference_type difference_type;
+};
+
+template <class Alloc>
+struct __difference_pointer_type<true,Alloc>
+{
+    typedef typename Alloc::difference_type difference_type;
+};
+
+template <bool, class Alloc>
+struct __pointer_size_type
+{
+    typedef typename make_unsigned<typename detail::__difference_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_dp<Alloc>(0))>::value,Alloc>::difference_type>::type size_type;
+};
+
+template <class Alloc>
+struct __pointer_size_type<true,Alloc>
+{
+    typedef typename Alloc::size_type size_type;
+};
+
+template <class ToF, class Alloc, class U, class ... Args>
+class __rebind_other_type
+{
+//  private:
+//    template <template <class V, class ... XArgs> class T, class V, class ... XArgs>
+//    static T<V,XArgs...> __test( int );
+
+//  public:
+//    typedef decltype(__test<Alloc<U,Args> >(0))::type type;
+};
+
+template <template <class U, class ... Args> class Alloc, class U, class ... Args>
+struct __rebind_other_type<false_type,Alloc<U,Args...>,U,Args... >
+{
+//  private:
+//    template <template <class V, class ... XArgs> class T, class V, class ... XArgs>
+//    static T<V,XArgs...> __test( int );
+
+//  public:
+    typedef Alloc<U,Args...> type;
+};
+
+template <class Alloc, class U, class ... Args>
+struct __rebind_other_type<true_type,Alloc,U,Args...>
+{
+    typedef typename Alloc::template rebind<U>::other type;
+};
+
 } // namespace detail
 
 template <class T, class Alloc>
@@ -227,6 +401,96 @@ struct allocator_arg_t
 { };
 
 constexpr allocator_arg_t allocator_arg = allocator_arg_t();
+
+//namespace detail {
+//struct _alloc_dummy {};
+//}
+
+template <class Alloc /* , class = detail::_alloc_dummy, class ... */ >
+struct allocator_traits
+{
+    typedef Alloc allocator_type;
+    typedef typename Alloc::value_type value_type;
+    typedef typename detail::__pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer pointer;
+    typedef typename detail::__const_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_cp<Alloc>(0))>::value,Alloc>::const_pointer const_pointer;
+    typedef typename detail::__void_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_vp<Alloc>(0))>::value,Alloc>::void_pointer void_pointer;
+    typedef typename detail::__const_void_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_cvp<Alloc>(0))>::value,Alloc>::const_void_pointer const_void_pointer;
+
+    typedef typename detail::__difference_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_dp<Alloc>(0))>::value,Alloc>::difference_type difference_type;
+    typedef typename detail::__pointer_size_type<is_same<true_type,decltype(detail::__has_type_selector::__test_sz<Alloc>(0))>::value,Alloc>::size_type size_type;
+    typedef decltype(detail::__has_type_selector::__test_pcca<Alloc>(0)) propagate_on_container_copy_assignment;
+    typedef decltype(detail::__has_type_selector::__test_pcma<Alloc>(0)) propagate_on_container_move_assignment;
+    typedef decltype(detail::__has_type_selector::__test_pcs<Alloc>(0)) propagate_on_container_swap;
+    // template <class T> using rebind_alloc = see below;
+    template <class T>
+    struct rebind_alloc
+    {
+        typedef typename detail::__rebind_other_type<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0)),Alloc,T>::type type;
+    };
+    // template <class T> using rebind_traits = allocator_traits<rebind_alloc<T> >;
+    template <class T>
+    struct rebind_traits
+    {
+        typedef allocator_traits<typename rebind_alloc<T>::type> type;
+    };
+
+    static pointer allocate( Alloc& a, size_type n );
+    static pointer allocate( Alloc& a, size_type n, const_void_pointer hint );
+    static void deallocate( Alloc& a, pointer p, size_type n ) /* noexcept */;
+
+    template <class T, class... Args>
+    static void construct( Alloc& a, T* p, Args&&... args );
+
+    template <class T>
+    static void destroy( Alloc& a, T* p );
+
+    static size_type max_size( const Alloc& a );
+    static Alloc select_on_container_copy_construction( const Alloc& rhs );
+};
+
+#if 0
+template <template <class U, class ... Args> class Alloc, class U, class ... Args>
+struct allocator_traits<Alloc<U,Args...> >
+{
+    typedef Alloc<U,Args...> allocator_type;
+    typedef typename Alloc<U,Args...>::value_type value_type;
+    typedef typename detail::__pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc<U,Args...>>(0))>::value,Alloc<U,Args...>>::pointer pointer;
+    typedef typename detail::__const_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_cp<Alloc<U,Args...>>(0))>::value,Alloc<U,Args...>>::const_pointer const_pointer;
+    typedef typename detail::__void_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_vp<Alloc<U,Args...>>(0))>::value,Alloc<U,Args...>>::void_pointer void_pointer;
+    typedef typename detail::__const_void_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_cvp<Alloc<U,Args...>>(0))>::value,Alloc<U,Args...>>::const_void_pointer const_void_pointer;
+
+    typedef typename detail::__difference_pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_dp<Alloc<U,Args...>>(0))>::value,Alloc<U,Args...>>::difference_type difference_type;
+    typedef typename detail::__pointer_size_type<is_same<true_type,decltype(detail::__has_type_selector::__test_sz<Alloc<U,Args...>>(0))>::value,Alloc<U,Args...>>::size_type size_type;
+    typedef decltype(detail::__has_type_selector::__test_pcca<Alloc<U,Args...>>(0)) propagate_on_container_copy_assignment;
+    typedef decltype(detail::__has_type_selector::__test_pcma<Alloc<U,Args...>>(0)) propagate_on_container_move_assignment;
+    typedef decltype(detail::__has_type_selector::__test_pcs<Alloc<U,Args...>>(0)) propagate_on_container_swap;
+    // template <class T> using rebind_alloc = see below;
+    template <class T>
+    struct rebind_alloc
+    {
+        typedef typename detail::__rebind_other_type<decltype(detail::__has_type_selector::__test_ro<Alloc<T,Args...>,T,Args...>(0)),Alloc<T,Args...>,T,Args...>::type type;
+    };
+    // template <class T> using rebind_traits = allocator_traits<rebind_alloc<T> >;
+    template <class T>
+    struct rebind_traits
+    {
+        typedef allocator_traits<typename rebind_alloc<T>::type> type;
+    };
+
+    static pointer allocate( Alloc<U,Args...>& a, size_type n );
+    static pointer allocate( Alloc<U,Args...>& a, size_type n, const_void_pointer hint );
+    static void deallocate( Alloc<U,Args...>& a, pointer p, size_type n ) /* noexcept */;
+
+    template <class T, class... Args2>
+    static void construct( Alloc<U,Args...>& a, T* p, Args2&&... args );
+
+    template <class T>
+    static void destroy( Alloc<U,Args...>& a, T* p );
+
+    static size_type max_size( const Alloc<U,Args...>& a );
+    static Alloc<U,Args...> select_on_container_copy_construction( const Alloc<U,Args...>& rhs );
+};
+#endif
 
 template <class _Tp>
 inline void __destroy_aux(_Tp* __pointer, const false_type& /*_Trivial_destructor*/)
