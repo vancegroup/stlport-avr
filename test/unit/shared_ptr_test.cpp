@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-04 00:05:52 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-18 09:04:40 ptr>
 
 /*
  * Copyright (c) 2011
@@ -626,10 +626,14 @@ class my_allocator :
 
     size_type max_size() const _STLP_NOTHROW
       { return size_t(-1) / sizeof(value_type); }
-    void construct(pointer __p, const_reference __val)
-      { _STLP_STD::_Copy_Construct(__p, __val); }
-    void destroy(pointer __p)
-      { _STLP_STD::_Destroy(__p); }
+
+    template<class U, class... Args>
+    void construct( U* p, Args&&... args )
+      { ::new((void*)p) U( std::forward<Args>(args)... ); }
+
+    template <class U>
+    void destroy( U* p )
+      { std::detail::__destroy_selector<has_trivial_destructor<_Tp>::value>::destroy( p ); }
 };
 
 int EXAM_IMPL(shared_ptr_test::allocate)

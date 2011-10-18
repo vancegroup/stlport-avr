@@ -85,19 +85,19 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
   pointer old = this->_M_start;
   _STLP_TRY {
     for ( ; old != __pos; ++__new_finish, ++old ) {
-      _Move_Construct( __new_finish, *old );
+      get_allocator().construct( __new_finish, _STLP_STD::move( *old ) );
     }
     // handle insertion
     for ( ; __fill_len-- > 0; ++__new_finish ) {
-      _Copy_Construct( __new_finish, __x );
+      get_allocator().construct( __new_finish, __x );
     }
     if (!__atend) {
       for ( ; old != this->_M_finish; ++__new_finish, ++old ) {
-        _Move_Construct( __new_finish, *old );
+        get_allocator().construct( __new_finish, _STLP_STD::move( *old ) );
       }
     }
   }
-  _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
+  _STLP_UNWIND((_STLP_STD::detail::_Destroy_Range(__new_start,__new_finish),
                this->_M_end_of_storage.deallocate(__new_start,__len)))
   _M_clear();
   _M_set(__new_start, __new_finish, __new_start + __len);
@@ -113,7 +113,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
   pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
   // handle insertion
   for ( ; __fill_len-- > 0; ++__new_finish ) {
-    _Copy_Construct( __new_finish, __x );
+    get_allocator().construct( __new_finish, __x );
   }
   if (!__atend) {
     __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( __pos, this->_M_finish, __new_finish ) ); // copy remainder
@@ -129,7 +129,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
   _STLP_PRIV __copy_trivial( __pos, this->_M_finish, __pos + __n );
   this->_M_finish += __n;
   for ( ; __n-- > 0; ++__pos ) {
-    _Copy_Construct( __pos, __x );
+    get_allocator().construct( __pos, __x );
   }
 }
 
@@ -140,12 +140,12 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
   iterator src = this->_M_finish - 1;
   iterator dst = src + __n;
   for ( ; src >= __pos; --dst, --src ) {
-    _STLP_STD::_Move_Construct(dst, *src);
-    _STLP_STD::_Destroy_Moved(src);
+    get_allocator().construct( dst, _STLP_STD::move( *src ) );
+    get_allocator().destroy( src );
   }
   this->_M_finish += __n;
   for ( ; __n-- > 0; ++__pos ) {
-    _Copy_Construct( __pos, __x );
+    get_allocator().construct( __pos, __x );
   }
 }
 
@@ -188,7 +188,7 @@ vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>&
     } else if (size() >= __xlen) {
       pointer __i = _STLP_PRIV __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start) + 0,
                                            __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_start, _TrivialCopy());
-      _STLP_STD::_Destroy_Range(__i, this->_M_finish);
+      _STLP_STD::detail::_Destroy_Range(__i, this->_M_finish);
     } else {
       _STLP_PRIV __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start),
                              __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialCopy());

@@ -492,117 +492,63 @@ struct allocator_traits<Alloc<U,Args...> >
 };
 #endif
 
-template <class _Tp>
-inline void __destroy_aux(_Tp* __pointer, const false_type& /*_Trivial_destructor*/)
-{ __pointer->~_Tp(); }
+namespace detail {
 
-template <class _Tp>
-inline void __destroy_aux(_Tp*, const true_type& /*_Trivial_destructor*/)
-{ }
-
-template <class _Tp>
-inline void _Destroy( _Tp* __pointer )
+template <bool>
+struct __destroy_selector
 {
-  __destroy_aux(__pointer, typename has_trivial_destructor<_Tp>::type() );
+    template <class U>
+    static void destroy( U* p )
+      {
+        p->~U();
 #if defined (_STLP_DEBUG_UNINITIALIZED)
-  memset( __REINTERPRET_CAST(char*, __pointer), _STLP_SHRED_BYTE, sizeof(_Tp) );
+        memset( reinterpret_cast<char*>(p), _STLP_SHRED_BYTE, sizeof(U) );
 #endif
+      }
+
+    template <class _ForwardIterator>
+    static void destroy( _ForwardIterator __first, _ForwardIterator __last )
+      {
+        for_each( __first, __last, []( typename iterator_traits<_ForwardIterator>::value_type& i ){
+            _STLP_STD::detail::__destroy_selector<false>::destroy( &i );
+          } );
+      }
+};
+
+template <>
+struct __destroy_selector<true>
+{
+    template <class U>
+    static void destroy( U* p )
+      {
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+        memset( reinterpret_cast<char*>(p), _STLP_SHRED_BYTE, sizeof(U) );
+#endif
+      }
+
+    template <class _ForwardIterator>
+    static void destroy( _ForwardIterator __first, _ForwardIterator __last )
+      {
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+        for_each( __first, __last, []( typename iterator_traits<_ForwardIterator>::value_type& i ){
+            destroy( &i );
+          } );
+#endif
+      }
+};
+
+template <class _ForwardIterator>
+inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last)
+{
+  _STLP_STD::detail::__destroy_selector<has_trivial_destructor<typename iterator_traits<_ForwardIterator>::value_type>::value>::destroy( __first, __last );
 }
 
-template <class _Tp>
-inline void _Destroy_Moved( _Tp* __pointer )
-{
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  __destroy_aux( __pointer, typename __has_trivial_move<_Tp>::type() );
-#  if defined (_STLP_DEBUG_UNINITIALIZED)
-  memset( (char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp) );
-#  endif
-#else
-  _Destroy( __pointer );
-#endif
-}
+} // namespace detail
 
 #if defined (new)
 #  define _STLP_NEW_REDEFINE new
 #  undef new
 #endif
-
-template <class _T1>
-inline void _Construct_aux( _T1* __p, const false_type& )
-{ new(__p) _T1(); }
-
-template <class _T1>
-inline void _Construct_aux( _T1* __p, const true_type& )
-{
-#if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
-  *__p = _T1(0);
-#else
-  // We use binary copying for POD types since it results
-  // in a considerably better code at least on MSVC.
-  *__p = _T1();
-#endif /* _STLP_DEF_CONST_PLCT_NEW_BUG */
-}
-
-template <class _T1>
-inline void _Construct( _T1* __p )
-{
-#if defined (_STLP_DEBUG_UNINITIALIZED)
-  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
-#endif
-  _Construct_aux( __p, typename is_fundamental<_T1>::type() );
-}
-
-template <class T1, class T2>
-inline void _Copy_Construct_aux( T1* __p, const T2& __val, const false_type& /* is_fundamental */ )
-{
-  new(__p) T1(__val);
-}
-
-template <class T1, class T2>
-inline void _Copy_Construct_aux( T1* __p, const T2& __val, const true_type& /* is_fundamental */ )
-{
-  // We use binary copying for POD types since it results
-  // in a considerably better code at least on MSVC.
-  *__p = __val;
-}
-
-template <class T1, class T2>
-inline void _Copy_Construct( T1* __p, const T2& __val )
-{
-#if defined (_STLP_DEBUG_UNINITIALIZED)
-  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(T1));
-#endif
-  _Copy_Construct_aux( __p, __val, integral_constant<bool,is_fundamental<T1>::value && is_fundamental<T2>::value>() );
-}
-
-template <class _T1, class _T2>
-inline void _Move_Construct_Aux2( _T1* __p, _T2& __val, const false_type& /* move ctor */)
-{ new(__p) _T1(__val); }
-
-template <class _T1, class _T2>
-inline void _Move_Construct_Aux2( _T1* __p, _T2& __val, const true_type& /* move ctor */)
-{ new(__p) _T1( move( __val ) ); }
-
-template <class _T1, class _T2>
-inline void _Move_Construct_Aux( _T1* __p, _T2& __val, const false_type& /* is_fundamental */)
-{ _Move_Construct_Aux2( __p, __val, integral_constant<bool,is_same<_T1,_T2>::value &&  __has_move_constructor<_T1>::value>() ); }
-
-template <class _T1, class _T2>
-inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const true_type& /* is_fundamental */)
-{
-  // We use binary copying for POD types since it results
-  // in a considerably better code at least on MSVC.
-  *__p = _T1(__val);
-}
-
-template <class _T1, class _T2>
-inline void _Move_Construct( _T1* __p, _T2& __val )
-{
-#if defined (_STLP_DEBUG_UNINITIALIZED)
-  memset( (char*)__p, _STLP_SHRED_BYTE, sizeof(_T1) );
-#endif
-  _Move_Construct_Aux( __p, __val, typename is_fundamental<_T1>::type() );
-}
 
 #if defined(_STLP_NEW_REDEFINE)
 #  if defined (DEBUG_NEW)
@@ -611,66 +557,15 @@ inline void _Move_Construct( _T1* __p, _T2& __val )
 #  undef _STLP_NEW_REDEFINE
 #endif
 
-template <class _ForwardIterator, class _Tp>
-inline void __destroy_range_aux( _ForwardIterator __first, _ForwardIterator __last, _Tp*, const false_type& /*_Trivial_destructor*/)
-{
-  for ( ; __first != __last; ++__first ) {
-    __destroy_aux(&(*__first), false_type());
-#if defined (_STLP_DEBUG_UNINITIALIZED)
-    memset((char*)&(*__first), _STLP_SHRED_BYTE, sizeof(_Tp));
-#endif
-  }
-}
+//inline void _Destroy_Range(char*, char*) {}
+//#if defined (_STLP_HAS_WCHAR_T) // dwa 8/15/97
+//inline void _Destroy_Range(wchar_t*, wchar_t*) {}
+//inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
+//#endif
 
-template <class _ForwardIterator, class _Tp>
-#if defined (_STLP_DEBUG_UNINITIALIZED)
-inline void __destroy_range_aux( _ForwardIterator __first, _ForwardIterator __last,
-                                            _Tp*, const true_type& /*_Trivial_destructor*/)
-{
-  for ( ; __first != __last; ++__first) {
-    memset((char*)&(*__first), _STLP_SHRED_BYTE, sizeof(_Tp));
-  }
-}
-#else
-inline void __destroy_range_aux( _ForwardIterator, _ForwardIterator, _Tp*,
-                                 const true_type& /*_Trivial_destructor*/)
-{ }
-#endif
-
-template <class _ForwardIterator, class _Tp>
-inline void __destroy_range( _ForwardIterator __first, _ForwardIterator __last, _Tp* __ptr )
-{
-  typedef typename has_trivial_destructor<_Tp>::type _Trivial_destructor;
-  __destroy_range_aux(__first, __last, __ptr, _Trivial_destructor());
-}
-
-template <class _ForwardIterator>
-inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last)
-{
-  __destroy_range(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
-}
-
-inline void _Destroy_Range(char*, char*) {}
-#if defined (_STLP_HAS_WCHAR_T) // dwa 8/15/97
-inline void _Destroy_Range(wchar_t*, wchar_t*) {}
-inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
-#endif
-
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _ForwardIterator, class _Tp>
-inline void __destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr)
-{
-  __destroy_range_aux(__first, __last, __ptr, integral_constant<bool, __has_trivial_move<_Tp>::value>() );
-}
-#endif
-
-template <class _ForwardIterator>
-inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last)
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-{ __destroy_mv_srcs(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator)); }
-#else
-{ _Destroy_Range(__first, __last); }
-#endif
+//template <class _ForwardIterator>
+//inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last)
+//{ _Destroy_Range(__first, __last); }
 
 #if defined (_STLP_DEF_CONST_DEF_PARAM_BUG)
 // Those adaptors are here to fix common compiler bug regarding builtins:
@@ -845,6 +740,26 @@ _STLP_BEGIN_NAMESPACE
 // templates, the typename keyword, and the use of the template keyword
 // to refer to a template member of a dependent type.
 
+template <class _Tp> class allocator;
+
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC allocator<void>
+{
+  public:
+    typedef size_t      size_type;
+    typedef ptrdiff_t   difference_type;
+    typedef void*       pointer;
+    typedef const void* const_pointer;
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+    typedef void        value_type;
+#endif
+    template <class _Tp1>
+    struct rebind
+    {
+        typedef allocator<_Tp1> other;
+    };
+};
+
 template <class _Tp>
 class allocator
 {
@@ -909,14 +824,14 @@ class allocator
     allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW
       { }
 #endif
-    ~allocator() _STLP_NOTHROW
+    ~allocator()
       { }
-    pointer address( reference __x ) const
-      { return &__x; }
-    const_pointer address( const_reference __x ) const
-      { return &__x; }
+    pointer address( reference __x ) const _STLP_NOTHROW
+      { return addressof(__x); }
+    const_pointer address( const_reference __x ) const _STLP_NOTHROW
+      { return addressof(__x); }
     // __n is permitted to be 0.  The C++ standard says nothing about what the return value is when __n == 0.
-    _Tp* allocate(size_type __n, const void* = 0)
+    pointer allocate(size_type __n, allocator<void>::const_pointer /* hint */ = 0)
       {
         if (__n > max_size()) {
           _STLP_THROW_BAD_ALLOC;
@@ -955,28 +870,14 @@ class allocator
 
     size_type max_size() const _STLP_NOTHROW
       { return size_t(-1) / sizeof(value_type); }
-    void construct(pointer __p, const_reference __val)
-      { _STLP_STD::_Copy_Construct(__p, __val); }
-    void destroy(pointer __p)
-      { _STLP_STD::_Destroy(__p); }
-};
 
-_STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC allocator<void>
-{
-  public:
-    typedef size_t      size_type;
-    typedef ptrdiff_t   difference_type;
-    typedef void*       pointer;
-    typedef const void* const_pointer;
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-    typedef void        value_type;
-#endif
-    template <class _Tp1>
-    struct rebind
-    {
-        typedef allocator<_Tp1> other;
-    };
+    template<class U, class... Args>
+    void construct( U* p, Args&&... args )
+      { ::new((void*)p) U( _STLP_STD::forward<Args>(args)... ); }
+
+    template <class U>
+    void destroy( U* p )
+      { _STLP_STD::detail::__destroy_selector<has_trivial_destructor<_Tp>::value>::destroy( p ); }
 };
 
 template <class _T1, class _T2>

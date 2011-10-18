@@ -254,7 +254,7 @@ protected:
 #endif
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
-      _Copy_Construct(&__p->_M_data, __x);
+      _Self::get_allocator().construct( &__p->_M_data, __x );
     }
     _STLP_UNWIND(this->_M_node.deallocate(__p, 1))
     return __p;
@@ -264,7 +264,7 @@ protected:
   _Node_base* _M_create_node() {
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
-      _STLP_STD::_Construct(&__p->_M_data);
+      _Self::get_allocator().construct( &__p->_M_data, value_type() );
     }
     _STLP_UNWIND(this->_M_node.deallocate(__p, 1))
     return __p;
@@ -476,7 +476,7 @@ public:
     _Node* __n = __STATIC_CAST(_Node*, __pos._M_node);
     __prev_node->_M_next = __next_node;
     __next_node->_M_prev = __prev_node;
-    _STLP_STD::_Destroy(&__n->_M_data);
+    this->get_allocator().destroy( &__n->_M_data );
     this->_M_node.deallocate(__n, 1);
     return iterator(__next_node);
   }

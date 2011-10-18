@@ -47,7 +47,7 @@ _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
   while (__cur != __last_node) {
     _Node* __tmp = __STATIC_CAST(_Node*, __cur);
     __cur = __cur->_M_next;
-    _STLP_STD::_Destroy(&__tmp->_M_data);
+    this->get_allocator().destroy( &__tmp->_M_data );
     _M_head.deallocate(__tmp,1);
   }
   __before_first->_M_next = __last_node;

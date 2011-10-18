@@ -55,11 +55,11 @@ inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
   _OutputIter __cur = __result;
   _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur ) {
-      _Copy_Construct(&*__cur, *__first);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_InputIter>::value_type(*__first);
     }
     return __cur;
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__result, __cur))
   _STLP_RET_AFTER_THROW(__cur)
 }
 
@@ -91,13 +91,13 @@ inline _OutputIter __ucopy( _RandomAccessIter __first, _RandomAccessIter __last,
   _OutputIter __cur = __result;
   _STLP_TRY {
     for ( _Distance __n = __last - __first; __n > 0; --__n ) {
-      _Copy_Construct(&*__cur, *__first);
+      ::new (static_cast<void*>(&*__cur)) typename _STLP_STD::iterator_traits<_RandomAccessIter>::value_type(*__first);
       ++__first;
       ++__cur;
     }
     return __cur;
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__result, __cur))
   _STLP_RET_AFTER_THROW(__cur)
 }
 
@@ -183,11 +183,11 @@ pair<_InputIter, _ForwardIter> __ucopy_n( _InputIter __first, _Size __count,
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __count > 0 ; --__count, ++__first, ++__cur ) {
-      _Copy_Construct(&*__cur, *__first);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_InputIter>::value_type(*__first);
     }
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__result, __cur))
   _STLP_RET_AFTER_THROW((pair<_InputIter, _ForwardIter>(__first, __cur)))
 }
 
@@ -239,10 +239,10 @@ inline void __ufill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x, 
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __cur != __last; ++__cur ) {
-      _Copy_Construct(&*__cur, __x);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_ForwardIter>::value_type(__x);
     }
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__first, __cur))
 }
 
 template <class _ForwardIter, class _Tp, class _Distance>
@@ -269,10 +269,10 @@ inline void __ufill( _ForwardIter __first, _ForwardIter __last,
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for (_Distance __n = __last - __first; __n > 0; --__n, ++__cur ) {
-      _Copy_Construct(&*__cur, __x);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_ForwardIter>::value_type(__x);
     }
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__first, __cur))
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -317,10 +317,10 @@ inline _ForwardIter __ufill_n( _ForwardIter __first, _Size __n, const _Tp& __x )
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __n > 0; --__n, ++__cur) {
-      _Copy_Construct(&*__cur, __x);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_ForwardIter>::value_type( __x );
     }
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__first, __cur))
   return __cur;
 }
 
@@ -411,7 +411,7 @@ inline _ForwardIter __uninitialized_copy_copy( _InputIter1 __first1, _InputIter1
   _STLP_TRY {
     return uninitialized_copy(__first2, __last2, __new_result);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __new_result))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__result, __new_result))
   _STLP_RET_AFTER_THROW(__result)
 }
 
@@ -427,7 +427,7 @@ inline _ForwardIter __uninitialized_fill_copy( _ForwardIter __result, _ForwardIt
   _STLP_TRY {
     return uninitialized_copy(__first, __last, __mid);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__result, __mid))
   _STLP_RET_AFTER_THROW(__result)
 }
 
@@ -443,7 +443,7 @@ inline void __uninitialized_copy_fill( _Iter __first1, _Iter __last1,
   _STLP_TRY {
     uninitialized_fill(__mid2, __last2, __x);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first2, __mid2))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__first2, __mid2))
 }
 
 /* __uninitialized_move:
@@ -465,7 +465,7 @@ _ForwardIter __uninitialized_move( _InputIter __first, _InputIter __last,
 {
   //Move constructor should not throw so we do not need to take care of exceptions here.
   for ( ptrdiff_t __n = __last - __first ; __n > 0; --__n ) {
-    _Move_Construct(&*__result, *__first);
+    ::new (static_cast<void*>(&*__result)) typename iterator_traits<_InputIter>::value_type( _STLP_STD::move(*__first) );
     ++__first; ++__result;
   }
   return __result;

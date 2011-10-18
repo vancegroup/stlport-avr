@@ -257,10 +257,10 @@ void _STLP_CALL ios_base::_S_uninitialize() {
   delete ptr_cerr->rdbuf(0);
   delete ptr_clog->rdbuf(0);
 
-  _Destroy(ptr_cin);
-  _Destroy(ptr_cout);
-  _Destroy(ptr_cerr);
-  _Destroy(ptr_clog);
+  ptr_cin->~istream();
+  ptr_cout->~ostream();
+  ptr_cerr->~ostream();
+  ptr_clog->~ostream();
 
 #ifndef _STLP_NO_WCHAR_T
   wistream* ptr_wcin  = &wcin;
@@ -279,10 +279,10 @@ void _STLP_CALL ios_base::_S_uninitialize() {
   delete ptr_wcerr->rdbuf(0);
   delete ptr_wclog->rdbuf(0);
 
-  _Destroy(ptr_wcin);
-  _Destroy(ptr_wcout);
-  _Destroy(ptr_wcerr);
-  _Destroy(ptr_wclog);
+  ptr_wcin->~wistream();
+  ptr_wcout->~wostream();
+  ptr_wcerr->~wostream();
+  ptr_wclog->~wostream();
 #endif
 }
 

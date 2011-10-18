@@ -532,7 +532,7 @@ class deque :
 #endif
 
     ~deque()
-      { _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish); }
+      { _STLP_STD::detail::_Destroy_Range(this->_M_start, this->_M_finish); }
 
     _Self& operator= (const _Self& __x);
 
@@ -622,7 +622,7 @@ class deque :
     void push_back( const value_type& __t )
       {
         if (this->_M_finish._M_cur != this->_M_finish._M_last - 1) {
-          _Copy_Construct(this->_M_finish._M_cur, __t);
+          _Self::get_allocator().construct( this->_M_finish._M_cur, __t );
           ++this->_M_finish._M_cur;
         } else {
           _M_push_back_aux_v(__t);
@@ -632,7 +632,7 @@ class deque :
     void push_front( const value_type& __t )
       {
         if (this->_M_start._M_cur != this->_M_start._M_first) {
-          _Copy_Construct(this->_M_start._M_cur - 1, __t);
+          _Self::get_allocator().construct( this->_M_start._M_cur - 1, __t );
           --this->_M_start._M_cur;
         } else {
           _M_push_front_aux_v(__t);
@@ -643,16 +643,16 @@ class deque :
       {
         if (this->_M_finish._M_cur != this->_M_finish._M_first) {
           --this->_M_finish._M_cur;
-          _STLP_STD::_Destroy(this->_M_finish._M_cur);
+          _Self::get_allocator().destroy( this->_M_finish._M_cur );
         } else {
           _M_pop_back_aux();
-          _STLP_STD::_Destroy(this->_M_finish._M_cur);
+          _Self::get_allocator().destroy( this->_M_finish._M_cur );
         }
       }
 
     void pop_front()
       {
-        _STLP_STD::_Destroy(this->_M_start._M_cur);
+        _Self::get_allocator().destroy( this->_M_start._M_cur );
         _M_pop_front_aux();
       }
 
@@ -780,7 +780,7 @@ class deque :
           }
           _STLP_STD::uninitialized_copy(__first, __last, this->_M_finish._M_first);
         }
-        _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)))
+        _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)))
       }
 
   protected:                        // Internal push_* and pop_*
@@ -840,8 +840,8 @@ class deque :
             iterator __dst = __new_start;
             iterator __src = this->_M_start;
             for (; __src != __pos; ++__dst, ++__src) {
-              _STLP_STD::_Move_Construct(&(*__dst), *__src);
-              _STLP_STD::_Destroy_Moved(&(*__src));
+              _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
+              _Self::get_allocator().destroy( &(*__src) );
             }
             this->_M_start = __new_start;
             uninitialized_copy(__first, __last, __dst);
@@ -855,8 +855,8 @@ class deque :
             iterator __dst = __new_finish;
             iterator __src = this->_M_finish;
             for (--__src, --__dst; __src >= __pos; --__src, --__dst) {
-              _STLP_STD::_Move_Construct(&(*__dst), *__src);
-              _STLP_STD::_Destroy_Moved(&(*__src));
+              _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
+              _Self::get_allocator().destroy( &(*__src) );
             }
             this->_M_finish = __new_finish;
             uninitialized_copy(__first, __last, __pos);

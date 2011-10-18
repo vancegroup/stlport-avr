@@ -148,7 +148,7 @@ class _Slist_base
         _Node* __next = __STATIC_CAST(_Node*, __pos->_M_next);
         _Slist_node_base* __next_next = __next->_M_next;
         __pos->_M_next = __next_next;
-        _STLP_STD::_Destroy(&__next->_M_data);
+        this->get_allocator().destroy( &__next->_M_data );
         _M_head.deallocate(__next,1);
         return __next_next;
       }
@@ -225,7 +225,7 @@ private:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     _Node* __node = this->_M_head.allocate(1);
     _STLP_TRY {
-      _Copy_Construct(&__node->_M_data, __x);
+      _Self::get_allocator().construct( &__node->_M_data, __x );
       __node->_M_next = 0;
     }
     _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
@@ -236,7 +236,7 @@ private:
   _Node* _M_create_node() {
     _Node* __node = this->_M_head.allocate(1);
     _STLP_TRY {
-      _STLP_STD::_Construct(&__node->_M_data);
+      _Self::get_allocator().construct( &__node->_M_data, value_type() );
       __node->_M_next = 0;
     }
     _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
@@ -393,7 +393,7 @@ public:
   void pop_front() {
     _Node* __node = __STATIC_CAST(_Node*, this->_M_head._M_data._M_next);
     this->_M_head._M_data._M_next = __node->_M_next;
-    _STLP_STD::_Destroy(&__node->_M_data);
+    this->get_allocator().destroy( &__node->_M_data );
     this->_M_head.deallocate(__node, 1);
   }
 

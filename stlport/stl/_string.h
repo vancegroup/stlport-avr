@@ -352,7 +352,7 @@ private:
 _STLP_PRIVATE:                     // Helper functions used by constructors
                                    // and elsewhere.
   void _M_construct_null(_CharT* __p) const
-  { _STLP_STD::_Construct(__p); }
+      { _Self::get_allocator().construct( __p, _CharT() ); }
   void _M_terminate_string()
   { _M_construct_null(this->_M_Finish()); }
   bool _M_inside(const _CharT* __s) const {

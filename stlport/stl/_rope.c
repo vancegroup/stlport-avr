@@ -77,7 +77,7 @@ void _Rope_RopeRep<_CharT, _Alloc>::_M_free_c_string() {
   _CharT* __cstr = _M_c_string;
   if (0 != __cstr) {
     size_t _p_size = _M_size._M_data + 1;
-    _STLP_STD::_Destroy_Range(__cstr, __cstr + _p_size);
+    _STLP_STD::detail::_Destroy_Range( __cstr, __cstr + _p_size );
     _M_size.deallocate(__cstr, _p_size);
   }
 }
@@ -319,7 +319,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
     {
       typedef _Rope_RopeLeaf<_CharT, _Alloc> _RopeLeaf;
       _RopeLeaf* __l = __STATIC_CAST(_RopeLeaf*, this);
-      _STLP_STD::_Destroy(__l); // ->_Rope_RopeLeaf<_CharT,_Alloc>::~_Rope_RopeLeaf();
+      _Self::get_allocator().destroy(__l); // ->_Rope_RopeLeaf<_CharT,_Alloc>::~_Rope_RopeLeaf();
       _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
                              _RopeLeaf).deallocate(__l, 1);
       break;
@@ -328,7 +328,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
     {
       typedef _Rope_RopeConcatenation<_CharT, _Alloc> _RopeConcatenation;
       _RopeConcatenation* __c  = __STATIC_CAST(_RopeConcatenation*, this);
-      _STLP_STD::_Destroy(__c);
+      _Self::get_allocator().destroy(__c);
       _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
                              _RopeConcatenation).deallocate(__c, 1);
       break;
@@ -337,7 +337,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
     {
       typedef _Rope_RopeFunction<_CharT, _Alloc> _RopeFunction;
       _RopeFunction* __f = __STATIC_CAST(_RopeFunction*, this);
-      _STLP_STD::_Destroy(__f);
+      _Self::get_allocator().destroy(__f);
       _STLP_CREATE_ALLOCATOR(allocator_type, (const allocator_type&)_M_size,
                              _RopeFunction).deallocate(__f, 1);
       break;
@@ -346,7 +346,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
     {
       typedef _Rope_RopeSubstring<_CharT, _Alloc> _RopeSubstring;
       _RopeSubstring* __rss = __STATIC_CAST(_RopeSubstring*, this);
-      _STLP_STD::_Destroy(__rss);
+      _Self::get_allocator().destroy(__rss);
       _STLP_CREATE_ALLOCATOR(allocator_type, (const allocator_type&)_M_size,
                              _RopeSubstring).deallocate(__rss, 1);
       break;
@@ -1325,7 +1325,7 @@ const _CharT* rope<_CharT,_Alloc>::c_str() const {
     // It must have been added in the interim.  Hence it had to have been
     // separately allocated.  Deallocate the old copy, since we just
     // replaced it.
-    _STLP_STD::_Destroy_Range(__old_c_string, __old_c_string + __s + 1);
+    _STLP_STD::detail::_Destroy_Range( __old_c_string, __old_c_string + __s + 1 );
     _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_tree_ptr, _CharT).deallocate(__old_c_string, __s + 1);
   }
   return __result;

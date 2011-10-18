@@ -116,7 +116,7 @@ public:
       }
 
   ~_Temporary_buffer() {
-    _STLP_STD::_Destroy_Range(_M_buffer, _M_buffer + _M_len);
+    _STLP_STD::detail::_Destroy_Range(_M_buffer, _M_buffer + _M_len);
     free(_M_buffer);
   }
 

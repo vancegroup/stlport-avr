@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-20 00:35:22 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-15 00:47:05 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -823,7 +823,7 @@ struct add_lvalue_reference<_Tp&>
     typedef _Tp& type;
 };
  
-#ifdef _STLP_RVR
+#ifdef _STLP_CPP_0X
 
 template <class _Tp>
 struct add_rvalue_reference
@@ -848,29 +848,16 @@ template <class _Tp, class... _Args>
 struct __is_constructible
 {
   private:
-#ifdef _STLP_CPP_0X
     template <class _Up, class... _UpArgs>
     static decltype(_Up( declval<_UpArgs>()... ), declval<true_type>()) __test(int);
 
     template <class, class...>
-    static false_type __test(...);
-#else // _STLP_CPP_0X
-    template <class _Up, class... _UpArgs>
-    static decltype(_Up( declval<_UpArgs>()... ), __select_types::__t1()) __test(int);
-
-    template <class, class...>
-    static __select_types::__t2 __test(...);
-#endif // _STLP_CPP_0X
-    
+    static false_type __test(...);    
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
     static const bool __value;
 #else
-# ifdef _STLP_CPP_0X
     static const bool __value = is_same<decltype(__test<_Tp, _Args...>(0)),true_type>::value;
-# else // _STLP_CPP_0X
-    static const bool __value = sizeof(__test<_Tp, _Args...>(0)) == sizeof(__select_types::__t1);
-# endif // _STLP_CPP_0X
 #endif
 };
 
@@ -903,7 +890,7 @@ struct is_move_constructible :
 
 #endif
 
-#endif // _STLP_RVR
+#endif // _STLP_CPP_0X
 
 namespace detail {
 

@@ -115,7 +115,7 @@ public:
   valarray(const indirect_array<_Tp>&);
 
   // Destructor
-  ~valarray() { _STLP_STD::_Destroy_Range(this->_M_first, this->_M_first + this->_M_size); }
+    ~valarray() { _STLP_STD::detail::_Destroy_Range( this->_M_first, this->_M_first + this->_M_size ); }
 
     struct _NoInit {};
 
@@ -353,7 +353,7 @@ public:                         // Other member functions.
   }
 
   void resize(size_t __n, value_type __x = value_type()) {
-    _STLP_STD::_Destroy_Range(this->_M_first, this->_M_first + this->_M_size);
+    _STLP_STD::detail::_Destroy_Range( this->_M_first, this->_M_first + this->_M_size );
     _Valarray_base<_Tp>::_M_deallocate();
     _Valarray_base<_Tp>::_M_allocate(__n);
     uninitialized_fill_n(this->_M_first, this->_M_size, __x);

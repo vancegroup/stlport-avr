@@ -72,7 +72,7 @@ void _List_base<_Tp,_Alloc>::clear() {
          __cur != &(_M_node._M_data)) {
     _Node* __tmp = __cur;
     __cur = __STATIC_CAST(_Node*, __cur->_M_next);
-    _STLP_STD::_Destroy(&__tmp->_M_data);
+    this->get_allocator().destroy( &__tmp->_M_data );
     this->_M_node.deallocate(__tmp, 1);
   }
   _M_node._M_data._M_next = &_M_node._M_data;

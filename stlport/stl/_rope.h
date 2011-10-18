@@ -136,7 +136,7 @@ inline void _S_construct_null_aux(_CharT *__p, const true_type&)
 
 template <class _CharT>
 inline void _S_construct_null_aux(_CharT *__p, const false_type&)
-{ _STLP_STD::_Construct(__p); }
+{ ::new (static_cast<void*>(__p)) _CharT(); }
 
 template <class _CharT>
 inline void _S_construct_null(_CharT *__p) {
@@ -379,7 +379,7 @@ public:
 
   static void _S_free_string( _CharT* __s, size_t __len,
                              allocator_type __a) {
-    _STLP_STD::_Destroy_Range(__s, __s + __len);
+    _STLP_STD::detail::_Destroy_Range(__s, __s + __len);
     //  This has to be a static member, so this gets a bit messy
     __a.deallocate(__s, _S_rounded_up_size(__len));
   }
@@ -1321,7 +1321,7 @@ public:
     : _M_tree_ptr(__a, (_RopeRep*)0) {
     _CharT* __buf = _M_tree_ptr.allocate(_S_rounded_up_size(1));
 
-    _Copy_Construct(__buf, __c);
+    _Self::get_allocator().construct( __buf, __c );
     _S_construct_null(__buf + 1);
 
     _STLP_TRY {
@@ -1471,7 +1471,7 @@ public:
   }
 
   void copy(_CharT* __buffer) const {
-    _STLP_STD::_Destroy_Range(__buffer, __buffer + size());
+    _STLP_STD::detail::_Destroy_Range(__buffer, __buffer + size());
     _S_flatten(_M_tree_ptr._M_data, __buffer);
   }
 
@@ -1486,7 +1486,7 @@ public:
     size_t _p_size = size();
     size_t __len = (__pos + __n > _p_size? _p_size - __pos : __n);
 
-    _STLP_STD::_Destroy_Range(__buffer, __buffer + __len);
+    _STLP_STD::detail::_Destroy_Range(__buffer, __buffer + __len);
     _S_flatten(_M_tree_ptr._M_data, __pos, __len, __buffer);
     return __len;
   }

@@ -298,7 +298,7 @@ class vector :
 
     //As the vector container is a back insert oriented container it
     //seems rather logical to destroy elements in reverse order.
-    ~vector() { _STLP_STD::_Destroy_Range(rbegin(), rend()); }
+    ~vector() { _STLP_STD::detail::_Destroy_Range(rbegin(), rend()); }
 
     _Self& operator=(const _Self& __x);
 
@@ -323,7 +323,7 @@ class vector :
           _M_set(__tmp, __tmp + __len, __tmp + __n);
         } else if (size() >= __len) {
           iterator __new_finish = copy(__first, __last, this->_M_start);
-          _STLP_STD::_Destroy_Range(__new_finish, this->_M_finish);
+          _STLP_STD::detail::_Destroy_Range(__new_finish, this->_M_finish);
           this->_M_finish = __new_finish;
         } else {
           _ForwardIter __mid = __first;
@@ -363,7 +363,7 @@ class vector :
     void push_back(const _Tp& __x)
       {
         if (this->_M_finish != this->_M_end_of_storage._M_data) {
-          _Copy_Construct(this->_M_finish, __x);
+          _Self::get_allocator().construct( this->_M_finish, __x );
           ++this->_M_finish;
         } else if ( &__x >= this->_M_start && &__x < this->_M_finish ) { // inside moved
           _Tp __x_copy( __x );
@@ -403,17 +403,17 @@ class vector :
         pointer old = this->_M_start;
         _STLP_TRY {
           for ( ; old != __pos; ++__new_finish, ++old ) {
-            _Move_Construct( __new_finish, *old );
+            _Self::get_allocator().construct( __new_finish, _STLP_STD::move(*old) );
           }
           // handle insertion
           for ( ; __first != __last; ++__first, ++__new_finish ) {
-            _Copy_Construct( __new_finish, *__first );
+            _Self::get_allocator().construct( __new_finish, *__first );
           }
           for ( ; old != this->_M_finish; ++__new_finish, ++old ) {
-            _Move_Construct( __new_finish, *old );
+            _Self::get_allocator().construct( __new_finish, _STLP_STD::move(*old) );
           }
         }
-        _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
+        _STLP_UNWIND((_STLP_STD::detail::_Destroy_Range(__new_start,__new_finish),
                       this->_M_end_of_storage.deallocate(__new_start,__len)))
         _M_clear();
         _M_set(__new_start, __new_finish, __new_start + __len);
@@ -429,7 +429,7 @@ class vector :
         pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
         // handle insertion ToDo: spec for _ForwardIterator, in construct
         for ( ; __first != __last; ++__first, ++__new_finish ) {
-          _Copy_Construct<_Tp>( __new_finish, *__first );
+          get_allocator().construct( __new_finish, *__first );
         }
         __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( __pos, this->_M_finish, __new_finish ) ); // copy remainder
         _M_clear_after_move();
@@ -444,7 +444,7 @@ class vector :
         _STLP_PRIV __copy_trivial( __pos, this->_M_finish, __pos + __n );
         this->_M_finish += __n;
         for ( ; __first != __last; ++__first, ++__pos ) {
-          _Copy_Construct<_Tp>( __pos, *__first );
+          get_allocator().construct( __pos, *__first );
         }
       }
 
@@ -456,12 +456,12 @@ class vector :
         iterator src = this->_M_finish - 1;
         iterator dst = src + __n;
         for ( ; src >= __pos; --dst, --src ) {
-          _STLP_STD::_Move_Construct(dst, *src);
-          _STLP_STD::_Destroy_Moved(src);
+          get_allocator().construct( dst, _STLP_STD::move( *src ) );
+          get_allocator().destroy( src );
         }
         this->_M_finish += __n;
         for ( ; __first != __last; ++__first, ++__pos ) {
-          _Copy_Construct( __pos, *__first );
+          get_allocator().construct( __pos, *__first );
         }
       }
 
@@ -519,19 +519,19 @@ class vector :
     void pop_back()
       {
         --this->_M_finish;
-        _STLP_STD::_Destroy(this->_M_finish);
+        get_allocator().destroy( this->_M_finish );
       }
 
   private:
     iterator _M_erase(iterator __pos, const false_type& /*_Movable*/)
       {
-        _STLP_STD::_Destroy(__pos);
+        get_allocator().destroy( __pos );
 
         iterator __dst = __pos, __src = __dst + 1;
         iterator __end = end();
         for (; __src != __end; ++__dst, ++__src) {
-          _STLP_STD::_Move_Construct(__dst, *__src);
-          _STLP_STD::_Destroy_Moved(__src);
+          _Self::get_allocator().construct( __dst, _STLP_STD::move(*__src) );
+          _Self::get_allocator().destroy( __src );
         }
         this->_M_finish = __dst;
         return __pos;
@@ -539,7 +539,7 @@ class vector :
 
     iterator _M_erase(iterator __pos, const true_type& /*_Movable*/)
       {
-        _STLP_STD::_Destroy(__pos);
+        get_allocator().destroy( __pos );
 
         if (__pos + 1 != end()) {
           _STLP_PRIV __copy_trivial( __pos + 1, this->_M_finish, __pos );
@@ -553,20 +553,19 @@ class vector :
         iterator __dst = __first, __src = __last;
         iterator __end = end();
         for (; __dst != __last && __src != __end; ++__dst, ++__src) {
-          _STLP_STD::_Destroy(__dst);
-          _STLP_STD::_Move_Construct(__dst, *__src);
+          get_allocator().destroy( __dst );
+          get_allocator().construct( __dst, _STLP_STD::move(*__src) );
         }
         if (__dst != __last) {
           //There is more elements to erase than element to move:
-          _STLP_STD::_Destroy_Range(__dst, __last);
-          _STLP_STD::_Destroy_Moved_Range(__last, __end);
+          _STLP_STD::detail::_Destroy_Range(__dst, __end);
         } else {
           //There is more element to move than element to erase:
           for (; __src != __end; ++__dst, ++__src) {
-            _STLP_STD::_Destroy_Moved(__dst);
-            _STLP_STD::_Move_Construct(__dst, *__src);
+            get_allocator().destroy( __dst );
+            get_allocator().construct( __dst, _STLP_STD::move(*__src) );
           }
-          _STLP_STD::_Destroy_Moved_Range(__dst, __end);
+          _STLP_STD::detail::_Destroy_Range(__dst, __end);
         }
         this->_M_finish = __dst;
         return __first;
@@ -574,7 +573,7 @@ class vector :
 
     iterator _M_erase(iterator __first, iterator __last, const true_type& /*_Movable*/)
       {
-        _STLP_STD::_Destroy_Range(__first, __last);
+        _STLP_STD::detail::_Destroy_Range(__first, __last);
         this->_M_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial( __last, this->_M_finish, __first ) );
         return __first;
       }
@@ -615,13 +614,13 @@ class vector :
   private:
     void _M_clear()
       {
-        _STLP_STD::_Destroy_Range(rbegin(), rend());
+        _STLP_STD::detail::_Destroy_Range(rbegin(), rend());
         this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
       }
 
     void _M_clear_after_move()
       {
-        _STLP_STD::_Destroy_Moved_Range(rbegin(), rend());
+        _STLP_STD::detail::_Destroy_Range(rbegin(), rend());
         this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
       }
 

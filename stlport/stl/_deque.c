@@ -152,20 +152,20 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase( iterator __pos, const false_type& /* t
     //We move the start of the deque one position to the right
     //starting from the rightmost element to move.
     iterator __src = __pos, __dst = __pos;
-    _STLP_STD::_Destroy(&(*__dst));
+    _Self::get_allocator().destroy( &(*__dst) );
     if (__src != this->_M_start) {
       for (--__src; __dst != this->_M_start; --__src, --__dst) {
-        _STLP_STD::_Move_Construct(&(*__dst), *__src);
-        _STLP_STD::_Destroy_Moved(&(*__src));
+        _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
+        _Self::get_allocator().destroy( &(*__src) );
       }
     }
     _M_pop_front_aux();
   } else {
     iterator __src = __pos, __dst = __pos;
-    _STLP_STD::_Destroy(&(*__dst));
+    _Self::get_allocator().destroy( &(*__dst) );
     for (++__src; __src != this->_M_finish; ++__src, ++__dst) {
-      _STLP_STD::_Move_Construct(&(*__dst), *__src);
-      _STLP_STD::_Destroy_Moved(&(*__src));
+      _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
+      _Self::get_allocator().destroy( &(*__src) );
     }
     //Duplication of the pop_back code without the destroy which has already been done:
     if (this->_M_finish._M_cur != this->_M_finish._M_first) {
@@ -202,23 +202,22 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, cons
     iterator __src = __first, __dst = __last;
     if (__src != this->_M_start) {
       for (--__src, --__dst; (__src >= this->_M_start) && (__dst >= __first); --__src, --__dst) {
-        _STLP_STD::_Destroy(&(*__dst));
-        _STLP_STD::_Move_Construct(&(*__dst), *__src);
+        _Self::get_allocator().destroy( &(*__dst) );
+        _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
       }
       if (__dst >= __first) {
         //There are more elements to erase than elements to move
-        _STLP_STD::_Destroy_Range(__first, ++__dst);
-        _STLP_STD::_Destroy_Moved_Range(this->_M_start, __first);
+        _STLP_STD::detail::_Destroy_Range( this->_M_start, ++__dst );
       } else {
         //There are more elements to move than elements to erase
         for (; __src >= this->_M_start; --__src, --__dst) {
-          _STLP_STD::_Destroy_Moved(&(*__dst));
-          _STLP_STD::_Move_Construct(&(*__dst), *__src);
+          _Self::get_allocator().destroy( &(*__dst) );
+          _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
         }
-        _STLP_STD::_Destroy_Moved_Range(this->_M_start, ++__dst);
+        _STLP_STD::detail::_Destroy_Range( this->_M_start, ++__dst );
       }
     } else {
-      _STLP_STD::_Destroy_Range(this->_M_start, __last);
+      _STLP_STD::detail::_Destroy_Range(this->_M_start, __last);
     }
     iterator __new_start = this->_M_start + __n;
     this->_M_destroy_nodes(this->_M_start._M_node, __new_start._M_node);
@@ -227,23 +226,22 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, cons
     if (__last != this->_M_finish) {
       iterator __src = __last, __dst = __first;
       for (; (__src != this->_M_finish) && (__dst != __last); ++__src, ++__dst) {
-        _STLP_STD::_Destroy(&(*__dst));
-        _STLP_STD::_Move_Construct(&(*__dst), *__src);
+        _Self::get_allocator().destroy( &(*__dst) );
+        _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
       }
       if (__dst != __last) {
         //There are more elements to erase than elements to move
-        _STLP_STD::_Destroy_Range(__dst, __last);
-        _STLP_STD::_Destroy_Moved_Range(__last, this->_M_finish);
+        _STLP_STD::detail::_Destroy_Range( __dst, this->_M_finish );
       } else {
         //There are more elements to move than elements to erase
         for (; __src != this->_M_finish; ++__src, ++__dst) {
-          _STLP_STD::_Destroy_Moved(&(*__dst));
-          _STLP_STD::_Move_Construct(&(*__dst), *__src);
+          _Self::get_allocator().destroy( &(*__dst) );
+          _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
         }
-        _STLP_STD::_Destroy_Moved_Range(__dst, this->_M_finish);
+        _STLP_STD::detail::_Destroy_Range( __dst, this->_M_finish );
       }
     } else {
-      _STLP_STD::_Destroy_Range(__first, this->_M_finish);
+      _STLP_STD::detail::_Destroy_Range( __first, this->_M_finish );
     }
     iterator __new_finish = this->_M_finish - __n;
     this->_M_destroy_nodes(__new_finish._M_node + 1, this->_M_finish._M_node + 1);
@@ -260,13 +258,13 @@ __iterator__ deque<_Tp,_Alloc>::_M_erase(iterator __first, iterator __last, cons
   if (__elems_before <= difference_type(this->size() - __n) / 2) {
     copy_backward(this->_M_start, __first, __last);
     iterator __new_start = this->_M_start + __n;
-    _STLP_STD::_Destroy_Range(this->_M_start, __new_start);
+    _STLP_STD::detail::_Destroy_Range( this->_M_start, __new_start );
     this->_M_destroy_nodes(this->_M_start._M_node, __new_start._M_node);
     this->_M_start = __new_start;
   } else {
     _STLP_STD::copy(__last, this->_M_finish, __first);
     iterator __new_finish = this->_M_finish - __n;
-    _STLP_STD::_Destroy_Range(__new_finish, this->_M_finish);
+    _STLP_STD::detail::_Destroy_Range( __new_finish, this->_M_finish );
     this->_M_destroy_nodes(__new_finish._M_node + 1, this->_M_finish._M_node + 1);
     this->_M_finish = __new_finish;
   }
@@ -277,16 +275,16 @@ template <class _Tp, class _Alloc >
 void deque<_Tp,_Alloc>::clear()
 {
   for ( _Map_pointer __node = this->_M_start._M_node + 1; __node < this->_M_finish._M_node; ++__node) {
-    _STLP_STD::_Destroy_Range(*__node, *__node + this->buffer_size());
+    _STLP_STD::detail::_Destroy_Range( *__node, *__node + this->buffer_size() );
     this->_M_map_size.deallocate(*__node, this->buffer_size());
   }
 
   if (this->_M_start._M_node != this->_M_finish._M_node) {
-    _STLP_STD::_Destroy_Range(this->_M_start._M_cur, this->_M_start._M_last);
-    _STLP_STD::_Destroy_Range(this->_M_finish._M_first, this->_M_finish._M_cur);
+    _STLP_STD::detail::_Destroy_Range( this->_M_start._M_cur, this->_M_start._M_last );
+    _STLP_STD::detail::_Destroy_Range( this->_M_finish._M_first, this->_M_finish._M_cur );
     this->_M_map_size.deallocate(this->_M_finish._M_first, this->buffer_size());
   } else {
-    _STLP_STD::_Destroy_Range(this->_M_start._M_cur, this->_M_finish._M_cur);
+    _STLP_STD::detail::_Destroy_Range( this->_M_start._M_cur, this->_M_finish._M_cur );
   }
 
   this->_M_finish = this->_M_start;
@@ -304,7 +302,7 @@ void deque<_Tp,_Alloc>::_M_fill_initialize( const value_type& __val )
     }
     uninitialized_fill(this->_M_finish._M_first, this->_M_finish._M_cur, __val);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur, __cur)))
+  _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range( this->_M_start, iterator(*__cur, __cur) ))
 }
 
 
@@ -315,7 +313,7 @@ void deque<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t)
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
-    _Copy_Construct(this->_M_finish._M_cur, __t);
+    _Self::get_allocator().construct( this->_M_finish._M_cur, __t );
     this->_M_finish._M_set_node(this->_M_finish._M_node + 1);
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
@@ -331,7 +329,7 @@ void deque<_Tp,_Alloc>::_M_push_back_aux()
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
-    _STLP_STD::_Construct(this->_M_finish._M_cur);
+    _Self::get_allocator().construct( this->_M_finish._M_cur, value_type() );
     this->_M_finish._M_set_node(this->_M_finish._M_node + 1);
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
@@ -349,7 +347,7 @@ void deque<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t)
   _STLP_TRY {
     this->_M_start._M_set_node(this->_M_start._M_node - 1);
     this->_M_start._M_cur = this->_M_start._M_last - 1;
-    _Copy_Construct(this->_M_start._M_cur, __t);
+    _Self::get_allocator().construct( this->_M_start._M_cur, __t );
   }
   _STLP_UNWIND((++this->_M_start,
                 this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), this->buffer_size())))
@@ -366,7 +364,7 @@ void deque<_Tp,_Alloc>::_M_push_front_aux()
   _STLP_TRY {
     this->_M_start._M_set_node(this->_M_start._M_node - 1);
     this->_M_start._M_cur = this->_M_start._M_last - 1;
-    _STLP_STD::_Construct(this->_M_start._M_cur);
+    _Self::get_allocator().construct( this->_M_start._M_cur, value_type() );
   }
   _STLP_UNWIND((++this->_M_start, this->_M_map_size.deallocate(*(this->_M_start._M_node - 1),
                                                                this->buffer_size())))
@@ -412,8 +410,8 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
       iterator __dst = __new_start;
       iterator __src = this->_M_start;
       for (; __src != __pos; ++__dst, ++__src) {
-        _STLP_STD::_Move_Construct(&(*__dst), *__src);
-        _STLP_STD::_Destroy_Moved(&(*__src));
+        _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
+        _Self::get_allocator().destroy( &(*__src) );
       }
       this->_M_start = __new_start;
       uninitialized_fill(__dst, __src, __x_copy);
@@ -428,8 +426,8 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
       iterator __dst = __new_finish;
       iterator __src = this->_M_finish;
       for (--__src, --__dst; __src >= __pos; --__src, --__dst) {
-        _STLP_STD::_Move_Construct(&(*__dst), *__src);
-        _STLP_STD::_Destroy_Moved(&(*__src));
+        _Self::get_allocator().construct( &(*__dst), _STLP_STD::move(*__src) );
+        _Self::get_allocator().destroy( &(*__src) );
       }
       this->_M_finish = __new_finish;
       uninitialized_fill(__pos, __pos + __n, __x_copy);

@@ -286,7 +286,7 @@ protected:
   _Base_ptr _M_create_node(const value_type& __x) {
     _Link_type __tmp = this->_M_header.allocate(1);
     _STLP_TRY {
-      _Copy_Construct(&__tmp->_M_value_field, __x);
+      _Self::get_allocator().construct( &__tmp->_M_value_field, __x );
     }
     _STLP_UNWIND(this->_M_header.deallocate(__tmp,1))
     _S_left(__tmp) = 0;
@@ -449,7 +449,8 @@ public:
                                                           this->_M_header._M_data._M_parent,
                                                           this->_M_header._M_data._M_left,
                                                           this->_M_header._M_data._M_right);
-    _STLP_STD::_Destroy(&_S_value(__x));
+    _Self::get_allocator().destroy( &_S_value(__x) );
+
     this->_M_header.deallocate(__STATIC_CAST(_Link_type, __x), 1);
     --_M_node_count;
   }
