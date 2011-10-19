@@ -128,7 +128,6 @@ class _Slist_base
   public:
     typedef _STLP_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
 
-    _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
     typedef _Alloc allocator_type;
 
     _Slist_base(const allocator_type& __a) :
@@ -212,7 +211,6 @@ public:
   typedef _STLP_PRIV _Slist_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
   typedef _STLP_PRIV _Slist_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
 
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Base::allocator_type allocator_type;
 
 private:

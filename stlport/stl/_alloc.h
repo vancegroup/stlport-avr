@@ -57,6 +57,8 @@
 #  include <stl/_iterator_base.h>
 #endif
 
+#include <limits>
+
 _STLP_BEGIN_NAMESPACE
 
 template <class T>
@@ -168,6 +170,41 @@ struct __has_type_selector
 
     template <class, class>
     static false_type __test_ro( ... );
+
+    // a.allocate( 0, NULL )?
+    template <class A>
+    static decltype( declval<A>().allocate(0,NULL), declval<true_type>()) __test_ah( int );
+
+    template <class>
+    static false_type __test_ah( ... );
+
+    // a.construct( p, args... )?
+    template <class A, class T, class ... Args>
+    static decltype( declval<A>().construct( declval<T*>(), declval<Args>()...), declval<true_type>()) __test_construct( int );
+
+    template <class, class, class ...>
+    static false_type __test_construct( ... );
+
+    // a.destroy( p )?
+    template <class A, class T>
+    static decltype( declval<A>().destroy( declval<T*>() ), declval<true_type>()) __test_destroy( int );
+
+    template <class, class>
+    static false_type __test_destroy( ... );
+
+    // a.max_size()?
+    template <class A>
+    static decltype( declval<A>().max_size(), declval<true_type>()) __test_max_size( int );
+
+    template <class, class>
+    static false_type __test_max_size( ... );
+
+    // a.select_on_container_copy_construction()?
+    template <class A>
+    static decltype( declval<A>().select_on_container_copy_construction(), declval<true_type>()) __test_soccc( int );
+
+    template <class, class>
+    static false_type __test_soccc( ... );
 };
 
 template <bool, class T>
@@ -190,6 +227,76 @@ template <class T, class U>
 struct __rebind_type<true,T,U>
 {
     typedef typename T::template rebind<U>::type type;
+};
+
+template <bool, class P, class S, class V, class Alloc>
+struct __allocate_hint
+{
+    static P allocate( Alloc& a, S s, V hint )
+      { return a.allocate( s ); }
+};
+
+template <class P, class S, class V, class Alloc>
+struct __allocate_hint<true,P,S,V,Alloc>
+{
+    static P allocate( Alloc& a, S s, V hint )
+      { return a.allocate( s, hint ); }
+};
+
+template <bool, class Alloc, class T, class ... Args>
+struct __construct_check
+{
+    static void construct( Alloc&, T* p, Args&&... args )
+      { ::new (static_cast<void*>(p)) T( _STLP_STD::forward<Args>(args) ... ); }
+};
+
+template <class Alloc, class T, class ... Args>
+struct __construct_check<true,Alloc,T,Args...>
+{
+    static void construct( Alloc& a, T* p, Args&&... args )
+      { a.construct( p, _STLP_STD::forward<Args>(args) ... ); }
+};
+
+template <bool, class Alloc, class T>
+struct __destroy_check
+{
+    static void destroy( Alloc&, T* p )
+      { p->~T(); }
+};
+
+template <class Alloc, class T>
+struct __destroy_check<true,Alloc,T>
+{
+    static void destroy( Alloc& a, T* p )
+      { a.destroy( p ); }
+};
+
+template <bool, class Alloc, class S>
+struct __max_size_check
+{
+    static S max_size( Alloc& )
+      { return _STLP_STD::numeric_limits<S>::max(); }
+};
+
+template <class Alloc, class S>
+struct __max_size_check<true,Alloc,S>
+{
+    static S max_size( Alloc& a )
+      { return a.max_size(); }
+};
+
+template <bool, class Alloc>
+struct __soccc_check
+{
+    static Alloc soccc( Alloc& a )
+      { return a; }
+};
+
+template <class Alloc>
+struct __soccc_check<true,Alloc>
+{
+    static Alloc soccc( Alloc& a )
+      { return a.select_on_container_copy_construction(); }
 };
 
 } // detail
@@ -437,19 +544,43 @@ struct allocator_traits
     static pointer allocate( Alloc& a, size_type n )
       { return a.allocate( n ); }
     static pointer allocate( Alloc& a, size_type n, const_void_pointer hint )
-      { return a.allocate( n, hint ); }
+      {
+        typedef detail::__allocate_hint<is_same<true_type,decltype(detail::__has_type_selector::__test_ah<Alloc>(0))>::value,pointer,size_type,const_void_pointer,Alloc> a_type;
+
+        return a_type::allocate( a, n, hint );
+      }
     static void deallocate( Alloc& a, pointer p, size_type n )
       { a.deallocate( p, n ); }
 
 
     template <class T, class... Args>
-    static void construct( Alloc& a, T* p, Args&&... args );
+    static void construct( Alloc& a, T* p, Args&&... args )
+      {
+        typedef detail::__construct_check<is_same<true_type,decltype(detail::__has_type_selector::__test_construct<Alloc,T,Args...>(0))>::value,Alloc,T,Args...> a_type;
+
+        a_type::construct( a, p, _STLP_STD::forward<Args>(args) ... );
+      }
 
     template <class T>
-    static void destroy( Alloc& a, T* p );
+    static void destroy( Alloc& a, T* p )
+      {
+        typedef detail::__destroy_check<is_same<true_type,decltype(detail::__has_type_selector::__test_destroy<Alloc,T>(0))>::value,Alloc,T> a_type;
 
-    static size_type max_size( const Alloc& a );
-    static Alloc select_on_container_copy_construction( const Alloc& rhs );
+        a_type::destroy( a, p );
+      }
+
+    static size_type max_size( const Alloc& a )
+      {
+        typedef detail::__max_size_check<is_same<true_type,decltype(detail::__has_type_selector::__test_max_size<Alloc,size_type>(0))>::value,Alloc,size_type> a_type;
+
+        return a_type::max_size();
+      }
+    static Alloc select_on_container_copy_construction( const Alloc& rhs )
+      {
+        typedef detail::__soccc_check<is_same<true_type,decltype(detail::__has_type_selector::__test_soccc<Alloc>(0))>::value,Alloc> a_type;
+
+        return a_type::soccc();
+      }
 };
 
 #if 0
@@ -847,7 +978,7 @@ class allocator
 #endif
 
     size_type max_size() const _STLP_NOTHROW
-      { return size_t(-1) / sizeof(value_type); }
+      { return _STLP_STD::numeric_limits<size_type>::max() / sizeof(value_type); }
 
     template<class U, class... Args>
     void construct( U* p, Args&&... args )
@@ -887,10 +1018,6 @@ struct __is_stateless_alloc :
     public integral_constant<bool,is_trivial<T>::value || is_empty<T>::value>
 { };
 
-#endif
-
-#if !defined (_STLP_FORCE_ALLOCATORS)
-#  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
 
 template <class _Tp> void swap(_Tp&, _Tp&);

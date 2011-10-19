@@ -145,7 +145,6 @@ struct _List_iterator : public _List_iterator_base {
 template <class _Tp, class _Alloc>
 class _List_base {
 protected:
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef _List_node_base _Node_base;
   typedef _List_node<_Tp> _Node;
   typedef _List_base<_Tp, _Alloc> _Self;
@@ -237,7 +236,6 @@ public:
   typedef const value_type& const_reference;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Base::allocator_type allocator_type;
   typedef bidirectional_iterator_tag _Iterator_category;
 
