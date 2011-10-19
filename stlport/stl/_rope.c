@@ -318,37 +318,49 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
   case _S_leaf:
     {
       typedef _Rope_RopeLeaf<_CharT, _Alloc> _RopeLeaf;
+      typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeLeaf>::other alc_type;
+
+      alc_type a( _M_size );
+
       _RopeLeaf* __l = __STATIC_CAST(_RopeLeaf*, this);
       _Self::get_allocator().destroy(__l); // ->_Rope_RopeLeaf<_CharT,_Alloc>::~_Rope_RopeLeaf();
-      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
-                             _RopeLeaf).deallocate(__l, 1);
+      a.deallocate( __l, 1 );
       break;
     }
   case _S_concat:
     {
       typedef _Rope_RopeConcatenation<_CharT, _Alloc> _RopeConcatenation;
+      typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeConcatenation>::other alc_type;
+
+      alc_type a( _M_size );
+
       _RopeConcatenation* __c  = __STATIC_CAST(_RopeConcatenation*, this);
       _Self::get_allocator().destroy(__c);
-      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
-                             _RopeConcatenation).deallocate(__c, 1);
+      a.deallocate( __c, 1 );
       break;
     }
   case _S_function:
     {
       typedef _Rope_RopeFunction<_CharT, _Alloc> _RopeFunction;
+      typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeFunction>::other alc_type;
+
+      alc_type a( _M_size );
+
       _RopeFunction* __f = __STATIC_CAST(_RopeFunction*, this);
       _Self::get_allocator().destroy(__f);
-      _STLP_CREATE_ALLOCATOR(allocator_type, (const allocator_type&)_M_size,
-                             _RopeFunction).deallocate(__f, 1);
+      a.deallocate( __f, 1 );
       break;
     }
   case _S_substringfn:
     {
       typedef _Rope_RopeSubstring<_CharT, _Alloc> _RopeSubstring;
+      typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeSubstring>::other alc_type;
+
+      alc_type a( _M_size );
+
       _RopeSubstring* __rss = __STATIC_CAST(_RopeSubstring*, this);
       _Self::get_allocator().destroy(__rss);
-      _STLP_CREATE_ALLOCATOR(allocator_type, (const allocator_type&)_M_size,
-                             _RopeSubstring).deallocate(__rss, 1);
+      a.deallocate( __rss, 1 );
       break;
     }
   }
@@ -450,15 +462,22 @@ rope<_CharT,_Alloc>::_S_tree_concat (_RopeRep* __left, _RopeRep* __right) {
       __depth > _RopeRep::_S_max_rope_depth)) {
     _RopeRep* __balanced;
 
-    _STLP_TRY {
+    try {
       __balanced = _S_balance(__result);
      // _STLP_ASSERT(__result == __balanced ||
      //              1 == __result->_M_ref_count &&
      //              1 == __balanced->_M_ref_count)
       __result->_M_unref_nonnil();
     }
-    _STLP_UNWIND((_STLP_CREATE_ALLOCATOR(allocator_type,(allocator_type&)__left->_M_size,
-                                         _RopeConcatenation).deallocate(__result,1)))
+    catch ( ... ) {
+      typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeConcatenation>::other alc_type;
+
+      alc_type a( __left->_M_size );
+
+      a.deallocate( __result, 1 );
+      throw;
+    }
+
     // In case of exception, we need to deallocate
     // otherwise dangling result node.  But caller
     // still owns its children.  Thus unref is
@@ -1316,7 +1335,8 @@ const _CharT* rope<_CharT,_Alloc>::c_str() const {
   _CharT* __old_c_string = _M_tree_ptr._M_data->_M_c_string;
   if (0 != __old_c_string) return __old_c_string;
   size_t __s = size();
-  _CharT* __result = _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_tree_ptr, _CharT).allocate(__s + 1);
+  _CharT* __result = const_cast<typename _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type>&>(_M_tree_ptr).allocate( __s + 1 );
+
   _S_flatten(_M_tree_ptr._M_data, __result);
   _S_construct_null(__result + __s);
   __old_c_string = __STATIC_CAST(_CharT*, _Atomic_swap_ptr(__REINTERPRET_CAST(void* _STLP_VOLATILE*, &(_M_tree_ptr._M_data->_M_c_string)),
@@ -1326,7 +1346,7 @@ const _CharT* rope<_CharT,_Alloc>::c_str() const {
     // separately allocated.  Deallocate the old copy, since we just
     // replaced it.
     _STLP_STD::detail::_Destroy_Range( __old_c_string, __old_c_string + __s + 1 );
-    _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_tree_ptr, _CharT).deallocate(__old_c_string, __s + 1);
+    const_cast<typename _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type>&>(_M_tree_ptr).deallocate( __old_c_string, __s + 1 );
   }
   return __result;
 }

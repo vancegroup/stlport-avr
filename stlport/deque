@@ -339,7 +339,7 @@ class _Deque_base
     typedef _Alloc allocator_type;
     typedef _STLP_alloc_proxy<size_t, value_type,  allocator_type> _Alloc_proxy;
 
-    typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type _Map_alloc_type;
+    typedef typename _Alloc::template rebind<_Tp*>::other _Map_alloc_type;
     typedef _STLP_alloc_proxy<value_type**, value_type*, _Map_alloc_type> _Map_alloc_proxy;
 
     typedef _Deque_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;

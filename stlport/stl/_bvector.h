@@ -233,7 +233,8 @@ public:
   _STLP_FORCE_ALLOCATORS(bool, _Alloc)
   typedef _Alloc allocator_type;
   typedef unsigned int __chunk_type;
-  typedef typename _Alloc_traits<__chunk_type, _Alloc>::allocator_type __chunk_allocator_type;
+  typedef typename _Alloc::template rebind<__chunk_type>::other __chunk_allocator_type;
+
   allocator_type get_allocator() const
   { return __STATIC_CAST(const __chunk_allocator_type&, _M_end_of_storage); }
 

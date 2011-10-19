@@ -207,15 +207,6 @@ inline bool operator!=(const pthread_allocator<_T1>&,
 { return false; }
 #endif
 
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-
-template <class _Tp, class _Atype>
-struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
-{ typedef pthread_allocator<_Tp> allocator_type; };
-
-#endif
-
 //
 // per_thread_allocator<> : this allocator always return memory to the same thread
 // it was allocated from.
@@ -336,15 +327,6 @@ template <class _T1, class _T2>
 inline bool operator!=(const per_thread_allocator<_T1>& __a1,
                        const per_thread_allocator<_T2>& __a2)
 { return __a1._M_state != __a2._M_state; }
-#endif
-
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-
-template <class _Tp, class _Atype>
-struct _Alloc_traits<_Tp, per_thread_allocator<_Atype> >
-{ typedef per_thread_allocator<_Tp> allocator_type; };
-
 #endif
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)

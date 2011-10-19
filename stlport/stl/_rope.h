@@ -75,8 +75,6 @@
 #  include <mutex.h>
 #endif
 
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) (_Alloc_traits<_Tp,__atype>::create_allocator(__a))
-
 _STLP_BEGIN_NAMESPACE
 
 // First a lot of forward declarations.  The standard seems to require
@@ -1121,55 +1119,99 @@ protected:
   // Allocate and construct a RopeLeaf using the supplied allocator
   // Takes ownership of s instead of copying.
   static _RopeLeaf* _S_new_RopeLeaf(_CharT *__s,
-                                    size_t _p_size, allocator_type __a) {
-    _RopeLeaf* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
-                                                _RopeLeaf).allocate(1);
-    _STLP_TRY {
-      new(__space) _RopeLeaf(__s, _p_size, __a);
-    }
-   _STLP_UNWIND(_STLP_CREATE_ALLOCATOR(allocator_type,__a,
-                                       _RopeLeaf).deallocate(__space, 1))
-    return __space;
-  }
+                                    size_t _p_size, allocator_type __a)
+      {
+        typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeLeaf>::other alc_type;
+
+        alc_type a( __a );
+
+        _RopeLeaf* __space = a.allocate( 1 );
+        try {
+          a.construct( __space, __s, _p_size, __a );
+        }
+        catch ( ... ) {
+          a.deallocate( __space, 1 );
+          throw;
+        }
+        return __space;
+      }
 
   static _RopeConcatenation* _S_new_RopeConcatenation(_RopeRep* __left, _RopeRep* __right,
-                                                      allocator_type __a) {
-   _RopeConcatenation* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
-                                                        _RopeConcatenation).allocate(1);
-    return new(__space) _RopeConcatenation(__left, __right, __a);
-  }
+                                                      allocator_type __a)
+      {
+        typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeConcatenation>::other alc_type;
+
+        alc_type a( __a );
+
+        _RopeConcatenation* __space = a.allocate( 1 );
+        try {
+          a.construct( __space, __left, __right, __a );
+          return __space;
+        }
+        catch ( ... ) {
+          a.deallocate( __space, 1 );
+          throw;
+        }
+      }
 
   static _RopeFunction* _S_new_RopeFunction(char_producer<_CharT>* __f,
-                                            size_t _p_size, bool __d, allocator_type __a) {
-   _RopeFunction* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
-                                                   _RopeFunction).allocate(1);
-    return new(__space) _RopeFunction(__f, _p_size, __d, __a);
-  }
+                                            size_t _p_size, bool __d, allocator_type __a)
+      {
+        typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeFunction>::other alc_type;
+
+        alc_type a( __a );
+
+        _RopeFunction* __space = a.allocate( 1 );
+        try {
+          a.construct( __space, __f, _p_size, __d, __a );
+          return __space;
+        }
+        catch ( ... ) {
+          a.deallocate( __space, 1 );
+          throw;
+        }
+      }
 
   static _RopeSubstring* _S_new_RopeSubstring(_Rope_RopeRep<_CharT,_Alloc>* __b, size_t __s,
-                                              size_t __l, allocator_type __a) {
-   _RopeSubstring* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
-                                                    _RopeSubstring).allocate(1);
-    return new(__space) _RopeSubstring(__b, __s, __l, __a);
-  }
+                                              size_t __l, allocator_type __a)
+      {
+        typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_RopeSubstring>::other alc_type;
 
-  static
-  _RopeLeaf* _S_RopeLeaf_from_unowned_char_ptr(const _CharT *__s,
-                                               size_t _p_size, allocator_type __a) {
-    if (0 == _p_size) return 0;
+        alc_type a( __a );
 
-   _CharT* __buf = _STLP_CREATE_ALLOCATOR(allocator_type,__a, _CharT).allocate(_S_rounded_up_size(_p_size));
+        _RopeSubstring* __space = a.allocate( 1 );
+        try {
+          a.construct( __space, __b, __s, __l, __a );
+          return __space;
+        }
+        catch ( ... ) {
+          a.deallocate( __space, 1 );
+          throw;
+        }
+      }
 
-    _STLP_PRIV __ucopy_n(__s, _p_size, __buf);
-    _S_construct_null(__buf + _p_size);
+  static _RopeLeaf* _S_RopeLeaf_from_unowned_char_ptr(const _CharT *__s,
+                                                      size_t _p_size, allocator_type __a)
+      {
+        if (0 == _p_size) return 0;
 
-    _STLP_TRY {
-      return _S_new_RopeLeaf(__buf, _p_size, __a);
-    }
-    _STLP_UNWIND(_RopeRep::_S_free_string(__buf, _p_size, __a))
-    _STLP_RET_AFTER_THROW(0)
-  }
+        typedef typename _STLP_STD::allocator<allocator_type>::template rebind<_CharT>::other alc_type;
 
+        alc_type a( __a );
+
+        _CharT* __buf = a.allocate( _S_rounded_up_size(_p_size) );
+
+        _STLP_PRIV __ucopy_n(__s, _p_size, __buf);
+        _S_construct_null(__buf + _p_size);
+
+        try {
+          return _S_new_RopeLeaf(__buf, _p_size, __a);
+        }
+        catch ( ... ) {
+          _RopeRep::_S_free_string(__buf, _p_size, __a);
+          return 0;
+        }
+      }
 
   // Concatenation of nonempty strings.
   // Always builds a concatenation node.

@@ -121,7 +121,8 @@ class _Slist_base
 {
   protected:
     typedef _Slist_node<_Tp> _Node;
-    typedef typename _Alloc_traits<_Node,_Alloc>::allocator_type _M_node_allocator_type;
+    typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
+
     typedef _Slist_base<_Tp, _Alloc> _Self;
 
   public:

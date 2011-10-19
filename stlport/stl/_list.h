@@ -149,7 +149,7 @@ protected:
   typedef _List_node_base _Node_base;
   typedef _List_node<_Tp> _Node;
   typedef _List_base<_Tp, _Alloc> _Self;
-  typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type _Node_allocator_type;
+  typedef typename _Alloc::template rebind<_Node>::other _Node_allocator_type;
 public:
   typedef _STLP_alloc_proxy<_Node_base, _Node, _Node_allocator_type> _AllocProxy;
   typedef _Alloc allocator_type;

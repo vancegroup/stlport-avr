@@ -219,7 +219,7 @@ private:
   typedef typename _ElemsCont::iterator _ElemsIte;
   typedef typename _ElemsCont::const_iterator _ElemsConstIte;
   typedef _STLP_PRIV _Slist_node_base _BucketType;
-  typedef typename _Alloc_traits<_BucketType*, _All>::allocator_type _BucketAllocType;
+  typedef typename _All::template rebind<_BucketType*>::other _BucketAllocType;
   /*
    * We are going to use vector of _Slist_node_base pointers for 2 reasons:
    *  - limit code bloat, all hashtable instanciation use the same buckets representation.

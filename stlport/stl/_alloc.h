@@ -434,9 +434,13 @@ struct allocator_traits
         typedef allocator_traits<typename rebind_alloc<T>::type> type;
     };
 
-    static pointer allocate( Alloc& a, size_type n );
-    static pointer allocate( Alloc& a, size_type n, const_void_pointer hint );
-    static void deallocate( Alloc& a, pointer p, size_type n ) /* noexcept */;
+    static pointer allocate( Alloc& a, size_type n )
+      { return a.allocate( n ); }
+    static pointer allocate( Alloc& a, size_type n, const_void_pointer hint )
+      { return a.allocate( n, hint ); }
+    static void deallocate( Alloc& a, pointer p, size_type n )
+      { a.deallocate( p, n ); }
+
 
     template <class T, class... Args>
     static void construct( Alloc& a, T* p, Args&&... args );
@@ -556,16 +560,6 @@ inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last)
 #  endif
 #  undef _STLP_NEW_REDEFINE
 #endif
-
-//inline void _Destroy_Range(char*, char*) {}
-//#if defined (_STLP_HAS_WCHAR_T) // dwa 8/15/97
-//inline void _Destroy_Range(wchar_t*, wchar_t*) {}
-//inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
-//#endif
-
-//template <class _ForwardIterator>
-//inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last)
-//{ _Destroy_Range(__first, __last); }
 
 #if defined (_STLP_DEF_CONST_DEF_PARAM_BUG)
 // Those adaptors are here to fix common compiler bug regarding builtins:
@@ -709,22 +703,6 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__node_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc>;
 #endif
-
-// Another allocator adaptor: _Alloc_traits.  This serves two
-// purposes.  First, make it possible to write containers that can use
-// either SGI-style allocators or standard-conforming allocator.
-
-// The fully general version.
-template <class _Tp, class _Allocator>
-struct _Alloc_traits
-{
-    typedef _Allocator _Orig;
-    typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
-    typedef typename _Rebind_type::other  allocator_type;
-
-    static allocator_type create_allocator(const _Orig& __a)
-      { return allocator_type(__a); }
-};
 
 #if defined (_STLP_USE_PERTHREAD_ALLOC)
 _STLP_END_NAMESPACE
