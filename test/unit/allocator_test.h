@@ -11,6 +11,7 @@ class allocator_test
     int EXAM_DECL(zero_allocation);
     int EXAM_DECL(bad_alloc_test);
     int EXAM_DECL(per_thread_alloc);
+    int EXAM_DECL(rebind_alloc);
 };
 
 class memory_test

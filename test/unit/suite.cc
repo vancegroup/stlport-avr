@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-02 19:07:36 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-21 10:45:01 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -777,6 +777,7 @@ int main( int argc, const char** argv )
   t.add( &allocator_test::zero_allocation, al_test, "zero_allocation" );
   t.add( &allocator_test::bad_alloc_test, al_test, "bad_alloc_test" );
   t.add( &allocator_test::per_thread_alloc, al_test, "per_thread_alloc" );
+  t.add( &allocator_test::rebind_alloc, al_test, "rebind alloc" );
 
   memory_test mem_test;
   t.add( &memory_test::auto_ptr_test, mem_test, "memory_test::auto_ptr_test" );

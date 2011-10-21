@@ -155,6 +155,34 @@ int EXAM_IMPL(allocator_test::per_thread_alloc)
   return EXAM_RESULT;
 }
 
+struct my_alloc
+{
+    typedef void value_type;
+
+    template <class _Tp1>
+    struct rebind
+    {
+        typedef allocator<_Tp1> other;
+    };
+};
+
+template <class T>
+struct my_t_alloc
+{
+    typedef T value_type;
+};
+
+int EXAM_IMPL(allocator_test::rebind_alloc)
+{
+  EXAM_CHECK( (is_same<my_alloc::rebind<int>::other,allocator<int> >::value) );
+#if defined (STLPORT)
+  EXAM_CHECK( (is_same<allocator_traits<my_alloc>::rebind_alloc<int>::type,allocator<int> >::value) );
+  EXAM_CHECK( (is_same<allocator_traits<my_t_alloc<double> >::rebind_alloc<int>::type,my_t_alloc<int> >::value) );
+#endif
+
+  return EXAM_RESULT;
+}
+
 #if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)
 auto_ptr<int> CreateAutoPtr(int val)
 { return auto_ptr<int>(new int(val)); }
