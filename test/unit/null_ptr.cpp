@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-09-19 20:18:01 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-22 00:14:04 ptr>
 
 /*
  * Copyright (c) 2011
@@ -32,6 +32,7 @@ int EXAM_IMPL(null_ptr_test::convert)
   int* p2 = std::nullptr;
   int v = 1;
   int* p3 = &v;
+  int* p4 = NULL;
   int (sample::*pm)() = &sample::method;
   int (sample::*pm0)() = std::nullptr;
   int (sample::*pm1)() = std::nullptr;
@@ -40,6 +41,7 @@ int EXAM_IMPL(null_ptr_test::convert)
   EXAM_CHECK( std::nullptr == p1 );
   EXAM_CHECK( p2 == std::nullptr );
   EXAM_CHECK( p3 != std::nullptr );
+  EXAM_CHECK( p4 == std::nullptr );
   EXAM_CHECK( !std::nullptr );
   EXAM_CHECK( pm != pm0 );
   EXAM_CHECK( pm0 == pm1 );
