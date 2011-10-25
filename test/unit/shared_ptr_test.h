@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-02 19:01:34 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-25 08:43:28 ptr>
 
 /*
  * Copyright (c) 2011
@@ -28,6 +28,12 @@ class memory1_test
     int EXAM_DECL(align);
     int EXAM_DECL(uses_allocator);
     int EXAM_DECL(pointer_traits);
+};
+
+class unique_ptr_test
+{
+  public:
+    int EXAM_DECL(base);
 };
 
 class shared_ptr_test

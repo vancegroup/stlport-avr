@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-21 10:45:01 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-25 08:48:47 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -888,6 +888,9 @@ int main( int argc, const char** argv )
   t.add( &memory1_test::pointer_traits, m1_test, "pointer_traits" );
   t.add( &memory1_test::align, m1_test, "align" );
   t.add( &memory1_test::uses_allocator, m1_test, "uses_allocator" );
+
+  unique_ptr_test unqp_test;
+  t.add( &unique_ptr_test::base, unqp_test, "unique_ptr basic" );
 
   shared_ptr_test shp_test;
   t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-18 09:04:40 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-25 09:33:05 ptr>
 
 /*
  * Copyright (c) 2011
@@ -141,29 +141,6 @@ int EXAM_IMPL(memory1_test::uses_allocator)
   return EXAM_RESULT;
 }
 
-#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
-struct X;
-
-struct X :
-    public std::tr1::enable_shared_from_this<X>
-{
-};
-#endif /* !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT */
-
-int EXAM_IMPL(shared_ptr_test::shared_from_this)
-{
-#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
-  std::tr1::shared_ptr<X> p( new X );
-  std::tr1::shared_ptr<X> q = p->shared_from_this();
-
-  EXAM_CHECK( p == q );
-  EXAM_CHECK( !(p < q) && !(q < p) ); // p and q share ownership
-#else
-  throw exam::skip_exception();
-#endif
-  return EXAM_RESULT;
-}
-
 struct Test
 {
     Test() :
@@ -199,6 +176,97 @@ struct Test
 };
 
 int Test::cnt = 0;
+
+int EXAM_IMPL(unique_ptr_test::base)
+{
+  {
+    unique_ptr<int> p;
+
+    EXAM_CHECK( p.get() == nullptr );
+    EXAM_CHECK( !static_cast<bool>(p) );
+  }
+
+  {
+    unique_ptr<Test> p( new Test( 1 ) );
+
+    EXAM_CHECK( Test::cnt == 1 );
+    EXAM_CHECK( p.get() != nullptr );
+    EXAM_CHECK( p.get()->i == 1 );
+    EXAM_CHECK( p.get()->d == 0.0 );
+    EXAM_CHECK( p->i == 1 );
+    EXAM_CHECK( p->d == 0.0 );
+    EXAM_CHECK( (*p).i == 1 );
+    EXAM_CHECK( (*p).d == 0.0 );
+    EXAM_CHECK( static_cast<bool>(p) );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    unique_ptr<Test> p( new Test( 1 ) );
+
+    Test* pp = p.release();
+    EXAM_CHECK( Test::cnt == 1 );
+    EXAM_CHECK( pp != nullptr );
+    EXAM_CHECK( p.get() == nullptr );
+    delete pp;
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    Test* pp = new Test();
+    unique_ptr<Test> p( new Test( 1 ) );
+
+    EXAM_CHECK( Test::cnt == 2 );
+    EXAM_CHECK( p->i == 1 );
+    p.reset( pp );
+    EXAM_CHECK( Test::cnt == 1 );
+    EXAM_CHECK( p.get() == pp );
+    EXAM_CHECK( p->i == 0 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    unique_ptr<Test> pp( new Test( 2 ) );
+    unique_ptr<Test> p( new Test( 1 ) );
+
+    EXAM_CHECK( Test::cnt == 2 );
+    EXAM_CHECK( p->i == 1 );
+    EXAM_CHECK( pp->i == 2 );
+    p = std::move(pp);
+    EXAM_CHECK( Test::cnt == 1 );
+    EXAM_CHECK( p->i == 2 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  return EXAM_RESULT;
+}
+
+#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
+struct X;
+
+struct X :
+    public std::tr1::enable_shared_from_this<X>
+{
+};
+#endif /* !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT */
+
+int EXAM_IMPL(shared_ptr_test::shared_from_this)
+{
+#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
+  std::tr1::shared_ptr<X> p( new X );
+  std::tr1::shared_ptr<X> q = p->shared_from_this();
+
+  EXAM_CHECK( p == q );
+  EXAM_CHECK( !(p < q) && !(q < p) ); // p and q share ownership
+#else
+  throw exam::skip_exception();
+#endif
+  return EXAM_RESULT;
+}
 
 struct TestNext :
     public Test

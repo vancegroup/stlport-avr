@@ -408,6 +408,18 @@ struct __pointer_type<true,Alloc>
     typedef typename Alloc::pointer pointer;
 };
 
+template <bool, class D, class T>
+struct __pointer_type2
+{
+    typedef T* pointer;
+};
+
+template <class D, class T>
+struct __pointer_type2<true,D,T>
+{
+    typedef typename D::pointer pointer;
+};
+
 template <bool, class Alloc>
 struct __const_pointer_type
 {

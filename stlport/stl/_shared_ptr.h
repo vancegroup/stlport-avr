@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-03 00:11:15 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-22 00:26:29 ptr>
 
 /*
  * Copyright (c) 2011
@@ -18,6 +18,27 @@
 #include <type_traits>
 
 _STLP_BEGIN_NAMESPACE
+
+template <class T>
+struct default_delete
+{
+    /* constexpr */ default_delete() /* noexcept */ = default;
+    template <class U, class = typename enable_if<is_convertible<U*,T*>::value>::type>
+    default_delete( const default_delete<U>& ) /* noexcept */
+      { }
+    void operator()( T* p ) const
+      { delete p; }
+};
+
+template <class T>
+struct default_delete<T[]>
+{
+    /* constexpr */ default_delete() /* noexcept */ = default;
+    void operator()( T* p ) const
+      { delete [] p; }
+    template <class U>
+    void operator()(U*) const = delete;
+};
 
 template <class T> class shared_ptr;
 
@@ -195,7 +216,117 @@ class __shared_ref_intrusive :
 } // namespace detail
 
 template <class T> class weak_ptr;
-template <class T, class D> class unique_ptr;
+
+template <class T, class D = default_delete<T> >
+class unique_ptr
+{
+  public:
+    typedef typename detail::__pointer_type2<
+       is_same<true_type,
+               decltype(detail::__has_type_selector::__test_p<typename remove_reference<D>::type>(0))
+              >::value,
+       D,T>::pointer pointer;
+    typedef T element_type;
+    typedef D deleter_type;
+
+    // 20.7.1.2.1, constructors
+    /* constexpr */ unique_ptr() /* noexcept */ :
+        _p( nullptr )
+      { }
+    explicit unique_ptr( pointer p ) /* noexcept */ :
+        _p( p )
+      { }
+    // unique_ptr(pointer p, see below d1) /* noexcept */;
+    // unique_ptr(pointer p, see below d2) /* noexcept */;
+    unique_ptr( unique_ptr&& u ) /* noexcept */ :
+        _p( _STLP_STD::move( u._p ) ),
+        _d( _STLP_STD::forward( u._d ) )
+      { u._p = NULL; /* ? */ }
+    /* constexpr */ unique_ptr( nullptr_t ) /* noexcept */ :
+        unique_ptr()
+      { }
+    template <class U, class E,
+              class = typename enable_if<
+                is_convertible<typename unique_ptr<U, E>::pointer,pointer>::value &&
+                !is_array<U>::value &&
+                ((is_reference<D>::value && is_same<E,D>::value) ||
+                 (!is_reference<D>::value && is_convertible<E,D>::value))>::type>
+    unique_ptr( unique_ptr<U, E>&& u ) /* noexcept */ :
+        _p( _STLP_STD::move( u._p ) ),
+        _d( _STLP_STD::forward( u._d ) )
+    { u._p = nullptr; /* ? */ }
+    template <class U>
+    unique_ptr( auto_ptr<U>&& u ) /* noexcept */ :
+        _p( u.release() )
+      { }
+
+    // 20.7.1.2.2, destructor
+    ~unique_ptr()
+      { if ( _p != nullptr ) { _d(_p); } }
+
+    // 20.7.1.2.3, assignment
+    unique_ptr& operator =(unique_ptr&& u) /* noexcept */
+      {
+        reset( u.release() );
+        _d = _STLP_STD::forward<D>(u.get_deleter());
+        return *this;
+      }
+    template <class U, class E, class = typename enable_if<
+                is_convertible<typename unique_ptr<U, E>::pointer,pointer>::value &&
+                !is_array<U>::value &&
+                ((is_reference<D>::value && is_same<E,D>::value) ||
+                 (!is_reference<D>::value && is_convertible<E,D>::value))>::type>
+    unique_ptr& operator =(unique_ptr<U, E>&& u) /* noexcept */
+      {
+        reset( u.release() );
+        _d = _STLP_STD::forward<D>(u.get_deleter());
+        return *this;
+      }
+    unique_ptr& operator =( nullptr_t ) /* noexcept */
+      {
+        reset();
+        return *this;
+      }
+
+    // 20.7.1.2.4, observers
+    typename add_lvalue_reference<T>::type operator*() const
+      { return *get(); }
+    pointer operator->() const /* noexcept */
+      { return get(); }
+    pointer get() const /* noexcept */
+      { return _p; }
+    deleter_type& get_deleter() /* noexcept */
+      { return _d; }
+    const deleter_type& get_deleter() const /* noexcept */
+      { return _d; }
+    explicit operator bool() const /* noexcept */
+      { return _p != nullptr; }
+    // 20.7.1.2.5 modifiers
+    pointer release() /* noexcept */
+      {
+        pointer tmp = _p;
+        _p = nullptr;
+        return tmp;
+      }
+    void reset( pointer p = pointer() ) /* noexcept */
+      {
+        pointer tmp = _p;
+        _p = p;
+        if ( tmp != nullptr ) {
+          _d( tmp );
+        }
+      }
+    void swap( unique_ptr& u ) /* noexcept */
+      { swap( _p, u._p ); swap( _d, u._d ); }
+
+    // disable copy from lvalue
+    unique_ptr(const unique_ptr&) = delete;
+    unique_ptr& operator=(const unique_ptr&) = delete;
+
+  protected:
+    pointer _p;
+    deleter_type _d;
+};
 
 template <class T>
 class shared_ptr
