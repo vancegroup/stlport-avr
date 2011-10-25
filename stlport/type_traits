@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-15 00:47:05 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-21 19:57:53 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -319,10 +319,12 @@ struct is_rvalue_reference :
     public false_type
 { };
 
-// template <class _Tp>
-// struct is_rvalue_reference<_Tp&&> :
-//     public true_type
-// { };
+#ifdef _STLP_CPP_0X
+template <class _Tp>
+struct is_rvalue_reference<_Tp&&> :
+    public true_type
+{ };
+#endif
 
 template <class _Tp>
 struct is_reference :
