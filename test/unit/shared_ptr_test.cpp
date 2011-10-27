@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-25 09:33:05 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-28 01:09:33 ptr>
 
 /*
  * Copyright (c) 2011
@@ -701,7 +701,7 @@ class my_allocator :
 
     template <class U>
     void destroy( U* p )
-      { std::detail::__destroy_selector<has_trivial_destructor<_Tp>::value>::destroy( p ); }
+      { std::detail::__destroy_selector<is_trivially_destructible<_Tp>::value>::destroy( p ); }
 };
 
 int EXAM_IMPL(shared_ptr_test::allocate)

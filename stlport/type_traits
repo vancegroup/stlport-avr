@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-21 19:57:53 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-28 01:00:08 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -628,70 +628,6 @@ struct is_abstract :
                              >
 { };
 
-template <class _Tp>
-struct has_trivial_assign :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_TRIVIAL_ASSIGN
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_TRIVIAL_ASSIGN(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_trivial_destructor :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_TRIVIAL_DESTRUCTOR
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_TRIVIAL_DESTRUCTOR(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_nothrow_default_constructor :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_NOTHROW_CONSTRUCTOR
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_NOTHROW_CONSTRUCTOR(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_nothrow_copy_constructor :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_NOTHROW_COPY
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_NOTHROW_COPY(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_nothrow_assign :
-    public integral_constant<bool,
-#ifndef _STLP_HAS_NOTHROW_ASSIGN
-                             is_pod<_Tp>::value
-#else
-                             _STLP_HAS_NOTHROW_ASSIGN(_Tp)
-#endif
-                             >
-{ };
-
-template <class _Tp>
-struct has_virtual_destructor :
-    public
-#ifndef _STLP_HAS_VIRTUAL_DESTRUCTOR
-           false_type
-#else
-           integral_constant<bool, _STLP_HAS_VIRTUAL_DESTRUCTOR(_Tp)>
-#endif
-{ };
 
 template <class _Tp>
 struct is_signed :
@@ -940,14 +876,14 @@ struct is_assignable :
 
 template <class _Tp>
 struct is_copy_assignable :
-    public is_assignable<_Tp, const _Tp&>
+    public is_assignable<_Tp&, const _Tp&>
 { };
 
-#ifdef _STLP_RVR
+#ifdef _STLP_CPP_0X
 
 template <class _Tp>
 struct is_move_assignable :
-    public is_assignable<_Tp, _Tp&&>
+    public is_assignable<_Tp&, _Tp&&>
 { };
 
 #endif
@@ -1046,6 +982,109 @@ struct is_trivially_move_constructible :
 // #endif
                              >
 { };
+
+// Fix it
+template <class _Tp, class _Up>
+struct is_trivially_assignable :
+    public integral_constant<bool,is_assignable<_Tp,_Up>::value &&
+#ifndef _STLP_HAS_TRIVIAL_ASSIGN
+                             is_pod<T>::value
+#else
+                             _STLP_HAS_TRIVIAL_ASSIGN(_Tp)
+#endif
+                             >
+{ };
+
+template <class T>
+struct is_trivially_copy_assignable :
+    public integral_constant<bool, is_trivially_assignable<T&,const T&>::value>
+{ };
+
+
+template <class T>
+struct is_trivially_move_assignable :
+    public integral_constant<bool, is_trivially_assignable<T&,T&&>::value>
+{ };
+
+template <class T>
+struct is_trivially_destructible :
+    public integral_constant<bool, is_destructible<T>::value &&
+#ifndef _STLP_HAS_TRIVIAL_DESTRUCTOR
+                             is_pod<T>::value
+#else
+                             _STLP_HAS_TRIVIAL_DESTRUCTOR(T)
+#endif
+                             >
+{ };
+
+template <class _Tp, class ... Args>
+struct is_nothrow_constructible :
+    public integral_constant<bool, is_constructible<_Tp,Args...>::value &&
+#ifndef _STLP_HAS_NOTHROW_CONSTRUCTOR
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_NOTHROW_CONSTRUCTOR(_Tp)
+#endif
+                             >
+{ };
+
+template <class T>
+struct is_nothrow_default_constructible :
+    public integral_constant<bool, is_nothrow_constructible<T>::value>
+{ };
+
+template <class T>
+struct is_nothrow_copy_constructible :
+    public integral_constant<bool,
+//#ifndef _STLP_HAS_NOTHROW_COPY
+                             is_nothrow_constructible<T,const T&>::value
+//#else
+//                             _STLP_HAS_NOTHROW_COPY(_Tp)
+//#endif
+                             >
+{ };
+
+template <class T>
+struct is_nothrow_move_constructible :
+    public integral_constant<bool, is_nothrow_constructible<T,T&&>::value>
+{ };
+
+template <class _Tp, class _Up>
+struct is_nothrow_assignable :
+    public integral_constant<bool, is_assignable<_Tp,_Up>::value &&
+#ifndef _STLP_HAS_NOTHROW_ASSIGN
+                             is_pod<_Tp>::value
+#else
+                             _STLP_HAS_NOTHROW_ASSIGN(_Tp)
+#endif
+                             >
+{ };
+
+template <class T>
+struct is_nothrow_copy_assignable :
+    public integral_constant<bool, is_nothrow_assignable<T&,const T&>::value>
+{ };
+
+template <class T>
+struct is_nothrow_move_assignable :
+    public integral_constant<bool, is_nothrow_assignable<T&,T&&>::value>
+{ };
+
+template <class T>
+struct is_nothrow_destructible :
+    public integral_constant<bool, is_destructible<T>::value /* &&  is_pod<T>::value */ >
+{ };
+
+template <class _Tp>
+struct has_virtual_destructor :
+    public
+#ifndef _STLP_HAS_VIRTUAL_DESTRUCTOR
+           false_type
+#else
+           integral_constant<bool, _STLP_HAS_VIRTUAL_DESTRUCTOR(_Tp)>
+#endif
+{ };
+
 
 /*
 10 A type is a literal type if it is:

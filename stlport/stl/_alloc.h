@@ -630,7 +630,7 @@ struct __destroy_selector<true>
 template <class _ForwardIterator>
 inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last)
 {
-  _STLP_STD::detail::__destroy_selector<has_trivial_destructor<typename iterator_traits<_ForwardIterator>::value_type>::value>::destroy( __first, __last );
+  _STLP_STD::detail::__destroy_selector<is_trivially_destructible<typename iterator_traits<_ForwardIterator>::value_type>::value>::destroy( __first, __last );
 }
 
 } // namespace detail
@@ -941,7 +941,7 @@ class allocator
 
     template <class U>
     void destroy( U* p )
-      { _STLP_STD::detail::__destroy_selector<has_trivial_destructor<_Tp>::value>::destroy( p ); }
+      { _STLP_STD::detail::__destroy_selector<is_trivially_destructible<_Tp>::value>::destroy( p ); }
 };
 
 template <class _T1, class _T2>

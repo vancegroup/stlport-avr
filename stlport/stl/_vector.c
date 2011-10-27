@@ -174,7 +174,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert( iterator __pos, size_type __n, const _
 template <class _Tp, class _Alloc>
 vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>& __x)
 {
-  typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
+  typedef typename is_trivially_copy_assignable<_Tp>::type _TrivialCopy;
   typedef typename is_trivially_copyable<_Tp>::type _TrivialUCopy;
   if (&__x != this) {
     const size_type __xlen = __x.size();
