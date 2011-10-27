@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-28 01:00:08 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-28 02:03:40 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -1101,13 +1101,19 @@ struct has_virtual_destructor :
 
 template <class _Tp>
 struct is_literal_type :
-    public integral_constant<bool, (is_scalar<_Tp>::value ||
+    public integral_constant<bool,
+#ifndef _STLP_IS_LITERAL_TYPE
+                                   (is_scalar<_Tp>::value ||
                                     (is_class<_Tp>::value && 
                                      is_trivially_copy_constructible<_Tp>::value &&
-                                     _STLP_HAS_TRIVIAL_DESTRUCTOR(_Tp) &&
+                                     is_trivially_destructible<_Tp>::value &&
                                      is_trivially_default_constructible<_Tp>::value) ||
                                     (is_array<_Tp>::value && is_literal_type<typename remove_all_extents<_Tp>::type>::value)
-                                    )>
+                                    )
+#else
+                             _STLP_IS_LITERAL_TYPE(_Tp)
+#endif
+                             >
 { };
 
 #else // _STLP_VARIADIC_TEMPLATES
@@ -1487,6 +1493,24 @@ struct common_type<_T1,_T2,_T3...>
 };
 
 #endif
+
+template <class T, class = typename enable_if<is_enum<T>::value>::type>
+struct underlying_type
+{
+#ifdef _STLP_UNDERLYING_TYPE
+    typedef _STLP_UNDERLYING_TYPE(T) type;
+#else
+    typedef int type;
+#endif
+};
+
+template <class Fn, class ... ArgTypes> struct result_of;
+
+template <class Fn, class ... ArgTypes>
+struct result_of<Fn(ArgTypes...)>
+{
+    typedef decltype( declval<Fn>()(declval<ArgTypes>()...) ) type;
+};
 
 #undef __CV_SPEC
 #undef __SPEC_

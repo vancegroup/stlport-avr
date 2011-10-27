@@ -215,6 +215,7 @@ typedef unsigned int wint_t;
 #  define _STLP_IS_UNION(T)           __is_union(T)
 #  define _STLP_IS_ENUM(T)            __is_enum(T)
 #  define _STLP_IS_BASE_OF(B,D)       __is_base_of(B,D)
+/* #  define _STLP_IS_LITERAL_TYPE(T)    __is_literal_type(T) */
 /* in 4.5.1 known, but not implemented: */
 /* #  define _STLP_IS_CONVERTIBLE(F,T)  __is_convertible_to(F,T) */
 #  define _STLP_HAS_VIRTUAL_DESTRUCTOR(T) __has_virtual_destructor(T)
@@ -225,6 +226,7 @@ typedef unsigned int wint_t;
 #  define _STLP_HAS_NOTHROW_CONSTRUCTOR(T) __has_nothrow_constructor(T)
 #  define _STLP_HAS_TRIVIAL_ASSIGN(T) __has_trivial_assign(T)
 #  define _STLP_HAS_NOTHROW_ASSIGN(T) __has_nothrow_assign(T)
+/* #  define _STLP_UNDERLYING_TYPE(T) __underlying_type(T) */
 #endif
 
 #ifdef __GXX_EXPERIMENTAL_CXX0X__
