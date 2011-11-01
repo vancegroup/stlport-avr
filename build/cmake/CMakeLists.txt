@@ -39,7 +39,6 @@ SET( SRCS
   ${CMAKE_SOURCE_DIR}/../../src/allocators.cpp
   ${CMAKE_SOURCE_DIR}/../../src/c_locale.c
   ${CMAKE_SOURCE_DIR}/../../src/cxa.c
-  # SRC_RC = STLport/src/stlport.rc
 )
 
 SET( TEST_SRCS
@@ -229,8 +228,12 @@ SET( TEST_SRCS
 
 include_directories( ${CMAKE_SOURCE_DIR}/../../stlport )
 
+IF (WIN32)
+  SET( VSUFFIX .${MAJOR}.${MINOR} )
+ENDIF (WIN32)
+
 add_library(
-  stlport SHARED
+  stlport${VSUFFIX} SHARED
   ${SRCS}
 )
 
@@ -239,7 +242,7 @@ add_executable(
   ${TEST_SRCS}
 )
 
-add_dependencies( stl_unit_test stlport )
+add_dependencies( stl_unit_test stlport${VSUFFIX} )
 
 IF (UNIX)
 #  add_library(
@@ -298,21 +301,21 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
 ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
 IF (MSVC)
-  SET_TARGET_PROPERTIES(stlport PROPERTIES
+  SET_TARGET_PROPERTIES(stlport${VSUFFIX} PROPERTIES
     COMPILE_FLAGS "/W4 /EHsc /Zi"
     COMPILE_DEFINITIONS WINVER=0x0501
-    LINK_FLAGS "/fixed:no /incremental:no /LTCG /version:$(MAJOR).$(MINOR)"
+    LINK_FLAGS "/fixed:no /incremental:no /LTCG /version:${MAJOR}.${MINOR}"
     SOVERSION ${MAJOR}.${MINOR}
-    VERSION ${MAJOR}.${MINOR}.${PATCH}
+    # VERSION ${MAJOR}.${MINOR}.${PATCH}
   )
 
   SET_TARGET_PROPERTIES(stl_unit_test PROPERTIES
     COMPILE_FLAGS "/W4 /EHsc /Zi"
     COMPILE_DEFINITIONS WINVER=0x0501
-    LINK_FLAGS "/fixed:no /incremental:no /LTCG /LIBPATH:."
+    LINK_FLAGS "/fixed:no /incremental:no /LTCG"
   )
 
-  # target_link_libraries( stl_unit_test -lstlport -lgcc_s -lpthread -lc -lm -lrt )
+  target_link_libraries( stl_unit_test stlport${VSUFFIX} )
 
   SET( CMAKE_C_FLAGS_DEBUG  "/MDd /D_DEBUG" )
   SET( CMAKE_C_FLAGS_RELEASE "/DNDEBUG /GL /O2" )
