@@ -299,17 +299,17 @@ ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
 IF (MSVC)
   SET_TARGET_PROPERTIES(stlport PROPERTIES
-    COMPILE_FLAGS "/nologo /W4 /EHsc /Zm800 /Zi"
-    COMPILE_DEFINITIONS "WINVER=0x0501 WIN32 _WINDOWS"
-    LINK_FLAGS "/fixed:no /nologo /incremental:no /LTCG"
+    COMPILE_FLAGS "/W4 /EHsc /Zi"
+    COMPILE_DEFINITIONS WINVER=0x0501
+    LINK_FLAGS "/fixed:no /incremental:no /LTCG /version:$(MAJOR).$(MINOR)"
     SOVERSION ${MAJOR}.${MINOR}
     VERSION ${MAJOR}.${MINOR}.${PATCH}
   )
 
   SET_TARGET_PROPERTIES(stl_unit_test PROPERTIES
-    COMPILE_FLAGS "/nologo /W4 /EHsc /Zm800 /Zi"
-    COMPILE_DEFINITIONS "WINVER=0x0501 WIN32 _WINDOWS"
-    LINK_FLAGS "/fixed:no /nologo /incremental:no /LTCG"
+    COMPILE_FLAGS "/W4 /EHsc /Zi"
+    COMPILE_DEFINITIONS WINVER=0x0501
+    LINK_FLAGS "/fixed:no /incremental:no /LTCG /LIBPATH:."
   )
 
   # target_link_libraries( stl_unit_test -lstlport -lgcc_s -lpthread -lc -lm -lrt )
