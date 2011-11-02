@@ -245,8 +245,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #endif
 #define _STLP_EXPORT_TEMPLATE_KEYWORD
 
-#include <stl/config/_auto_link.h>
-
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 /* The Windows 64 bits SDK required for the moment link to bufferoverflowU.lib for
  * additional buffer overrun checks. Rather than require the STLport build system and
