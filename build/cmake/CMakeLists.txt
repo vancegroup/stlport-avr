@@ -233,6 +233,11 @@ add_library(
   ${SRCS}
 )
 
+add_library(
+  stlport_s STATIC
+  ${SRCS}
+)
+
 add_executable(
   stl_unit_test
   ${TEST_SRCS}
@@ -240,19 +245,8 @@ add_executable(
 
 add_dependencies( stl_unit_test stlport )
 
-IF (UNIX)
-#  add_library(
-#    stlport_s STATIC
-#    ${SRCS}
-#  )
-ENDIF (UNIX)
-
 IF (WIN32)
   SET( SRCS "${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/../../src/stlport.rc" )
-#  add_library(
-#    stlport_s STATIC
-#    ${SRCS}
-#  )
 ENDIF (WIN32)
 
 IF (CMAKE_COMPILER_IS_GNUCXX)
