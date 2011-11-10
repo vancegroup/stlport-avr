@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-05-02 17:19:38 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-10 10:51:07 ptr>
 
 /*
  * Copyright (c) 2007, 2009-2011
@@ -18,6 +18,8 @@
 #include "type_traits_test.h"
 
 #include <type_traits>
+#include <memory>
+#include <typeinfo>
 
 using namespace std;
 
@@ -182,11 +184,11 @@ int EXAM_IMPL(type_traits_test::type_traits_is_lvalue_reference)
 
 int EXAM_IMPL(type_traits_test::type_traits_is_rvalue_reference)
 {
-#ifndef _STLP_RVR
+#ifndef _STLP_CPP_0X
   throw exam::skip_exception();
 #else
   EXAM_CHECK( std::is_rvalue_reference<int&&>::value == true );
-#endif // _STLP_RVR
+#endif // _STLP_CPP_0X
 
   return EXAM_RESULT;
 }
@@ -285,6 +287,9 @@ int EXAM_IMPL(type_traits_test::type_traits_is_function)
 
   EXAM_CHECK( std::is_function<int (&)()>::value == false );
   EXAM_CHECK( std::is_function<int (*)()>::value == false );
+
+  EXAM_CHECK( std::is_function<int (MyTypeF::*)>::value == false );
+  EXAM_CHECK( std::is_function<int (MyTypeF::*)()>::value == false );
 
   return EXAM_RESULT;
 }
@@ -447,7 +452,7 @@ int EXAM_IMPL(type_traits_test::type_traits_is_const)
   EXAM_CHECK( std::is_const<int>::value == false );
   EXAM_CHECK( std::is_const<volatile int>::value == false );
   EXAM_CHECK( std::is_const<const int&>::value == false );
-#ifdef _STLP_RVR
+#ifdef _STLP_CPP_0X
   EXAM_CHECK( std::is_const<const int&&>::value == false );
 #endif
 
@@ -466,7 +471,7 @@ int EXAM_IMPL(type_traits_test::type_traits_is_volatile)
   EXAM_CHECK( std::is_volatile<const int>::value == false );
   EXAM_CHECK( std::is_volatile<const volatile int&>::value == false );
   EXAM_CHECK( std::is_volatile<volatile int&>::value == false );
-#ifdef _STLP_RVR
+#ifdef _STLP_CPP_0X
   EXAM_CHECK( std::is_volatile<volatile int&&>::value == false );
 #endif
 
@@ -775,5 +780,81 @@ int EXAM_IMPL(type_traits_test::is_trivially_copyable)
   return EXAM_RESULT;
 }
 
+int EXAM_IMPL(type_traits_test::remove_reference)
+{
+  typedef short (&PF1)(long);
+  typedef short (*PF2)(long);
 
+  EXAM_CHECK( (std::is_same<int,std::remove_reference<int&>::type>::value) );
+  EXAM_CHECK( (std::is_same<int,std::remove_reference<int&&>::type>::value) );
+  EXAM_CHECK( (!std::is_same<int&,std::remove_reference<int&>::type>::value) );
 
+  EXAM_CHECK( (std::is_same<const int,std::remove_reference<const int&>::type>::value) );
+  EXAM_CHECK( (std::is_same<const int,std::remove_reference<const int&&>::type>::value) );
+
+  EXAM_CHECK( (!std::is_same<int,std::remove_reference<const int&>::type>::value) );
+  EXAM_CHECK( (!std::is_same<int,std::remove_reference<const int&&>::type>::value) );
+
+  EXAM_CHECK( (std::is_same<PF2,std::remove_reference<PF2>::type>::value) );
+  EXAM_CHECK( (std::is_same<PF2,std::remove_reference<PF1>::type*>::value) );
+
+  // cerr << typeid(PF1).name() << endl;
+  // cerr << typeid(PF2).name() << endl;
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(type_traits_test::add_reference)
+{
+  EXAM_CHECK( (std::is_same<int&,std::add_lvalue_reference<int>::type>::value) );
+  EXAM_CHECK( (std::is_same<int&,std::add_lvalue_reference<int&>::type>::value) );
+  EXAM_CHECK( (std::is_same<int&,std::add_lvalue_reference<int&&>::type>::value) );
+
+  EXAM_CHECK( (std::is_same<const int&,std::add_lvalue_reference<const int>::type>::value) );
+  EXAM_CHECK( (std::is_same<const int&,std::add_lvalue_reference<const int&>::type>::value) );
+  EXAM_CHECK( (std::is_same<const int&,std::add_lvalue_reference<const int&&>::type>::value) );
+
+  EXAM_CHECK( (std::is_same<int&&,std::add_rvalue_reference<int>::type>::value) );
+  EXAM_CHECK( (std::is_same<int&&,std::add_rvalue_reference<int&>::type>::value) );
+  EXAM_CHECK( (std::is_same<int&&,std::add_rvalue_reference<int&&>::type>::value) );
+
+  EXAM_CHECK( (std::is_same<const int&&,std::add_rvalue_reference<const int>::type>::value) );
+  EXAM_CHECK( (std::is_same<const int&&,std::add_rvalue_reference<const int&>::type>::value) );
+  EXAM_CHECK( (std::is_same<const int&&,std::add_rvalue_reference<const int&&>::type>::value) );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(type_traits_test::result_of)
+{
+  typedef bool (&PF1)();
+  typedef short (*PF2)(long);
+
+  struct S
+  {
+      operator PF2() const;
+      double operator()(char, const int&);
+      double operator()(char, int&);
+      void fn(long) const;
+      char data;
+  };
+
+  typedef void (S::*PMF)(long) const;
+  typedef char S::*PMD;
+
+  EXAM_CHECK( (std::is_same<std::result_of<S(int)>::type, short>::value) );
+  EXAM_CHECK( (std::is_same<std::result_of<S&(unsigned char, const int&)>::type, double>::value) );
+  // EXAM_CHECK( (std::is_same<std::result_of<S&(unsigned char, int&)>::type, double>::value) );
+  // cerr << typeid(std::result_of<S(int)>::type).name() << endl;
+  //cerr << is_same<std::result_of<S(int)>::type,true_type>::value << endl;
+  //cerr << is_same<std::result_of<S&(unsigned char, int&)>::type,true_type>::value << endl;
+  // cerr << typeid(std::result_of<S&(unsigned char, int&)>::type).name() << endl;
+  // cerr << typeid(PF2).name() << endl;
+  EXAM_CHECK( (std::is_same<std::result_of<PF1()>::type, bool>::value) );
+  EXAM_CHECK( (std::is_same<std::result_of<PMF(std::unique_ptr<S>, int)>::type, void>::value) );
+  // EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&&>::value) );
+  EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&>::value) );
+  EXAM_CHECK( (std::is_same<std::result_of<PMD(const S*)>::type, const char&>::value) );
+
+  return EXAM_RESULT;
+}

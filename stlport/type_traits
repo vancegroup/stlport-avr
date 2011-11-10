@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-28 02:03:40 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-10 11:00:44 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -743,40 +743,76 @@ struct remove_reference<_Tp&>
     typedef _Tp type;
 };
 
-// template <class _Tp>
-// struct remove_reference<_Tp&&>
-// {
-//     typedef _Tp type;
-// };
+#if 0
+template <class Fn, class ... Args> struct remove_reference<Fn&(Args...)>;
+
+template <class T, class D>
+struct remove_reference<D T::*>
+{
+    typedef D T::*type;
+};
+
+template <class T, class D>
+struct remove_reference<D T::*&>
+{
+    typedef D T::*type;
+};
+
+#endif
+
+template <class _Tp>
+struct remove_reference<_Tp&&>
+{
+    typedef _Tp type;
+};
+
+#if 0
+template <class T, class D>
+struct remove_reference<D T::*&&>
+{
+    typedef D T::*type;
+};
+
+template <class Fn, class ... Args> struct remove_reference<Fn&&(Args...)>;
+#endif
  
 template <class _Tp>
 struct add_lvalue_reference
 {
-    typedef _Tp& type;
+    typedef typename remove_reference<_Tp>::type& type;
 };
 
-template <class _Tp>
-struct add_lvalue_reference<_Tp&>
-{
-    typedef _Tp& type;
-};
- 
 #ifdef _STLP_CPP_0X
 
 template <class _Tp>
 struct add_rvalue_reference
 {
-    typedef _Tp&& type;
-};
-
-template <class _Tp>
-struct add_rvalue_reference<_Tp&&>
-{
-    typedef _Tp&& type;
+    typedef typename remove_reference<_Tp>::type&& type;
 };
 
 template <class _Tp>
 typename add_rvalue_reference<_Tp>::type declval() throw();
+
+#if 0
+template <class Fn, class ... Args>
+struct remove_reference<Fn&(Args...)>
+{
+    typedef decltype(Fn(declval<Args>()...)) (*type)(Args...);
+};
+
+template <class Fn, class ... Args>
+struct remove_reference<Fn&&(Args...)>
+{
+    typedef decltype(Fn(declval<Args>()...)) (*type)(Args...);
+};
+#endif
+
+//template <class T, class Fn, class ... Args>
+//struct remove_reference<T::Fn&(Args...)>
+//{
+    // typedef decltype((declval<T>()).*Fn(declval<Args>()...)) (T::*type)(Args...);
+//    typedef void (T::*type)();
+//};
 
 #ifdef _STLP_VARIADIC_TEMPLATES
 
@@ -1506,11 +1542,92 @@ struct underlying_type
 
 template <class Fn, class ... ArgTypes> struct result_of;
 
+namespace detail {
+
+template <bool, class Fn, class ... ArgTypes>
+struct result_of_mem_function
+{
+};
+
+// pointer on member data
+
+template <class R, class T, class A, class ... ArgTypes>
+struct result_of_mem_function<false,R T::*,A,ArgTypes...>
+{
+  private:
+    typedef R T::* _Fn;
+
+    template <class U>
+    static U __test( const T& );
+
+    template <class U>
+    static decltype(*declval<U>()) __test( ... );
+
+  public:
+    typedef decltype( __test<A>(declval<A>()).*declval<_Fn>() ) type;
+};
+
+// pointer on member function
+
+template <class R, class T, class A, class ... ArgTypes>
+class result_of_mem_function<true,R T::*,A,ArgTypes...>
+{
+  private:
+    typedef R T::* _Fn;
+
+    template <class U>
+    static U __test( const T& );
+
+    template <class U>
+    static decltype(*declval<U>()) __test( ... );
+
+  public:
+    typedef decltype( (__test<A>(declval<A>()).*declval<_Fn>())(declval<ArgTypes>()...) ) type;
+};
+
+#if 0
+template <bool, class Fn, class ... ArgTypes>
+struct result_of_function
+{
+    typedef decltype( declval<Fn>()(declval<ArgTypes>()...) ) type;
+    // typedef Fn type;
+};
+
 template <class Fn, class ... ArgTypes>
-struct result_of<Fn(ArgTypes...)>
+struct result_of_function<true,Fn,ArgTypes...>
 {
     typedef decltype( declval<Fn>()(declval<ArgTypes>()...) ) type;
 };
+#endif
+
+template <bool, class Fn, class ... ArgTypes>
+struct result_of_functor
+{
+    typedef typename result_of_mem_function<is_member_function_pointer<Fn>::value,Fn,ArgTypes...>::type type;
+};
+
+template <class Fn, class ... ArgTypes>
+struct result_of_functor<true,Fn,ArgTypes...>
+{
+    // typedef decltype( declval<typename remove_reference<Fn>::type>()(declval<ArgTypes>()...) ) type;
+    // Note: we can't (?) accept non-const reference as arguments, due to declval,
+    // that remove reference...
+    typedef decltype( declval<Fn>()(declval<ArgTypes>()...) ) type;
+};
+
+} // namespace detail
+
+template <class Fn, class ... ArgTypes>
+struct result_of<Fn(ArgTypes...)>
+{
+    typedef typename detail::result_of_functor</* is_function<typename remove_reference<Fn>::type>::value || */ !is_member_pointer<Fn>::value,Fn,ArgTypes...>::type type;
+};
+
+// template <class T, class Fn, class ... ArgTypes>
+// struct result_of<(T::*Fn)(ArgTypes...)>
+// {
+    // typedef decltype( declval<Fn>()(declval<ArgTypes>()...) ) type;
+// };
 
 #undef __CV_SPEC
 #undef __SPEC_

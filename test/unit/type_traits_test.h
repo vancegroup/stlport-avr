@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-12-13 20:41:53 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-28 14:51:36 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010
@@ -66,6 +66,11 @@ class type_traits_test
     int EXAM_DECL(is_destructible);
 
     int EXAM_DECL(is_trivially_copyable);
+
+    int EXAM_DECL(remove_reference);
+    int EXAM_DECL(add_reference);
+
+    int EXAM_DECL(result_of);
     // aux
     // int EXAM_DECL(type_traits_has_x_ctor);
 

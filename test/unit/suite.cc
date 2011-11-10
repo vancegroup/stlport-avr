@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-25 08:48:47 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-28 21:17:40 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -112,11 +112,11 @@ int main( int argc, const char** argv )
   t.add( &type_traits_test::type_traits_is_lvalue_reference, ttt, "is_lvalue_reference",
     t.add( &type_traits_test::type_traits_is_rvalue_reference_neg, ttt, "is_rvalue_reference negative", tt_tc[0] ) );
 
-  t.add( &type_traits_test::type_traits_is_member_object_pointer, ttt, "is_member_object_pointer", tt_tc[0] );
-  t.add( &type_traits_test::type_traits_is_member_function_pointer, ttt, "is_member_function_pointer", tt_tc[0] );
+  tt_tc[5] = t.add( &type_traits_test::type_traits_is_member_object_pointer, ttt, "is_member_object_pointer", tt_tc[0] );
+  tt_tc[6] = t.add( &type_traits_test::type_traits_is_member_function_pointer, ttt, "is_member_function_pointer", tt_tc[0] );
 
   t.add( &type_traits_test::type_traits_is_enum, ttt, "is_enum", tt_tc[0] );
-  t.add( &type_traits_test::type_traits_is_function, ttt, "is_function", tt_tc[0] );
+  tt_tc[7] = t.add( &type_traits_test::type_traits_is_function, ttt, "is_function", tt_tc[0] );
 
   // [20.4.4.2]
   t.add( &type_traits_test::type_traits_is_reference, ttt, "is_reference", tt_tc[0] );
@@ -126,7 +126,7 @@ int main( int argc, const char** argv )
   t.add( &type_traits_test::type_traits_is_object, ttt, "is_object", tt_tc[0] );
   t.add( &type_traits_test::type_traits_is_scalar, ttt, "is_scalar", tt_tc[0] );
   t.add( &type_traits_test::type_traits_is_compound, ttt, "is_compound", tt_tc[0] );
-  t.add( &type_traits_test::type_traits_is_member_pointer, ttt, "is_member_pointer", tt_tc[0] );
+  tt_tc[8] = t.add( &type_traits_test::type_traits_is_member_pointer, ttt, "is_member_pointer", tt_tc[0] );
 
   // [20.4.4.3]
   t.add( &type_traits_test::type_traits_is_const, ttt, "is_const", tt_tc[0] );
@@ -147,6 +147,11 @@ int main( int argc, const char** argv )
   t.add( &type_traits_test::is_destructible, ttt, "is_destructible", tt_tc[0] );
 
   t.add( &type_traits_test::is_trivially_copyable, ttt, "is_trivially_copyable", tt_tc[0] );
+
+  t.add( &type_traits_test::add_reference, ttt, "add reference",
+    t.add( &type_traits_test::remove_reference, ttt, "remove_reference", tt_tc[0] ) );
+
+  t.add( &type_traits_test::result_of, ttt, "result_of", tt_tc + 5, tt_tc + 9 );
 
   null_ptr_test np_tst;
 
