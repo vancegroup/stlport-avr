@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-22 00:26:29 ptr>
+// -*- C++ -*- Time-stamp: <2011-10-28 02:44:37 ptr>
 
 /*
  * Copyright (c) 2011
@@ -236,8 +236,20 @@ class unique_ptr
     explicit unique_ptr( pointer p ) /* noexcept */ :
         _p( p )
       { }
-    // unique_ptr(pointer p, see below d1) /* noexcept */;
-    // unique_ptr(pointer p, see below d2) /* noexcept */;
+    unique_ptr( pointer p,
+                typename conditional<!is_reference<D>::value,
+                                     typename add_const<typename add_lvalue_reference<D>::type>::type,
+                                     D>::type d2 ) /* noexcept */ :
+        _p( p ),
+        _d( d2 ) // _d( _STLP_STD::forward( d2 ) ) // copy ctor
+      { }
+    unique_ptr( pointer p,
+                typename conditional<!is_reference<D>::value,
+                                     typename remove_const<typename add_rvalue_reference<D>::type>::type,
+                                     typename add_rvalue_reference<D>::type>::type d2 ) /* noexcept */ :
+        _p( p ),
+        _d( _STLP_STD::move(d2) )
+      { }
     unique_ptr( unique_ptr&& u ) /* noexcept */ :
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
