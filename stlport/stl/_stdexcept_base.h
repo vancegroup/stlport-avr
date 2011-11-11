@@ -49,8 +49,9 @@ _STLP_BEGIN_NAMESPACE
  *    exported from native dll but is used as a base class for the exported __Named_exception
  *    class.
  */
-#    if defined (_STLP_WCE_NET) || \
-        defined (_STLP_USE_DYNAMIC_LIB) && defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
+#    if defined(_STLP_MSVC) && \
+        (defined (_STLP_WCE_NET) || defined (_STLP_USE_DYNAMIC_LIB) \
+         /* && defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB) */ )
 #      define _STLP_DO_WARNING_POP
 #      pragma warning (push)
 #      pragma warning (disable: 4275) // Non dll interface class 'exception' used as base
