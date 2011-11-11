@@ -65,14 +65,14 @@ using _STLP_VENDOR_EXCEPT_STD::exception;
 #    endif
 #    define _STLP_EXCEPTION_BASE exception
 
-class __Named_exception : public _STLP_EXCEPTION_BASE {
+class _STLP_CLASS_DECLSPEC __Named_exception : public _STLP_EXCEPTION_BASE {
 public:
-  _STLP_DECLSPEC __Named_exception(const string& __str);
-  _STLP_DECLSPEC __Named_exception(const __Named_exception&);
-  _STLP_DECLSPEC __Named_exception& operator = (const __Named_exception&);
+  __Named_exception(const string& __str);
+  __Named_exception(const __Named_exception&);
+  __Named_exception& operator = (const __Named_exception&);
 
-  _STLP_DECLSPEC const char* what() const _STLP_NOTHROW_INHERENTLY;
-  _STLP_DECLSPEC ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
+  const char* what() const _STLP_NOTHROW_INHERENTLY;
+  ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
 
 private:
   enum { _S_bufsize = 256 };

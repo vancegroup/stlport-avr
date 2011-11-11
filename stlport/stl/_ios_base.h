@@ -48,10 +48,10 @@ _STLP_BEGIN_NAMESPACE
 class _STLP_CLASS_DECLSPEC ios_base {
 public:
 
-  class failure : public __Named_exception {
+  class _STLP_CLASS_DECLSPEC failure : public __Named_exception {
   public:
-    explicit _STLP_DECLSPEC failure(const string&);
-    virtual _STLP_DECLSPEC ~failure() _STLP_NOTHROW_INHERENTLY;
+    explicit failure(const string&);
+    virtual ~failure() _STLP_NOTHROW_INHERENTLY;
   };
 
   typedef int fmtflags;
