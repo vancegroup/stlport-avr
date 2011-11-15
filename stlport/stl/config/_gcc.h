@@ -38,7 +38,8 @@
 
 #if !defined (_REENTRANT) && (defined (_THREAD_SAFE) || \
                              (defined (__OpenBSD__) && defined (_POSIX_THREADS)) || \
-                             (defined (__MINGW32__) && defined (_MT)))
+                             (defined (__MINGW32__) && defined (_MT)) || \
+                              defined(__APPLE__))
 #  define _REENTRANT
 #endif
 
