@@ -263,9 +263,17 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
     LINK_FLAGS "-nodefaultlibs -L."
   )
 
-  target_link_libraries( stl_unit_test -lstlport -lgcc_s -lpthread -lc -lm -lrt )
+  IF ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
+    target_link_libraries( stl_unit_test -lstlport -lgcc_s.10.5 -lc -lm )
+  ELSE ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
+    target_link_libraries( stl_unit_test -lstlport -lgcc_s -lpthread -lc -lm -lrt )
+  ENDIF ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
 
-  SET( CMAKE_CXX_CREATE_SHARED_LIBRARY "${CMAKE_CXX_CREATE_SHARED_LIBRARY} -Wl,--whole-archive -lsupc++ -Wl,--no-whole-archive -lgcc_s -lpthread -lc -lm -lrt" )
+  IF ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
+    SET( CMAKE_CXX_CREATE_SHARED_LIBRARY "${CMAKE_CXX_CREATE_SHARED_LIBRARY} -lgcc_s.10.5 -lc -lm -all_load -lsupc++ -lgcc_eh" )
+  ELSE ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
+    SET( CMAKE_CXX_CREATE_SHARED_LIBRARY "${CMAKE_CXX_CREATE_SHARED_LIBRARY} -Wl,--whole-archive -lsupc++ -Wl,--no-whole-archive -lgcc_s -lpthread -lc -lm -lrt" )
+  ENDIF ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
 
   IF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux" )
     # MESSAGE( STATUS "${CMAKE_SYSTEM_NAME}" )
@@ -275,6 +283,18 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
     )
     # remove_definitions( -Dstlport_EXPORTS )
   ENDIF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux" )
+
+  IF ( "${CMAKE_SYSTEM_NAME}" MATCHES "Darwin" )
+    # MESSAGE( STATUS "${CMAKE_SYSTEM_NAME}" )
+    # add_definitions( -D_GNU_SOURCE )
+    SET_TARGET_PROPERTIES(stlport PROPERTIES
+      COMPILE_DEFINITIONS "_REENTRANT"
+    )
+    SET_TARGET_PROPERTIES(stl_unit_test PROPERTIES
+      COMPILE_DEFINITIONS "_REENTRANT"
+    )
+    # remove_definitions( -Dstlport_EXPORTS )
+  ENDIF ( "${CMAKE_SYSTEM_NAME}" MATCHES "Darwin" )
 
   # MESSAGE( STATUS "${CMAKE_BUILD_TYPE}" )
 
