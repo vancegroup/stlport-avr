@@ -573,9 +573,7 @@ using _STLP_VENDOR_CSTD::_fcvt;
 #endif
 
 #ifdef __APPLE__
-_STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::isnan;
-_STLP_END_NAMESPACE
 #endif
 
 #endif /* _STLP_INTERNAL_CMATH */
