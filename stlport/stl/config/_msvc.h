@@ -183,6 +183,12 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    define _STLP_USE_ABBREVS
 #  endif
 
+#elif defined (__ICL)
+/* Intel compiler emulating VCx:
+ *   This works for at least v12.1.  Assuming will work with earlier versions.
+ */
+#  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+
 #endif /* _STLP_MSVC */
 
 /* The desktop variants starting with VC8 have a set of more secure replacements
