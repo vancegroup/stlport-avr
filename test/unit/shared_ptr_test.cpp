@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-28 01:09:33 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-18 10:59:47 ptr>
 
 /*
  * Copyright (c) 2011
@@ -185,6 +185,8 @@ int EXAM_IMPL(unique_ptr_test::base)
     EXAM_CHECK( p.get() == nullptr );
     EXAM_CHECK( !static_cast<bool>(p) );
   }
+
+  Test::cnt = 0;
 
   {
     unique_ptr<Test> p( new Test( 1 ) );
