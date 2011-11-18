@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 10:54:40 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-18 23:00:35 ptr>
 
 /*
  * Copyright (c) 2011
@@ -194,6 +194,20 @@ class __shared_ref_deleter :
     D _d;
 };
 
+#if 0
+template <class T, class D, bool>
+__shared_ref_deleter<T,D>* _deleter_helper( T* p, D d )
+{
+  return new detail::__shared_ref_deleter<T,D>( p, r.get_deleter() );
+}
+
+template <class T, class D>
+detail::__shared_ref_deleter<T,D>* _deleter_helper<T,D,true>( T* p, D d )
+{
+  return new detail::__shared_ref_deleter<T,D>( p, typename remove_reference<D>::type(d) );
+}
+#endif
+
 template <class T, class D, class A>
 class __shared_ref_alloc :
     public __shared_ref_deleter<T,D>
@@ -299,9 +313,11 @@ class unique_ptr
     /* constexpr */ unique_ptr() /* noexcept */ :
         _p( nullptr )
       { }
+
     explicit unique_ptr( pointer p ) /* noexcept */ :
         _p( p )
       { }
+
     unique_ptr( pointer p,
                 typename conditional<!is_reference<D>::value,
                                      typename add_const<typename add_lvalue_reference<D>::type>::type,
@@ -309,6 +325,7 @@ class unique_ptr
         _p( p ),
         _d( d2 ) // _d( _STLP_STD::forward( d2 ) ) // copy ctor
       { }
+
     unique_ptr( pointer p,
                 typename conditional<!is_reference<D>::value,
                                      typename remove_const<typename add_rvalue_reference<D>::type>::type,
@@ -316,13 +333,16 @@ class unique_ptr
         _p( p ),
         _d( _STLP_STD::move(d2) )
       { }
+
     unique_ptr( unique_ptr&& u ) /* noexcept */ :
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
       { u._p = NULL; /* ? */ }
+
     /* constexpr */ unique_ptr( nullptr_t ) /* noexcept */ :
         unique_ptr()
       { }
+
     template <class U, class E,
               class = typename enable_if<
                 is_convertible<typename unique_ptr<U, E>::pointer,pointer>::value &&
@@ -333,6 +353,7 @@ class unique_ptr
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
     { u._p = nullptr; /* ? */ }
+
     template <class U>
     unique_ptr( auto_ptr<U>&& u ) /* noexcept */ :
         _p( u.release() )
@@ -349,6 +370,7 @@ class unique_ptr
         _d = _STLP_STD::forward<D>(u.get_deleter());
         return *this;
       }
+
     template <class U, class E, class = typename enable_if<
                 is_convertible<typename unique_ptr<U, E>::pointer,pointer>::value &&
                 !is_array<U>::value &&
@@ -360,6 +382,7 @@ class unique_ptr
         _d = _STLP_STD::forward<D>(u.get_deleter());
         return *this;
       }
+
     unique_ptr& operator =( nullptr_t ) /* noexcept */
       {
         reset();
@@ -369,14 +392,19 @@ class unique_ptr
     // 20.7.1.2.4, observers
     typename add_lvalue_reference<T>::type operator*() const
       { return *get(); }
+
     pointer operator->() const /* noexcept */
       { return get(); }
+
     pointer get() const /* noexcept */
       { return _p; }
+
     deleter_type& get_deleter() /* noexcept */
       { return _d; }
+
     const deleter_type& get_deleter() const /* noexcept */
       { return _d; }
+
     explicit operator bool() const /* noexcept */
       { return _p != nullptr; }
 
@@ -387,6 +415,7 @@ class unique_ptr
         _p = nullptr;
         return tmp;
       }
+
     void reset( pointer p = pointer() ) /* noexcept */
       {
         pointer tmp = _p;
@@ -395,6 +424,7 @@ class unique_ptr
           _d( tmp );
         }
       }
+
     void reset( nullptr_t ) /* noexcept */
       {
         if ( _p != nullptr ) {
@@ -402,6 +432,7 @@ class unique_ptr
         }
         _p = nullptr;
       }
+
     void swap( unique_ptr& u ) /* noexcept */
       { swap( _p, u._p ); swap( _d, u._d ); }
 
@@ -462,7 +493,7 @@ class unique_ptr<T[], D>
                                          typename remove_const<typename add_rvalue_reference<D>::type>::type,
                                          typename add_rvalue_reference<D>::type>::type ) = delete; /* noexcept */
 
-    unique_ptr(unique_ptr&& u) /* noexcept */ :
+    unique_ptr( unique_ptr&& u ) /* noexcept */ :
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
       { u._p = NULL; /* ? */ }
@@ -492,12 +523,16 @@ class unique_ptr<T[], D>
     // 20.7.1.3.2, observers
     T& operator []( size_t i ) const
       { return _p[i]; }
+
     pointer get() const /* noexcept */
       { return _p; }
+
     deleter_type& get_deleter() /* noexcept */
       { return _d; }
+
     const deleter_type& get_deleter() const /* noexcept */
       { return _d; }
+
     explicit operator bool() const /* noexcept */
       { return _p != nullptr; }
 
@@ -745,10 +780,12 @@ class shared_ptr
         }
       }
 
-    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
+    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type >
     shared_ptr( const shared_ptr<Y>& r ) /* noexcept */ :
         _ref( r._ref == NULL ? NULL : r._ref->ref() )
       {
+        // static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
+
         if ( _ref != NULL ) {
           _p = r.get();
           _ref->link();
@@ -783,9 +820,11 @@ class shared_ptr
 
   public:
 
-    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
+    template <class Y>
     explicit shared_ptr( const weak_ptr<Y>& r )
       {
+        static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
+
         if ( r.expired() ) {
           throw bad_weak_ptr();
         }
@@ -794,9 +833,11 @@ class shared_ptr
         _ref->link();
       }
 
-    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
+    template <class Y>
     shared_ptr( auto_ptr<Y>&& r )
       {
+        static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
+
         try {
           _p = static_cast<T*>(r.get());
           _ref = new detail::__shared_ref<T>(_p);
@@ -808,13 +849,18 @@ class shared_ptr
         }
       }
 
-    template <class Y, class D, typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr( unique_ptr<Y, D>&& r )
+    template <class Y, class D>
+    shared_ptr( unique_ptr<Y,D>&& r )
       {
+        static_assert( is_convertible<typename unique_ptr<Y,D>::pointer,T*>::value, "pointers not convertible" );
+
         try {
           _p = static_cast<T*>(r.get());
-          // Fix required, if D is a reference type
+          // if ( !is_reference<D>::value ) {
           _ref = new detail::__shared_ref_deleter<T,D>( _p, r.get_deleter() );
+          // } else {
+          //   _ref = new detail::__shared_ref_deleter<T,D>( _p, typename remove_reference<D>::type(r.get_deleter()) );
+          // }
           r.release();
         }
         catch ( ... ) {
@@ -838,31 +884,103 @@ class shared_ptr
     shared_ptr& operator =( const shared_ptr& r ) /* noexcept */
       { // shared_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
-          _STLP_STD::swap( _ref, r._ref );
+          _p = r._p;
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->link();
+          }          
         }
         return *this;
       }
 
-    template<class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
+    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
     shared_ptr& operator =(const shared_ptr<Y>& r) /* noexcept */
       {
         if ( _ref != r._ref ) {
-          _STLP_STD::swap( _p, r._p );
-          _STLP_STD::swap( _ref, r._ref );          
+          _p = static_cast<T*>(r._p);
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->link();
+          }          
         }
         return *this;
       }
 
-    shared_ptr& operator =(shared_ptr&& r) /* noexcept */;
+    shared_ptr& operator =( shared_ptr&& r ) /* noexcept */
+      {
+        if ( _ref != NULL ) {
+          _ref->unlink();
+        }
+        if ( _ref != r._ref ) {
+          _p = r._p;
+          _ref = r._ref;
+        }
+        r._ref = NULL;
+        // r._p = NULL;
+        return *this;
+     }
 
     template<class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr& operator =(shared_ptr<Y>&& r) /* noexcept */;
+    shared_ptr& operator =( shared_ptr<Y>&& r ) /* noexcept */
+      {
+        if ( _ref != NULL ) {
+          _ref->unlink();
+        }
+        if ( _ref != r._ref ) {
+          _p = static_cast<T*>(r._p);
+          _ref = r._ref;
+        }
+        r._ref = NULL;
+        // r._p = NULL;
+        return *this;
+      }
 
-    template<class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr& operator =(auto_ptr<Y>&& r);
+    template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
+    shared_ptr& operator =( auto_ptr<Y>&& r )
+      {
+        static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
+
+        try {
+          _p = static_cast<T*>(r.get());
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = new detail::__shared_ref<T>(_p);
+          r.release();
+        }
+        catch ( ... ) {
+          _ref = NULL;
+          throw;
+        }
+        return *this;
+      }
 
     template <class Y, class D, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr& operator =(unique_ptr<Y, D>&& r);
+    shared_ptr& operator =( unique_ptr<Y, D>&& r )
+      {
+        if ( _ref != r._ref ) {
+          _p = static_cast<T*>(r._p);
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->link();
+            _ref->weak_unlink();
+          }
+        } else if ( _ref != NULL ) {
+          _ref->weak_unlink();
+        }
+        r._ref = NULL;
+        // r._p = NULL;
+        return *this;
+      }
 
     // 20.7.2.2.4, modifiers:
     void swap( shared_ptr& r ) /* noexcept */
@@ -881,15 +999,15 @@ class shared_ptr
         }
       }
 
-    template<class Y>
+    template <class Y>
     void reset( Y* p )
       { shared_ptr(p).swap( *this ); }
 
-    template<class Y, class D>
+    template <class Y, class D>
     void reset( Y* p, D d )
       { shared_ptr(p, d).swap( *this ); }
 
-    template<class Y, class D, class A>
+    template <class Y, class D, class A>
     void reset( Y* p, D d, A a )
       { shared_ptr(p, d, _STLP_STD::move(a)).swap( *this ); }
 
@@ -923,6 +1041,10 @@ class shared_ptr
     T* _p;
     detail::__shared_ref_base* _ref;
 };
+
+// specialization for void
+
+// ...
 
 // 20.7.2.2.6, shared_ptr creation
 
@@ -1139,7 +1261,7 @@ class weak_ptr
       }
 
     // 20.7.2.3.3, assignment
-    weak_ptr& operator =( weak_ptr const& r ) /* noexcept */
+    weak_ptr& operator =( const weak_ptr& r ) /* noexcept */
       { // weak_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _p, r._p );
@@ -1149,7 +1271,7 @@ class weak_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    weak_ptr& operator =( weak_ptr<Y> const& r ) /* noexcept */
+    weak_ptr& operator =( const weak_ptr<Y>& r ) /* noexcept */
       {
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _p, r._p );
@@ -1159,7 +1281,7 @@ class weak_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    weak_ptr& operator =( shared_ptr<Y> const& r ) /* noexcept */
+    weak_ptr& operator =( const shared_ptr<Y>& r ) /* noexcept */
       {
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _p, r._p );
