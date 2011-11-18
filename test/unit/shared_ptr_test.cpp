@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 10:59:47 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-18 21:30:11 ptr>
 
 /*
  * Copyright (c) 2011
@@ -748,6 +748,148 @@ int EXAM_IMPL(shared_ptr_test::allocate)
 
   EXAM_CHECK( my_allocator_counter::counter == 0 );  // deallocate called
   EXAM_CHECK( Test::cnt == 0 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(shared_ptr_test::assign)
+{
+  {
+    shared_ptr<int> p1( new int(1) );
+    shared_ptr<int> p2( new int(2) );
+
+    EXAM_CHECK( *p1 == 1 );
+    EXAM_CHECK( *p2 == 2 );
+
+    p1 = p2;
+
+    EXAM_CHECK( *p1 == 2 );
+    EXAM_CHECK( *p2 == 2 );
+
+    EXAM_CHECK( p1.use_count() == 2 );
+    EXAM_CHECK( p2.use_count() == 2 );
+  }
+  // equivalent code:
+  {
+    shared_ptr<int> p1( new int(1) );
+    shared_ptr<int> p2( new int(2) );
+
+    EXAM_CHECK( *p1 == 1 );
+    EXAM_CHECK( *p2 == 2 );
+
+    {
+      shared_ptr<int>( p2 ).swap( p1 );
+    }
+
+    EXAM_CHECK( *p1 == 2 );
+    EXAM_CHECK( *p2 == 2 );
+
+    EXAM_CHECK( p1.use_count() == 2 );
+    EXAM_CHECK( p2.use_count() == 2 );
+  }
+
+  {
+    shared_ptr<int> p(new int);
+
+    EXAM_CHECK( p.use_count() == 1 );
+
+    *p = 5;
+
+    shared_ptr< /* void */ int> q(p);
+
+    EXAM_CHECK( p.use_count() == 2 );
+    EXAM_CHECK( q.use_count() == 2 );
+
+    p = p;
+
+    EXAM_CHECK( p.use_count() == 2 );
+    EXAM_CHECK( q.use_count() == 2 );
+
+    q = p;
+
+    EXAM_CHECK( p.use_count() == 2 );
+    EXAM_CHECK( q.use_count() == 2 );
+
+    EXAM_CHECK( *q == 5 );
+  }
+
+  return EXAM_RESULT;
+}
+
+// unique_ptr<Test> f()
+// {
+//   return unique_ptr<Test>( new Test( 1 ) );
+// }
+
+int EXAM_IMPL(shared_ptr_test::unique_ptr)
+{
+
+  Test::cnt = 0;
+
+  {
+    std::unique_ptr<Test> p( new Test( 1 ) );
+
+    EXAM_CHECK( Test::cnt == 1 );
+
+    shared_ptr<Test> sp( std::move(p) /* std::move(f()) */ );
+
+    EXAM_CHECK( Test::cnt == 1 );
+
+    EXAM_CHECK( !p );
+    EXAM_CHECK( (bool)sp );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(weak_ptr_test::base)
+{
+  {
+    weak_ptr<int> p;
+
+    EXAM_CHECK( p.expired() );
+  }
+
+  Test::cnt = 0;
+
+  {
+    shared_ptr<Test> pi( new Test() );
+
+    EXAM_CHECK( Test::cnt == 1 ); // Test ctor called
+    EXAM_CHECK( pi.use_count() == 1 );
+
+    weak_ptr<Test> wi( pi );
+
+    EXAM_CHECK( Test::cnt == 1 );
+    EXAM_CHECK( pi.use_count() == wi.use_count() );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  // Check weak_ptr/shared_ptr TTL
+  {
+    weak_ptr<Test> w1;
+    {
+      shared_ptr<Test> pi = allocate_shared<Test,my_allocator<Test> >( my_allocator<Test>() );
+      EXAM_CHECK( my_allocator_counter::counter == 1 );  // allocate called
+
+      weak_ptr<Test> w2( pi );
+
+      EXAM_CHECK( Test::cnt == 1 );
+      EXAM_CHECK( pi.use_count() == w2.use_count() );
+
+      w1.swap( w2 );
+
+      EXAM_CHECK( w1.use_count() > 0 );
+      EXAM_CHECK( w2.use_count() == 0 );
+    }
+    EXAM_CHECK( w1.use_count() == 0 );
+    EXAM_CHECK( Test::cnt == 0 );
+    EXAM_CHECK( my_allocator_counter::counter == 1 );  // deallocate still not called
+  }
+  EXAM_CHECK( my_allocator_counter::counter == 0 );  // deallocate called
 
   return EXAM_RESULT;
 }
