@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 20:42:19 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-19 01:24:30 ptr>
 
 /*
  * Copyright (c) 2011
@@ -34,6 +34,7 @@ class unique_ptr_test
 {
   public:
     int EXAM_DECL(base);
+    int EXAM_DECL(array);
 };
 
 class shared_ptr_test

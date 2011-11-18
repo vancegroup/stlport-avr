@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-19 00:54:02 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-19 01:46:54 ptr>
 
 /*
  * Copyright (c) 2011
@@ -240,6 +240,78 @@ int EXAM_IMPL(unique_ptr_test::base)
     p = std::move(pp);
     EXAM_CHECK( Test::cnt == 1 );
     EXAM_CHECK( p->i == 2 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(unique_ptr_test::array)
+{
+  {
+    unique_ptr<int[]> p;
+
+    EXAM_CHECK( p.get() == nullptr );
+    EXAM_CHECK( !static_cast<bool>(p) );
+  }
+
+  Test::cnt = 0;
+
+  {
+    unique_ptr<Test[]> p( new Test[3] );
+
+    EXAM_CHECK( Test::cnt == 3 );
+    EXAM_CHECK( p.get() != nullptr );
+    EXAM_CHECK( p[0].i == 0 );
+    EXAM_CHECK( p[0].d == 0.0 );
+    EXAM_CHECK( p.get()[1].i == 0 );
+    EXAM_CHECK( p.get()[2].d == 0.0 );
+    EXAM_CHECK( static_cast<bool>(p) );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    unique_ptr<Test[]> p( new Test[4] );
+
+    Test* pp = p.release();
+    EXAM_CHECK( Test::cnt == 4 );
+    EXAM_CHECK( pp != nullptr );
+    EXAM_CHECK( p.get() == nullptr );
+    delete [] pp;
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    Test* pp = new Test [3];
+    pp[2].i = 1;
+
+    unique_ptr<Test[]> p( new Test[2] );
+
+    EXAM_CHECK( Test::cnt == 5 );
+    EXAM_CHECK( p[1].i == 0 );
+    p.reset( pp );
+    EXAM_CHECK( Test::cnt == 3 );
+    EXAM_CHECK( p.get() == pp );
+    EXAM_CHECK( p[2].i == 1 );
+  }
+
+  EXAM_CHECK( Test::cnt == 0 );
+
+  {
+    unique_ptr<Test[]> pp( new Test[1] );
+    pp[0].i = 1;
+    unique_ptr<Test[]> p( new Test[2] );
+    p[0].i = 2;
+
+    EXAM_CHECK( Test::cnt == 3 );
+    EXAM_CHECK( p[0].i == 2 );
+    EXAM_CHECK( pp[0].i == 1 );
+    p = std::move(pp);
+    EXAM_CHECK( Test::cnt == 1 );
+    EXAM_CHECK( p[0].i == 1 );
   }
 
   EXAM_CHECK( Test::cnt == 0 );

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 20:48:45 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-19 01:34:36 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -897,7 +897,8 @@ int main( int argc, const char** argv )
   exam::test_suite::test_case_type shp_tc[10];
 
   unique_ptr_test unqp_test;
-  shp_tc[2] = t.add( &unique_ptr_test::base, unqp_test, "unique_ptr basic" );
+  t.add( &unique_ptr_test::array, unqp_test, "unique_ptr array", 
+    shp_tc[2] = t.add( &unique_ptr_test::base, unqp_test, "unique_ptr basic" ) );
 
   shared_ptr_test shp_test;
   t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );
