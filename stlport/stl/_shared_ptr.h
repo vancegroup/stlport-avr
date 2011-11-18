@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 10:37:04 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-18 10:54:40 ptr>
 
 /*
  * Copyright (c) 2011
@@ -58,7 +58,6 @@ struct __shared_ref_base
 
     virtual void weak_unlink() = 0;
     virtual void weak_link() = 0;
-    virtual long weak_count() = 0;
 
     virtual __shared_ref_base* ref() = 0;
 };
@@ -99,9 +98,6 @@ class __shared_ref :
 
     virtual void weak_link()
       { ++_w; }
-
-    virtual long weak_count()
-      { return _w; }
 
     virtual __shared_ref_base* ref()
       { return this; }
@@ -159,9 +155,6 @@ class __alias_shared_ref :
           _parent->weak_link();
         }
       }
-
-    virtual long weak_count()
-      { return _parent == NULL ? 0L : _parent->weak_count(); }
 
     virtual __shared_ref_base* ref()
       { return _parent == NULL ? NULL : _parent->ref(); }
@@ -273,9 +266,6 @@ class __shared_ref_intrusive :
 
     virtual void weak_link()
       { ++_w; }
-
-    virtual long weak_count()
-      { return _w; }
 
     virtual __shared_ref_base* ref()
       { return this; }
