@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-19 00:58:21 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-19 01:38:41 ptr>
 
 /*
  * Copyright (c) 2011
@@ -340,7 +340,7 @@ class unique_ptr
       { u._p = NULL; /* ? */ }
 
     /* constexpr */ unique_ptr( nullptr_t ) /* noexcept */ :
-        unique_ptr()
+        _p( nullptr )
       { }
 
     template <class U, class E,
@@ -498,8 +498,8 @@ class unique_ptr<T[], D>
         _d( _STLP_STD::forward( u._d ) )
       { u._p = NULL; /* ? */ }
 
-    /* constexpr */ unique_ptr( nullptr_t )  /* noexcept */ :
-        unique_ptr()
+    /* constexpr */ unique_ptr( nullptr_t ) /* noexcept */ :
+        _p( nullptr )
       { }
 
     // destructor
