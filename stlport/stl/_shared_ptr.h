@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 23:00:35 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-19 00:58:21 ptr>
 
 /*
  * Copyright (c) 2011
@@ -869,7 +869,8 @@ class shared_ptr
         }
       }
 
-    /* constexpr */ shared_ptr( nullptr_t ) : shared_ptr()
+    /* constexpr */ shared_ptr( nullptr_t ) /* noexcept */ :
+        _ref( NULL )
       { }
 
     // 20.7.2.2.2, destructor:
@@ -1044,7 +1045,373 @@ class shared_ptr
 
 // specialization for void
 
-// ...
+template <>
+class shared_ptr<void>
+{
+  public:
+    typedef void element_type;
+
+    // 20.7.2.2.1, constructors:
+    /* constexpr */ shared_ptr() /* noexcept */ :
+        _ref( NULL )
+      { }
+
+    template <class Y>
+    explicit shared_ptr( Y* p )
+      {
+        try {
+          _p = static_cast<void*>(p);
+          _ref = new detail::__shared_ref<void>(_p);
+        }
+        catch ( ... ) {
+          delete p;
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    template <class Y, class D, class = typename enable_if<is_copy_constructible<D>::value>::type>
+    shared_ptr( Y* p, D d )
+      {
+        try {
+          _p = static_cast<void*>(p);
+          _ref = new detail::__shared_ref_deleter<void,D>( _p, d );
+        }
+        catch ( ... ) {
+          d( p );
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    template <class Y, class D, class A,
+              class = typename enable_if<is_copy_constructible<D>::value>::type>
+    shared_ptr( Y* p, D d, A a )
+      {
+        typedef typename A::template rebind<detail::__shared_ref_alloc<void,D,A> >::other allocator_type;
+        allocator_type _a( _STLP_STD::move(a) );
+        void* m;
+
+        try {
+          m = _a.allocate(1);
+          _p = static_cast<void*>(p);
+          _ref = new (m) detail::__shared_ref_alloc<void,D,A>( _p, d, _STLP_STD::move(_a) );
+        }
+        catch ( ... ) {
+          d( p );
+          _a.deallocate( m, 1 );
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    template <class D,
+              class = typename enable_if<is_copy_constructible<D>::value>::type>
+    shared_ptr( nullptr_t, D d )
+      {
+        try {
+          _p = NULL;
+          _ref = new detail::__shared_ref_deleter<void,D>( NULL, d );
+        }
+        catch ( ... ) {
+          d( NULL );
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    template <class D, class A,
+              class = typename enable_if<is_copy_constructible<D>::value>::type>
+    shared_ptr( nullptr_t, D d, A a )
+      {
+        try {
+          void* m = a.allocate(1);
+          _p = NULL;
+          _ref = new (m) detail::__shared_ref_alloc<void,D,A>( NULL, d, _STLP_STD::move(a) );
+        }
+        catch ( ... ) {
+          d( NULL );
+          a.deallocate();
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    template <class Y>
+    shared_ptr( const shared_ptr<Y>& r, void* p ) /* noexcept */
+      {
+        try {
+          _p = p;
+          _ref = new detail::__alias_shared_ref<Y>( r._ref );
+        }
+        catch ( ... ) {
+          _ref = NULL;
+        }
+      }
+
+    shared_ptr( const shared_ptr& r ) /* noexcept */ :
+        _ref( r._ref == NULL ? NULL : r._ref->ref() )
+      {
+        if ( _ref != NULL ) {
+          _p = r.get();
+          _ref->link();
+        } else {
+          _p = NULL;
+        }
+      }
+
+    template <class Y>
+    shared_ptr( const shared_ptr<Y>& r ) /* noexcept */ :
+        _ref( r._ref == NULL ? NULL : r._ref->ref() )
+      {
+        // static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
+
+        if ( _ref != NULL ) {
+          _p = r.get();
+          _ref->link();
+        } else {
+          _p = NULL;
+        }
+      }
+
+    shared_ptr( shared_ptr&& r ) /* noexcept */ :
+        _p( r._p ),
+        _ref( r._ref )
+      {
+        r._p = NULL;
+        r._ref = NULL;
+      }
+
+    template <class Y>
+    shared_ptr( shared_ptr<Y>&& r ) /* noexcept */ :
+        _p( r._p ),
+        _ref( r._ref )
+      {
+        r._p = NULL;
+        r._ref = NULL;
+      }
+
+  private:
+    template <class A>
+    shared_ptr( detail::__shared_ref_intrusive<void,A>* r ) :
+        _p( &r->_p ),
+        _ref( r )
+      { }
+
+  public:
+
+    template <class Y>
+    explicit shared_ptr( const weak_ptr<Y>& r )
+      {
+        if ( r.expired() ) {
+          throw bad_weak_ptr();
+        }
+        _ref = r._ref->ref(); // r._ref not NULL here
+        _p = r._p;
+        _ref->link();
+      }
+
+    template <class Y>
+    shared_ptr( auto_ptr<Y>&& r )
+      {
+        try {
+          _p = static_cast<void*>(r.get());
+          _ref = new detail::__shared_ref<void>(_p);
+          r.release();
+        }
+        catch ( ... ) {
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    template <class Y, class D>
+    shared_ptr( unique_ptr<Y,D>&& r )
+      {
+        try {
+          _p = static_cast<void*>(r.get());
+          // if ( !is_reference<D>::value ) {
+          _ref = new detail::__shared_ref_deleter<void,D>( _p, r.get_deleter() );
+          // } else {
+          //   _ref = new detail::__shared_ref_deleter<void,D>( _p, typename remove_reference<D>::type(r.get_deleter()) );
+          // }
+          r.release();
+        }
+        catch ( ... ) {
+          _ref = NULL;
+          throw;
+        }
+      }
+
+    /* constexpr */ shared_ptr( nullptr_t ) /* noexcept */ :
+        _ref( NULL )
+      { }
+    
+    // 20.7.2.2.2, destructor:
+    ~shared_ptr()
+      {
+        if ( _ref != NULL ) {
+          _ref->unlink();
+        }
+      }
+
+    // 20.7.2.2.3, assignment:
+    shared_ptr& operator =( const shared_ptr& r ) /* noexcept */
+      { // shared_ptr(r).swap(*this);
+        if ( _ref != r._ref ) {
+          _p = r._p;
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->link();
+          }          
+        }
+        return *this;
+      }
+
+    template <class Y>
+    shared_ptr& operator =(const shared_ptr<Y>& r) /* noexcept */
+      {
+        if ( _ref != r._ref ) {
+          _p = static_cast<void*>(r._p);
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->link();
+          }          
+        }
+        return *this;
+      }
+
+    shared_ptr& operator =( shared_ptr&& r ) /* noexcept */
+      {
+        if ( _ref != NULL ) {
+          _ref->unlink();
+        }
+        if ( _ref != r._ref ) {
+          _p = r._p;
+          _ref = r._ref;
+        }
+        r._ref = NULL;
+        // r._p = NULL;
+        return *this;
+     }
+
+    template<class Y>
+    shared_ptr& operator =( shared_ptr<Y>&& r ) /* noexcept */
+      {
+        if ( _ref != NULL ) {
+          _ref->unlink();
+        }
+        if ( _ref != r._ref ) {
+          _p = static_cast<void*>(r._p);
+          _ref = r._ref;
+        }
+        r._ref = NULL;
+        // r._p = NULL;
+        return *this;
+      }
+
+    template <class Y>
+    shared_ptr& operator =( auto_ptr<Y>&& r )
+      {
+        try {
+          _p = static_cast<void*>(r.get());
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = new detail::__shared_ref<void>(_p);
+          r.release();
+        }
+        catch ( ... ) {
+          _ref = NULL;
+          throw;
+        }
+        return *this;
+      }
+
+    template <class Y, class D>
+    shared_ptr& operator =( unique_ptr<Y, D>&& r )
+      {
+        if ( _ref != r._ref ) {
+          _p = static_cast<void*>(r._p);
+          if ( _ref != NULL ) {
+            _ref->unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->link();
+            _ref->weak_unlink();
+          }
+        } else if ( _ref != NULL ) {
+          _ref->weak_unlink();
+        }
+        r._ref = NULL;
+        // r._p = NULL;
+        return *this;
+      }
+
+    // 20.7.2.2.4, modifiers:
+    void swap( shared_ptr& r ) /* noexcept */
+      {
+        if ( _ref != r._ref ) {
+          _STLP_STD::swap( _p, r._p );
+          _STLP_STD::swap( _ref, r._ref );
+        }
+      }
+
+    void reset() /* noexcept */
+      { // shared_ptr().swap( *this );
+        if ( _ref != NULL ) {
+          _ref->unlink();
+          _ref = NULL;
+        }
+      }
+
+    template <class Y>
+    void reset( Y* p )
+      { shared_ptr(p).swap( *this ); }
+
+    template <class Y, class D>
+    void reset( Y* p, D d )
+      { shared_ptr(p, d).swap( *this ); }
+
+    template <class Y, class D, class A>
+    void reset( Y* p, D d, A a )
+      { shared_ptr(p, d, _STLP_STD::move(a)).swap( *this ); }
+
+    // 20.7.2.2.5, observers:
+    void* get() const /* noexcept */
+      { return _p; }
+    void* operator->() const /* noexcept */
+      { return get(); }
+    long use_count() const /* noexcept */
+      { return _ref == NULL ? 0L : _ref->count(); }
+    bool unique() const /* noexcept */
+      { return _ref == NULL ? false : _ref->count() == 1L; }
+
+    explicit operator bool() const /* noexcept */
+      { return _p != NULL; }
+
+    template <class U>
+    bool owner_before(shared_ptr<U> const& b) const;
+
+    template <class U>
+    bool owner_before(weak_ptr<U> const& b) const;
+
+  private:
+    template <class Y> friend class shared_ptr;
+    template <class Y> friend class weak_ptr;
+    template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
+    template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
+
+    void* _p;
+    detail::__shared_ref_base* _ref;
+};
 
 // 20.7.2.2.6, shared_ptr creation
 

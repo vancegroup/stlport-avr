@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-18 21:30:11 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-19 00:54:02 ptr>
 
 /*
  * Copyright (c) 2011
@@ -811,6 +811,31 @@ int EXAM_IMPL(shared_ptr_test::assign)
     EXAM_CHECK( q.use_count() == 2 );
 
     EXAM_CHECK( *q == 5 );
+  }
+
+  {
+    shared_ptr<int> p(new int);
+
+    EXAM_CHECK( p.use_count() == 1 );
+
+    *p = 5;
+
+    shared_ptr<void> q(p);
+
+    EXAM_CHECK( p.use_count() == 2 );
+    EXAM_CHECK( q.use_count() == 2 );
+
+    p = p;
+
+    EXAM_CHECK( p.use_count() == 2 );
+    EXAM_CHECK( q.use_count() == 2 );
+
+    q = p;
+
+    EXAM_CHECK( p.use_count() == 2 );
+    EXAM_CHECK( q.use_count() == 2 );
+
+    EXAM_CHECK( *reinterpret_cast<int*>(q.get()) == 5 );
   }
 
   return EXAM_RESULT;
