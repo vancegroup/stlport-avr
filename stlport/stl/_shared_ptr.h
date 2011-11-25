@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-19 01:38:41 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-25 14:03:40 ptr>
 
 /*
  * Copyright (c) 2011
@@ -76,8 +76,12 @@ class __shared_ref :
     virtual void unlink()
       {
         if ( --_n == 0 ) {
-          delete _p;
-          if ( _w == 0 ) {
+          // don't refer to members after 'delete _p;', due to
+          // 'this' may be destroyed during 'delete _p;'.
+          if ( _w > 0 ) {
+            delete _p;
+          } else {
+            delete _p;
             delete this;
           }
         }
@@ -176,8 +180,10 @@ class __shared_ref_deleter :
     virtual void unlink()
       {
         if ( --__shared_ref<T>::_n == 0 ) {
+          if ( __shared_ref<T>::_w > 0 ) {
           __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
-          if ( __shared_ref<T>::_w == 0 ) {
+          } else {
+            __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
             delete this;
           }
         }
@@ -221,8 +227,10 @@ class __shared_ref_alloc :
     virtual void unlink()
       {
         if ( --__shared_ref<T>::_n == 0 ) {
-          __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
-          if ( __shared_ref<T>::_w == 0 ) {
+          if ( __shared_ref<T>::_w > 0 ) {
+            __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
+          } else {
+            __shared_ref_deleter<T,D>::_d( __shared_ref<T>::_p );
             _a.deallocate( this, 1 );
           }
         }
@@ -258,8 +266,10 @@ class __shared_ref_intrusive :
     virtual void unlink()
       {
         if ( --_n == 0 ) {
-          _p.~T();
-          if ( _w == 0 ) {
+          if ( _w > 0 ) {
+            _p.~T();
+          } else {
+            _p.~T();
             _a.deallocate( this, 1 );
           }
         }
@@ -664,6 +674,15 @@ class bad_weak_ptr :
       { }
 };
 
+template <class T> class enable_shared_from_this;
+
+namespace detail {
+
+template <class T,bool> struct __enable_shared_from_this;
+template <class T> struct __enable_shared_from_this<T,true>;
+
+} // namespace detail
+
 template <class T>
 class shared_ptr
 {
@@ -681,6 +700,7 @@ class shared_ptr
         try {
           _p = static_cast<T*>(p);
           _ref = new detail::__shared_ref<T>(_p);
+          detail::__enable_shared_from_this<T,is_base_of<enable_shared_from_this<T>,T>::value>::pass( *this );
         }
         catch ( ... ) {
           delete p;
@@ -696,6 +716,7 @@ class shared_ptr
         try {
           _p = static_cast<T*>(p);
           _ref = new detail::__shared_ref_deleter<T,D>( _p, d );
+          detail::__enable_shared_from_this<T,is_base_of<enable_shared_from_this<T>,T>::value>::pass( *this );
         }
         catch ( ... ) {
           d( p );
@@ -716,6 +737,7 @@ class shared_ptr
           m = _a.allocate(1);
           _p = static_cast<T*>(p);
           _ref = new (m) detail::__shared_ref_alloc<T,D,A>( _p, d, _STLP_STD::move(_a) );
+          detail::__enable_shared_from_this<T,is_base_of<enable_shared_from_this<T>,T>::value>::pass( *this );
         }
         catch ( ... ) {
           d( p );
@@ -1631,8 +1653,14 @@ class weak_ptr
     weak_ptr& operator =( const weak_ptr& r ) /* noexcept */
       { // weak_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
-          _STLP_STD::swap( _p, r._p );
-          _STLP_STD::swap( _ref, r._ref );
+          _p = r._p;
+          if ( _ref != NULL ) {
+            _ref->weak_unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->weak_link();
+          }          
         }
         return *this;
       }
@@ -1641,8 +1669,14 @@ class weak_ptr
     weak_ptr& operator =( const weak_ptr<Y>& r ) /* noexcept */
       {
         if ( _ref != r._ref ) {
-          _STLP_STD::swap( _p, r._p );
-          _STLP_STD::swap( _ref, r._ref );
+          _p = static_cast<T*>(r._p);
+          if ( _ref != NULL ) {
+            _ref->weak_unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->weak_link();
+          }          
         }
         return *this;
       }
@@ -1651,8 +1685,14 @@ class weak_ptr
     weak_ptr& operator =( const shared_ptr<Y>& r ) /* noexcept */
       {
         if ( _ref != r._ref ) {
-          _STLP_STD::swap( _p, r._p );
-          _STLP_STD::swap( _ref, r._ref );          
+          _p = static_cast<T*>(r._p);
+          if ( _ref != NULL ) {
+            _ref->weak_unlink();
+          }
+          _ref = r._ref;
+          if ( _ref != NULL ) {
+            _ref->weak_link();
+          }          
         }
         return *this;
       }
@@ -1708,5 +1748,50 @@ class weak_ptr
 template <class T>
 void swap( weak_ptr<T>& a, weak_ptr<T>& b ) /* noexcept */
 { a.swap( b ); }
+
+namespace detail {
+
+template <class T,bool>
+struct __enable_shared_from_this
+{
+    static void pass( shared_ptr<T>& )
+      { }
+};
+
+template <class T>
+struct __enable_shared_from_this<T,true>
+{
+    static void pass( shared_ptr<T>& t )
+      {
+        static_cast<enable_shared_from_this<T>&>(*t).w = t;
+      }
+};
+
+} // namespace detail
+
+template <class T>
+class enable_shared_from_this
+{
+  protected:
+    /* constexpr */ enable_shared_from_this() /* noexcept */ :
+        w()
+      { }
+    enable_shared_from_this( const enable_shared_from_this&) /* noexcept */
+      { }
+    enable_shared_from_this& operator =( const enable_shared_from_this& ) /* noexcept */
+      { return *this; }
+    ~enable_shared_from_this()
+      { }
+
+  public:
+    shared_ptr<T> shared_from_this()
+      { return shared_ptr<T>(w); }
+    shared_ptr<T const> shared_from_this() const
+      { return shared_ptr<T const>(w); }
+
+  private:
+    friend class detail::__enable_shared_from_this<T,true>;
+    weak_ptr<T> w;
+};
 
 _STLP_END_NAMESPACE

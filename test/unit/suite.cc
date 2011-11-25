@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-19 01:34:36 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-22 17:03:44 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -901,7 +901,6 @@ int main( int argc, const char** argv )
     shp_tc[2] = t.add( &unique_ptr_test::base, unqp_test, "unique_ptr basic" ) );
 
   shared_ptr_test shp_test;
-  t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this" );
 
   t.add( &shared_ptr_test::alias, shp_test, "shared_ptr alias",
     shp_tc[0] = t.add( &shared_ptr_test::shared_ptr_base, shp_test, "shared_ptr basic" ) );
@@ -911,13 +910,15 @@ int main( int argc, const char** argv )
     t.add( &shared_ptr_test::allocate, shp_test, "shared_ptr allocate_shared",
       t.add( &shared_ptr_test::make, shp_test, "shared_ptr make_shared",
          t.add( &shared_ptr_test::move, shp_test, "shared_ptr move", shp_tc, shp_tc + 2 ) ) );
-  t.add( &shared_ptr_test::assign, shp_test, "shared_ptr assignment", shp_tc[0] );
+  shp_tc[4] = t.add( &shared_ptr_test::assign, shp_test, "shared_ptr assignment", shp_tc[0] );
 
   t.add( &shared_ptr_test::unique_ptr, shp_test, "shared_ptr from unique_ptr ctor", shp_tc[2] );
 
   weak_ptr_test wp_test;
 
-  t.add( &weak_ptr_test::base, wp_test, "weak_ptr basic", shp_tc[3] );
+  shp_tc[5] = t.add( &weak_ptr_test::base, wp_test, "weak_ptr basic", shp_tc[3] );
+
+  t.add( &shared_ptr_test::shared_from_this, shp_test, "shared_from_this", shp_tc + 4, shp_tc + 6 );
 
   ref_wrapper_test ref_test;
 
