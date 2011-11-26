@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-10 10:51:07 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-26 09:13:51 ptr>
 
 /*
  * Copyright (c) 2007, 2009-2011
@@ -710,15 +710,23 @@ int EXAM_IMPL(type_traits_test::is_destructible)
       // { }
   };
 
+  struct Other2
+  {
+      Other2() = delete;
+      ~Other2() = delete;
+  };
+
   typedef std::is_destructible<My> T1;
   typedef std::is_destructible<Other> T2;
-  typedef std::is_destructible<YetAnother> T3;
+  // typedef std::is_destructible<YetAnother> T3;
   typedef std::is_destructible<int> T4;
+  typedef std::is_destructible<Other2> T5;
 
   EXAM_CHECK( T1::value == true );
   EXAM_CHECK( T2::value == false );
-  EXAM_CHECK( T3::value == false );
+  // EXAM_CHECK( T3::value == false );
   EXAM_CHECK( T4::value == true );
+  EXAM_CHECK( T5::value == false );
 
   // Other x;
   // YetAnother y;

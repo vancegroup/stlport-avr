@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-10 11:00:44 ptr>
+// -*- C++ -*- Time-stamp: <2011-11-26 08:54:28 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -937,8 +937,10 @@ struct __is_destructible
     };
 
 #ifdef _STLP_CPP_0X
+    // template <class _Up>
+    // static decltype( declval<test_<_Up> >().~test_<_Up>(), declval<true_type>() ) __test(int);
     template <class _Up>
-    static decltype( declval<test_<_Up>&>().~test_<_Up>(), declval<true_type>() ) __test(int);
+    static decltype( declval<_Up>().~_Up(), declval<true_type>() ) __test(int);
 
     template <class>
     static false_type __test(...);
