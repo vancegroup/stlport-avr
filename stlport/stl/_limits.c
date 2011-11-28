@@ -413,7 +413,7 @@ public:
       long double   f;
     };
 #     ifndef _STLP_MSVC
-    _access tmp = { _STP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xa0, 0xff, 0x7f, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+    _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0xa0, 0xff, 0x7f, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
 #     else
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0xf4, 0x7f _STLP_ADDITIONAL_CLOSE_BRACKET };
 #     endif
