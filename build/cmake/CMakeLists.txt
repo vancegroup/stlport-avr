@@ -226,6 +226,11 @@ SET( TEST_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/wctype_header_test.c
 )
 
+SET( CMAKE_CXX_FLAGS "" )
+SET( CMAKE_CXX_FLAGS_RELEASE "" )
+SET( CMAKE_CXX_FLAGS_DEBUG "" )
+SET( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" )
+
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../stlport )
 
 add_library(
@@ -252,16 +257,22 @@ ENDIF (WIN32)
 IF (CMAKE_COMPILER_IS_GNUCXX)
 
   SET_TARGET_PROPERTIES(stlport PROPERTIES
-    COMPILE_FLAGS "-fPIC -fvisibility=hidden"
+    COMPILE_FLAGS "-fPIC -fvisibility=hidden -pthread"
     # COMPILE_DEFINITIONS "-D_GNU_SOURCE"
     LINK_FLAGS -nodefaultlibs
     SOVERSION ${MAJOR}.${MINOR}
     VERSION ${MAJOR}.${MINOR}.${PATCH}
   )
 
-  SET_TARGET_PROPERTIES(stl_unit_test PROPERTIES
-    LINK_FLAGS "-nodefaultlibs -L."
-  )
+  if ( "${LIBRARY_OUTPUT_PATH}" STREQUAL "" )
+    SET_TARGET_PROPERTIES(stl_unit_test PROPERTIES
+      LINK_FLAGS "-nodefaultlibs -L."
+    )
+  else()
+    SET_TARGET_PROPERTIES(stl_unit_test PROPERTIES
+      LINK_FLAGS "-nodefaultlibs -L${LIBRARY_OUTPUT_PATH} -Wl,-rpath=${LIBRARY_OUTPUT_PATH}"
+    )
+  endif()
 
   IF ( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
     target_link_libraries( stl_unit_test -lstlport -lgcc_s.10.5 -lc -lm )
