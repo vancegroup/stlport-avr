@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-22 17:04:15 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 01:03:19 ptr>
 
 /*
  * Copyright (c) 2011
@@ -528,6 +528,70 @@ int EXAM_IMPL(shared_ptr_test::alias)
 
   EXAM_CHECK( p.use_count() == 1 );
   EXAM_CHECK( *p->b == 7 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(shared_ptr_test::deleter)
+{
+  struct B
+  {
+      B()
+        { }
+
+      ~B()
+        { }
+  };
+
+  struct A
+  {
+      A() :
+          b( new B )
+        { }
+
+      ~A()
+        {
+          delete b;
+        }
+
+      B* b;
+  };
+
+  struct A_destroyer
+  {
+      void operator ()( A* p )
+        {
+          delete p;
+        }
+  };
+
+
+  {
+    shared_ptr<Test> pi( new Test(), my_destroyer() ); // custom deleter
+
+    EXAM_CHECK( (std::get_deleter<my_destroyer,Test>( pi ) != NULL) );
+  }
+
+  {
+    shared_ptr<Test> pi( new Test() ); // no custom deleter
+
+    EXAM_CHECK( (std::get_deleter<my_destroyer,Test>( pi ) == NULL) );
+  }
+
+  {
+    shared_ptr<A> p( new A(), A_destroyer() );
+    {
+      // simple alias
+
+      shared_ptr<B> internal( p, p->b );
+      EXAM_CHECK( (std::get_deleter<A_destroyer,B>( internal ) == NULL) );
+    }
+  }
+
+  {
+    shared_ptr<A> p( nullptr, A_destroyer() );
+    EXAM_CHECK( (std::get_deleter<A_destroyer,A>( p ) != NULL) );
+  }
 
   return EXAM_RESULT;
 }

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-25 14:03:40 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 10:13:14 ptr>
 
 /*
  * Copyright (c) 2011
@@ -16,6 +16,7 @@
  */
 
 #include <type_traits>
+// #include <typeinfo>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -48,6 +49,9 @@ shared_ptr<T> make_shared( Args&&... args );
 template <class T, class A, class... Args>
 shared_ptr<T> allocate_shared( const A& a, Args&&... args );
 
+template <class D, class T>
+D* get_deleter( const shared_ptr<T>& ) /* noexcept */;
+
 namespace detail {
 
 struct __shared_ref_base
@@ -60,6 +64,9 @@ struct __shared_ref_base
     virtual void weak_link() = 0;
 
     virtual __shared_ref_base* ref() = 0;
+
+    virtual void* get_deleter()
+      { return NULL; }
 };
 
 template <class T>
@@ -163,6 +170,9 @@ class __alias_shared_ref :
     virtual __shared_ref_base* ref()
       { return _parent == NULL ? NULL : _parent->ref(); }
 
+    // virtual void* get_deleter()
+    //   { return _parent == NULL ? NULL : _parent->get_deleter(); }
+
   protected:
     __shared_ref_base* _parent;
 };
@@ -196,7 +206,15 @@ class __shared_ref_deleter :
         }
       }
 
+    virtual void* get_deleter()
+      { return reinterpret_cast<void*>(this); }
+
+    // template <DD>
+    // bool check_deleter() const
+    //   { return is_convertible<DD*,D*>::value; }
+
   private:
+    template <class DD, class TT> friend DD* _STLP_STD::get_deleter( const _STLP_STD::shared_ptr<TT>& ) /* noexcept */;
     D _d;
 };
 
@@ -1060,6 +1078,7 @@ class shared_ptr
     template <class Y> friend class weak_ptr;
     template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
     template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
+    template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) /* noexcept */;
 
     T* _p;
     detail::__shared_ref_base* _ref;
@@ -1430,6 +1449,7 @@ class shared_ptr<void>
     template <class Y> friend class weak_ptr;
     template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
     template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
+    template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) /* noexcept */;
 
     void* _p;
     detail::__shared_ref_base* _ref;
@@ -1585,14 +1605,31 @@ shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
 // 20.7.2.2.10, shared_ptr get_deleter:
 
 template <class D, class T>
-D* get_deleter( const shared_ptr<T>& p ) /* noexcept */;
+D* get_deleter( const shared_ptr<T>& p ) /* noexcept */
+{
+  // try {
+    if ( p._ref != NULL ) {
+      void* d =  p._ref->get_deleter();
+      if ( d != NULL ) {
+        return &reinterpret_cast<detail::__shared_ref_deleter<T,D>*>(d)->_d;
+      }
+    }
+    // }
+  // catch ( /* const _STLP_STD::bad_cast& */ ... ) {
+  // }
+  return reinterpret_cast<D*>(NULL);
+}
 
 // 20.7.2.2.11, shared_ptr I/O:
 
 template <class E, class T> class basic_ostream;
 
 template <class E, class T, class Y>
-basic_ostream<E,T>& operator <<( basic_ostream<E,T>& os, const shared_ptr<Y>& p );
+basic_ostream<E,T>& operator <<( basic_ostream<E,T>& os, const shared_ptr<Y>& p )
+{
+  os << p.get();
+  return os;
+}
 
 template<class T>
 class weak_ptr
