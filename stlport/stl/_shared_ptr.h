@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 11:02:47 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 11:19:23 ptr>
 
 /*
  * Copyright (c) 2011
@@ -1832,6 +1832,40 @@ class weak_ptr
 template <class T>
 void swap( weak_ptr<T>& a, weak_ptr<T>& b ) /* noexcept */
 { a.swap( b ); }
+
+// 20.7.2.3.7, Class template owner_less  [util.smartptr.ownerless]
+
+template <class T> struct owner_less;
+
+template <class T>
+struct owner_less<shared_ptr<T> >
+{
+    typedef bool result_type;
+    typedef shared_ptr<T> first_argument_type;
+    typedef shared_ptr<T> second_argument_type;
+
+    bool operator()( shared_ptr<T> const& x, shared_ptr<T> const& y ) const
+      { return x.owner_before(y); }
+    bool operator()( shared_ptr<T> const& x, weak_ptr<T> const& y ) const
+      { return x.owner_before(y); }
+    bool operator()( weak_ptr<T> const& x, shared_ptr<T> const& y ) const
+      { return x.owner_before(y); }
+};
+
+template <class T>
+struct owner_less<weak_ptr<T> >
+{
+    typedef bool result_type;
+    typedef weak_ptr<T> first_argument_type;
+    typedef weak_ptr<T> second_argument_type;
+
+    bool operator()( weak_ptr<T> const& x, weak_ptr<T> const& y ) const
+      { return x.owner_before(y); }
+    bool operator()( shared_ptr<T> const& x, weak_ptr<T> const& y ) const
+      { return x.owner_before(y); }
+    bool operator()( weak_ptr<T> const& x, shared_ptr<T> const& y ) const
+      { return x.owner_before(y); }
+};
 
 namespace detail {
 
