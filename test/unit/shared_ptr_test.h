@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 00:46:26 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 10:31:27 ptr>
 
 /*
  * Copyright (c) 2011
@@ -50,6 +50,7 @@ class shared_ptr_test
     int EXAM_DECL(unique_ptr);
     int EXAM_DECL(assign);
     int EXAM_DECL(deleter);
+    int EXAM_DECL(casts);
 };
 
 class weak_ptr_test

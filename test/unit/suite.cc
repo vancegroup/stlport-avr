@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 01:00:26 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 10:36:26 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -906,6 +906,7 @@ int main( int argc, const char** argv )
     t.add( &shared_ptr_test::alias, shp_test, "shared_ptr alias",
       shp_tc[0] = t.add( &shared_ptr_test::shared_ptr_base, shp_test, "shared_ptr basic" ) ) );
   t.add( &shared_ptr_test::convert, shp_test, "shared_ptr convertions", shp_tc[0] );
+  t.add( &shared_ptr_test::casts, shp_test, "shared_ptr casts", shp_tc[0] );
   shp_tc[1] = utility_tc[0];
   shp_tc[3] =
     t.add( &shared_ptr_test::allocate, shp_test, "shared_ptr allocate_shared",

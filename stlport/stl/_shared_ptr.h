@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 10:13:14 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 11:02:47 ptr>
 
 /*
  * Copyright (c) 2011
@@ -48,6 +48,13 @@ shared_ptr<T> make_shared( Args&&... args );
 
 template <class T, class A, class... Args>
 shared_ptr<T> allocate_shared( const A& a, Args&&... args );
+
+template <class T, class U>
+shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+template <class T, class U>
+shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+template <class T, class U>
+shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
 
 template <class D, class T>
 D* get_deleter( const shared_ptr<T>& ) /* noexcept */;
@@ -1078,6 +1085,10 @@ class shared_ptr
     template <class Y> friend class weak_ptr;
     template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
     template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
+    template <class Y, class U> friend shared_ptr<Y> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+    template <class Y, class U> friend shared_ptr<Y> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+    template <class Y, class U> friend shared_ptr<Y> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+
     template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) /* noexcept */;
 
     T* _p;
@@ -1449,6 +1460,9 @@ class shared_ptr<void>
     template <class Y> friend class weak_ptr;
     template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
     template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
+    template <class Y, class U> friend shared_ptr<Y> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+    template <class Y, class U> friend shared_ptr<Y> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+    template <class Y, class U> friend shared_ptr<Y> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
     template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) /* noexcept */;
 
     void* _p;
@@ -1594,13 +1608,46 @@ void swap( shared_ptr<T>& a, shared_ptr<T>& b ) /* noexcept */
 // 20.7.2.2.9, shared_ptr casts:
 
 template <class T, class U>
-shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
+{
+  shared_ptr<T> p;
+
+  if ( r._ref != NULL ) {
+    p._p = static_cast<T*>(r.get());
+    p._ref = r._ref->ref();
+    p._ref->link();
+  }
+
+  return p;
+}
 
 template <class T, class U>
-shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
+{
+  shared_ptr<T> p;
+
+  if ( r._ref != NULL ) {
+    p._p = dynamic_cast<T*>(r.get());
+    p._ref = r._ref->ref();
+    p._ref->link();
+  }
+
+  return p;
+}
 
 template <class T, class U>
-shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
+{
+  shared_ptr<T> p;
+
+  if ( r._ref != NULL ) {
+    p._p = const_cast<T*>(r.get());
+    p._ref = r._ref->ref();
+    p._ref->link();
+  }
+
+  return p;
+}
 
 // 20.7.2.2.10, shared_ptr get_deleter:
 

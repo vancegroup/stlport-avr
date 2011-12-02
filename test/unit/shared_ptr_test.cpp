@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 01:03:19 ptr>
+// -*- C++ -*- Time-stamp: <2011-12-02 10:53:43 ptr>
 
 /*
  * Copyright (c) 2011
@@ -994,6 +994,117 @@ int EXAM_IMPL(shared_ptr_test::unique_ptr)
   }
 
   EXAM_CHECK( Test::cnt == 0 );
+
+  return EXAM_RESULT;
+}
+
+struct Test2
+{
+    Test2() :
+        i( 0 ),
+        d( 0.0 )
+      {
+        ++cnt;
+      }
+
+    Test2( int v ) :
+        i( v ),
+        d( 0.0 )
+      {
+        ++cnt;
+      }
+
+    Test2( int v, double& vd ) :
+        i( v ),
+        d( vd )
+      {
+        ++cnt;
+      }
+
+    virtual ~Test2()
+      {
+        --cnt;
+      }
+
+    int i;
+    double d;
+
+    static int cnt;
+};
+
+int Test2::cnt = 0;
+
+struct TestNext2 :
+    public Test2
+{
+    TestNext2()
+      {
+        ++cnt_next;
+      }
+
+    TestNext2( int i ) :
+        Test2( i )
+      {
+        ++cnt_next;
+      }
+
+    virtual ~TestNext2()
+      {
+        --cnt_next;
+      }
+
+    static int cnt_next;
+};
+
+int TestNext2::cnt_next = 0;
+
+int EXAM_IMPL(shared_ptr_test::casts)
+{
+  Test::cnt = 0;
+  TestNext::cnt_next = 0;
+
+  Test2::cnt = 0;
+  TestNext2::cnt_next = 0;
+
+  {
+    shared_ptr<Test> p( new Test( 1 ) );
+    shared_ptr<Test> w = static_pointer_cast<Test,Test>(p);
+
+    EXAM_CHECK( w.get() == p.get() );
+    EXAM_CHECK( w.use_count() == p.use_count() );
+  }
+
+  {
+    shared_ptr<Test> p( new Test( 1 ) );
+    shared_ptr<TestNext> w = static_pointer_cast<TestNext,Test>(p);
+
+    EXAM_CHECK( w.get() == p.get() );
+    EXAM_CHECK( w.use_count() == p.use_count() );
+
+    EXAM_CHECK( (*w).cnt == 1 );
+    EXAM_CHECK( (*w).cnt_next == 0 );
+    EXAM_CHECK( w->i == 1 );
+  }
+
+  {
+    shared_ptr<Test2> p( new TestNext2( 2 ) );
+    shared_ptr<TestNext2> w = dynamic_pointer_cast<TestNext2,Test2>(p);
+
+    EXAM_CHECK( w.get() == p.get() );
+    EXAM_CHECK( w.use_count() == p.use_count() );
+
+    EXAM_CHECK( (*w).cnt == 1 );
+    EXAM_CHECK( (*w).cnt_next == 1 );
+    EXAM_CHECK( w->i == 2 );
+  }
+
+  {
+    shared_ptr<const Test> p( new Test( 1 ) );
+    shared_ptr<Test> w = const_pointer_cast<Test,const Test>(p);
+
+    EXAM_CHECK( w.get() == p.get() );
+    EXAM_CHECK( w.use_count() == p.use_count() );
+  }
 
   return EXAM_RESULT;
 }
