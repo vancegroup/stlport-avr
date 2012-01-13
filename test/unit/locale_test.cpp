@@ -334,4 +334,12 @@ void LocaleTest::combine()
 #  endif
 }
 
+void LocaleTest::hidden()
+{
+  /* Check linkage: bug ID 3472902; some names, used in num_put,
+     was not exported with visibility=hidden.
+  */
+  std::locale l(std::locale::classic(), new std::num_put<char>() );
+}
+
 #endif

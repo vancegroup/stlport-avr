@@ -38,6 +38,7 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(time_put_get);
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
+  CPPUNIT_TEST(hidden);
 #  if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
   CPPUNIT_IGNORE;
 #  endif
@@ -73,6 +74,7 @@ public:
   void default_locale();
   void combine();
   void messages_by_name();
+  void hidden();
 private:
   void _loc_has_facet( const STD locale& );
   void _num_put_get( const STD locale&, const ref_locale* );
