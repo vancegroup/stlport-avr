@@ -42,6 +42,7 @@ class locale_test
     int EXAM_DECL(ctype_by_name);
     int EXAM_DECL(collate_by_name);
     int EXAM_DECL(messages_by_name);
+    int EXAM_DECL(hidden);
 
     int EXAM_DECL(loc_has_facet);
     int EXAM_DECL(num_put_get);

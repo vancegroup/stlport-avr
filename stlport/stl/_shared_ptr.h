@@ -690,7 +690,7 @@ bool operator >=(nullptr_t, const unique_ptr<T, D>& x)
 { return !(nullptr < x); }
 
 
-class bad_weak_ptr :
+class _STLP_DECLSPEC bad_weak_ptr :
     public _STLP_STD::__Named_exception
 {
   public:

@@ -2476,3 +2476,13 @@ int EXAM_IMPL(locale_test::time_by_name)
 
   return EXAM_RESULT;
 }
+
+int EXAM_IMPL(locale_test::hidden)
+{
+  /* Check linkage: bug ID 3472902; some names, used in num_put,
+     was not exported with visibility=hidden.
+  */
+  std::locale l(std::locale::classic(), new std::num_put<char>() );
+
+  return EXAM_RESULT;
+}

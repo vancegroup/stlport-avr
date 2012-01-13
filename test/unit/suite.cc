@@ -938,7 +938,8 @@ int main( int argc, const char** argv )
   t.add( &locale_test::messages_by_name, ltest, "messages_by_name" );
 
   t.add( &locale_test::loc_has_facet, ltest, "loc_has_facet" );
-  t.add( &locale_test::num_put_get, ltest, "num_put_get" );
+  t.add( &locale_test::hidden, ltest, "locale, aux functions visibility",
+    t.add( &locale_test::num_put_get, ltest, "num_put_get" ) );
   t.add( &locale_test::money_put_get, ltest, "money_put_get" );
   t.add( &locale_test::money_put_X_bug, ltest, "money_put_X_bug" );
   t.add( &locale_test::time_put_get, ltest, "time_put_get" );
