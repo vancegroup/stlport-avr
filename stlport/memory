@@ -38,6 +38,8 @@
 #  include <stl/_raw_storage_iter.h>
 #endif
 
+#include <stl/_stdexcept_base.h>
+
 #include <stl/_auto_ptr.h>
 
 #include <stl/_shared_ptr.h>

@@ -36,7 +36,8 @@ SRC_CPP = dll_main.cpp \
           allocators.cpp
 
 SRC_CC = chrono.cc \
-         reachable.cc
+         reachable.cc \
+         except.cc
 
 SRC_C = c_locale.c \
         cxa.c

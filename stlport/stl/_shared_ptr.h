@@ -691,12 +691,10 @@ bool operator >=(nullptr_t, const unique_ptr<T, D>& x)
 
 
 class bad_weak_ptr :
-    public __Named_exception
+    public _STLP_STD::__Named_exception
 {
   public:
-    bad_weak_ptr() : /* noexcept */
-        __Named_exception( "bad_weak_ptr" )
-      { }
+    bad_weak_ptr() /* noexcept */ ;
 };
 
 template <class T> class enable_shared_from_this;
