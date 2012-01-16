@@ -58,8 +58,8 @@ _STLP_BEGIN_NAMESPACE
 #    endif
 
 #    if !defined (_STLP_NO_EXCEPTION_HEADER)
-#      if !defined (_STLP_EXCEPTION_BASE) && !defined (_STLP_BROKEN_EXCEPTION_CLASS) && \
-           defined (_STLP_USE_NAMESPACES) &&  defined (_STLP_USE_OWN_NAMESPACE)
+#      if !defined (_STLP_EXCEPTION_BASE) && \
+           defined (_STLP_USE_NAMESPACES) && defined (_STLP_USE_OWN_NAMESPACE)
 using _STLP_VENDOR_EXCEPT_STD::exception;
 #      endif
 #    endif

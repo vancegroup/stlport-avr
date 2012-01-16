@@ -60,7 +60,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (_STLP_NO_EXCEPTION_HEADER) || defined (_STLP_BROKEN_EXCEPTION_CLASS)
+#if defined (_STLP_NO_EXCEPTION_HEADER)
 exception::exception() _STLP_NOTHROW {}
 exception::~exception() _STLP_NOTHROW {}
 bad_exception::bad_exception() _STLP_NOTHROW {}

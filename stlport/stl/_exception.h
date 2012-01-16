@@ -34,29 +34,17 @@
 #    undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #  endif
 
-#  if defined (_STLP_BROKEN_EXCEPTION_CLASS)
-#    define exception     _STLP_NULLIFIED_BROKEN_EXCEPTION_CLASS
-#    define bad_exception _STLP_NULLIFIED_BROKEN_BAD_EXCEPTION_CLASS
-#    if defined (_STLP_NO_NEW_NEW_HEADER)
-#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(Exception.h)
+#  if defined (_STLP_NO_NEW_NEW_HEADER)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <exception.h>
 #    else
-#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(Exception)
+#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
 #    endif
-#    undef exception
-#    undef bad_exception
 #  else
-#    if defined (_STLP_NO_NEW_NEW_HEADER)
-#      if defined (_STLP_HAS_INCLUDE_NEXT)
-#        include_next <exception.h>
-#      else
-#        include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
-#      endif
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <exception>
 #    else
-#      if defined (_STLP_HAS_INCLUDE_NEXT)
-#        include_next <exception>
-#      else
-#        include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
-#      endif
+#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
 #    endif
 #  endif
 
@@ -70,14 +58,12 @@
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 
 _STLP_BEGIN_NAMESPACE
-#    if !defined (_STLP_BROKEN_EXCEPTION_CLASS)
-#      if !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_WIN64)
+#    if !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_WIN64)
 using _STLP_VENDOR_EXCEPT_STD::exception;
-#      else
+#    else
 using ::exception;
-#      endif
-using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 #    endif
+using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 
 #    if !defined (_STLP_NO_USING_FOR_GLOBAL_FUNCTIONS)
 // fbp : many platforms present strange mix of
@@ -154,7 +140,7 @@ bool uncaught_exception(); // not implemented under mpw as of Jan/1999
 
 #endif /* _STLP_NO_EXCEPTION_HEADER */
 
-#if defined (_STLP_NO_EXCEPTION_HEADER) || defined (_STLP_BROKEN_EXCEPTION_CLASS)
+#if defined (_STLP_NO_EXCEPTION_HEADER)
 _STLP_BEGIN_NAMESPACE
 
 // section 18.6.1
