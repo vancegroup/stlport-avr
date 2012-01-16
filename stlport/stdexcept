@@ -18,36 +18,96 @@
 
 #ifndef _STLP_STDEXCEPT
 
-#if !defined (_STLP_OUTERMOST_HEADER_ID)
-#  define _STLP_OUTERMOST_HEADER_ID 0x63
-#  include <stl/_prolog.h>
-#elif (_STLP_OUTERMOST_HEADER_ID == 0x63) && !defined (_STLP_DONT_POP_HEADER_ID)
-#  define _STLP_DONT_POP_HEADER_ID
-#  define _STLP_STDEXCEPT
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID == 0x63)
-#  ifndef _STLP_INTERNAL_STDEXCEPT
-#    include <stl/_stdexcept.h>
+#  if !defined (_STLP_OUTERMOST_HEADER_ID)
+#    define _STLP_OUTERMOST_HEADER_ID 0x63
+#    include <stl/_prolog.h>
+#    define _STLP_STDEXCEPT
 #  endif
+
+#ifndef _STLP_INTERNAL_STDEXCEPT_BASE
+#  include <stl/_stdexcept_base.h>
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x63) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <stdexcept>
-#  else
-#    include _STLP_NATIVE_HEADER(stdexcept)
-#  endif
-#endif
+_STLP_BEGIN_NAMESPACE
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x63)
-#  if !defined (_STLP_DONT_POP_HEADER_ID)
+class _STLP_CLASS_DECLSPEC logic_error : public __Named_exception {
+public:
+  logic_error(const string& __s) : __Named_exception(__s) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~logic_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC runtime_error : public __Named_exception {
+public:
+  runtime_error(const string& __s) : __Named_exception(__s) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~runtime_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC domain_error : public logic_error {
+public:
+  domain_error(const string& __arg) : logic_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~domain_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC invalid_argument : public logic_error {
+public:
+  invalid_argument(const string& __arg) : logic_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~invalid_argument() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC length_error : public logic_error {
+public:
+  length_error(const string& __arg) : logic_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~length_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC out_of_range : public logic_error {
+public:
+  out_of_range(const string& __arg) : logic_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~out_of_range() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC range_error : public runtime_error {
+public:
+  range_error(const string& __arg) : runtime_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~range_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC overflow_error : public runtime_error {
+public:
+  overflow_error(const string& __arg) : runtime_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~overflow_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+class _STLP_CLASS_DECLSPEC underflow_error : public runtime_error {
+public:
+  underflow_error(const string& __arg) : runtime_error(__arg) {}
+#    ifndef _STLP_USE_NO_IOSTREAMS
+  ~underflow_error() _STLP_NOTHROW_INHERENTLY;
+#    endif
+};
+
+_STLP_END_NAMESPACE
+
+#  if (_STLP_OUTERMOST_HEADER_ID == 0x63)
 #    include <stl/_epilog.h>
-#    undef  _STLP_OUTERMOST_HEADER_ID
-#  else
-#    undef  _STLP_DONT_POP_HEADER_ID
+#    undef _STLP_OUTERMOST_HEADER_ID
 #  endif
-#endif
 
 #endif /* _STLP_STDEXCEPT */
 
