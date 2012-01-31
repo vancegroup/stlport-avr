@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <2011-09-19 14:01:48 ptr>
+# -*- makefile -*- Time-stamp: <2012-01-06 12:09:03 ptr>
 
 # this is the version number of needed STLport library for linking
 LIBMAJOR = 6
@@ -8,7 +8,8 @@ PRGNAME = stl_unit_test
 SRC_CC = suite.cc \
          numerics.cc \
          type_traits_test.cc \
-         chrono_test.cc
+         chrono_test.cc \
+         atomic_test.cc
 SRC_CPP = alg_test.cpp \
 	allocator_test.cpp \
 	binary_test.cpp \
