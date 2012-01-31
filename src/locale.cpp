@@ -149,7 +149,6 @@ locale::locale(const char* name)
     impl = new _Locale_impl(locale::id::_S_max, name);
 
     // Insert categories one at a time.
-    _Locale_name_hint *hint = 0;
     const char* ctype_name = name;
     char ctype_buf[_Locale_MAX_SIMPLE_NAME];
     const char* numeric_name = name;
@@ -162,12 +161,12 @@ locale::locale(const char* name)
     char monetary_buf[_Locale_MAX_SIMPLE_NAME];
     const char* messages_name = name;
     char messages_buf[_Locale_MAX_SIMPLE_NAME];
-    hint = impl->insert_ctype_facets(ctype_name, ctype_buf, hint);
-    hint = impl->insert_numeric_facets(numeric_name, numeric_buf, hint);
-    hint = impl->insert_time_facets(time_name, time_buf, hint);
-    hint = impl->insert_collate_facets(collate_name, collate_buf, hint);
-    hint = impl->insert_monetary_facets(monetary_name, monetary_buf, hint);
-    impl->insert_messages_facets(messages_name, messages_buf, hint);
+    impl->insert_ctype_facets(ctype_name, ctype_buf );
+    impl->insert_numeric_facets(numeric_name, numeric_buf );
+    impl->insert_time_facets(time_name, time_buf );
+    impl->insert_collate_facets(collate_name, collate_buf );
+    impl->insert_monetary_facets(monetary_name, monetary_buf );
+    impl->insert_messages_facets(messages_name, messages_buf );
 
     // Try to use a normalize locale name in order to have the == operator
     // to behave correctly:
@@ -256,7 +255,6 @@ locale::locale(const locale& L, const char* name, locale::category c)
   _STLP_TRY {
     impl = new _Locale_impl(*L._M_impl);
 
-    _Locale_name_hint *hint = 0;
     const char* ctype_name = name;
     char ctype_buf[_Locale_MAX_SIMPLE_NAME];
     const char* numeric_name = name;
@@ -270,17 +268,17 @@ locale::locale(const locale& L, const char* name, locale::category c)
     const char* messages_name = name;
     char messages_buf[_Locale_MAX_SIMPLE_NAME];
     if (c & locale::ctype)
-      hint = impl->insert_ctype_facets(ctype_name, ctype_buf, hint);
+      impl->insert_ctype_facets(ctype_name, ctype_buf );
     if (c & locale::numeric)
-      hint = impl->insert_numeric_facets(numeric_name, numeric_buf, hint);
+      impl->insert_numeric_facets(numeric_name, numeric_buf );
     if (c & locale::time)
-      hint = impl->insert_time_facets(time_name, time_buf, hint);
+      impl->insert_time_facets(time_name, time_buf );
     if (c & locale::collate)
-      hint = impl->insert_collate_facets(collate_name, collate_buf, hint);
+      impl->insert_collate_facets(collate_name, collate_buf );
     if (c & locale::monetary)
-      hint = impl->insert_monetary_facets(monetary_name, monetary_buf,hint);
+      impl->insert_monetary_facets(monetary_name, monetary_buf );
     if (c & locale::messages)
-      impl->insert_messages_facets(messages_name, messages_buf, hint);
+      impl->insert_messages_facets(messages_name, messages_buf );
 
     _Stl_loc_combine_names(impl, L._M_impl->name.c_str(),
                            ctype_name, time_name, numeric_name,
