@@ -42,7 +42,7 @@
 #include <vector>
 #include <set>
 #include <list>
-#include <slist>
+#include <forward_list>
 #include <deque>
 #include <hash_map>
 #include <limits>

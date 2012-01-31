@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 10:36:26 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 16:10:00 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -26,7 +26,7 @@
 #include "vector_test.h"
 #include "deque_test.h"
 #include "list_test.h"
-#include "slist_test.h"
+#include "forward_list_test.h"
 #include "string_test.h"
 #include "cstring_test.h"
 #include "map_test.h"

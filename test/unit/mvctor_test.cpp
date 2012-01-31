@@ -1,9 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <slist>
-#endif
+#include <forward_list>
 #include <list>
 #include <deque>
 #include <set>

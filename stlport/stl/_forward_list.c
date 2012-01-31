@@ -16,11 +16,11 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef _STLP_SLIST_C
-#define _STLP_SLIST_C
+#ifndef _STLP_FORWARD_LIST_C
+#define _STLP_FORWARD_LIST_C
 
-#ifndef _STLP_SLIST
-#  include <slist>
+#ifndef _STLP_FORWARD_LIST
+#  include <forward_list>
 #endif
 
 #ifndef _STLP_CARRAY_H
@@ -224,7 +224,7 @@ _STLP_END_NAMESPACE
 #  undef size_type
 #endif
 
-#endif /*  _STLP_SLIST_C */
+#endif /*  _STLP_FORWARD_LIST_C */
 
 // Local Variables:
 // mode:C++

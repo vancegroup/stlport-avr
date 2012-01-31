@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 16:03:41 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -22,17 +22,15 @@
 //into account (at least using GCC 4.0.1)
 #include "stack_allocator.h"
 
-#include "slist_test.h"
+#include "forward_list_test.h"
 
 #include <algorithm>
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <slist>
-#  if !defined (_STLP_USE_NO_IOSTREAMS)
-#    include <sstream>
-#  endif
-#  include <iterator>
-#  include <functional>
+#include <forward_list>
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+#  include <sstream>
 #endif
+#include <iterator>
+#include <functional>
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;

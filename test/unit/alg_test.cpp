@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 15:58:12 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -24,9 +24,7 @@
 #include <vector>
 
 #include <list>
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <slist>
-#endif
+#include <forward_list>
 #include <queue>
 #include <deque>
 #include <functional>

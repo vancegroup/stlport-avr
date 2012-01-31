@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef _STLP_SLIST
-#define _STLP_SLIST
+#ifndef _STLP_FORWARD_LIST
+#define _STLP_FORWARD_LIST
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x58
@@ -825,14 +825,14 @@ struct __has_move_constructor<slist<_Tp, _Alloc> > :
 
 _STLP_END_NAMESPACE
 
-#include <stl/_slist.c>
+#include <stl/_forward_list.c>
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-#  include <stl/pointers/_slist.h>
+#  include <stl/pointers/_forward_list.h>
 #endif
 
 #if defined (_STLP_DEBUG)
-#  include <stl/debug/_slist.h>
+#  include <stl/debug/_forward_list.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -906,7 +906,7 @@ _STLP_END_NAMESPACE
 #  undef _STLP_OUTERMOST_HEADER_ID
 #endif
 
-#endif /* _STLP_SLIST */
+#endif /* _STLP_FORWARD_LIST */
 
 // Local Variables:
 // mode:C++

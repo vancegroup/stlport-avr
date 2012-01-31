@@ -4,9 +4,7 @@
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <rope>
 #endif
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <slist>
-#endif
+#include <forward_list>
 #include <list>
 #include <deque>
 #include <set>

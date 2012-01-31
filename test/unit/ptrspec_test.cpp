@@ -2,9 +2,7 @@
 
 #include <vector>
 #include <list>
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <slist>
-#endif
+#include <forward_list>
 #include <deque>
 #include <set>
 #include <iterator>
