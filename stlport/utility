@@ -34,6 +34,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+template <class _Tp> void swap( _Tp&, _Tp& );
+
 template <class _Tp>
 class __move_source
 {
@@ -116,6 +118,7 @@ struct pair {
 
   _T1 first;
   _T2 second;
+#ifndef _STLP_CPP_0X
   pair() : first(_T1()), second(_T2()) {}
   pair(const _T1& __a, const _T2& __b) : first(__a), second(__b) {}
 
@@ -132,6 +135,77 @@ struct pair {
 #endif
 
   __TRIVIAL_DESTRUCTOR(pair)
+#else // _STLP_CPP_0X
+  pair( const pair& ) = default;
+  pair( pair&& ) = default;
+  /* constexpr */ pair() :
+      first(_T1()),
+      second(_T2())
+    { }
+
+  pair(const _T1& __a, const _T2& __b) :
+      first(__a),
+      second(__b)
+    { }
+
+  template <class U, class V>
+  pair( U&& x, V&& y ) :
+      first( _STLP_STD::forward<U>(x) ),
+      second( _STLP_STD::forward<V>(y) )
+    { }
+
+  template <class U, class V>
+  pair( const pair<U,V>& p ) :
+      first( p.first ),
+      second( p.second )
+    { }
+
+  template <class U, class V>
+  pair( pair<U,V>&& p ) :
+      first( _STLP_STD::forward<U>(p.first) ),
+      second( _STLP_STD::forward<V>(p.second) )
+    { }
+
+  // template <class ... Args1, class ... Args2>
+  // pair(piecewise_construct_t, tuple<Args1...> first_args, tuple<Args2...> second_args);
+
+  pair& operator =(const pair& p)
+    {
+      static_assert( _STLP_STD::is_copy_assignable<first_type>::value, "first_type not assignable" );
+      static_assert( _STLP_STD::is_copy_assignable<second_type>::value, "second_type not assignable" );
+      first = p.first; second = p.second; return *this;
+    }
+
+  template <class U, class V>
+  pair& operator =(const pair<U,V>& p)
+    {
+      static_assert( is_assignable<first_type&,const U&>::value, "not assignable" );
+      static_assert( is_assignable<second_type&,const V&>::value, "not assignable" );
+      first = p.first; second = p.second; return *this;
+    }
+
+  pair& operator =(pair&& p) /* noexcept */
+    {
+      static_assert( is_move_assignable<first_type>::value, "not assignable" );
+      static_assert( is_move_assignable<second_type>::value, "not assignable" );
+      first = _STLP_STD::forward<first_type>(p.first);
+      second = _STLP_STD::forward<second_type>(p.second);
+      return *this;
+    }
+
+  template <class U, class V>
+  pair& operator =(pair<U,V>&& p)
+    {
+      static_assert( is_assignable<first_type&,U&&>::value, "not assignable" );
+      static_assert( is_assignable<second_type&,V&&>::value, "not assignable" );
+      first = _STLP_STD::forward<U>(p.first);
+      second = _STLP_STD::forward<V>(p.second);
+      return *this;
+    }
+
+  void swap(pair& p) /* noexcept */
+    { _STLP_STD::swap(first, p.first); _STLP_STD::swap(second, p.second); }
+#endif // _STLP_CPP_0X
 };
 
 template <class _T1, class _T2>
