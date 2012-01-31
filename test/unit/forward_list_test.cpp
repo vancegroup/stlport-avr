@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 16:03:41 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 17:00:32 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -40,9 +40,8 @@ using namespace std;
 using namespace __gnu_cxx;
 #endif
 
-int EXAM_IMPL(slist_test::slist1)
+int EXAM_IMPL(forward_list_test::forward_list1)
 {
-#if defined (STLPORT) && !defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_NO_EXTENSIONS)
 /*
 original: xlxtss
 reversed: sstxlx
@@ -54,11 +53,11 @@ sorted: lst
   char array [] = { 'x', 'l', 'x', 't', 's', 's' };
   ostringstream os;
   ostream_iterator<char> o(os,"");
-  slist<char> str(array+0, array + 6);
-  slist<char>::iterator i;
+  forward_list<char> str(array+0, array + 6);
+  forward_list<char>::iterator i;
   //Check const_iterator construction from iterator
-  slist<char>::const_iterator ci(i);
-  slist<char>::const_iterator ci2(ci);
+  forward_list<char>::const_iterator ci(i);
+  forward_list<char>::const_iterator ci2(ci);
 //  cout << "reversed: ";
   str.reverse();
   for(i = str.begin(); i != str.end(); i++)
@@ -98,24 +97,20 @@ sorted: lst
   //A small compilation time check to be activated from time to time:
 #  if 0
   {
-    slist<char>::iterator sl_char_ite;
-    slist<int>::iterator sl_int_ite;
+    forward_list<char>::iterator sl_char_ite;
+    forward_list<int>::iterator sl_int_ite;
     EXAM_CHECK( sl_char_ite != sl_int_ite );
   }
 #  endif
-#else
-  throw exam::skip_exception();
-#endif
 
   return EXAM_RESULT;
 }
 
-int EXAM_IMPL(slist_test::erase)
+int EXAM_IMPL(forward_list_test::erase)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array[] = { 0, 1, 2, 3, 4 };
-  slist<int> sl(array, array + 5);
-  slist<int>::iterator slit;
+  forward_list<int> sl(array, array + 5);
+  forward_list<int>::iterator slit;
 
   slit = sl.erase(sl.begin());
   EXAM_CHECK( *slit == 1);
@@ -135,21 +130,17 @@ int EXAM_IMPL(slist_test::erase)
 
   sl.erase_after(sl.before_begin());
   EXAM_CHECK( sl.front() == 3 );
-#else
-  throw exam::skip_exception();
-#endif
 
   return EXAM_RESULT;
 }
 
-int EXAM_IMPL(slist_test::insert)
+int EXAM_IMPL(forward_list_test::insert)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array[] = { 0, 1, 2, 3, 4 };
 
   //insert
   {
-    slist<int> sl;
+    forward_list<int> sl;
 
     sl.insert(sl.begin(), 5);
     EXAM_CHECK( sl.front() == 5 );
@@ -161,7 +152,7 @@ int EXAM_IMPL(slist_test::insert)
     sl.insert(sl.begin(), array, array + 5);
     EXAM_CHECK( sl.size() == 6 );
     int i;
-    slist<int>::iterator slit(sl.begin());
+    forward_list<int>::iterator slit(sl.begin());
     for (i = 0; slit != sl.end(); ++slit, ++i) {
       EXAM_CHECK( *slit == i );
     }
@@ -169,7 +160,7 @@ int EXAM_IMPL(slist_test::insert)
 
   //insert_after
   {
-    slist<int> sl;
+    forward_list<int> sl;
 
     //debug check:
     //sl.insert_after(sl.begin(), 5);
@@ -181,28 +172,24 @@ int EXAM_IMPL(slist_test::insert)
     sl.insert_after(sl.before_begin(), array, array + 5);
     EXAM_CHECK( sl.size() == 6 );
     int i;
-    slist<int>::iterator slit(sl.begin());
+    forward_list<int>::iterator slit(sl.begin());
     for (i = 0; slit != sl.end(); ++slit, ++i) {
       EXAM_CHECK( *slit == i );
     }
   }
-#else
-  throw exam::skip_exception();
-#endif
 
   return EXAM_RESULT;
 }
 
-int EXAM_IMPL(slist_test::splice)
+int EXAM_IMPL(forward_list_test::splice)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array[] = { 0, 1, 2, 3, 4 };
 
   //splice
   {
-    slist<int> sl1(array, array + 5);
-    slist<int> sl2(array, array + 5);
-    slist<int>::iterator slit;
+    forward_list<int> sl1(array, array + 5);
+    forward_list<int> sl2(array, array + 5);
+    forward_list<int>::iterator slit;
 
     //a no op:
     sl1.splice(sl1.begin(), sl1, sl1.begin());
@@ -265,9 +252,9 @@ int EXAM_IMPL(slist_test::splice)
 
   //splice_after
   {
-    slist<int> sl1(array, array + 5);
-    slist<int> sl2(array, array + 5);
-    slist<int>::iterator slit;
+    forward_list<int> sl1(array, array + 5);
+    forward_list<int> sl2(array, array + 5);
+    forward_list<int>::iterator slit;
 
     //a no op:
     sl1.splice_after(sl1.begin(), sl1, sl1.begin());
@@ -321,15 +308,12 @@ int EXAM_IMPL(slist_test::splice)
     EXAM_CHECK( *(slit++) == 1 );
     EXAM_CHECK( *slit == 2 );
   }
-#else
-  throw exam::skip_exception();
-#endif
 
   return EXAM_RESULT;
 }
 
 
-int EXAM_IMPL(slist_test::allocator_with_state)
+int EXAM_IMPL(forward_list_test::allocator_with_state)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   char buf1[1024];
@@ -338,7 +322,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   char buf2[1024];
   StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
 
-  typedef slist<int, StackAllocator<int> > SlistInt;
+  typedef forward_list<int, StackAllocator<int> > SlistInt;
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint1Cpy(slint1);
@@ -402,7 +386,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //splice(iterator, slist)
+  //splice(iterator, forward_list)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -415,7 +399,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //splice(iterator, slist, iterator)
+  //splice(iterator, forward_list, iterator)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -428,7 +412,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //splice(iterator, slist, iterator, iterator)
+  //splice(iterator, forward_list, iterator, iterator)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -443,7 +427,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //splice_after(iterator, slist)
+  //splice_after(iterator, forward_list)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -456,7 +440,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //splice_after(iterator, slist, iterator)
+  //splice_after(iterator, forward_list, iterator)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -469,7 +453,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //splice_after(iterator, slist, iterator, iterator)
+  //splice_after(iterator, forward_list, iterator, iterator)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -484,7 +468,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
-  //merge(slist)
+  //merge(forward_list)
   {
     SlistInt slint1(10, 0, stack1);
     SlistInt slint2(10, 1, stack2);
@@ -501,7 +485,7 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   EXAM_CHECK( stack1.ok() );
   EXAM_CHECK( stack2.ok() );
 
-  //merge(slist, predicate)
+  //merge(forward_list, predicate)
 #  if (!defined (STLPORT) ) && \
       (!defined (_MSC_VER) || (_MSC_VER >= 1300))
   {
@@ -544,17 +528,12 @@ int EXAM_IMPL(slist_test::allocator_with_state)
   return EXAM_RESULT;
 }
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
-    (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))
-#  if !defined (__DMC__)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.
  */
 class IncompleteClass
 {
-  slist<IncompleteClass> instances;
-  typedef slist<IncompleteClass>::iterator it;
+  forward_list<IncompleteClass> instances;
+  typedef forward_list<IncompleteClass>::iterator it;
 };
-#  endif
-#endif

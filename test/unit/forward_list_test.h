@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 16:42:16 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -25,10 +25,10 @@
 
 #include <exam/suite.h>
 
-class slist_test
+class forward_list_test
 {
   public:
-    int EXAM_DECL(slist1);
+    int EXAM_DECL(forward_list1);
     int EXAM_DECL(erase);
     int EXAM_DECL(insert);
     int EXAM_DECL(splice);

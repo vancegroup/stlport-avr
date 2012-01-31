@@ -31,7 +31,7 @@
 #  include <stl/debug/_iterator.h>
 #endif
 
-#define _STLP_NON_DBG_SLIST _STLP_PRIV _STLP_NON_DBG_NAME(slist) <_Tp, _Alloc>
+#define _STLP_NON_DBG_SLIST _STLP_PRIV _STLP_NON_DBG_NAME(forward_list) <_Tp, _Alloc>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ iterator_category(const _STLP_PRIV _DBG_iter_base< _STLP_NON_DBG_SLIST >&)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 /*
- * slist special debug traits version.
+ * forward_list special debug traits version.
  */
 template <class _Traits>
 struct _SlistDbgTraits : _Traits {
@@ -70,12 +70,12 @@ struct _SlistDbgTraits : _Traits {
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
-class slist :
+class forward_list :
              private _STLP_PRIV __construct_checker<_STLP_NON_DBG_SLIST >
 {
 private:
   typedef _STLP_NON_DBG_SLIST _Base;
-  typedef slist<_Tp,_Alloc> _Self;
+  typedef forward_list<_Tp,_Alloc> _Self;
   typedef _STLP_PRIV __construct_checker<_STLP_NON_DBG_SLIST > _ConstructCheck;
 
 public:
@@ -98,23 +98,23 @@ private:
   typedef typename _Base::iterator _Base_iterator;
 
 public:
-  explicit slist(const allocator_type& __a = allocator_type())
+  explicit forward_list(const allocator_type& __a = allocator_type())
     : _M_non_dbg_impl(__a) , _M_iter_list(&_M_non_dbg_impl) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n, const value_type& __x = _Tp(),
+  explicit forward_list(size_type __n, const value_type& __x = _Tp(),
 #else
-  slist(size_type __n, const value_type& __x,
+  forward_list(size_type __n, const value_type& __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a =  allocator_type())
     : _M_non_dbg_impl(__n, __x, __a), _M_iter_list(&_M_non_dbg_impl) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n) : _M_non_dbg_impl(__n) , _M_iter_list(&_M_non_dbg_impl) {}
+  explicit forward_list(size_type __n) : _M_non_dbg_impl(__n) , _M_iter_list(&_M_non_dbg_impl) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  slist(__move_source<_Self> src)
+  forward_list(__move_source<_Self> src)
     : _M_non_dbg_impl(__move_source<_Base>(src.get()._M_non_dbg_impl)),
       _M_iter_list(&_M_non_dbg_impl) {
 #  if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
@@ -128,20 +128,20 @@ public:
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last,
+  forward_list(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _ConstructCheck(__first, __last),
       _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last), __a),
       _M_iter_list(&_M_non_dbg_impl) {}
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last)
+  forward_list(_InputIterator __first, _InputIterator __last)
     : _ConstructCheck(__first, __last),
       _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last)),
       _M_iter_list(&_M_non_dbg_impl) {}
 #  endif
 
-  slist(const _Self& __x) :
+  forward_list(const _Self& __x) :
     _ConstructCheck(__x),
     _M_non_dbg_impl(__x._M_non_dbg_impl), _M_iter_list(&_M_non_dbg_impl) {}
 
@@ -153,7 +153,7 @@ public:
     return *this;
   }
 
-  ~slist() {}
+  ~forward_list() {}
 
   void assign(size_type __n, const value_type& __val) {
     _Invalidate_iterators(begin(), end());
@@ -536,7 +536,7 @@ public:
 };
 
 template <class _Tp, class _Alloc>
-struct __has_move_constructor<slist<_Tp, _Alloc> > :
+struct __has_move_constructor<forward_list<_Tp, _Alloc> > :
     public true_type
 { };
 

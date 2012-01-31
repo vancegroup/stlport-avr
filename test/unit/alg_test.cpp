@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 15:58:12 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 16:46:52 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -344,17 +344,15 @@ int EXAM_IMPL(alg_test::search_n_test)
 {
   int ints[] = {0, 1, 2, 3, 3, 4, 4, 4, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5};
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   //search_n
   //Forward iterator
   {
-    slist<int> slint(ints, ints + ARRAY_SIZE(ints));
-    slist<int>::iterator slit = search_n(slint.begin(), slint.end(), 2, 2);
+    forward_list<int> slint(ints, ints + ARRAY_SIZE(ints));
+    forward_list<int>::iterator slit = search_n(slint.begin(), slint.end(), 2, 2);
     EXAM_CHECK( slit != slint.end() );
     EXAM_CHECK( *(slit++) == 2 );
     EXAM_CHECK( *slit == 2 );
   }
-#endif
 
   //Bidirectionnal iterator
   {
@@ -381,8 +379,8 @@ int EXAM_IMPL(alg_test::search_n_test)
   //search_n with predicate
   //Forward iterator
   {
-    slist<int> slint(ints, ints + ARRAY_SIZE(ints));
-    slist<int>::iterator slit = search_n(slint.begin(), slint.end(), 2, 1, greater<int>());
+    forward_list<int> slint(ints, ints + ARRAY_SIZE(ints));
+    forward_list<int>::iterator slit = search_n(slint.begin(), slint.end(), 2, 1, greater<int>());
     EXAM_CHECK( slit != slint.end() );
     EXAM_CHECK( *(slit++) > 1 );
     EXAM_CHECK( *slit > 2 );
@@ -438,8 +436,7 @@ private:
 
 int EXAM_IMPL(alg_test::find_first_of_test)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  slist<int> intsl;
+  forward_list<int> intsl;
   intsl.push_front(1);
   intsl.push_front(2);
 
@@ -467,7 +464,6 @@ int EXAM_IMPL(alg_test::find_first_of_test)
     EXAM_CHECK( first != intv.end() );
     EXAM_CHECK( *first == 2 );
   }
-#endif
 
   list<int> intl;
   intl.push_front(1);

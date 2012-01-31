@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-04-29 18:01:07 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 16:44:33 ptr>
 
 /*
  * Copyright (c) 2005-2008
@@ -530,7 +530,7 @@ struct Key
 
   int m_data;
 
-#if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
+#if defined (__DMC__) // forward_list<_Tp,_Alloc>::remove error
   bool operator==(const Key&) const;
 #endif
 };

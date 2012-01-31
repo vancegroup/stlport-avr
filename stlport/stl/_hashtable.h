@@ -208,9 +208,9 @@ public:
 
 private:
 #if defined (_STLP_DEBUG)
-  typedef _STLP_PRIV _STLP_NON_DBG_NAME(slist)<value_type, _All> _ElemsCont;
+  typedef _STLP_PRIV _STLP_NON_DBG_NAME(forward_list)<value_type, _All> _ElemsCont;
 #else
-  typedef slist<value_type, _All> _ElemsCont;
+  typedef forward_list<value_type, _All> _ElemsCont;
 #endif
   typedef typename _ElemsCont::iterator _ElemsIte;
   typedef typename _ElemsCont::const_iterator _ElemsConstIte;
@@ -219,10 +219,10 @@ private:
   /*
    * We are going to use vector of _Slist_node_base pointers for 2 reasons:
    *  - limit code bloat, all hashtable instanciation use the same buckets representation.
-   *  - avoid _STLP_DEBUG performance trouble: with a vector of iterator on slist the resize
-   *    method would be too slow because the slist::splice_after method become linear on
+   *  - avoid _STLP_DEBUG performance trouble: with a vector of iterator on forward_list the resize
+   *    method would be too slow because the forward_list::splice_after method become linear on
    *    the number of iterators in the buckets rather than constant in time as the iterator
-   *    has to be move from a slist to the other.
+   *    has to be move from a forward_list to the other.
    */
 #if defined (_STLP_DEBUG)
   typedef _STLP_PRIV _STLP_NON_DBG_NAME(vector)<_BucketType*, _BucketAllocType> _BucketVector;

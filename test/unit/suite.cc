@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 16:10:00 ptr>
+// -*- C++ -*- Time-stamp: <2012-01-31 16:44:13 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -235,13 +235,13 @@ int main( int argc, const char** argv )
   t.add( &list_test::insert, lst_test, "list insert" );
   // t.add( &list_test::const_list, lst_test, "const_list" );
 
-  slist_test slst_test;
+  forward_list_test slst_test;
 
-  t.add( &slist_test::slist1, slst_test, "slist1" );
-  t.add( &slist_test::erase, slst_test, "slist erase" );
-  t.add( &slist_test::insert, slst_test, "slist insert" );
-  t.add( &slist_test::splice, slst_test, "slist splice" );
-  t.add( &slist_test::allocator_with_state, slst_test, "slist allocator_with_state" );
+  t.add( &forward_list_test::forward_list1, slst_test, "forward_list1" );
+  t.add( &forward_list_test::erase, slst_test, "forward_list erase" );
+  t.add( &forward_list_test::insert, slst_test, "forward_list insert" );
+  t.add( &forward_list_test::splice, slst_test, "forward_list splice" );
+  t.add( &forward_list_test::allocator_with_state, slst_test, "forward_list allocator_with_state" );
 
   string_test str_test;
 

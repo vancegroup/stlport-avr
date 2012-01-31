@@ -33,7 +33,6 @@
 #if 1 /* def _STLP_46_COMPATIBILITY */
 
 /* provide a uniform way to access full functionality */
-# define __slist__         slist
 # define __map__           map
 # define __multimap__      multimap
 # define __set__           set

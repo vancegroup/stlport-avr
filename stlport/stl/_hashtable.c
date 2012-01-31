@@ -342,7 +342,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
     for (; (__cur != __last) && (__cur != __first._M_ite); ++__prev, ++__cur);
   }
   size_type __erased = 0;
-  //We do not use the slist::erase_after method taking a range to count the
+  //We do not use the forward_list::erase_after method taking a range to count the
   //number of erased elements:
   while (__cur != __last._M_ite) {
     __cur = _M_elems.erase_after(__prev);

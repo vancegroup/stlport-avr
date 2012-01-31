@@ -58,7 +58,7 @@ static bool is_move_complete(const _Tp&) {
 
 struct specially_allocated_struct {
   bool operator < (const specially_allocated_struct&) const;
-#  if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
+#  if defined (__DMC__) // forward_list<_Tp,_Alloc>::remove error
   bool operator==(const specially_allocated_struct&) const;
 #  endif
 };
@@ -128,7 +128,7 @@ namespace std {
     typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
-  struct __move_traits<slist<specially_allocated_struct> > {
+  struct __move_traits<forward_list<specially_allocated_struct> > {
     typedef true_type implemented;
     typedef false_type complete;
   };
@@ -236,19 +236,17 @@ void MoveConstructorTest::movable_declaration()
 #  endif
   }
 
-#  if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   {
-    //slist:
-    CPPUNIT_ASSERT( is_movable(slist<char>()) );
-    CPPUNIT_ASSERT( is_movable(slist<specially_allocated_struct>()) );
+    //forward_list:
+    CPPUNIT_ASSERT( is_movable(forward_list<char>()) );
+    CPPUNIT_ASSERT( is_movable(forward_list<specially_allocated_struct>()) );
 #    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-    CPPUNIT_ASSERT( is_move_complete(slist<char>()) );
-    CPPUNIT_ASSERT( !is_move_complete(slist<specially_allocated_struct>()) );
+    CPPUNIT_ASSERT( is_move_complete(forward_list<char>()) );
+    CPPUNIT_ASSERT( !is_move_complete(forward_list<specially_allocated_struct>()) );
 #    else
-    CPPUNIT_ASSERT( !is_move_complete(slist<char>()) );
+    CPPUNIT_ASSERT( !is_move_complete(forward_list<char>()) );
 #    endif
   }
-#  endif
 
   {
     //queue:

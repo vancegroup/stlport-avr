@@ -260,41 +260,41 @@ class _Slist_base
 };
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-#  define slist _STLP_PTR_IMPL_NAME(slist)
+#  define forward_list _STLP_PTR_IMPL_NAME(forward_list)
 #elif defined (_STLP_DEBUG)
-#  define slist _STLP_NON_DBG_NAME(slist)
+#  define forward_list _STLP_NON_DBG_NAME(forward_list)
 #else
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
-class slist;
+class forward_list;
 
-#if !defined (slist)
+#if !defined (forward_list)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
 // helper functions to reduce code duplication
 template <class _Tp, class _Alloc, class _BinaryPredicate>
-void _Slist_unique(slist<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred);
+void _Slist_unique(forward_list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred);
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_merge(slist<_Tp, _Alloc>& __that, slist<_Tp, _Alloc>& __x,
+void _Slist_merge(forward_list<_Tp, _Alloc>& __that, forward_list<_Tp, _Alloc>& __x,
                   _StrictWeakOrdering __comp);
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_sort(slist<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp);
+void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp);
 
-#if !defined (slist)
+#if !defined (forward_list)
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Tp, class _Alloc>
-class slist : protected _STLP_PRIV _Slist_base<_Tp,_Alloc>
+class forward_list : protected _STLP_PRIV _Slist_base<_Tp,_Alloc>
 {
 private:
   typedef _STLP_PRIV _Slist_base<_Tp,_Alloc> _Base;
-  typedef slist<_Tp,_Alloc> _Self;
+  typedef forward_list<_Tp,_Alloc> _Self;
 public:
   typedef _Tp                value_type;
 
@@ -346,25 +346,25 @@ public:
   allocator_type get_allocator() const { return _Base::get_allocator(); }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(const allocator_type& __a = allocator_type())
+  explicit forward_list(const allocator_type& __a = allocator_type())
 #else
-  slist()
+  forward_list()
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type()) {}
-  slist(const allocator_type& __a)
+  forward_list(const allocator_type& __a)
 #endif
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a) {}
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp),
+  explicit forward_list(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp),
                  const allocator_type& __a =  allocator_type())
 #else
-  explicit slist(size_type __n)
+  explicit forward_list(size_type __n)
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
     { _M_insert_after_fill(&this->_M_head._M_data, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-  slist(size_type __n, const value_type& __x)
+  forward_list(size_type __n, const value_type& __x)
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
     { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
-  slist(size_type __n, const value_type& __x, const allocator_type& __a)
+  forward_list(size_type __n, const value_type& __x, const allocator_type& __a)
 #endif
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a)
     { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
@@ -372,30 +372,30 @@ public:
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last,
+  forward_list(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a)
     { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   // VC++ needs this crazyness
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last)
+  forward_list(_InputIterator __first, _InputIterator __last)
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
     { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
 # endif
 
-  slist(const _Self& __x)
+  forward_list(const _Self& __x)
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__x.get_allocator())
     { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  slist(__move_source<_Self> src)
+  forward_list(__move_source<_Self> src)
     : _STLP_PRIV _Slist_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {}
 #endif
 
   _Self& operator= (const _Self& __x);
 
-  ~slist() {}
+  ~forward_list() {}
 
 public:
   // assign(), a generalized assignment member function.  Two
@@ -445,7 +445,7 @@ public:
   // non-dereferenceable iterator that, when incremented, yields
   // begin().  This iterator may be used as the argument to
   // insert_after, erase_after, etc.  Note that even for an empty
-  // slist, before_begin() is not the same iterator as end().  It
+  // forward_list, before_begin() is not the same iterator as end().  It
   // is always necessary to increment before_begin() at least once to
   // obtain end().
   iterator before_begin() { return iterator(&this->_M_head._M_data); }
@@ -566,7 +566,7 @@ private:
   void _M_splice_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last,
                              const false_type&) {
-    //We use a temporary slist to avoid the auto reference troubles (infinite loop)
+    //We use a temporary forward_list to avoid the auto reference troubles (infinite loop)
     _Self __tmp(__first, __last, this->get_allocator());
     splice_after(iterator(__pos), __tmp);
   }
@@ -590,7 +590,7 @@ private:
   void _M_splice_range(_Node_base* __pos,
                        _InIter __first, _InIter __last,
                        const false_type&) {
-    //We use a temporary slist to avoid the auto reference troubles (infinite loop)
+    //We use a temporary forward_list to avoid the auto reference troubles (infinite loop)
     _Self __tmp(__first, __last, this->get_allocator());
     splice(iterator(__pos), __tmp);
   }
@@ -795,33 +795,33 @@ public:
   { _STLP_PRIV _Slist_sort(*this, __comp); }
 };
 
-#if defined (slist)
+#if defined (forward_list)
 _STLP_MOVE_TO_STD_NAMESPACE
 
 // template <class _Tp, class _Alloc>
-// struct __has_trivial_move<_STLP_PRIV slist<_Tp, _Alloc> > :
+// struct __has_trivial_move<_STLP_PRIV forward_list<_Tp, _Alloc> > :
 //   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
 // { };
 
 template <class _Tp, class _Alloc>
-struct __has_move_constructor<_STLP_PRIV slist<_Tp, _Alloc> > :
+struct __has_move_constructor<_STLP_PRIV forward_list<_Tp, _Alloc> > :
     public true_type
 { };
 
-#  undef slist
-#else // slist
+#  undef forward_list
+#else // forward_list
 
 // template <class _Tp, class _Alloc>
-// struct __has_trivial_move<slist<_Tp, _Alloc> > :
+// struct __has_trivial_move<forward_list<_Tp, _Alloc> > :
 //   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
 // { };
 
 template <class _Tp, class _Alloc>
-struct __has_move_constructor<slist<_Tp, _Alloc> > :
+struct __has_move_constructor<forward_list<_Tp, _Alloc> > :
     public true_type
 { };
 
-#endif // slist
+#endif // forward_list
 
 _STLP_END_NAMESPACE
 
@@ -839,8 +839,8 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc>
 inline bool  _STLP_CALL
-operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
-  typedef typename slist<_Tp,_Alloc>::const_iterator const_iterator;
+operator == (const forward_list<_Tp,_Alloc>& _SL1, const forward_list<_Tp,_Alloc>& _SL2) {
+  typedef typename forward_list<_Tp,_Alloc>::const_iterator const_iterator;
   const_iterator __end1 = _SL1.end();
   const_iterator __end2 = _SL2.end();
 
@@ -855,7 +855,7 @@ operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 
 #define _STLP_EQUAL_OPERATOR_SPECIALIZED
 #define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
-#define _STLP_TEMPLATE_CONTAINER slist<_Tp, _Alloc>
+#define _STLP_TEMPLATE_CONTAINER forward_list<_Tp, _Alloc>
 #include <stl/_relops_cont.h>
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
@@ -866,9 +866,9 @@ operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 // Specialization of insert_iterator so that insertions will be constant
 // time rather than linear time.
 template <class _Tp, class _Alloc>
-class insert_iterator<slist<_Tp, _Alloc> > {
+class insert_iterator<forward_list<_Tp, _Alloc> > {
 protected:
-  typedef slist<_Tp, _Alloc> _Container;
+  typedef forward_list<_Tp, _Alloc> _Container;
   _Container* _M_container;
   typename _Container::iterator _M_iter;
 public:

@@ -143,7 +143,7 @@ void MoveConstructorTest::move_construct_test()
   standard_test1(list<int>(10));
 
 
-  standard_test1(slist<int>(10));
+  standard_test1(forward_list<int>(10));
 
   standard_test1(deque<int>(10));
 */
@@ -163,7 +163,7 @@ void MoveConstructorTest::move_construct_test()
   CheckFullMoveSupport(vector<int>());
   CheckFullMoveSupport(deque<int>());
   CheckFullMoveSupport(list<int>());
-  CheckFullMoveSupport(slist<int>());
+  CheckFullMoveSupport(forward_list<int>());
   */
 }
 
@@ -690,14 +690,13 @@ void MoveConstructorTest::vector_test()
     }
   }
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   {
-    //slist move contructor:
-    vector<slist<string> > vect(10, slist<string>(10, long_str));
+    //forward_list move contructor:
+    vector<forward_list<string> > vect(10, forward_list<string>(10, long_str));
     vector<string> strs;
     size_t index = 0;
     while (true) {
-      vector<slist<string> >::iterator it(vect.begin());
+      vector<forward_list<string> >::iterator it(vect.begin());
       advance(it, index % vect.size());
       strs.push_back(it->front());
       it->pop_front();
@@ -714,7 +713,6 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( *it == long_str );
     }
   }
-#endif
 
   {
     //binary tree move contructor:

@@ -26,7 +26,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#define SLIST_IMPL _STLP_PTR_IMPL_NAME(slist)
+#define SLIST_IMPL _STLP_PTR_IMPL_NAME(forward_list)
 
 #if defined (__BORLANDC__) || defined (__DMC__)
 #  define typename
@@ -45,14 +45,14 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 #if defined (_STLP_DEBUG)
-#  define slist _STLP_NON_DBG_NAME(slist)
+#  define forward_list _STLP_NON_DBG_NAME(forward_list)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
 template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
-class slist
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (slist)
-             : public __stlport_class<slist<_Tp, _Alloc> >
+class forward_list
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (forward_list)
+             : public __stlport_class<forward_list<_Tp, _Alloc> >
 #endif
 {
   typedef _STLP_TYPENAME _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
@@ -60,7 +60,7 @@ class slist
   typedef _STLP_PRIV SLIST_IMPL<_StorageType, _StorageTypeAlloc> _Base;
   typedef typename _Base::iterator _BaseIte;
   typedef typename _Base::const_iterator _BaseConstIte;
-  typedef slist<_Tp, _Alloc> _Self;
+  typedef forward_list<_Tp, _Alloc> _Self;
   typedef _STLP_PRIV _CastTraits<_StorageType, _Tp> cast_traits;
   typedef _STLP_PRIV _Slist_node_base _Node_base;
 
@@ -83,25 +83,25 @@ public:
   allocator_type get_allocator() const
   { return _M_impl.get_allocator(); }
 
-  explicit slist(const allocator_type& __a = allocator_type())
+  explicit forward_list(const allocator_type& __a = allocator_type())
     : _M_impl(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type),
+  explicit forward_list(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type),
 #else
-  slist(size_type __n, const value_type& __x,
+  forward_list(size_type __n, const value_type& __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a =  allocator_type())
     : _M_impl(__n, cast_traits::to_storage_type_cref(__x), __a) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n) : _M_impl(__n) {}
+  explicit forward_list(size_type __n) : _M_impl(__n) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last,
+  forward_list(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
 #  if !defined (_STLP_USE_ITERATOR_WRAPPER)
     : _M_impl(__first, __last, __a) {}
@@ -113,7 +113,7 @@ public:
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   // VC++ needs this crazyness
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last)
+  forward_list(_InputIterator __first, _InputIterator __last)
 #    if !defined (_STLP_USE_WRAPPER_ITERATOR)
     : _M_impl(__first, __last) {}
 #    else
@@ -121,10 +121,10 @@ public:
 #    endif
 #  endif
 
-  slist(const _Self& __x) : _M_impl(__x._M_impl) {}
+  forward_list(const _Self& __x) : _M_impl(__x._M_impl) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  slist(__move_source<_Self> src)
+  forward_list(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
 #endif
 
@@ -359,8 +359,8 @@ private:
   _Base _M_impl;
 };
 
-#if defined (slist)
-#  undef slist
+#if defined (forward_list)
+#  undef forward_list
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 

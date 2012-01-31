@@ -224,7 +224,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 /*
  * Special debug iterator traits having an additionnal static member
- * method _Check. It is used by the slist debug implementation to check
+ * method _Check. It is used by the forward_list debug implementation to check
  * the special before_begin iterator.
  */
 template <class _Traits>

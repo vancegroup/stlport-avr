@@ -55,9 +55,9 @@ _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
 }
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-#  define slist _STLP_PTR_IMPL_NAME(slist)
+#  define forward_list _STLP_PTR_IMPL_NAME(forward_list)
 #elif defined (_STLP_DEBUG)
-#  define slist _STLP_NON_DBG_NAME(slist)
+#  define forward_list _STLP_NON_DBG_NAME(forward_list)
 #else
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
@@ -67,7 +67,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
  * fix this issue.
  */
 template <class _Tp, class _Alloc>
-slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x) {
+forward_list<_Tp,_Alloc>& forward_list<_Tp,_Alloc>::operator=(const forward_list<_Tp,_Alloc>& __x) {
   if (&__x != this) {
     _Node_base* __p1 = &this->_M_head._M_data;
     _Node_base* __n1 = this->_M_head._M_data._M_next;
@@ -88,7 +88,7 @@ slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x) {
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
+void forward_list<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
   _Node_base* __prev = &this->_M_head._M_data;
   _Node_base* __node = this->_M_head._M_data._M_next;
   for ( ; __node != 0 && __n > 0 ; --__n) {
@@ -103,7 +103,7 @@ void slist<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
+void forward_list<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next != 0 && __len > 0) {
     --__len;
@@ -116,7 +116,7 @@ void slist<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp,_Alloc>::remove(const _Tp& __val) {
+void forward_list<_Tp,_Alloc>::remove(const _Tp& __val) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur && __cur->_M_next) {
     if (__STATIC_CAST(_Node*, __cur->_M_next)->_M_data == __val)
@@ -126,14 +126,14 @@ void slist<_Tp,_Alloc>::remove(const _Tp& __val) {
   }
 }
 
-#if !defined (slist)
+#if !defined (forward_list)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
 template <class _Tp, class _Alloc, class _BinaryPredicate>
-void _Slist_unique(slist<_Tp, _Alloc>& __that, _BinaryPredicate __pred) {
+void _Slist_unique(forward_list<_Tp, _Alloc>& __that, _BinaryPredicate __pred) {
   typedef _Slist_node<_Tp> _Node;
-  typename slist<_Tp, _Alloc>::iterator __ite(__that.begin());
+  typename forward_list<_Tp, _Alloc>::iterator __ite(__that.begin());
   if (__ite != __that.end()) {
     while (__ite._M_node->_M_next) {
       if (__pred(*__ite, __STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data))
@@ -145,12 +145,12 @@ void _Slist_unique(slist<_Tp, _Alloc>& __that, _BinaryPredicate __pred) {
 }
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_merge(slist<_Tp, _Alloc>& __that, slist<_Tp, _Alloc>& __x,
+void _Slist_merge(forward_list<_Tp, _Alloc>& __that, forward_list<_Tp, _Alloc>& __x,
                   _StrictWeakOrdering __comp) {
   typedef _Slist_node<_Tp> _Node;
   typedef _STLP_PRIV _Slist_node_base _Node_base;
   if (__that.get_allocator() == __x.get_allocator()) {
-    typename slist<_Tp, _Alloc>::iterator __ite(__that.before_begin());
+    typename forward_list<_Tp, _Alloc>::iterator __ite(__that.before_begin());
     while (__ite._M_node->_M_next && !__x.empty()) {
       if (__comp(__x.front(), __STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data)) {
         _STLP_VERBOSE_ASSERT(!__comp(__STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data, __x.front()),
@@ -164,7 +164,7 @@ void _Slist_merge(slist<_Tp, _Alloc>& __that, slist<_Tp, _Alloc>& __x,
     }
   }
   else {
-    typename slist<_Tp, _Alloc>::iterator __i1(__that.before_begin()), __i2(__x.begin());
+    typename forward_list<_Tp, _Alloc>::iterator __i1(__that.before_begin()), __i2(__x.begin());
     while (__i1._M_node->_M_next && __i2._M_node) {
       if (__comp(__STATIC_CAST(_Node*, __i1._M_node->_M_next)->_M_data, *__i2)) {
         _STLP_VERBOSE_ASSERT(!__comp(*__i2, __STATIC_CAST(_Node*, __i1._M_node->_M_next)->_M_data),
@@ -181,13 +181,13 @@ void _Slist_merge(slist<_Tp, _Alloc>& __that, slist<_Tp, _Alloc>& __x,
 }
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_sort(slist<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
+void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
   if (!__that.begin()._M_node || !__that.begin()._M_node->_M_next)
     return;
 
-  slist<_Tp, _Alloc> __carry(__that.get_allocator());
+  forward_list<_Tp, _Alloc> __carry(__that.get_allocator());
   const int NB = 64;
-  _STLP_PRIV _CArray<slist<_Tp, _Alloc>, NB> __counter(__carry);
+  _STLP_PRIV _CArray<forward_list<_Tp, _Alloc>, NB> __counter(__carry);
   int __fill = 0;
   while (!__that.empty()) {
     __carry.splice_after(__carry.before_begin(), __that, __that.before_begin());
@@ -201,8 +201,8 @@ void _Slist_sort(slist<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
     if (__i == __fill) {
       ++__fill;
       if (__fill >= NB) {
-        //Looks like the slist has too many elements to be sorted with this algorithm:
-        __stl_throw_overflow_error("slist::sort");
+        //Looks like the forward_list has too many elements to be sorted with this algorithm:
+        __stl_throw_overflow_error("forward_list::sort");
       }
     }
   }
@@ -212,8 +212,8 @@ void _Slist_sort(slist<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
   __that.swap(__counter[__fill-1]);
 }
 
-#if defined (slist)
-#  undef slist
+#if defined (forward_list)
+#  undef forward_list
 #endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
