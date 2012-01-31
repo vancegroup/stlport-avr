@@ -90,6 +90,8 @@ class unordered_test
     // (benchmark2);
     int EXAM_DECL(template_methods);
     int EXAM_DECL(remains);
+
+    int EXAM_DECL(move);
 };
 
 class valarray_test

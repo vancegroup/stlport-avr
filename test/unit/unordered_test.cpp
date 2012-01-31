@@ -794,3 +794,30 @@ int EXAM_IMPL(unordered_test::remains)
 
   return EXAM_RESULT;
 }
+
+int EXAM_IMPL(unordered_test::move)
+{
+  struct movable
+  {
+    movable() :
+        f( 0 )
+      { }
+
+    movable( movable&& r ) :
+        f( std::move( r.f ) )
+      { }
+
+    movable( const movable& ) = delete;
+
+    int f;
+  };
+
+  unordered_map<int,movable> m;
+
+  pair<int,movable> p0;
+  pair<int,movable> p1( std::move(p0) );
+
+  // m.insert( p0 );
+
+  return EXAM_RESULT;
+}
