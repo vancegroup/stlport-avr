@@ -31,10 +31,7 @@
 #define _STLP_INTERNAL_HASHTABLE_H
 
 #  include <vector>
-
-#ifndef _STLP_INTERNAL_SLIST_H
-#  include <stl/_slist.h>
-#endif
+#  include <slist>
 
 #ifndef _STLP_INTERNAL_ITERATOR_H
 #  include <stl/_iterator.h>

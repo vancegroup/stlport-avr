@@ -19,8 +19,8 @@
 #ifndef _STLP_SLIST_C
 #define _STLP_SLIST_C
 
-#ifndef _STLP_INTERNAL_SLIST_H
-#  include <stl/_slist.h>
+#ifndef _STLP_SLIST
+#  include <slist>
 #endif
 
 #ifndef _STLP_CARRAY_H
