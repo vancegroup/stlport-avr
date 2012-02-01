@@ -71,8 +71,8 @@
 
 #if defined (_STLP_MSVC)
 
-#  if (_STLP_MSVC < 1200)
-#    error Microsoft Visual C++ compilers before version 6 (SP5) are not supported.
+#  if (_STLP_MSVC <= 1300)
+#    error Microsoft Visual C++ compilers before version 8 are not supported.
 #  endif
 
 #  define _STLP_NORETURN_FUNCTION __declspec(noreturn)
@@ -85,10 +85,6 @@
 #    define _STLP_HAS_TRIVIAL_DESTRUCTOR(T) __has_trivial_destructor(T)
 #    define _STLP_IS_POD(T) __is_pod(T)
 #    define _STLP_HAS_TYPE_TRAITS_INTRINSICS
-#  endif
-
-#  ifndef _STLP_MSVC50_COMPATIBILITY
-#    define _STLP_MSVC50_COMPATIBILITY   1
 #  endif
 
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
@@ -120,53 +116,9 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    if (_STLP_MSVC >= 1300)// VC7 and later
 #      undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #    endif
-#    if (_STLP_MSVC < 1300)
-#      define _STLP_NOTHROW
-#    endif
-#  endif
-
-#  if (_STLP_MSVC <= 1300)
-#    define _STLP_STATIC_CONST_INIT_BUG   1
-#    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-#    define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
-/* There is no partial spec, and MSVC breaks on simulating it for iterator_traits queries */
-#    define _STLP_NO_TYPENAME_IN_TEMPLATE_HEADER
-#    define _STLP_NO_METHOD_SPECIALIZATION 1
-#    define _STLP_DEF_CONST_PLCT_NEW_BUG 1
-#    define _STLP_NO_TYPENAME_ON_RETURN_TYPE 1
-/* VC++ cannot handle default allocator argument in template constructors */
-#    define _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-#    define _STLP_NO_QUALIFIED_FRIENDS    1
-#  endif
-
-#  if (_STLP_MSVC < 1300) /* including MSVC 6.0 */
-#    define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
-#    define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1 /* not supported more */
 #  endif
 
 #  define _STLP_HAS_NATIVE_FLOAT_ABS 1
-
-// TODO: some eVC4 compilers report _MSC_VER 1201 or 1202, which category do they belong to?
-#  if (_STLP_MSVC > 1200) && (_STLP_MSVC < 1310)
-#    define _STLP_NO_MOVE_SEMANTIC
-#  endif
-
-#  if (_STLP_MSVC < 1300)
-/* TODO: remove this if it is handled and documented elsewhere
- * dums: VC6 do not handle correctly member templates of class that are explicitely
- * instanciated to be exported. There is a workaround, seperate the non template methods
- * from the template ones within 2 different classes and only export the non template one.
- * It is implemented for basic_string and locale at the writing of this note.
- * However this problem hos not  been considered as important enough to remove template member
- * methods for other classes. Moreover Boost (www.boost.org) required it to be granted.
- * The workaround is activated thanks to the _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND macro defined
- * later in this config file.
- */
-/*
-#    if defined (_DLL)
-#      define _STLP_NO_MEMBER_TEMPLATES 1
-#    endif
-*/
 
 /* Boris : not defining this macro for SP5 causes other problems */
 /*#    if !defined (_MSC_FULL_VER) || (_MSC_FULL_VER < 12008804 ) */
@@ -174,12 +126,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 /*#    endif */
 #    define _STLP_DONT_USE_BOOL_TYPEDEF 1
 #    define _STLP_DONT_RETURN_VOID 1
-#  endif
-
-#  if (_STLP_MSVC < 1300) /* MSVC 6.0 and earlier */
-#    define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
-/* defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library */
-#    define _STLP_USE_ABBREVS
 #  endif
 
 #endif /* _STLP_MSVC */
@@ -204,12 +150,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #  define _STLP_NEW_PLATFORM_SDK 1
 #endif
 
-#if (_STLP_MSVC_LIB < 1300) /* including MSVC 6.0 */
-#  define _STLP_GLOBAL_NEW_HANDLER 1
-#  define _STLP_VENDOR_UNEXPECTED_STD
-#  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
-#endif
-
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 #define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
@@ -230,9 +170,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #if defined (_STLP_USE_DYNAMIC_LIB)
 #  undef  _STLP_USE_DECLSPEC
 #  define _STLP_USE_DECLSPEC 1
-#  if defined (_STLP_MSVC) && (_STLP_MSVC < 1300)
-#    define _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND 1
-#  endif
 #endif
 
 #if !defined (_STLP_IMPORT_TEMPLATE_KEYWORD)
