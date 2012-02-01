@@ -28,10 +28,6 @@ _STLP_BEGIN_NAMESPACE
 
 #define SLIST_IMPL _STLP_PTR_IMPL_NAME(forward_list)
 
-#if defined (__BORLANDC__) || defined (__DMC__)
-#  define typename
-#endif
-
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
@@ -86,17 +82,10 @@ public:
   explicit forward_list(const allocator_type& __a = allocator_type())
     : _M_impl(__a) {}
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit forward_list(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type),
-#else
-  forward_list(size_type __n, const value_type& __x,
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-        const allocator_type& __a =  allocator_type())
+  forward_list(size_type __n, const value_type& __x, const allocator_type& __a =  allocator_type())
     : _M_impl(__n, cast_traits::to_storage_type_cref(__x), __a) {}
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit forward_list(size_type __n) : _M_impl(__n) {}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
@@ -109,16 +98,6 @@ public:
     : _M_impl(__a) {
     insert_after(before_begin(), __first, __last);
   }
-#  endif
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  // VC++ needs this crazyness
-  template <class _InputIterator>
-  forward_list(_InputIterator __first, _InputIterator __last)
-#    if !defined (_STLP_USE_WRAPPER_ITERATOR)
-    : _M_impl(__first, __last) {}
-#    else
-  { insert_after(before_begin(), __first, __last); }
-#    endif
 #  endif
 
   forward_list(const _Self& __x) : _M_impl(__x._M_impl) {}
@@ -181,16 +160,8 @@ public:
 public:
   reference front()             { return *begin(); }
   const_reference front() const { return *begin(); }
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_front(const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   void push_front(const value_type& __x)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   { _M_impl.push_front(cast_traits::to_storage_type_cref(__x)); }
-
-# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_front() { _M_impl.push_front();}
-# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void pop_front() { _M_impl.pop_front(); }
 
@@ -199,18 +170,9 @@ public:
   const_iterator previous(const_iterator __pos) const
   { return const_iterator(const_cast<_Node_base*>(_M_impl.previous(_BaseConstIte(__pos._M_node))._M_node)); }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert_after(iterator __pos, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   iterator insert_after(iterator __pos, const value_type& __x)
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
   { return iterator(_M_impl.insert_after(_BaseIte(__pos._M_node),
                                          cast_traits::to_storage_type_cref(__x))._M_node); }
-
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert_after(iterator __pos)
-  { return iterator(_M_impl.insert_after(_BaseIte(__pos._M_node))._M_node);}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void insert_after(iterator __pos, size_type __n, const value_type& __x)
   { _M_impl.insert_after(_BaseIte(__pos._M_node), __n, cast_traits::to_storage_type_cref(__x)); }
@@ -246,18 +208,9 @@ public:
 #  endif
   }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert(iterator __pos, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   iterator insert(iterator __pos, const value_type& __x)
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
   { return iterator(_M_impl.insert(_BaseIte(__pos._M_node),
                                    cast_traits::to_storage_type_cref(__x))._M_node); }
-
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert(iterator __pos)
-  { return iterator(_M_impl.insert(_BaseIte(__pos._M_node))._M_node); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void insert(iterator __pos, size_type __n, const value_type& __x)
   { _M_impl.insert(_BaseIte(__pos._M_node), __n, cast_traits::to_storage_type_cref(__x)); }
@@ -303,16 +256,10 @@ public:
   iterator erase(iterator __first, iterator __last)
   { return iterator(_M_impl.erase(_BaseIte(__first._M_node), _BaseIte(__last._M_node))._M_node); }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   void resize(size_type __new_size, const value_type& __x)
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
   { _M_impl.resize(__new_size, cast_traits::to_storage_type_cref(__x));}
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size) { _M_impl.resize(__new_size); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void clear() { _M_impl.clear(); }
 
@@ -365,10 +312,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 #undef SLIST_IMPL
-
-#if defined (__BORLANDC__) || defined (__DMC__)
-#  undef typename
-#endif
 
 _STLP_END_NAMESPACE
 

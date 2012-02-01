@@ -85,14 +85,6 @@ public:                         // Constructor, destructor, assignment.
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  basic_string(_InputIterator __f, _InputIterator __l)
-    : _STLP_NO_MEM_T_STRING_BASE(_CalledFromWorkaround_t(), allocator_type()) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_initialize_dispatch(__f, __l, _Integral());
-  }
-#  endif
 
   _Self& operator=(const _Self& __s) {
     _Base::operator=(__s);

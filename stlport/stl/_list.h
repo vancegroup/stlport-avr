@@ -245,11 +245,7 @@ public:
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 protected:
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  _Node_base* _M_create_node(const_reference __x = value_type()) {
-#else
   _Node_base* _M_create_node(const_reference __x) {
-#endif
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
       _Self::get_allocator().construct( &__p->_M_data, __x );
@@ -258,30 +254,11 @@ protected:
     return __p;
   }
 
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
-  _Node_base* _M_create_node() {
-    _Node* __p = this->_M_node.allocate(1);
-    _STLP_TRY {
-      _Self::get_allocator().construct( &__p->_M_data, value_type() );
-    }
-    _STLP_UNWIND(this->_M_node.deallocate(__p, 1))
-    return __p;
-  }
-#endif
-
 public:
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit list(size_type __n, const_reference __val = _STLP_DEFAULT_CONSTRUCTED(value_type),
-                const allocator_type& __a = allocator_type())
-#else
   explicit list(size_type __n)
     : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type())
     { this->insert(begin(), __n, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
-  list(size_type __n, const_reference __val)
-    : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type())
-    { this->insert(begin(), __n, __val); }
-  list(size_type __n, const_reference __val, const allocator_type& __a)
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+  list(size_type __n, const_reference __val, const allocator_type& __a = allocator_type())
     : _STLP_PRIV _List_base<_Tp, _Alloc>(__a)
     { this->insert(begin(), __n, __val); }
 
@@ -293,20 +270,7 @@ public:
     : _STLP_PRIV _List_base<_Tp, _Alloc>(__a)
   { _M_insert(begin(), __first, __last); }
 
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  list(_InputIterator __first, _InputIterator __last)
-    : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type())
-  { _M_insert(begin(), __first, __last); }
-#  endif
-
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit list(const allocator_type& __a = allocator_type())
-#else
-  list()
-    : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type()) {}
-  list(const allocator_type& __a)
-#endif
     : _STLP_PRIV _List_base<_Tp, _Alloc>(__a) {}
 
   list(const _Self& __x) : _STLP_PRIV _List_base<_Tp, _Alloc>(__x.get_allocator())
@@ -377,11 +341,7 @@ public:
   void _M_swap_workaround(_Self& __x) { swap(__x); }
 #endif
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos, const_reference __x = value_type())
-#else
   iterator insert(iterator __pos, const_reference __x)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   {
     _Node_base* __tmp = _M_create_node(__x);
     _Node_base* __n = __pos._M_node;
@@ -461,13 +421,6 @@ public:
   void push_front(const_reference __x) { insert(begin(), __x); }
   void push_back (const_reference __x) { insert(end(), __x); }
 
-#if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos)
-  { return insert(__pos, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
-  void push_front() {insert(begin());}
-  void push_back() {insert(end());}
-# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-
   iterator erase(iterator __pos) {
     _Node_base* __next_node = __pos._M_node->_M_next;
     _Node_base* __prev_node = __pos._M_node->_M_prev;
@@ -485,13 +438,9 @@ public:
     return __last;
   }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const_reference __x = value_type());
-#else
   void resize(size_type __new_size, const_reference __x);
   void resize(size_type __new_size)
   { this->resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
 
   void pop_front() { erase(begin()); }
   void pop_back() {

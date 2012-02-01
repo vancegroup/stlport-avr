@@ -284,16 +284,6 @@ class vector :
         _M_initialize_aux(__first, __last, _Integral());
       }
 
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-    template <class _InputIterator>
-    vector( _InputIterator __first, _InputIterator __last) :
-        _STLP_PRIV _Vector_base<_Tp, _Alloc>(allocator_type())
-      {
-        typedef typename is_integral<_InputIterator>::type _Integral;
-        _M_initialize_aux(__first, __last, _Integral());
-      }
-#  endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
-
     //As the vector container is a back insert oriented container it
     //seems rather logical to destroy elements in reverse order.
     ~vector() { _STLP_STD::detail::_Destroy_Range(rbegin(), rend()); }
@@ -587,13 +577,8 @@ class vector :
         return __first == __last ? __first : _M_erase(__first, __last, integral_constant<bool, __has_trivial_move<_Tp>::value>() );
       }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-    void resize( size_type __new_size, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp) )
-      {
-#else
     void resize( size_type __new_size, const _Tp& __x )
       {
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
          if ( __new_size < size() ) {
            erase(begin() + __new_size, end());
          } else {
@@ -601,10 +586,8 @@ class vector :
          }
       }
 
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
     void resize(size_type __new_size)
       { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
     void clear()
       { erase(begin(), end()); }

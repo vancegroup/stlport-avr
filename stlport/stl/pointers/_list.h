@@ -91,19 +91,12 @@ public:
   explicit list(const allocator_type& __a = allocator_type())
     : _M_impl(__a) {}
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit list(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(value_type),
-#else
-  list(size_type __n, const value_type& __val,
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-       const allocator_type& __a = allocator_type())
+  list(size_type __n, const value_type& __val, const allocator_type& __a = allocator_type())
     : _M_impl(__n, cast_traits::to_storage_type_cref(__val),
               __a) {}
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit list(size_type __n)
     : _M_impl(__n) {}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   template <class _InputIterator>
   list(_InputIterator __first, _InputIterator __last,
@@ -114,16 +107,6 @@ public:
     : _M_impl(__a) {
     insert(begin(), __first, __last);
   }
-#  endif
-
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  list(_InputIterator __first, _InputIterator __last)
-#    if !defined (_STLP_USE_WRAPPER_ITERATOR)
-    : _M_impl(__first, __last) {}
-#    else
-  { insert(begin(), __first, __last); }
-#    endif
 #  endif
 
   list(const _Self& __x) : _M_impl(__x._M_impl) {}
@@ -160,11 +143,7 @@ public:
 #endif
   void clear() { _M_impl.clear(); }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos, const_reference __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   iterator insert(iterator __pos, const_reference __x)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   { return iterator(_M_impl.insert(_BaseIte(__pos._M_node),
                                    cast_traits::to_storage_type_cref(__x))._M_node); }
 
@@ -204,23 +183,13 @@ public:
   void push_front(const value_type& __x) { _M_impl.push_front(cast_traits::to_storage_type_cref(__x)); }
   void push_back(const value_type& __x)  { _M_impl.push_back(cast_traits::to_storage_type_cref(__x)); }
 
-#if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos) { return iterator(_M_impl.insert(__pos._M_node)._M_node); }
-  void push_front() { _M_impl.push_front();}
-  void push_back()  { _M_impl.push_back();}
-# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-
   iterator erase(iterator __pos)
   { return iterator(_M_impl.erase(_BaseIte(__pos._M_node))._M_node); }
   iterator erase(iterator __first, iterator __last)
   { return iterator(_M_impl.erase(_BaseIte(__first._M_node), _BaseIte(__last._M_node))._M_node); }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   void resize(size_type __new_size) { _M_impl.resize(__new_size); }
   void resize(size_type __new_size, const value_type& __x)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
   {_M_impl.resize(__new_size, cast_traits::to_storage_type_cref(__x));}
 
   void pop_front() { _M_impl.pop_front(); }

@@ -141,53 +141,19 @@ public:                         // Constructor, destructor, assignment.
   allocator_type get_allocator() const
   { return (const allocator_type&)this->_M_start_of_storage; }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit basic_string(const allocator_type& __a = allocator_type())
-#else
-  basic_string()
-      : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type(), _Base::_DEFAULT_SIZE)
-  { _M_terminate_string(); }
-  explicit basic_string(const allocator_type& __a)
-#endif
       : _STLP_PRIV _String_base<_CharT,_Alloc>(__a, _Base::_DEFAULT_SIZE)
   { _M_terminate_string(); }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   basic_string(_Reserve_t, size_t __n,
                const allocator_type& __a = allocator_type())
-#else
-  basic_string(_Reserve_t, size_t __n)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type(), __n + 1)
-  { _M_terminate_string(); }
-  basic_string(_Reserve_t, size_t __n, const allocator_type& __a)
-#endif
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a, __n + 1)
   { _M_terminate_string(); }
 
   basic_string(const _Self&);
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   basic_string(const _Self& __s, size_type __pos, size_type __n = npos,
                const allocator_type& __a = allocator_type())
-#else
-  basic_string(const _Self& __s, size_type __pos)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-    if (__pos > __s.size())
-      this->_M_throw_out_of_range();
-    else
-      _M_range_initialize(__s._M_Start() + __pos, __s._M_Finish());
-  }
-  basic_string(const _Self& __s, size_type __pos, size_type __n)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-    if (__pos > __s.size())
-      this->_M_throw_out_of_range();
-    else
-      _M_range_initialize(__s._M_Start() + __pos,
-                          __s._M_Start() + __pos + (min) (__n, __s.size() - __pos));
-  }
-  basic_string(const _Self& __s, size_type __pos, size_type __n,
-               const allocator_type& __a)
-#endif
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
     if (__pos > __s.size())
       this->_M_throw_out_of_range();
@@ -196,41 +162,18 @@ public:                         // Constructor, destructor, assignment.
                           __s._M_Start() + __pos + (min) (__n, __s.size() - __pos));
   }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   basic_string(const _CharT* __s, size_type __n,
                const allocator_type& __a = allocator_type())
-#else
-  basic_string(const _CharT* __s, size_type __n)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-      _STLP_FIX_LITERAL_BUG(__s)
-      _M_range_initialize(__s, __s + __n);
-    }
-  basic_string(const _CharT* __s, size_type __n, const allocator_type& __a)
-#endif
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
       _STLP_FIX_LITERAL_BUG(__s)
       _M_range_initialize(__s, __s + __n);
     }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   basic_string(const _CharT* __s,
                const allocator_type& __a = allocator_type());
-#else
-  basic_string(const _CharT* __s);
-  basic_string(const _CharT* __s, const allocator_type& __a);
-#endif
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   basic_string(size_type __n, _CharT __c,
                const allocator_type& __a = allocator_type())
-#else
-  basic_string(size_type __n, _CharT __c)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type(), __n + 1) {
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
-    _M_terminate_string();
-  }
-  basic_string(size_type __n, _CharT __c, const allocator_type& __a)
-#endif
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a, __n + 1) {
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
@@ -251,14 +194,6 @@ public:                         // Constructor, destructor, assignment.
     typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  basic_string(_InputIterator __f, _InputIterator __l)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-    typedef typename is_integral<_InputIterator>::type _Integral;
-    _M_initialize_dispatch(__f, __l, _Integral());
-  }
-#  endif
 #else
 #  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   basic_string(const _CharT* __f, const _CharT* __l,
@@ -267,13 +202,6 @@ public:                         // Constructor, destructor, assignment.
     _STLP_FIX_LITERAL_BUG(__f)  _STLP_FIX_LITERAL_BUG(__l)
     _M_range_initialize(__f, __l);
   }
-#    if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  basic_string(const _CharT* __f, const _CharT* __l)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-    _STLP_FIX_LITERAL_BUG(__f)  _STLP_FIX_LITERAL_BUG(__l)
-    _M_range_initialize(__f, __l);
-  }
-#    endif
 #  endif
 #  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   /* We need an additionnal constructor to build an empty string without

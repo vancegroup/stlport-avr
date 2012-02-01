@@ -321,23 +321,6 @@ void deque<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t)
                                             this->buffer_size()))
 }
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-// Called only if this->_M_finish._M_cur == this->_M_finish._M_last - 1.
-template <class _Tp, class _Alloc >
-void deque<_Tp,_Alloc>::_M_push_back_aux()
-{
-  _M_reserve_map_at_back();
-  *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
-  _STLP_TRY {
-    _Self::get_allocator().construct( this->_M_finish._M_cur, value_type() );
-    this->_M_finish._M_set_node(this->_M_finish._M_node + 1);
-    this->_M_finish._M_cur = this->_M_finish._M_first;
-  }
-  _STLP_UNWIND(this->_M_map_size.deallocate(*(this->_M_finish._M_node + 1),
-                                            this->buffer_size()))
-}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-
 // Called only if this->_M_start._M_cur == this->_M_start._M_first.
 template <class _Tp, class _Alloc >
 void deque<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t)
@@ -352,24 +335,6 @@ void deque<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t)
   _STLP_UNWIND((++this->_M_start,
                 this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), this->buffer_size())))
 }
-
-
-#if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-// Called only if this->_M_start._M_cur == this->_M_start._M_first.
-template <class _Tp, class _Alloc >
-void deque<_Tp,_Alloc>::_M_push_front_aux()
-{
-  _M_reserve_map_at_front();
-  *(this->_M_start._M_node - 1) = this->_M_map_size.allocate(this->buffer_size());
-  _STLP_TRY {
-    this->_M_start._M_set_node(this->_M_start._M_node - 1);
-    this->_M_start._M_cur = this->_M_start._M_last - 1;
-    _Self::get_allocator().construct( this->_M_start._M_cur, value_type() );
-  }
-  _STLP_UNWIND((++this->_M_start, this->_M_map_size.deallocate(*(this->_M_start._M_node - 1),
-                                                               this->buffer_size())))
-}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_first.
 template <class _Tp, class _Alloc >

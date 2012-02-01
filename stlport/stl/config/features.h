@@ -664,21 +664,7 @@ namespace _STL = _STLP_STD_NAME;
 #endif
 
 #if !defined (_STLP_ALLOCATOR_TYPE_DFL)
-#  if defined (_STLP_DONT_SUP_DFLT_PARAM)
-#    define _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-#  endif
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-#    define _STLP_ALLOCATOR_TYPE_DFL
-#  else
-#    define _STLP_ALLOCATOR_TYPE_DFL = allocator_type()
-#  endif
-#endif
-
-/* When the compiler do not correctly initialized the basic types value in default parameters we prefer
- * to avoid them to be able to correct this bug.
- */
-#if defined (_STLP_DEF_CONST_DEF_PARAM_BUG)
-#  define _STLP_DONT_SUP_DFLT_PARAM 1
+#  define _STLP_ALLOCATOR_TYPE_DFL = allocator_type()
 #endif
 
 #if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)

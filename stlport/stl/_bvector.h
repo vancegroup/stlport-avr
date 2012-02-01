@@ -492,15 +492,6 @@ public:
                               const false_type&) {
     _M_initialize_range(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  // Check whether it's an integral type.  If so, it's not an iterator.
-  template <class _InputIterator>
-  __BVECTOR(_InputIterator __first, _InputIterator __last)
-    : _STLP_PRIV _Bvector_base<_Alloc >(allocator_type()) {
-    typedef typename is_integral<_InputIterator>::type _Integral;
-    _M_initialize_dispatch(__first, __last, _Integral());
-  }
-#  endif
   template <class _InputIterator>
   __BVECTOR(_InputIterator __first, _InputIterator __last,
             const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)

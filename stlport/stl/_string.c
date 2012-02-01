@@ -86,12 +86,6 @@ template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_of(_InputIter __first1, _InputIter __last1,
                                       const _CharT* __first2, const _CharT* __last2,
                                       _Traits* __traits) {
-#if !defined (__BORLANDC__)
-  // typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
-#else
-  // enum { _Is = _IsSTLportClass<_Traits>::_Is };
-  // typedef typename __bool2type<_Is>::_Ret _STLportTraits;
-#endif
   return __str_find_first_of_aux(__first1, __last1, __first2, __last2, __traits, true_type() /* _STLportTraits() */ );
 }
 
@@ -132,12 +126,6 @@ template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of(_InputIter __first1, _InputIter __last1,
                                           const _CharT* __first2, const _CharT* __last2,
                                           _Traits* __traits) {
-#if !defined (__BORLANDC__)
-  // typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
-#else
-  // enum { _Is = _IsSTLportClass<_Traits>::_Is };
-  // typedef typename __bool2type<_Is>::_Ret _STLportTraits;
-#endif
   return __str_find_first_not_of_aux1(__first1, __last1, __first2, __last2, __traits, true_type() /* _STLportTraits() */ );
 }
 
@@ -618,15 +606,6 @@ void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
 
 #if !defined (basic_string)
 _STLP_MOVE_TO_STD_NAMESPACE
-#endif
-
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
-template <class _CharT, class _Traits, class _Alloc>
-basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s)
-  : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-  _STLP_FIX_LITERAL_BUG(__s)
-  _M_range_initialize(__s, __s + traits_type::length(__s));
-}
 #endif
 
 template <class _CharT, class _Traits, class _Alloc>

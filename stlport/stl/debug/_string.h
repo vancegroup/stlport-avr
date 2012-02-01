@@ -135,13 +135,6 @@ public:
     : _ConstructCheck(__f, __l),
       _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__f), _STLP_PRIV _Non_Dbg_iter(__l), __a),
       _M_iter_list(&_M_non_dbg_impl) {}
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  basic_string(_InputIterator __f, _InputIterator __l)
-    : _ConstructCheck(__f, __l),
-      _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__f), _STLP_PRIV _Non_Dbg_iter(__l)),
-      _M_iter_list(&_M_non_dbg_impl) {}
-#  endif
 
 private:
   // constructor from non-debug version for substr

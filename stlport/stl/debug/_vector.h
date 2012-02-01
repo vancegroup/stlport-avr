@@ -229,15 +229,6 @@ class vector :
         _M_iter_list(&_M_non_dbg_impl)
       { }
 
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-    template <class _InputIterator>
-    vector(_InputIterator __first, _InputIterator __last) :
-        _ConstructCheck(__first, __last),
-        _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last)),
-        _M_iter_list(&_M_non_dbg_impl)
-      { }
-#  endif
-
     _Self& operator=(const _Self& __x)
       {
         if (this != &__x) {
@@ -360,13 +351,8 @@ class vector :
          return iterator(&_M_iter_list, _M_non_dbg_impl.erase(__first._M_iterator, __last._M_iterator));
       }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-    void resize(size_type __new_size, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp))
-      {
-#else
     void resize(size_type __new_size, const _Tp& __x)
       {
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         if (__new_size > capacity()) {
           _Invalidate_all();
         } else if (__new_size < size()) {
@@ -375,10 +361,8 @@ class vector :
         _M_non_dbg_impl.resize(__new_size, __x);
       }
 
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
     void resize(size_type __new_size)
       { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif
 
     template <class _InputIterator>
     void assign(_InputIterator __first, _InputIterator __last)

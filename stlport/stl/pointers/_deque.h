@@ -160,17 +160,10 @@ public:                         // Basic accessors
 
   deque(const _Self& __x) : _M_impl(__x._M_impl) {}
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit deque(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(value_type),
-#else
-  deque(size_type __n, const value_type& __val,
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-        const allocator_type& __a = allocator_type())
+  deque(size_type __n, const value_type& __val, const allocator_type& __a = allocator_type())
     : _M_impl(__n, cast_traits::to_storage_type_cref(__val), __a) {}
   // int,long variants may be needed
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n) : _M_impl(__n) {}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   template <class _InputIterator>
   deque(_InputIterator __first, _InputIterator __last,
@@ -184,16 +177,6 @@ public:                         // Basic accessors
     insert(end(), __first, __last);
 #endif
   }
-
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  deque(_InputIterator __first, _InputIterator __last)
-#    if !defined (_STLP_USE_ITERATOR_WRAPPER)
-    : _M_impl(__first, __last) {}
-#    else
-  { insert(end(), __first, __last); }
-#    endif
-#  endif
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   deque(__move_source<_Self> src)
@@ -237,39 +220,18 @@ public:
 #  endif
   }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  void push_back(const value_type& __t = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   void push_back(const value_type& __t)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   { _M_impl.push_back(cast_traits::to_storage_type_cref(__t)); }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  void push_front(const value_type& __t = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   void push_front(const value_type& __t)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   { _M_impl.push_front(cast_traits::to_storage_type_cref(__t)); }
-
-# if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  void push_back()  { _M_impl.push_back(); }
-  void push_front() { _M_impl.push_front(); }
-# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void pop_back()  { _M_impl.pop_back(); }
   void pop_front() { _M_impl.pop_front(); }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   iterator insert(iterator __pos, const value_type& __x)
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   { return ite_cast_traits::to_value_type_ite(_M_impl.insert(ite_cast_traits::to_storage_type_ite(__pos),
                                                              cast_traits::to_storage_type_cref(__x))); }
-
-#if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos) { return insert(__pos, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void insert(iterator __pos, size_type __n, const value_type& __x)
   { _M_impl.insert(ite_cast_traits::to_storage_type_ite(__pos), __n, cast_traits::to_storage_type_cref(__x)); }
@@ -305,16 +267,10 @@ public:
 #  endif
   }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
-#else
   void resize(size_type __new_size, const value_type& __x)
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
   { _M_impl.resize(__new_size, cast_traits::to_storage_type_cref(__x)); }
 
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size) { _M_impl.resize(__new_size); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   iterator erase(iterator __pos)
   { return ite_cast_traits::to_value_type_ite(_M_impl.erase(ite_cast_traits::to_storage_type_ite(__pos))); }

@@ -258,28 +258,10 @@ public:
   typedef _All allocator_type;
   allocator_type get_allocator() const { return _M_elems.get_allocator(); }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   hashtable(size_type __n,
             const _HF&    __hf,
             const _EqK&   __eql,
             const allocator_type& __a = allocator_type())
-#else
-  hashtable(size_type __n,
-            const _HF&    __hf,
-            const _EqK&   __eql)
-    : _M_hash(__hf),
-      _M_equals(__eql),
-      _M_elems(allocator_type()),
-      _M_buckets(__a),
-      _M_num_elements(0),
-      _M_max_load_factor(1.0f)
-  { _M_initialize_buckets(__n); }
-
-  hashtable(size_type __n,
-            const _HF&    __hf,
-            const _EqK&   __eql,
-            const allocator_type& __a)
-#endif
     : _M_hash(__hf),
       _M_equals(__eql),
       _M_elems(__a),

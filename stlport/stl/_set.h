@@ -82,16 +82,8 @@ private:
 public:
 
   // allocation/deallocation
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit set(const _Compare& __comp = _Compare(),
                const allocator_type& __a = allocator_type())
-#else
-  set()
-    : _M_t(_Compare(), allocator_type()) {}
-  explicit set(const _Compare& __comp)
-    : _M_t(__comp, allocator_type()) {}
-  set(const _Compare& __comp, const allocator_type& __a)
-#endif
     : _M_t(__comp, __a) {}
 
   template <class _InputIterator>
@@ -99,11 +91,6 @@ public:
     : _M_t(_Compare(), allocator_type())
     { _M_t.insert_unique(__first, __last); }
 
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  set(_InputIterator __first, _InputIterator __last, const _Compare& __comp)
-    : _M_t(__comp, allocator_type()) { _M_t.insert_unique(__first, __last); }
-#  endif
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp,
       const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -223,16 +210,8 @@ private:
   _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit multiset(const _Compare& __comp = _Compare(),
                     const allocator_type& __a = allocator_type())
-#else
-  multiset()
-    : _M_t(_Compare(), allocator_type()) {}
-  explicit multiset(const _Compare& __comp)
-    : _M_t(__comp, allocator_type()) {}
-  multiset(const _Compare& __comp, const allocator_type& __a)
-#endif
     : _M_t(__comp, __a) {}
 
   template <class _InputIterator>
@@ -245,12 +224,6 @@ public:
            const _Compare& __comp,
            const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator>
-  multiset(_InputIterator __first, _InputIterator __last,
-           const _Compare& __comp)
-    : _M_t(__comp, allocator_type()) { _M_t.insert_equal(__first, __last); }
-#  endif
 
   multiset(const _Self& __x) : _M_t(__x._M_t) {}
   _Self& operator=(const _Self& __x) {

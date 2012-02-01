@@ -699,14 +699,8 @@ class deque :
       }
 
   public:
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-    void resize( size_type __new_size,
-                 const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp))
-      {
-#else
     void resize(size_type __new_size, const value_type& __x)
       {
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const size_type __len = size();
         if (__new_size < __len) {
           erase(this->_M_start + __new_size, this->_M_finish);
@@ -714,11 +708,6 @@ class deque :
           insert(this->_M_finish, __new_size - __len, __x);
         }
       }
-
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
-    void resize(size_type __new_size)
-      { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   protected:
     iterator _M_erase(iterator __pos, const true_type& /*_Movable*/);
@@ -785,10 +774,6 @@ class deque :
 
     void _M_push_back_aux_v(const value_type&);
     void _M_push_front_aux_v(const value_type&);
-#if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-    void _M_push_back_aux();
-    void _M_push_front_aux();
-#endif /*_STLP_DONT_SUP_DFLT_PARAM !_STLP_NO_ANACHRONISMS*/
     void _M_pop_back_aux();
     void _M_pop_front_aux();
 

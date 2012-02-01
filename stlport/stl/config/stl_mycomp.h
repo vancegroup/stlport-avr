@@ -77,9 +77,6 @@
 // types as default parameters for class templates
 // #  define _STLP_DEFAULT_TYPE_PARAM 1
 
-// Uncomment this if your compiler do not support default parameters in template class methods
-// #  define _STLP_DONT_SUP_DFLT_PARAM 1
-
 // Uncomment this if your compiler has problem with not-type
 // default template parameters
 // #  define _STLP_NO_DEFAULT_NON_TYPE_PARAM 1

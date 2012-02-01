@@ -110,13 +110,6 @@ public:
            const hasher& __hf)
     : _M_ht(__n, __hf, key_equal(), allocator_type())
     { _M_ht.insert_unique(__f, __l); }
-# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-  template <class _InputIterator>
-  hash_map(_InputIterator __f, _InputIterator __l, size_type __n,
-           const hasher& __hf, const key_equal& __eql)
-    : _M_ht(__n, __hf, __eql, allocator_type())
-    { _M_ht.insert_unique(__f, __l); }
-# endif
   template <class _InputIterator>
   hash_map(_InputIterator __f, _InputIterator __l, size_type __n,
            const hasher& __hf, const key_equal& __eql,
@@ -256,13 +249,6 @@ public:
                 const hasher& __hf)
     : _M_ht(__n, __hf, key_equal(), allocator_type())
     { _M_ht.insert_equal(__f, __l); }
-#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-  template <class _InputIterator>
-  hash_multimap(_InputIterator __f, _InputIterator __l, size_type __n,
-                const hasher& __hf, const key_equal& __eql)
-    : _M_ht(__n, __hf, __eql, allocator_type())
-    { _M_ht.insert_equal(__f, __l); }
-#  endif
   template <class _InputIterator>
   hash_multimap(_InputIterator __f, _InputIterator __l, size_type __n,
                 const hasher& __hf, const key_equal& __eql,
