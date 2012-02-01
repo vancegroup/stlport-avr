@@ -113,13 +113,7 @@
 #  include <stl/config/_windows.h>
 #elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__) || \
       defined (__WIN16) || defined (WIN16) || defined (_WIN16)
-#  if defined ( __BORLANDC__ )  /* Borland C++ / CodeGear C++ */
-#    include <stl/config/_bc.h>
-#  elif defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)  /* Watcom C++ */
-#    include <stl/config/_watcom.h>
-#  elif defined (__DMC__)   /* Digital Mars C++ */
-#    include <stl/config/_dm.h>
-#  elif defined (__ICL) /* Intel reference compiler for Win */
+#  if defined (__ICL) /* Intel reference compiler for Win */
 #    include <stl/config/_intel.h>
 #  elif defined (_MSC_VER) && (_MSC_VER >= 1200) && defined (UNDER_CE)
      /* Microsoft eMbedded Visual C++ 3.0, 4.0 (.NET) */
