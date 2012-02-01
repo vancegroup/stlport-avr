@@ -208,13 +208,6 @@ public:
 #  endif
   }
 
-  iterator insert(iterator __pos, const value_type& __x)
-  { return iterator(_M_impl.insert(_BaseIte(__pos._M_node),
-                                   cast_traits::to_storage_type_cref(__x))._M_node); }
-
-  void insert(iterator __pos, size_type __n, const value_type& __x)
-  { _M_impl.insert(_BaseIte(__pos._M_node), __n, cast_traits::to_storage_type_cref(__x)); }
-
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
 private:
   template <class _Integer>
@@ -234,27 +227,11 @@ private:
 public:
 #  endif
 
-  template <class _InputIterator>
-  void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-#  if defined (_STLP_USE_ITERATOR_WRAPPER)
-    // Check whether it's an integral type.  If so, it's not an iterator.
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_insert_dispatch(__pos, __first, __last, _Integral());
-#  else
-    _M_impl.insert(_BaseIte(__pos._M_node), __first, __last);
-#  endif
-  }
-
   iterator erase_after(iterator __pos)
   { return iterator(_M_impl.erase_after(_BaseIte(__pos._M_node))._M_node); }
   iterator erase_after(iterator __before_first, iterator __last)
   { return iterator(_M_impl.erase_after(_BaseIte(__before_first._M_node),
                                         _BaseIte(__last._M_node))._M_node); }
-
-  iterator erase(iterator __pos)
-  { return iterator(_M_impl.erase(_BaseIte(__pos._M_node))._M_node); }
-  iterator erase(iterator __first, iterator __last)
-  { return iterator(_M_impl.erase(_BaseIte(__first._M_node), _BaseIte(__last._M_node))._M_node); }
 
   void resize(size_type __new_size, const value_type& __x)
   { _M_impl.resize(__new_size, cast_traits::to_storage_type_cref(__x));}
@@ -271,13 +248,6 @@ public:
   { _M_impl.splice_after(_BaseIte(__pos._M_node), __x._M_impl, _BaseIte(__prev._M_node)); }
   void splice_after(iterator __pos, _Self& __x)
   { _M_impl.splice_after(_BaseIte(__pos._M_node), __x._M_impl); }
-  void splice(iterator __pos, _Self& __x)
-  { _M_impl.splice(_BaseIte(__pos._M_node), __x._M_impl); }
-  void splice(iterator __pos, _Self& __x, iterator __i)
-  { _M_impl.splice(_BaseIte(__pos._M_node), __x._M_impl, _BaseIte(__i._M_node)); }
-  void splice(iterator __pos, _Self& __x, iterator __first, iterator __last)
-  { _M_impl.splice(_BaseIte(__pos._M_node), __x._M_impl,
-                   _BaseIte(__first._M_node), _BaseIte(__last._M_node)); }
 
   void reverse() { _M_impl.reverse(); }
 

@@ -483,7 +483,7 @@ template <class _Val, class _Key, class _HF,
 void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::_M_copy_from(const hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>& __ht) {
   _M_elems.clear();
-  _M_elems.insert_after(_M_elems.begin(), __ht._M_elems.begin(), __ht._M_elems.end());
+  _M_elems.insert_after(_M_elems.before_begin(), __ht._M_elems.begin(), __ht._M_elems.end());
   _M_buckets.resize(__ht._M_buckets.size());
   _ElemsConstIte __src(__ht._M_elems.begin()), __src_end(__ht._M_elems.end());
   _ElemsIte __dst(_M_elems.begin());

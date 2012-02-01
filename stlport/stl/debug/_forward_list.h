@@ -227,27 +227,6 @@ public:
                                  _STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
   }
 
-  template <class _InIter>
-  void insert(iterator __pos, _InIter __first, _InIter __last) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
-    _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-    _M_non_dbg_impl.insert(__pos._M_iterator,
-                           _STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
-  }
-
-  iterator insert(iterator __pos, const value_type& __x) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
-    _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    return iterator(&_M_iter_list, _M_non_dbg_impl.insert(__pos._M_iterator, __x));
-  }
-
-  void insert(iterator __pos, size_type __n, const value_type& __x) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
-    _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    _M_non_dbg_impl.insert(__pos._M_iterator, __n, __x);
-  }
-
 public:
   iterator erase_after(iterator __pos) {
     _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__pos))
@@ -264,19 +243,6 @@ public:
     _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__tmp))
     _Invalidate_iterators(__tmp, __last);
     return iterator(&_M_iter_list, _M_non_dbg_impl.erase_after(__before_first._M_iterator, __last._M_iterator));
-  }
-
-  iterator erase(iterator __pos) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__pos))
-    _STLP_VERBOSE_ASSERT(__pos._M_iterator != _M_non_dbg_impl.before_begin(), _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
-    _Invalidate_iterator(__pos);
-    return iterator(&_M_iter_list, _M_non_dbg_impl.erase(__pos._M_iterator));
-  }
-  iterator erase(iterator __first, iterator __last) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last, begin(), end()))
-    _Invalidate_iterators(__first, __last);
-    return iterator(&_M_iter_list, _M_non_dbg_impl.erase(__first._M_iterator, __last._M_iterator));
   }
 
   void resize(size_type __new_size, const value_type& __x) {
@@ -346,62 +312,20 @@ public:
                                  __before_first._M_iterator, __before_last._M_iterator);
   }
 
-  void splice(iterator __pos, _Self& __x) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
-    _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    _STLP_VERBOSE_ASSERT(!(&__x == this), _StlMsg_INVALID_ARGUMENT)
-    _M_non_dbg_impl.splice(__pos._M_iterator, __x._M_non_dbg_impl);
-    if (get_allocator() == __x.get_allocator()) {
-      __x._M_iter_list._Set_owner(_M_iter_list);
-    }
-    else {
-      __x._Invalidate_iterators(__x.begin(), __x.end());
-    }
-  }
-
-  void splice(iterator __pos, _Self& __x, iterator __i) {
-    //__pos should be owned by *this and not be the before_begin iterator
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
-    _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    //__i should be dereferenceable, not before_begin and be owned by __x
-    _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__i))
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&__x._M_iter_list ,__i))
-    _STLP_VERBOSE_ASSERT(!(__i == __x.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    if (get_allocator() == __x.get_allocator()) {
-      _STLP_PRIV __change_ite_owner(__i, &_M_iter_list);
-    }
-    else {
-      __x._Invalidate_iterator(__i);
-    }
-    _M_non_dbg_impl.splice(__pos._M_iterator, __x._M_non_dbg_impl, __i._M_iterator);
-  }
-
-  void splice(iterator __pos, _Self& __x, iterator __first, iterator __last) {
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
-    _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    //_STLP_VERBOSE_ASSERT(&__x != this, _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last, __x.begin(), __x.end()))
-    if (get_allocator() == __x.get_allocator()) {
-      _STLP_PRIV __change_range_owner(__first, __last, &_M_iter_list);
-    }
-    else {
-      __x._Invalidate_iterators(__first, __last);
-    }
-    _M_non_dbg_impl.splice(__pos._M_iterator, __x._M_non_dbg_impl,
-                           __first._M_iterator, __last._M_iterator);
-  }
-
   void reverse()
   { _M_non_dbg_impl.reverse(); }
 
   void remove(const value_type& __val) {
+    _Base_iterator __pre_first = _M_non_dbg_impl.before_begin();
     _Base_iterator __first = _M_non_dbg_impl.begin(), __last = _M_non_dbg_impl.end();
+    _Base_iterator __next = __first;
     while (__first != __last) {
-      _Base_iterator __next = __first;
       ++__next;
       if (__val == *__first) {
         _Invalidate_iterator(iterator(&_M_iter_list, __first));
-        _M_non_dbg_impl.erase(__first);
+        _M_non_dbg_impl.erase_after(__pre_first);
+      } else {
+        ++__pre_first;
       }
       __first = __next;
     }
@@ -413,11 +337,11 @@ public:
     while (++__next != __last) {
       if (*__first == *__next) {
         _Invalidate_iterator(iterator(&_M_iter_list, __next));
-        _M_non_dbg_impl.erase(__next);
-      }
-      else
+        _M_non_dbg_impl.erase_after(__first);
+        __next = __first;
+      } else {
         __first = __next;
-      __next = __first;
+      }
     }
   }
   void merge(_Self& __x) {

@@ -20,9 +20,7 @@ using namespace std;
 #if !defined(_MSC_VER) || (_MSC_VER > 1200)  // excluding MSVC 6.0
 TEST_INSTANCIATE_CONTAINER(vector);
 TEST_INSTANCIATE_CONTAINER(list);
-#  if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 TEST_INSTANCIATE_CONTAINER(forward_list);
-#  endif
 TEST_INSTANCIATE_CONTAINER(deque);
 TEST_INSTANCIATE_CONTAINER(set);
 TEST_INSTANCIATE_CONTAINER(multiset);
@@ -46,9 +44,7 @@ int EXAM_IMPL(ptrspec_test::ptr_specialization_test)
     vector<void*> void_vect;
     deque<void*> void_deque;
     list<void*> void_list;
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
     forward_list<void*> void_forward_list;
-#endif
   }
 
   {
@@ -71,11 +67,9 @@ int EXAM_IMPL(ptrspec_test::ptr_specialization_test)
   list<int*> pint_list;
   list<int*> pint_list2;
   list<int const*> pcint_list;
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   forward_list<int*> pint_forward_list;
   forward_list<int*> pint_forward_list2;
   forward_list<int const*> pcint_forward_list;
-#endif
   deque<int*> pint_deque;
   deque<int*> pint_deque2;
   deque<int const*> pcint_deque;
@@ -126,25 +120,24 @@ int EXAM_IMPL(ptrspec_test::ptr_specialization_test)
   pcint_list.assign(cint_array, cint_array + 3);
   //pint_list.assign(pcint_vect.begin(), pcint_vect.end());
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   copy(int_array, int_array + 3, front_inserter(pint_forward_list));
   copy(int_array, int_array + 3, front_inserter(pint_forward_list2));
-  pint_forward_list.insert(pint_forward_list.end(), pint_forward_list2.begin(), pint_forward_list2.end());
-  pcint_forward_list.insert(pcint_forward_list.end(), pint_forward_list.begin(), pint_forward_list.end());
-  pint_forward_list.insert(pint_forward_list.end(), pint_vect.begin(), pint_vect.end());
-  pcint_forward_list.insert(pcint_forward_list.end(), pint_vect.begin(), pint_vect.end());
-  pcint_forward_list.insert(pcint_forward_list.end(), pcint_vect.begin(), pcint_vect.end());
+  pint_forward_list.insert_after(pint_forward_list.before_begin(), pint_forward_list2.begin(), pint_forward_list2.end());
+  pcint_forward_list.insert_after(pcint_forward_list.before_begin(), pint_forward_list.begin(), pint_forward_list.end());
+  pint_forward_list.insert_after(pint_forward_list.before_begin(), pint_vect.begin(), pint_vect.end());
+  pcint_forward_list.insert_after(pcint_forward_list.before_begin(), pint_vect.begin(), pint_vect.end());
+  pcint_forward_list.insert_after(pcint_forward_list.before_begin(), pcint_vect.begin(), pcint_vect.end());
+
   forward_list<int*> pint_forward_list_from_vect(pint_vect.begin(), pint_vect.end());
   pint_forward_list.assign(pint_vect.begin(), pint_vect.end());
   pcint_forward_list.assign(pint_vect.begin(), pint_vect.end());
-  pint_forward_list.insert(pint_forward_list.end(), int_array, int_array + 3);
-  pcint_forward_list.insert(pcint_forward_list.end(), int_array, int_array + 3);
-  pcint_forward_list.insert(pcint_forward_list.end(), cint_array, cint_array + 3);
+  pint_forward_list.insert_after(pint_forward_list.before_begin(), int_array, int_array + 3);
+  pcint_forward_list.insert_after(pcint_forward_list.before_begin(), int_array, int_array + 3);
+  pcint_forward_list.insert_after(pcint_forward_list.before_begin(), cint_array, cint_array + 3);
   pint_forward_list.assign(int_array, int_array + 3);
   pcint_forward_list.assign(int_array, int_array + 3);
   pcint_forward_list.assign(cint_array, cint_array + 3);
   //pint_forward_list.assign(pcint_vect.begin(), pcint_vect.end());
-#endif
 
   copy(int_array, int_array + 3, back_inserter(pint_deque));
   copy(int_array, int_array + 3, back_inserter(pint_deque2));

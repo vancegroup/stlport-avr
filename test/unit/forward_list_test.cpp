@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 17:00:32 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-02 00:49:07 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -112,11 +112,11 @@ int EXAM_IMPL(forward_list_test::erase)
   forward_list<int> sl(array, array + 5);
   forward_list<int>::iterator slit;
 
-  slit = sl.erase(sl.begin());
+  slit = sl.erase_after(sl.before_begin());
   EXAM_CHECK( *slit == 1);
 
   ++slit++; ++slit;
-  slit = sl.erase(sl.begin(), slit);
+  slit = sl.erase_after(sl.before_begin(), slit);
   EXAM_CHECK( *slit == 3 );
 
   sl.assign(array, array + 5);
@@ -137,26 +137,6 @@ int EXAM_IMPL(forward_list_test::erase)
 int EXAM_IMPL(forward_list_test::insert)
 {
   int array[] = { 0, 1, 2, 3, 4 };
-
-  //insert
-  {
-    forward_list<int> sl;
-
-    sl.insert(sl.begin(), 5);
-    EXAM_CHECK( sl.front() == 5 );
-    EXAM_CHECK( sl.size() == 1 );
-
-    //debug mode check:
-    //sl.insert(sl.before_begin(), array, array + 5);
-
-    sl.insert(sl.begin(), array, array + 5);
-    EXAM_CHECK( sl.size() == 6 );
-    int i;
-    forward_list<int>::iterator slit(sl.begin());
-    for (i = 0; slit != sl.end(); ++slit, ++i) {
-      EXAM_CHECK( *slit == i );
-    }
-  }
 
   //insert_after
   {
@@ -184,71 +164,6 @@ int EXAM_IMPL(forward_list_test::insert)
 int EXAM_IMPL(forward_list_test::splice)
 {
   int array[] = { 0, 1, 2, 3, 4 };
-
-  //splice
-  {
-    forward_list<int> sl1(array, array + 5);
-    forward_list<int> sl2(array, array + 5);
-    forward_list<int>::iterator slit;
-
-    //a no op:
-    sl1.splice(sl1.begin(), sl1, sl1.begin());
-    EXAM_CHECK( sl1 == sl2 );
-
-    slit = sl1.begin(); ++slit;
-    //a no op:
-    sl1.splice(slit, sl1, sl1.begin());
-    EXAM_CHECK( sl1 == sl2 );
-
-    sl1.splice(sl1.end(), sl1, sl1.begin());
-    slit = sl1.begin();
-    EXAM_CHECK( *(slit++) == 1 );
-    EXAM_CHECK( *(slit++) == 2 );
-    EXAM_CHECK( *(slit++) == 3 );
-    EXAM_CHECK( *(slit++) == 4 );
-    EXAM_CHECK( *slit == 0 );
-    sl1.splice(sl1.begin(), sl1, slit);
-    EXAM_CHECK( sl1 == sl2 );
-
-    sl1.splice(sl1.begin(), sl2);
-    size_t i;
-    for (i = 0, slit = sl1.begin(); slit != sl1.end(); ++slit, ++i) {
-      if (i == 5) i = 0;
-      EXAM_CHECK( *slit == array[i] );
-    }
-
-    slit = sl1.begin();
-    advance(slit, 5);
-    EXAM_CHECK( *slit == 0 );
-    sl2.splice(sl2.begin(), sl1, sl1.begin(), slit);
-    EXAM_CHECK( sl1 == sl2 );
-
-    slit = sl1.begin(); ++slit;
-    sl1.splice(sl1.begin(), sl1, slit, sl1.end());
-    slit = sl1.begin();
-    EXAM_CHECK( *(slit++) == 1 );
-    EXAM_CHECK( *(slit++) == 2 );
-    EXAM_CHECK( *(slit++) == 3 );
-    EXAM_CHECK( *(slit++) == 4 );
-    EXAM_CHECK( *slit == 0 );
-
-    // a no op
-    sl2.splice(sl2.end(), sl2, sl2.begin(), sl2.end());
-    for (i = 0, slit = sl2.begin(); slit != sl2.end(); ++slit, ++i) {
-      EXAM_CHECK( i < 5 );
-      EXAM_CHECK( *slit == array[i] );
-    }
-
-    slit = sl2.begin();
-    advance(slit, 3);
-    sl2.splice(sl2.end(), sl2, sl2.begin(), slit);
-    slit = sl2.begin();
-    EXAM_CHECK( *(slit++) == 3 );
-    EXAM_CHECK( *(slit++) == 4 );
-    EXAM_CHECK( *(slit++) == 0 );
-    EXAM_CHECK( *(slit++) == 1 );
-    EXAM_CHECK( *slit == 2 );
-  }
 
   //splice_after
   {
@@ -381,47 +296,6 @@ int EXAM_IMPL(forward_list_test::allocator_with_state)
     EXAM_CHECK( slint2 == slint1Cpy );
     EXAM_CHECK( slint1.get_allocator() == stack2 );
     EXAM_CHECK( slint2.get_allocator() == stack1 );
-  }
-  EXAM_CHECK( stack1.ok() );
-  EXAM_CHECK( stack2.ok() );
-  stack1.reset(); stack2.reset();
-
-  //splice(iterator, forward_list)
-  {
-    SlistInt slint1(10, 0, stack1);
-    SlistInt slint2(10, 1, stack2);
-
-    slint1.splice(slint1.begin(), slint2);
-    EXAM_CHECK( slint1.size() == 20 );
-    EXAM_CHECK( slint2.empty() );
-  }
-  EXAM_CHECK( stack1.ok() );
-  EXAM_CHECK( stack2.ok() );
-  stack1.reset(); stack2.reset();
-
-  //splice(iterator, forward_list, iterator)
-  {
-    SlistInt slint1(10, 0, stack1);
-    SlistInt slint2(10, 1, stack2);
-
-    slint1.splice(slint1.begin(), slint2, slint2.begin());
-    EXAM_CHECK( slint1.size() == 11 );
-    EXAM_CHECK( slint2.size() == 9 );
-  }
-  EXAM_CHECK( stack1.ok() );
-  EXAM_CHECK( stack2.ok() );
-  stack1.reset(); stack2.reset();
-
-  //splice(iterator, forward_list, iterator, iterator)
-  {
-    SlistInt slint1(10, 0, stack1);
-    SlistInt slint2(10, 1, stack2);
-
-    SlistInt::iterator lit(slint2.begin());
-    advance(lit, 5);
-    slint1.splice(slint1.begin(), slint2, slint2.begin(), lit);
-    EXAM_CHECK( slint1.size() == 15 );
-    EXAM_CHECK( slint2.size() == 5 );
   }
   EXAM_CHECK( stack1.ok() );
   EXAM_CHECK( stack2.ok() );
