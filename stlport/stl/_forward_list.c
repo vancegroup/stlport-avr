@@ -39,11 +39,19 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
+#if defined (_STLP_USE_PTR_SPECIALIZATIONS)
+#  define forward_list _STLP_PTR_IMPL_NAME(forward_list)
+#elif defined (_STLP_DEBUG)
+#  define forward_list _STLP_NON_DBG_NAME(forward_list)
+#else
+_STLP_MOVE_TO_STD_NAMESPACE
+#endif
+
 template <class _Tp, class _Alloc>
-_Slist_node_base*
-_Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
-                                        _Slist_node_base* __last_node) {
-  _Slist_node_base* __cur = __before_first->_M_next;
+_STLP_PRIV _Slist_node_base*
+forward_list<_Tp,_Alloc>::_M_erase_after(_STLP_PRIV _Slist_node_base* __before_first,
+                                         _STLP_PRIV _Slist_node_base* __last_node) {
+  _STLP_PRIV _Slist_node_base* __cur = __before_first->_M_next;
   while (__cur != __last_node) {
     _Node* __tmp = __STATIC_CAST(_Node*, __cur);
     __cur = __cur->_M_next;
@@ -53,14 +61,6 @@ _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
   __before_first->_M_next = __last_node;
   return __last_node;
 }
-
-#if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-#  define forward_list _STLP_PTR_IMPL_NAME(forward_list)
-#elif defined (_STLP_DEBUG)
-#  define forward_list _STLP_NON_DBG_NAME(forward_list)
-#else
-_STLP_MOVE_TO_STD_NAMESPACE
-#endif
 
 /* When building STLport lib Digital Mars Compiler complains on the _M_data assignment
  * problem which would be perfertly right if we were using it. Hiding it during build

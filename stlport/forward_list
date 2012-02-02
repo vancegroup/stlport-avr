@@ -214,52 +214,6 @@ public:
       { return this->_M_node != __y._M_node; }
 };
 
-// Base class that encapsulates details of allocators and simplifies EH
-template <class _Tp, class _Alloc>
-class _Slist_base
-{
-  protected:
-    typedef _Slist_node<_Tp> _Node;
-    typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
-
-    typedef _Slist_base<_Tp, _Alloc> _Self;
-
-  public:
-    typedef _STLP_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
-
-    typedef _Alloc allocator_type;
-
-    _Slist_base(const allocator_type& __a) :
-        _M_head(__a, _Slist_node_base() )
-      { _M_head._M_data._M_next = 0; }
-
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-    _Slist_base(__move_source<_Self> src) :
-        _M_head(__move_source<_AllocProxy>(src.get()._M_head))
-      { src.get()._M_head._M_data._M_next = 0; }
-#endif
-
-    ~_Slist_base() { _M_erase_after(&_M_head._M_data, 0); }
-
-  protected:
-    _Slist_node_base* _M_erase_after(_Slist_node_base* __pos)
-      {
-        _Node* __next = __STATIC_CAST(_Node*, __pos->_M_next);
-        _Slist_node_base* __next_next = __next->_M_next;
-        __pos->_M_next = __next_next;
-        this->get_allocator().destroy( &__next->_M_data );
-        _M_head.deallocate(__next,1);
-        return __next_next;
-      }
-    _Slist_node_base* _M_erase_after(_Slist_node_base*, _Slist_node_base*);
-
-  public:
-    allocator_type get_allocator() const
-      { return (const _M_node_allocator_type&)_M_head; }
-
-    _AllocProxy _M_head;
-};
-
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 #  define forward_list _STLP_PTR_IMPL_NAME(forward_list)
 #elif defined (_STLP_DEBUG)
@@ -291,11 +245,18 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Tp, class _Alloc>
-class forward_list : protected _STLP_PRIV _Slist_base<_Tp,_Alloc>
+class forward_list
 {
-private:
-  typedef _STLP_PRIV _Slist_base<_Tp,_Alloc> _Base;
-  typedef forward_list<_Tp,_Alloc> _Self;
+  private:
+    typedef _STLP_PRIV _Slist_node<_Tp> _Node;
+    typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
+
+    typedef _STLP_PRIV _STLP_alloc_proxy<_STLP_PRIV _Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
+
+  public:
+    typedef _Alloc allocator_type;
+    typedef forward_list<_Tp,_Alloc> _Self;
+
 public:
   typedef _Tp                value_type;
 
@@ -310,10 +271,7 @@ public:
   typedef _STLP_PRIV _Slist_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
   typedef _STLP_PRIV _Slist_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
 
-  typedef typename _Base::allocator_type allocator_type;
-
 private:
-  typedef _STLP_PRIV _Slist_node<_Tp> _Node;
   typedef _STLP_PRIV _Slist_node_base _Node_base;
 
   _Node* _M_create_node(const value_type& __x = _Tp()) {
@@ -327,40 +285,55 @@ private:
   }
 
 public:
+    allocator_type get_allocator() const
+      { return (const _M_node_allocator_type&)_M_head; }
 
-  allocator_type get_allocator() const { return _Base::get_allocator(); }
+    explicit forward_list(const allocator_type& __a = allocator_type()) :
+        _M_head(__a, _STLP_PRIV _Slist_node_base() )
+      { _M_head._M_data._M_next = 0; }
 
-  explicit forward_list(const allocator_type& __a = allocator_type())
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a) {}
+    explicit forward_list(size_type __n) :
+        _M_head(allocator_type(), _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = 0;
+        _M_insert_after_fill(&this->_M_head._M_data, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp));
+      }
 
-  explicit forward_list(size_type __n)
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
-    { _M_insert_after_fill(&this->_M_head._M_data, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+    forward_list(size_type __n, const value_type& __x, const allocator_type& __a =  allocator_type()) :
+        _M_head(__a, _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = 0;
+        _M_insert_after_fill(&this->_M_head._M_data, __n, __x);
+      }
 
-  forward_list(size_type __n, const value_type& __x, const allocator_type& __a =  allocator_type())
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
+    // We don't need any dispatching tricks here, because _M_insert_after_range
+    // already does them.
+    template <class _InputIterator>
+    forward_list(_InputIterator __first, _InputIterator __last,
+                 const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) :
+        _M_head(__a, _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = 0;
+        _M_insert_after_range(&this->_M_head._M_data, __first, __last);
+      }
 
-  // We don't need any dispatching tricks here, because _M_insert_after_range
-  // already does them.
-  template <class _InputIterator>
-  forward_list(_InputIterator __first, _InputIterator __last,
-        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
-
-  forward_list(const _Self& __x)
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__x.get_allocator())
-    { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
+    forward_list(const _Self& __x) :
+        _M_head(__x.get_allocator(), _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = 0;
+        _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end());
+      }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  forward_list(__move_source<_Self> src)
-    : _STLP_PRIV _Slist_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {}
+    forward_list(__move_source<_Self> src) :
+        _M_head(__move_source<_AllocProxy>(src.get()._M_head))
+      { src.get()._M_head._M_data._M_next = 0; }
 #endif
 
-  _Self& operator= (const _Self& __x);
+    _Self& operator= (const _Self& __x);
 
-  ~forward_list() {}
+    ~forward_list()
+      { _M_erase_after(&_M_head._M_data, 0); }
 
 public:
   // assign(), a generalized assignment member function.  Two
@@ -649,6 +622,20 @@ public:
   template <class _StrictWeakOrdering>
   void sort(_StrictWeakOrdering __comp)
   { _STLP_PRIV _Slist_sort(*this, __comp); }
+
+  private:
+    _STLP_PRIV _Slist_node_base* _M_erase_after(_STLP_PRIV _Slist_node_base* __pos)
+      {
+        _Node* __next = __STATIC_CAST(_Node*, __pos->_M_next);
+        _STLP_PRIV _Slist_node_base* __next_next = __next->_M_next;
+        __pos->_M_next = __next_next;
+        this->get_allocator().destroy( &__next->_M_data );
+        _M_head.deallocate(__next,1);
+        return __next_next;
+      }
+    _STLP_PRIV _Slist_node_base* _M_erase_after(_STLP_PRIV _Slist_node_base*, _STLP_PRIV _Slist_node_base*);
+
+    _AllocProxy _M_head;
 };
 
 #if defined (forward_list)
