@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+// #include <unordered_map>
+// #include <forward_list>
 
 #include <cstdio>
 
@@ -33,7 +35,6 @@ int EXAM_IMPL(allocator_test::zero_allocation)
 
 int EXAM_IMPL(allocator_test::bad_alloc_test)
 {
-#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   typedef allocator<BigStruct> BigStructAllocType;
   BigStructAllocType bigStructAlloc;
 
@@ -55,9 +56,6 @@ int EXAM_IMPL(allocator_test::bad_alloc_test)
     EXAM_ERROR("bad_alloc exception thrown");
   }
 
-#else
-  throw exam::skip_exception();
-#endif
   return EXAM_RESULT;
 }
 
@@ -179,6 +177,73 @@ int EXAM_IMPL(allocator_test::rebind_alloc)
   EXAM_CHECK( (is_same<allocator_traits<my_alloc>::rebind_alloc<int>::type,allocator<int> >::value) );
   EXAM_CHECK( (is_same<allocator_traits<my_t_alloc<double> >::rebind_alloc<int>::type,my_t_alloc<int> >::value) );
 #endif
+
+  return EXAM_RESULT;
+}
+
+template <class T>
+struct my_t_alloc_p
+{
+    typedef T  value_type;
+    typedef T* pointer;       // <--- see allocator_test::incomplete below
+};
+
+struct type_selector
+{
+    // T::pointer?
+    //template <class T>
+    //static /* decltype( declval<typename T::pointer>(), declval<true_type>()) */ typename T::pointer __test_p( int );
+    template <class T>
+    static decltype( declval<typename T::pointer>(), declval<true_type>()) __test_p( int );
+
+    template <class>
+    static false_type __test_p( ... );
+};
+
+template <class Alloc>
+struct x_allocator_traits
+{
+    // typedef Alloc allocator_type;
+    // typedef typename Alloc::value_type value_type;
+    // typedef typename detail::__pointer_type<is_same<true_type,decltype(type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer pointer;
+    // typedef typename is_same<true_type,decltype(type_selector::__test_p<Alloc>(0))>::type pointer;
+    typedef decltype(type_selector::__test_p<Alloc>(0)) pointer;
+    // typedef false_type pointer;
+};
+
+
+template <class A, class B>
+struct x_pair
+{
+    A a;
+    B b;
+};
+
+int EXAM_IMPL(allocator_test::incomplete)
+{
+  /*
+    problem with declval<typename T::pointer*>():
+      - if T is incomplete type, no problems;
+      - if T::pointer not defined, allocator_traits use value_type*, and no problems;
+      - if T::pointer is defined, and parameter for my_t_alloc_p is composite
+        class, like x_pair<int,Incomplete>, I faced with problem
+        (compiler error, incomplete class in x_pair instantiation).
+   */
+  struct Incomplete
+  {
+      // Pass:
+      typedef typename allocator_traits<my_t_alloc_p<Incomplete> >::pointer pointer1;
+      // Pass:
+      typedef typename allocator_traits<my_t_alloc<Incomplete> >::pointer pointer2;
+      // Pass:
+      typedef typename allocator_traits<my_t_alloc<x_pair<int,Incomplete> > >::pointer pointer3;
+      // Not pass:
+      // typedef typename allocator_traits<my_t_alloc_p<x_pair<int,Incomplete> > >::pointer pointer4;
+      // Not pass:
+      // typedef typename allocator_traits<std::allocator<pair<Incomplete,Incomplete> > >::pointer pointer5;
+      typedef typename x_allocator_traits<my_t_alloc_p<x_pair<int,Incomplete> > >::pointer pointer6;
+      // typedef typename x_allocator_traits<my_t_alloc_p<Incomplete> >::pointer pointer6;
+  };
 
   return EXAM_RESULT;
 }
