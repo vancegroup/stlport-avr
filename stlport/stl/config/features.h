@@ -663,10 +663,6 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_NULL_TMPL_ARGS
 #endif
 
-#if !defined (_STLP_ALLOCATOR_TYPE_DFL)
-#  define _STLP_ALLOCATOR_TYPE_DFL = allocator_type()
-#endif
-
 #if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !(defined (_STLP_NO_ARROW_OPERATOR)) && \
        !defined (_STLP_NO_MSVC50_COMPATIBILITY) && !defined (_STLP_MSVC50_COMPATIBILITY)

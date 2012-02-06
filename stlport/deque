@@ -519,7 +519,7 @@ class deque :
   public:
     // Check whether it's an integral type.  If so, it's not an iterator.
     template <class _InputIterator>
-    deque( _InputIterator __first, _InputIterator __last, const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) :
+    deque( _InputIterator __first, _InputIterator __last, const allocator_type& __a = allocator_type() ) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a)
       { _M_initialize_dispatch(__first, __last, typename is_integral<_InputIterator>::type() ); }
 

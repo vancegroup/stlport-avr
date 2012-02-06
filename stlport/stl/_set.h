@@ -93,7 +93,7 @@ public:
 
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp,
-      const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+      const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 
   set(const _Self& __x) : _M_t(__x._M_t) {}
@@ -222,7 +222,7 @@ public:
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last,
            const _Compare& __comp,
-           const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+           const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
 
   multiset(const _Self& __x) : _M_t(__x._M_t) {}

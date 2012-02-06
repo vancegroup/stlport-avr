@@ -113,7 +113,7 @@ public:
   template <class _InputIterator>
   hash_map(_InputIterator __f, _InputIterator __l, size_type __n,
            const hasher& __hf, const key_equal& __eql,
-           const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+           const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
     { _M_ht.insert_unique(__f, __l); }
 
@@ -252,7 +252,7 @@ public:
   template <class _InputIterator>
   hash_multimap(_InputIterator __f, _InputIterator __l, size_type __n,
                 const hasher& __hf, const key_equal& __eql,
-                const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+                const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
     { _M_ht.insert_equal(__f, __l); }
 

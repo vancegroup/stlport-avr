@@ -122,7 +122,7 @@ public:
 
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
-         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL )
+         const allocator_type& __a = allocator_type())
   : _M_impl(__first, __last, __a) {}
 
   _Self& operator=(const _Self& __x) { _M_impl = __x._M_impl; return *this; }

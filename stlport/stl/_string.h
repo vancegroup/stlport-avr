@@ -189,7 +189,7 @@ public:                         // Constructor, destructor, assignment.
 #if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
-               const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
+               const allocator_type & __a = allocator_type())
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
     typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
@@ -197,7 +197,7 @@ public:                         // Constructor, destructor, assignment.
 #else
 #  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   basic_string(const _CharT* __f, const _CharT* __l,
-               const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+               const allocator_type& __a = allocator_type())
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
     _STLP_FIX_LITERAL_BUG(__f)  _STLP_FIX_LITERAL_BUG(__l)
     _M_range_initialize(__f, __l);

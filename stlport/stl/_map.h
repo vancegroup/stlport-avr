@@ -105,7 +105,7 @@ public:
 
   template <class _InputIterator>
   map(_InputIterator __first, _InputIterator __last, const _Compare& __comp,
-      const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+      const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 
   map(const _Self& __x) : _M_t(__x._M_t) {}
@@ -256,7 +256,7 @@ public:
   template <class _InputIterator>
   multimap(_InputIterator __first, _InputIterator __last,
            const _Compare& __comp,
-           const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+           const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
 
   multimap(const _Self& __x) : _M_t(__x._M_t) {}

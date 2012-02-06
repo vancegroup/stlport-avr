@@ -80,7 +80,7 @@ public:                         // Constructor, destructor, assignment.
   // it can't be an iterator.
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
-               const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
+               const allocator_type & __a = allocator_type())
     : _STLP_NO_MEM_T_STRING_BASE(_CalledFromWorkaround_t(), __a) {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());

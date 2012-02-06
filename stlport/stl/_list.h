@@ -266,7 +266,7 @@ public:
   // that anyway.
   template <class _InputIterator>
   list(_InputIterator __first, _InputIterator __last,
-       const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+       const allocator_type& __a = allocator_type())
     : _STLP_PRIV _List_base<_Tp, _Alloc>(__a)
   { _M_insert(begin(), __first, __last); }
 

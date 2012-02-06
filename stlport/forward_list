@@ -308,7 +308,7 @@ public:
     // already does them.
     template <class _InputIterator>
     forward_list(_InputIterator __first, _InputIterator __last,
-                 const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) :
+                 const allocator_type& __a = allocator_type() ) :
         _M_head(__a, _STLP_PRIV _Slist_node_base() )
       {
         _M_head._M_data._M_next = 0;

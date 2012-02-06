@@ -494,7 +494,7 @@ public:
   }
   template <class _InputIterator>
   __BVECTOR(_InputIterator __first, _InputIterator __last,
-            const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+            const allocator_type& __a = allocator_type() )
     : _STLP_PRIV _Bvector_base<_Alloc >(__a) {
     typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
