@@ -102,15 +102,25 @@ struct __has_type_selector
     static false_type __test_a( ... );
 
     // T::pointer?
+#ifndef _STLP_DECLVAL_INCOMPLETE_BUG
     template <class T>
     static decltype( declval<typename T::pointer>(), declval<true_type>()) __test_p( int );
+#else
+    template <class T>
+    static decltype( T::pointer(), declval<true_type>()) __test_p( int );
+#endif
 
     template <class>
     static false_type __test_p( ... );
 
     // T::const_pointer?
+#ifndef _STLP_DECLVAL_INCOMPLETE_BUG
     template <class T>
     static decltype( declval<typename T::const_pointer>(), declval<true_type>()) __test_cp( int );
+#else
+    template <class T>
+    static decltype( T::const_pointer(), declval<true_type>()) __test_cp( int );
+#endif
 
     template <class>
     static false_type __test_cp( ... );

@@ -283,7 +283,7 @@ inline bool _STLP_CALL  operator>=(const _Tp& __x, const _Tp& __y)
 _STLP_END_RELOPS_NAMESPACE
 #endif
 
-#ifdef _STLP_RVR
+#ifdef _STLP_CPP_0X
 
 _STLP_BEGIN_NAMESPACE
 
@@ -308,7 +308,7 @@ inline typename add_rvalue_reference<_Tp>::type declval() throw()
 
 _STLP_END_NAMESPACE
 
-#endif // _STLP_RVR
+#endif // _STLP_CPP_0X
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x75)
 #  include <stl/_epilog.h>
