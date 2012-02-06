@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-02 19:19:12 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -28,6 +28,8 @@
 #include <algorithm>
 #include <map>
 #include <set>
+#include <unordered_map>
+#include <unordered_set>
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <hash_map>
@@ -432,6 +434,8 @@ int EXAM_IMPL(hash_test::allocator_with_state)
  * can be access even if type used to instanciate container is not
  * yet completely defined.
  */
+class IncompleteClass;
+
 class IncompleteClass
 {
   hash_set<IncompleteClass> hsinstances;
@@ -439,10 +443,10 @@ class IncompleteClass
   hash_multiset<IncompleteClass> hsminstances;
   typedef hash_multiset<IncompleteClass>::iterator hsmit;
 
-  hash_map<IncompleteClass, IncompleteClass> hminstances;
-  typedef hash_map<IncompleteClass, IncompleteClass>::iterator hmit;
-  hash_multimap<IncompleteClass, IncompleteClass> hmminstances;
-  typedef hash_multimap<IncompleteClass, IncompleteClass>::iterator hmmit;
+    // hash_map<IncompleteClass, IncompleteClass> hminstances;
+  typedef typename unordered_map<IncompleteClass, IncompleteClass>::iterator hmit;
+    // hash_multimap<IncompleteClass, IncompleteClass> hmminstances;
+  typedef unordered_multimap<IncompleteClass, IncompleteClass>::iterator hmmit;
 };
 #  endif
 #endif
