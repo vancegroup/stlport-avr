@@ -252,24 +252,22 @@ class forward_list
     typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
 
     typedef _STLP_PRIV _STLP_alloc_proxy<_STLP_PRIV _Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
-
-  public:
-    typedef _Alloc allocator_type;
     typedef forward_list<_Tp,_Alloc> _Self;
 
-public:
-  typedef _Tp                value_type;
+  public:
+    typedef _Tp               value_type;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef _STLP_PRIV _Slist_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
+    typedef _STLP_PRIV _Slist_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
+    typedef size_t            size_type;
+    typedef ptrdiff_t         difference_type;
 
-  typedef value_type*       pointer;
-  typedef const value_type* const_pointer;
-  typedef value_type&       reference;
-  typedef const value_type& const_reference;
-  typedef size_t            size_type;
-  typedef ptrdiff_t         difference_type;
-  typedef forward_iterator_tag _Iterator_category;
+    typedef _Alloc            allocator_type;
+    typedef typename allocator_traits<allocator_type>::pointer pointer;
+    typedef typename allocator_traits<allocator_type>::const_pointer const_pointer;
+    typedef forward_iterator_tag _Iterator_category;
 
-  typedef _STLP_PRIV _Slist_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
-  typedef _STLP_PRIV _Slist_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
 
 private:
   typedef _STLP_PRIV _Slist_node_base _Node_base;
