@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 16:42:16 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-06 16:07:41 ptr>
 
 /*
  * Copyright (c) 2004-2008
@@ -33,6 +33,7 @@ class forward_list_test
     int EXAM_DECL(insert);
     int EXAM_DECL(splice);
     int EXAM_DECL(allocator_with_state);
+    int EXAM_DECL(move);
 };
 
 #endif // __TEST_SLIST_TEST_H

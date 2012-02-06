@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-02 00:49:07 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-06 16:20:38 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -31,6 +31,7 @@
 #endif
 #include <iterator>
 #include <functional>
+#include <type_traits>
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -411,3 +412,43 @@ class IncompleteClass
   forward_list<IncompleteClass> instances;
   typedef forward_list<IncompleteClass>::iterator it;
 };
+
+int EXAM_IMPL(forward_list_test::move)
+{
+  struct movable
+  {
+      movable() :
+          v(0)
+        { }
+
+      movable(const movable& b ) :
+          v(b.v)
+        { }
+
+      movable(movable&& b ) :
+          v(b.v)
+        { b.v = 0; }
+
+      int v;
+  };
+
+  EXAM_CHECK( is_move_constructible<movable>::value );
+  EXAM_CHECK( is_move_constructible<forward_list<movable> >::value );
+
+  forward_list<movable> l1;
+
+  l1.push_front( movable() );
+
+  EXAM_CHECK( l1.front().v == 0 );
+
+  l1.front().v = 1;
+
+  forward_list<movable> l2( std::move(l1) );
+  
+  EXAM_CHECK( l1.empty() );
+  EXAM_CHECK( !l2.empty() );
+
+  EXAM_CHECK( l2.front().v == 1 );
+
+  return EXAM_RESULT;
+}

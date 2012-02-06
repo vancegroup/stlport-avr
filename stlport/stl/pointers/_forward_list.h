@@ -100,7 +100,21 @@ public:
   }
 #  endif
 
-  forward_list(const _Self& __x) : _M_impl(__x._M_impl) {}
+    forward_list(const _Self& __x) :
+        _M_impl(__x._M_impl)
+      { }
+
+    forward_list(_Self&& __x) :
+        _M_impl(_STLP_STD::move(__x._M_impl))
+      { }
+
+    forward_list(const _Self& __x, const allocator_type& __a) :
+        _M_impl(__x._M_impl, __a)
+      { }
+
+    forward_list(_Self&& __x, const allocator_type& __a) :
+        _M_impl(_STLP_STD::move(__x._M_impl), __a)
+      { }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   forward_list(__move_source<_Self> src)

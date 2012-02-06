@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 16:44:13 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-06 16:13:45 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -242,6 +242,7 @@ int main( int argc, const char** argv )
   t.add( &forward_list_test::insert, slst_test, "forward_list insert" );
   t.add( &forward_list_test::splice, slst_test, "forward_list splice" );
   t.add( &forward_list_test::allocator_with_state, slst_test, "forward_list allocator_with_state" );
+  t.add( &forward_list_test::move, slst_test, "forward_list move" );
 
   string_test str_test;
 

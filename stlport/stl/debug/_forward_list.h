@@ -106,18 +106,6 @@ public:
 
   explicit forward_list(size_type __n) : _M_non_dbg_impl(__n) , _M_iter_list(&_M_non_dbg_impl) {}
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  forward_list(__move_source<_Self> src)
-    : _M_non_dbg_impl(__move_source<_Base>(src.get()._M_non_dbg_impl)),
-      _M_iter_list(&_M_non_dbg_impl) {
-#  if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
-    src.get()._M_iter_list._Invalidate_all();
-#  else
-    src.get()._M_iter_list._Set_owner(_M_iter_list);
-#  endif
-  }
-#endif
-
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InputIterator>
@@ -127,9 +115,35 @@ public:
       _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last), __a),
       _M_iter_list(&_M_non_dbg_impl) {}
 
-  forward_list(const _Self& __x) :
-    _ConstructCheck(__x),
-    _M_non_dbg_impl(__x._M_non_dbg_impl), _M_iter_list(&_M_non_dbg_impl) {}
+    forward_list(const _Self& __x) :
+        _ConstructCheck(__x),
+        _M_non_dbg_impl(__x._M_non_dbg_impl),
+        _M_iter_list(&_M_non_dbg_impl)
+      { }
+
+    forward_list(_Self&& __x) :
+        _ConstructCheck(__x),
+        _M_non_dbg_impl(_STLP_STD::move(__x._M_non_dbg_impl)),
+        _M_iter_list(&_M_non_dbg_impl)
+      {
+        _M_iter_list._M_node._M_next = __x._M_iter_list._M_node._M_next;
+        __x._M_iter_list._M_node._M_next = 0;
+      }
+
+    forward_list(const _Self& __x, const allocator_type& __a) :
+        _ConstructCheck(__x),
+        _M_non_dbg_impl(__x._M_non_dbg_impl, __a),
+        _M_iter_list(&_M_non_dbg_impl)
+      { }
+
+    forward_list(_Self&& __x, const allocator_type& __a) :
+        _ConstructCheck(__x),
+        _M_non_dbg_impl(_STLP_STD::move(__x._M_non_dbg_impl), __a),
+        _M_iter_list(&_M_non_dbg_impl)
+      {
+        _M_iter_list._M_node._M_next = __x._M_iter_list._M_node._M_next;
+        __x._M_iter_list._M_node._M_next = 0;
+      }
 
   _Self& operator= (const _Self& __x) {
     if (this != &__x) {
@@ -418,11 +432,6 @@ public:
   void sort(_StrictWeakOrdering __comp)
   { _M_non_dbg_impl.sort(__comp); }
 };
-
-template <class _Tp, class _Alloc>
-struct __has_move_constructor<forward_list<_Tp, _Alloc> > :
-    public true_type
-{ };
 
 _STLP_END_NAMESPACE
 

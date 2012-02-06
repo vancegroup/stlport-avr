@@ -322,11 +322,26 @@ public:
         _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end());
       }
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-    forward_list(__move_source<_Self> src) :
-        _M_head(__move_source<_AllocProxy>(src.get()._M_head))
-      { src.get()._M_head._M_data._M_next = 0; }
-#endif
+    forward_list(_Self&& __x) :
+        _M_head(__x.get_allocator(), _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = __x._M_head._M_data._M_next;
+        __x._M_head._M_data._M_next = 0;
+      }
+
+    forward_list(const _Self& __x, const allocator_type& __a) :
+        _M_head(__a, _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = 0;
+        _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end());
+      }
+
+    forward_list(_Self&& __x, const allocator_type& __a) :
+        _M_head(__a, _STLP_PRIV _Slist_node_base() )
+      {
+        _M_head._M_data._M_next = __x._M_head._M_data._M_next;
+        __x._M_head._M_data._M_next = 0;
+      }
 
     _Self& operator= (const _Self& __x);
 
