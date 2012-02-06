@@ -195,7 +195,12 @@ public:
     _STLP_VERBOSE_ASSERT(!empty(), _StlMsg_EMPTY_CONTAINER)
     return _M_non_dbg_impl.front();
   }
-  void push_front(const_reference __x) { _M_non_dbg_impl.push_front(__x); }
+
+    void push_front(const_reference __x)
+      { _M_non_dbg_impl.push_front(__x); }
+    void push_front(value_type&& __x)
+      { _M_non_dbg_impl.push_front(_STLP_STD::move(__x)); }
+
   void pop_front() {
     _STLP_VERBOSE_ASSERT(!empty(), _StlMsg_EMPTY_CONTAINER)
     _M_non_dbg_impl.pop_front();

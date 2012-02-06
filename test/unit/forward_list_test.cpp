@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-06 16:20:38 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-06 17:47:35 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -200,6 +200,13 @@ int EXAM_IMPL(forward_list_test::splice)
     EXAM_CHECK( sl1 == sl2 );
 
     sl1.splice_after(sl1.before_begin(), sl1, sl1.begin(), sl1.previous(sl1.end()));
+#if 0
+    for ( auto i = sl1.begin(); i != sl1.end(); ++i ) {
+      cerr << *i << endl;
+    }
+#endif
+
+    // sl1.splice_after(sl1.before_begin(), sl1, sl1.begin(), sl1.end());
     slit = sl1.begin();
     EXAM_CHECK( *(slit++) == 1 );
     EXAM_CHECK( *(slit++) == 2 );
@@ -209,6 +216,7 @@ int EXAM_IMPL(forward_list_test::splice)
 
     // a no op
     sl2.splice_after(sl2.before_begin(), sl2, sl2.before_begin(), sl2.previous(sl2.end()));
+    // sl2.splice_after(sl2.before_begin(), sl2, sl2.before_begin(), sl2.end());
     for (i = 0, slit = sl2.begin(); slit != sl2.end(); ++slit, ++i) {
       EXAM_CHECK( i < 5 );
       EXAM_CHECK( *slit == array[i] );
@@ -216,6 +224,7 @@ int EXAM_IMPL(forward_list_test::splice)
 
     slit = sl2.begin();
     advance(slit, 2);
+
     sl2.splice_after(sl2.previous(sl2.end()), sl2, sl2.before_begin(), slit);
     slit = sl2.begin();
     EXAM_CHECK( *(slit++) == 3 );
@@ -422,12 +431,12 @@ int EXAM_IMPL(forward_list_test::move)
         { }
 
       movable(const movable& b ) :
-          v(b.v)
+          v( /* b.v */ 1 )
         { }
 
       movable(movable&& b ) :
-          v(b.v)
-        { b.v = 0; }
+          v( /* b.v */ 2 )
+        { b.v = -1; }
 
       int v;
   };
@@ -439,16 +448,30 @@ int EXAM_IMPL(forward_list_test::move)
 
   l1.push_front( movable() );
 
-  EXAM_CHECK( l1.front().v == 0 );
+  EXAM_CHECK( l1.front().v == 2 );
 
-  l1.front().v = 1;
+  l1.front().v = 3;
 
   forward_list<movable> l2( std::move(l1) );
   
   EXAM_CHECK( l1.empty() );
   EXAM_CHECK( !l2.empty() );
 
-  EXAM_CHECK( l2.front().v == 1 );
+  EXAM_CHECK( l2.front().v == 3 );
+
+  movable m;
+  
+  EXAM_CHECK( m.v == 0 );
+
+  l1.push_front( m );
+
+  EXAM_CHECK( m.v == 0 );
+  EXAM_CHECK( l1.front().v == 1 );
+
+  l1.push_front( std::move(m) );
+
+  EXAM_CHECK( m.v == -1 );
+  EXAM_CHECK( l1.front().v == 2 );
 
   return EXAM_RESULT;
 }

@@ -27,6 +27,8 @@
 #  include <stl/_prolog.h>
 #endif
 
+#include <utility>
+
 #ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 #endif
@@ -269,18 +271,30 @@ class forward_list
     typedef forward_iterator_tag _Iterator_category;
 
 
-private:
-  typedef _STLP_PRIV _Slist_node_base _Node_base;
+  private:
+    typedef _STLP_PRIV _Slist_node_base _Node_base;
 
-  _Node* _M_create_node(const value_type& __x = _Tp()) {
-    _Node* __node = this->_M_head.allocate(1);
-    _STLP_TRY {
-      _Self::get_allocator().construct( &__node->_M_data, __x );
-      __node->_M_next = 0;
-    }
-    _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
-    return __node;
-  }
+    _Node* _M_create_node(const value_type& __x)
+      {
+        _Node* __node = this->_M_head.allocate(1);
+        _STLP_TRY {
+          _Self::get_allocator().construct( &__node->_M_data, __x );
+          __node->_M_next = 0;
+        }
+        _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
+          return __node;
+      }
+
+    _Node* _M_create_node(value_type&& __x)
+      {
+        _Node* __node = this->_M_head.allocate(1);
+        _STLP_TRY {
+          _Self::get_allocator().construct( &__node->_M_data, _STLP_STD::move(__x) );
+          __node->_M_next = 0;
+        }
+        _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
+          return __node;
+      }
 
 public:
     allocator_type get_allocator() const
@@ -406,9 +420,12 @@ public:
   iterator begin() { return iterator(this->_M_head._M_data._M_next); }
   const_iterator begin() const
     { return const_iterator(this->_M_head._M_data._M_next);}
+  const_iterator cbegin() const
+    { return const_iterator(this->_M_head._M_data._M_next);}
 
   iterator end() { return iterator(); }
   const_iterator end() const { return const_iterator(); }
+  const_iterator cend() const { return const_iterator(); }
 
   size_type size() const
   { return _STLP_PRIV _Sl_global_inst::size(this->_M_head._M_data._M_next); }
@@ -426,9 +443,14 @@ public:
 public:
   reference front()             { return *begin(); }
   const_reference front() const { return *begin(); }
-  void push_front(const value_type& __x)   {
-    _STLP_PRIV __slist_make_link(&this->_M_head._M_data, _M_create_node(__x));
-  }
+  void push_front(const value_type& __x)
+      {
+        _STLP_PRIV __slist_make_link(&this->_M_head._M_data, _STLP_STD::move(_M_create_node(__x)));
+      }
+  void push_front(value_type&& __x)
+      {
+        _STLP_PRIV __slist_make_link(&this->_M_head._M_data, _STLP_STD::move(_M_create_node(_STLP_STD::move(__x))));
+      }
 
   void pop_front() {
     _Node* __node = __STATIC_CAST(_Node*, this->_M_head._M_data._M_next);
@@ -437,6 +459,7 @@ public:
     this->_M_head.deallocate(__node, 1);
   }
 
+#if 1
   iterator previous(const_iterator __pos) {
     return iterator(_STLP_PRIV _Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node));
   }
@@ -445,6 +468,7 @@ public:
                                        _STLP_PRIV _Sl_global_inst::__previous(&this->_M_head._M_data,
                                                                                __pos._M_node)));
   }
+#endif
 
 private:
   _Node* _M_insert_after(_Node_base* __pos, const value_type& __x = _Tp()) {
