@@ -185,16 +185,18 @@ template <class T>
 struct my_t_alloc_p
 {
     typedef T  value_type;
-    typedef T* pointer;       // <--- see allocator_test::incomplete below
+    typedef value_type* pointer;       // <--- see allocator_test::incomplete below
 };
 
 struct type_selector
 {
     // T::pointer?
-    //template <class T>
-    //static /* decltype( declval<typename T::pointer>(), declval<true_type>()) */ typename T::pointer __test_p( int );
     template <class T>
     static decltype( declval<typename T::pointer>(), declval<true_type>()) __test_p( int );
+    template <class T>
+    static decltype( T::pointer(), declval<true_type>() ) /* typename T::pointer */ __test_p( int );
+    //template <class T>
+    //static decltype( declval<typename T::pointer>(), declval<true_type>()) __test_p( int );
 
     template <class>
     static false_type __test_p( ... );
@@ -241,7 +243,9 @@ int EXAM_IMPL(allocator_test::incomplete)
       // typedef typename allocator_traits<my_t_alloc_p<x_pair<int,Incomplete> > >::pointer pointer4;
       // Not pass:
       // typedef typename allocator_traits<std::allocator<pair<Incomplete,Incomplete> > >::pointer pointer5;
+#if 0 // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52108
       typedef typename x_allocator_traits<my_t_alloc_p<x_pair<int,Incomplete> > >::pointer pointer6;
+#endif
       // typedef typename x_allocator_traits<my_t_alloc_p<Incomplete> >::pointer pointer6;
   };
 
