@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2012-02-06 16:07:41 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-07 14:40:27 ptr>
 
 /*
- * Copyright (c) 2004-2008
+ * Copyright (c) 2004-2012
  * Petr Ovtchenkov
  *
  * Copyright (c) 2004-2008
@@ -34,6 +34,7 @@ class forward_list_test
     int EXAM_DECL(splice);
     int EXAM_DECL(allocator_with_state);
     int EXAM_DECL(move);
+    int EXAM_DECL(assign);
 };
 
 #endif // __TEST_SLIST_TEST_H

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-07 00:55:49 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-07 14:39:49 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -491,6 +491,48 @@ int EXAM_IMPL(forward_list_test::move)
 
   EXAM_CHECK( m.v == -1 );
   EXAM_CHECK( l1.front().v == 2 );
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(forward_list_test::assign)
+{
+  /*
+    check, whether we see difference between
+       assign( n, val )
+    and
+       assign( from, to )
+   */
+  typedef forward_list<size_t> list_type;
+  list_type lst;
+
+  lst.assign( list_type::size_type(4), list_type::size_type(4) );
+
+  EXAM_CHECK( lst.size() == 4 );
+  for ( list_type::const_iterator i = lst.cbegin(); i != lst.cend(); ++i ) {
+    EXAM_CHECK( *i == 4 );
+  }
+
+  lst.front() = 5;
+
+  list_type lst2;
+
+  lst2.assign( lst.begin(), lst.end() );
+
+  EXAM_CHECK( lst2.size() == 4 );
+  for ( list_type::const_iterator i = lst2.cbegin(); i != lst2.cend(); ++i ) {
+    EXAM_CHECK( (i == lst2.cbegin() ? *i == 5 : *i == 4) );
+  }
+
+  // Is conversion possible?
+  const int sz = 4;
+
+  lst.assign( sz, sz );
+
+  EXAM_CHECK( lst.size() == 4 );
+  for ( list_type::const_iterator i = lst.cbegin(); i != lst.cend(); ++i ) {
+    EXAM_CHECK( *i == 4 );
+  }
 
   return EXAM_RESULT;
 }

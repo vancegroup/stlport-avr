@@ -88,21 +88,6 @@ forward_list<_Tp,_Alloc>& forward_list<_Tp,_Alloc>::operator=(const forward_list
 }
 
 template <class _Tp, class _Alloc>
-void forward_list<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
-  _Node_base* __prev = &this->_M_head._M_data;
-  _Node_base* __node = this->_M_head._M_data._M_next;
-  for ( ; __node != 0 && __n > 0 ; --__n) {
-    __STATIC_CAST(_Node*, __node)->_M_data = __val;
-    __prev = __node;
-    __node = __node->_M_next;
-  }
-  if (__n > 0)
-    _M_insert_after_fill(__prev, __n, __val);
-  else
-    this->_M_erase_after(__prev, 0);
-}
-
-template <class _Tp, class _Alloc>
 void forward_list<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next != 0 && __len > 0) {
