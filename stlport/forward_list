@@ -8,6 +8,9 @@
  * Copyright (c) 1999
  * Boris Fomitchev
  *
+ * Copyright (c) 2012
+ * Petr Ovtchenkov
+ *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
@@ -53,104 +56,23 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-struct _Slist_node_base {
-  _Slist_node_base* _M_next;
+struct _Slist_node_base
+{
+    _Slist_node_base* _M_next;
 };
 
-inline _Slist_node_base*
-__slist_make_link(_Slist_node_base* __prev_node,
-                  _Slist_node_base* __new_node) {
+inline _Slist_node_base* __slist_make_link(_Slist_node_base* __prev_node,
+                                           _Slist_node_base* __new_node)
+{
   __new_node->_M_next = __prev_node->_M_next;
   __prev_node->_M_next = __new_node;
   return __new_node;
 }
 
 
-template <class _Dummy>
-class _Sl_global {
-public:
-  // those used to be global functions
-  // moved here to reduce code bloat without templatizing _Slist_iterator_base
-  static size_t _STLP_CALL size(_Slist_node_base* __node);
-  static _Slist_node_base* _STLP_CALL __reverse(_Slist_node_base* __node);
-  static void _STLP_CALL __splice_after(_Slist_node_base* __pos,
-                                        _Slist_node_base* __before_first,
-                                        _Slist_node_base* __before_last);
-
-  static void _STLP_CALL __splice_after(_Slist_node_base* __pos, _Slist_node_base* __head);
-
-  static _Slist_node_base* _STLP_CALL __previous(_Slist_node_base* __head,
-                                                 const _Slist_node_base* __node);
-  static const _Slist_node_base* _STLP_CALL __previous(const _Slist_node_base* __head,
-                                                       const _Slist_node_base* __node) {
-    return _Sl_global<_Dummy>::__previous(__CONST_CAST(_Slist_node_base*, __head), __node);
-  }
-};
-
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _Sl_global<bool>;
 #endif
-
-typedef _Sl_global<bool> _Sl_global_inst;
-
-template <class _Dummy>
-_Slist_node_base*  _STLP_CALL
-_Sl_global<_Dummy>::__previous(_Slist_node_base* __head,
-                               const _Slist_node_base* __node) {
-  while (__head && __head->_M_next != __node)
-    __head = __head->_M_next;
-  return __head;
-}
-
-template <class _Dummy>
-void _STLP_CALL
-_Sl_global<_Dummy>::__splice_after(_Slist_node_base* __pos, _Slist_node_base* __head) {
-  _Slist_node_base* __before_last = __previous(__head, 0);
-  if (__before_last != __head) {
-    _Slist_node_base* __after = __pos->_M_next;
-    __pos->_M_next = __head->_M_next;
-    __head->_M_next = 0;
-    __before_last->_M_next = __after;
-  }
-}
-
-template <class _Dummy>
-void _STLP_CALL
-_Sl_global<_Dummy>::__splice_after(_Slist_node_base* __pos,
-                                   _Slist_node_base* __before_first,
-                                   _Slist_node_base* __before_last) {
-  if (__pos != __before_first && __pos != __before_last) {
-    _Slist_node_base* __first = __before_first->_M_next;
-    _Slist_node_base* __after = __pos->_M_next;
-    __before_first->_M_next = __before_last->_M_next;
-    __pos->_M_next = __first;
-    __before_last->_M_next = __after;
-  }
-}
-
-template <class _Dummy>
-_Slist_node_base* _STLP_CALL
-_Sl_global<_Dummy>::__reverse(_Slist_node_base* __node) {
-  _Slist_node_base* __result = __node;
-  __node = __node->_M_next;
-  __result->_M_next = 0;
-  while(__node) {
-    _Slist_node_base* __next = __node->_M_next;
-    __node->_M_next = __result;
-    __result = __node;
-    __node = __next;
-  }
-  return __result;
-}
-
-template <class _Dummy>
-size_t _STLP_CALL
-_Sl_global<_Dummy>::size(_Slist_node_base* __node) {
-  size_t __result = 0;
-  for ( ; __node != 0; __node = __node->_M_next)
-    ++__result;
-  return __result;
-}
 
 template <class _Tp>
 class _Slist_node : public _Slist_node_base {
@@ -296,7 +218,7 @@ class forward_list
           return __node;
       }
 
-public:
+  public:
     allocator_type get_allocator() const
       { return (const _M_node_allocator_type&)_M_head; }
 
@@ -357,7 +279,7 @@ public:
         __x._M_head._M_data._M_next = 0;
       }
 
-    _Self& operator= (const _Self& __x);
+    _Self& operator =(const _Self& __x);
 
     ~forward_list()
       { _M_erase_after(&_M_head._M_data, 0); }
@@ -404,76 +326,73 @@ private:
       this->_M_erase_after(__prev, 0);
   }
 
-public:
+  public:
+    iterator before_begin()
+      { return iterator(&this->_M_head._M_data); }
+    const_iterator before_begin() const
+      { return const_iterator(__CONST_CAST(_Node_base*, &this->_M_head._M_data)); }
 
-  // Experimental new feature: before_begin() returns a
-  // non-dereferenceable iterator that, when incremented, yields
-  // begin().  This iterator may be used as the argument to
-  // insert_after, erase_after, etc.  Note that even for an empty
-  // forward_list, before_begin() is not the same iterator as end().  It
-  // is always necessary to increment before_begin() at least once to
-  // obtain end().
-  iterator before_begin() { return iterator(&this->_M_head._M_data); }
-  const_iterator before_begin() const
-    { return const_iterator(__CONST_CAST(_Node_base*, &this->_M_head._M_data)); }
+    iterator begin()
+      { return iterator(this->_M_head._M_data._M_next); }
+    const_iterator begin() const
+      { return const_iterator(this->_M_head._M_data._M_next);}
+    const_iterator cbegin() const
+      { return const_iterator(this->_M_head._M_data._M_next);}
 
-  iterator begin() { return iterator(this->_M_head._M_data._M_next); }
-  const_iterator begin() const
-    { return const_iterator(this->_M_head._M_data._M_next);}
-  const_iterator cbegin() const
-    { return const_iterator(this->_M_head._M_data._M_next);}
+    iterator end() { return iterator(); }
+    const_iterator end() const { return const_iterator(); }
+    const_iterator cend() const { return const_iterator(); }
 
-  iterator end() { return iterator(); }
-  const_iterator end() const { return const_iterator(); }
-  const_iterator cend() const { return const_iterator(); }
+    size_type size() const
+      {
+        size_type __result = 0;
+        for ( _Node_base* __node = this->_M_head._M_data._M_next; __node != 0; __node = __node->_M_next) {
+          ++__result;
+        }
+        return __result;
+      }
 
-  size_type size() const
-  { return _STLP_PRIV _Sl_global_inst::size(this->_M_head._M_data._M_next); }
+    size_type max_size() const { return size_type(-1); }
 
-  size_type max_size() const { return size_type(-1); }
+    bool empty() const { return this->_M_head._M_data._M_next == 0; }
 
-  bool empty() const { return this->_M_head._M_data._M_next == 0; }
-
-  void swap(_Self& __x)
-  { /* this->_M_head.swap(__x._M_head); */ _STLP_STD::swap(this->_M_head, __x._M_head); }
+    void swap(_Self& __x)
+      { /* this->_M_head.swap(__x._M_head); */ _STLP_STD::swap(this->_M_head, __x._M_head); }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-  void _M_swap_workaround(_Self& __x) { swap(__x); }
+    void _M_swap_workaround(_Self& __x) { swap(__x); }
 #endif
 
-public:
-  reference front()             { return *begin(); }
-  const_reference front() const { return *begin(); }
-  void push_front(const value_type& __x)
+    reference front()
+      { return *begin(); }
+    const_reference front() const
+      { return *begin(); }
+    void push_front(const value_type& __x)
       {
         _STLP_PRIV __slist_make_link(&this->_M_head._M_data, _STLP_STD::move(_M_create_node(__x)));
       }
-  void push_front(value_type&& __x)
+    void push_front(value_type&& __x)
       {
         _STLP_PRIV __slist_make_link(&this->_M_head._M_data, _STLP_STD::move(_M_create_node(_STLP_STD::move(__x))));
       }
 
-  void pop_front() {
-    _Node* __node = __STATIC_CAST(_Node*, this->_M_head._M_data._M_next);
-    this->_M_head._M_data._M_next = __node->_M_next;
-    this->get_allocator().destroy( &__node->_M_data );
-    this->_M_head.deallocate(__node, 1);
-  }
+    void pop_front()
+      {
+        _Node* __node = __STATIC_CAST(_Node*, this->_M_head._M_data._M_next);
+        this->_M_head._M_data._M_next = __node->_M_next;
+        this->get_allocator().destroy( &__node->_M_data );
+        this->_M_head.deallocate(__node, 1);
+      }
 
-#if 1
-  iterator previous(const_iterator __pos) {
-    return iterator(_STLP_PRIV _Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node));
-  }
-  const_iterator previous(const_iterator __pos) const {
-    return const_iterator(__CONST_CAST(_Node_base*,
-                                       _STLP_PRIV _Sl_global_inst::__previous(&this->_M_head._M_data,
-                                                                               __pos._M_node)));
-  }
-#endif
+  private:
+    _Node* _M_insert_after(_Node_base* __pos, const value_type& __x)
+      {
+        return __STATIC_CAST(_Node*, _STLP_PRIV __slist_make_link(__pos, _M_create_node(__x)));
+      }
 
-private:
-  _Node* _M_insert_after(_Node_base* __pos, const value_type& __x = _Tp()) {
-    return __STATIC_CAST(_Node*, _STLP_PRIV __slist_make_link(__pos, _M_create_node(__x)));
-  }
+    _Node* _M_insert_after(_Node_base* __pos, value_type&& __x)
+      {
+        return __STATIC_CAST(_Node*, _STLP_PRIV __slist_make_link(__pos, _M_create_node(_STLP_STD::move(__x))));
+      }
 
   void _M_insert_after_fill(_Node_base* __pos,
                             size_type __n, const value_type& __x) {
@@ -505,131 +424,170 @@ private:
     }
   }
 
-  // Check whether it's an integral type.  If so, it's not an iterator.
-  template <class _InIter>
-  void _M_splice_after_range(_Node_base* __pos,
-                             _InIter __first, _InIter __last) {
-    typedef typename is_integral<_InIter>::type _Integral;
-    _M_splice_after_range(__pos, __first, __last, _Integral());
-  }
+  public:
+    iterator insert_after(const_iterator __pos, const value_type& __x)
+      { return iterator(_M_insert_after(__pos._M_node, __x)); }
+    iterator insert_after(const_iterator __pos, value_type&& __x)
+      { return iterator(_M_insert_after(__pos._M_node, _STLP_STD::move(__x))); }
 
-  template <class _Integer>
-  void _M_splice_after_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                             const true_type&) {
-    _M_insert_after_fill(__pos, __n, __x);
-  }
+    void insert_after(const_iterator __pos, size_type __n, const value_type& __x)
+      { _M_insert_after_fill(__pos._M_node, __n, __x); }
 
-  template <class _InIter>
-  void _M_splice_after_range(_Node_base* __pos,
-                             _InIter __first, _InIter __last,
-                             const false_type&) {
-    //We use a temporary forward_list to avoid the auto reference troubles (infinite loop)
-    _Self __tmp(__first, __last, this->get_allocator());
-    splice_after(iterator(__pos), __tmp);
-  }
+    // We don't need any dispatching tricks here, because _M_insert_after_range
+    // already does them.
+    template <class _InIter>
+    void insert_after(const_iterator __pos, _InIter __first, _InIter __last)
+      { _M_insert_after_range(__pos._M_node, __first, __last); }
 
-  // Check whether it's an integral type.  If so, it's not an iterator.
-  template <class _InIter>
-  void _M_splice_range(_Node_base* __pos,
-                       _InIter __first, _InIter __last) {
-    typedef typename is_integral<_InIter>::type _Integral;
-    _M_splice_range(__pos, __first, __last, _Integral());
-  }
+    iterator erase_after(const_iterator __pos)
+      { return iterator(this->_M_erase_after(__pos._M_node)); }
+    iterator erase_after(const_iterator __before_first, const_iterator __last)
+      { return iterator(this->_M_erase_after(__before_first._M_node, __last._M_node)); }
 
-  template <class _Integer>
-  void _M_splice_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                       const true_type&) {
-    _M_insert_after_fill(_STLP_PRIV _Sl_global_inst::__previous(&this->_M_head._M_data, __pos),
-                         __n, __x);
-  }
+    void resize(size_type new_size, const value_type& __x);
 
-  template <class _InIter>
-  void _M_splice_range(_Node_base* __pos,
-                       _InIter __first, _InIter __last,
-                       const false_type&) {
-    //We use a temporary forward_list to avoid the auto reference troubles (infinite loop)
-    _Self __tmp(__first, __last, this->get_allocator());
-    splice(iterator(__pos), __tmp);
-  }
-
-public:
-
-  iterator insert_after(iterator __pos, const value_type& __x) {
-    return iterator(_M_insert_after(__pos._M_node, __x));
-  }
-
-  void insert_after(iterator __pos, size_type __n, const value_type& __x) {
-    _M_insert_after_fill(__pos._M_node, __n, __x);
-  }
-
-  // We don't need any dispatching tricks here, because _M_insert_after_range
-  // already does them.
-  template <class _InIter>
-  void insert_after(iterator __pos, _InIter __first, _InIter __last) {
-    _M_splice_after_range(__pos._M_node, __first, __last);
-  }
-
-public:
-  iterator erase_after(iterator __pos)
-  { return iterator(this->_M_erase_after(__pos._M_node)); }
-  iterator erase_after(iterator __before_first, iterator __last)
-  { return iterator(this->_M_erase_after(__before_first._M_node, __last._M_node)); }
-
-  void resize(size_type new_size, const value_type& __x);
-
-  void resize(size_type new_size)
+    void resize(size_type new_size)
       { resize(new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 
-  void clear()
-  { this->_M_erase_after(&this->_M_head._M_data, 0); }
+    void clear()
+      { this->_M_erase_after(&this->_M_head._M_data, 0); }
 
-public:
-  // Moves the range [__before_first + 1, __before_last + 1) to *this,
-  //  inserting it immediately after __pos.  This is constant time.
-  void splice_after(iterator __pos, _Self& __x,
-                    iterator __before_first, iterator __before_last) {
-    if (__before_first != __before_last) {
-      if (this->get_allocator() == __x.get_allocator()) {
-        _STLP_PRIV _Sl_global_inst::__splice_after(__pos._M_node,
-                                                   __before_first._M_node, __before_last._M_node);
+    // Removes all of the elements from the list __x to *this, inserting
+    // them immediately after __pos.  __x must not be *this.  Complexity:
+    // linear in __x.size().
+    void splice_after(const_iterator __pos, _Self& __x)
+      {
+        if ( !__x.empty() ) {
+          if ( get_allocator() == __x.get_allocator() ) {
+            _Node_base* tmp = __pos._M_node->_M_next;
+            _Node_base* __node = __pos._M_node->_M_next = __x._M_head._M_data._M_next;
+            while (__node->_M_next) {
+              __node = __node->_M_next;
+            }
+            __node->_M_next = tmp;
+            __x._M_head._M_data._M_next = 0;
+          } else {
+            insert_after(__pos, __x.begin(), __x.end() );
+            __x.clear();
+          }
+        }
       }
-      else {
-        this->insert_after(__pos, iterator(__before_first._M_node->_M_next), iterator(__before_last._M_node->_M_next));
-        __x.erase_after(__before_first, ++__before_last);
+
+    void splice_after(const_iterator __pos, _Self&& __x)
+      {
+        if ( !__x.empty() ) {
+          if ( get_allocator() == __x.get_allocator() ) {
+            _Node_base* tmp = __pos._M_node->_M_next;
+            _Node_base* __node = __pos._M_node->_M_next = __x._M_head._M_data._M_next;
+            while (__node->_M_next) {
+              __node = __node->_M_next;
+            }
+            __node->_M_next = tmp;
+            __x._M_head._M_data._M_next = 0;
+          } else {
+            insert_after(__pos, __x.begin(), __x.end() );
+            __x.clear();
+          }
+        }
       }
-    }
-  }
 
-  // Moves the element that follows __prev to *this, inserting it immediately
-  //  after __pos.  This is constant time.
-  void splice_after(iterator __pos, _Self& __x, iterator __prev) {
-    if (this->get_allocator() == __x.get_allocator()) {
-      _STLP_PRIV _Sl_global_inst::__splice_after(__pos._M_node,
-                                                 __prev._M_node, __prev._M_node->_M_next);
-    }
-    else {
-      this->insert_after(__pos, __STATIC_CAST(_Node*, __prev._M_node->_M_next)->_M_data);
-      __x.erase_after(__prev);
-    }
-  }
+    // Moves the range (first, last) to *this,
+    // inserting it immediately after __pos.  This is O(distance(first,last)) time.
+    void splice_after(const_iterator __pos, _Self& __x,
+                      const_iterator first, const_iterator last)
+      {
+        if ( first._M_node->_M_next == last._M_node ) {
+          return;
+        }
 
-  // Removes all of the elements from the list __x to *this, inserting
-  // them immediately after __pos.  __x must not be *this.  Complexity:
-  // linear in __x.size().
-  void splice_after(iterator __pos, _Self& __x) {
-    if (this->get_allocator() == __x.get_allocator())
-      _STLP_PRIV _Sl_global_inst::__splice_after(__pos._M_node, &__x._M_head._M_data);
-    else {
-      this->insert_after(__pos, __x.begin(), __x.end());
-      __x.clear();
-    }
-  }
+        if ( get_allocator() == __x.get_allocator() ) {
+          _Node_base* tmp = __pos._M_node->_M_next;
+          _Node_base* __node = __pos._M_node->_M_next = first._M_node->_M_next;
+          while ( __node->_M_next != last._M_node ) {
+            __node = __node->_M_next;
+          }
+          __node->_M_next = tmp;
+          first._M_node->_M_next = last._M_node;
+        } else {
+          const_iterator tmp = first++;
+          insert_after(__pos, first, last);
+          __x.erase_after(tmp, last);
+       }
+      }
 
-public:
-  void reverse() {
-    if (this->_M_head._M_data._M_next)
-      this->_M_head._M_data._M_next = _STLP_PRIV _Sl_global_inst::__reverse(this->_M_head._M_data._M_next);
-  }
+    void splice_after(const_iterator __pos, _Self&& __x,
+                      const_iterator first, const_iterator last)
+      {
+        if ( first._M_node->_M_next == last._M_node ) {
+          return;
+        }
+
+        if ( get_allocator() == __x.get_allocator() ) {
+          _Node_base* tmp = __pos._M_node->_M_next;
+          _Node_base* __node = __pos._M_node->_M_next = first._M_node->_M_next;
+          while ( __node->_M_next != last._M_node ) {
+            __node = __node->_M_next;
+          }
+          __node->_M_next = tmp;
+          first._M_node->_M_next = last._M_node;
+        } else {
+          const_iterator tmp = first++;
+          insert_after(__pos, first, last);
+          __x.erase_after(tmp, last);
+        }
+      }
+
+    // Moves the element that follows __prev to *this, inserting it immediately
+    //  after __pos.  This is constant time.
+    void splice_after(const_iterator __pos, _Self& __x, const_iterator __prev)
+      {
+        if ( (__pos != __prev) && (__pos._M_node !=  __prev._M_node->_M_next) ) {
+          if ( get_allocator() == __x.get_allocator() ) {
+            _Node_base* tmp = __pos._M_node->_M_next;
+            __pos._M_node->_M_next = __prev._M_node->_M_next;
+            __prev._M_node->_M_next = __prev._M_node->_M_next->_M_next;
+            __pos._M_node->_M_next->_M_next = tmp;
+          } else {
+            const_iterator tmp = __prev++;
+            insert_after(__pos, *__prev);
+            __x.erase_after(tmp);
+          }
+        }
+      }
+
+    void splice_after(const_iterator __pos, _Self&& __x, const_iterator __prev)
+      {
+        if ( (__pos != __prev) && (__pos._M_node !=  __prev._M_node->_M_next) ) {
+          if ( get_allocator() == __x.get_allocator() ) {
+            _Node_base* tmp = __pos._M_node->_M_next;
+            __pos._M_node->_M_next = __prev._M_node->_M_next;
+            __prev._M_node->_M_next = __prev._M_node->_M_next->_M_next;
+            __pos._M_node->_M_next->_M_next = tmp;
+          } else {
+            const_iterator tmp = __prev++;
+            insert_after(__pos, *__prev);
+            __x.erase_after(tmp);
+          }
+        }
+      }
+
+    void reverse()
+      {
+        if (this->_M_head._M_data._M_next) {
+          _Node_base* __cur = this->_M_head._M_data._M_next;
+          _Node_base* __prev = __cur;
+          _Node_base* __next;
+          __cur = __cur->_M_next;
+          __prev->_M_next = 0;
+          while ( __cur ) {
+            __next = __cur->_M_next;
+            __cur->_M_next = __prev;
+            __prev = __cur;
+            __cur = __next;
+          }
+          this->_M_head._M_data._M_next = __prev;
+        }
+      }
 
   void remove(const _Tp& __val);
 
@@ -677,30 +635,7 @@ public:
 
 #if defined (forward_list)
 _STLP_MOVE_TO_STD_NAMESPACE
-
-// template <class _Tp, class _Alloc>
-// struct __has_trivial_move<_STLP_PRIV forward_list<_Tp, _Alloc> > :
-//   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
-// { };
-
-template <class _Tp, class _Alloc>
-struct __has_move_constructor<_STLP_PRIV forward_list<_Tp, _Alloc> > :
-    public true_type
-{ };
-
 #  undef forward_list
-#else // forward_list
-
-// template <class _Tp, class _Alloc>
-// struct __has_trivial_move<forward_list<_Tp, _Alloc> > :
-//   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
-// { };
-
-template <class _Tp, class _Alloc>
-struct __has_move_constructor<forward_list<_Tp, _Alloc> > :
-    public true_type
-{ };
-
 #endif // forward_list
 
 _STLP_END_NAMESPACE

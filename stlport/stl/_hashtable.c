@@ -424,8 +424,8 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
-void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::_M_rehash(size_type __num_buckets) {
+void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>::_M_rehash(size_type __num_buckets)
+{
 #if defined (_STLP_DEBUG)
   _M_check();
 #endif
@@ -441,7 +441,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
          ++__ite, ++__before_ite);
     size_type __prev_bucket = __new_bucket;
     _ElemsIte  __prev = _S_before_begin(__tmp_elems, __tmp, __prev_bucket)._M_ite;
-    __tmp_elems.splice_after(__prev, _M_elems, _M_elems.before_begin(), __before_ite);
+    __tmp_elems.splice_after(__prev, _M_elems, _M_elems.before_begin(), ++__before_ite);
     fill(__tmp.begin() + __prev_bucket, __tmp.begin() + __new_bucket + 1, __cur._M_node);
   }
   _M_elems.swap(__tmp_elems);

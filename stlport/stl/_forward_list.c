@@ -181,7 +181,8 @@ void _Slist_merge(forward_list<_Tp, _Alloc>& __that, forward_list<_Tp, _Alloc>& 
 }
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
+void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp)
+{
   if (!__that.begin()._M_node || !__that.begin()._M_node->_M_next)
     return;
 

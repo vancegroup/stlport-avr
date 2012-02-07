@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-06 16:13:45 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-07 11:11:24 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -236,13 +236,14 @@ int main( int argc, const char** argv )
   // t.add( &list_test::const_list, lst_test, "const_list" );
 
   forward_list_test slst_test;
+  exam::test_suite::test_case_type fwd_l_tc[4];
 
-  t.add( &forward_list_test::forward_list1, slst_test, "forward_list1" );
+  t.add( &forward_list_test::forward_list1, slst_test, "forward_list1",
+    fwd_l_tc[0] = t.add( &forward_list_test::splice, slst_test, "forward_list splice" ) );
   t.add( &forward_list_test::erase, slst_test, "forward_list erase" );
   t.add( &forward_list_test::insert, slst_test, "forward_list insert" );
-  t.add( &forward_list_test::splice, slst_test, "forward_list splice" );
-  t.add( &forward_list_test::allocator_with_state, slst_test, "forward_list allocator_with_state" );
-  t.add( &forward_list_test::move, slst_test, "forward_list move" );
+  t.add( &forward_list_test::allocator_with_state, slst_test, "forward_list allocator_with_state", fwd_l_tc[0] );
+  t.add( &forward_list_test::move, slst_test, "forward_list move", fwd_l_tc[0] );
 
   string_test str_test;
 
@@ -453,33 +454,33 @@ int main( int argc, const char** argv )
 
   multiset_test ms_test;
 
-  t.add( &multiset_test::mset1, ms_test, "mset1" );
-  t.add( &multiset_test::mset3, ms_test, "mset3" );
-  t.add( &multiset_test::mset5, ms_test, "mset5" );
+  t.add( &multiset_test::mset1, ms_test, "mset1", fwd_l_tc[0] );
+  t.add( &multiset_test::mset3, ms_test, "mset3", fwd_l_tc[0] );
+  t.add( &multiset_test::mset5, ms_test, "mset5", fwd_l_tc[0] );
 
   hash_test h_test;
 
-  t.add( &hash_test::hmap1, h_test, "hmap1" );
-  t.add( &hash_test::hmmap1, h_test, "hmmap1" );
-  t.add( &hash_test::hmmap2, h_test, "hmmap2" );
-  t.add( &hash_test::hmset1, h_test, "hmset1" );
-  t.add( &hash_test::hmset1, h_test, "hmset1" );
-  t.add( &hash_test::hset2, h_test, "hset2" );
-  t.add( &hash_test::insert_erase, h_test, "hash insert_erase" );
-  t.add( &hash_test::allocator_with_state, h_test, "hash allocator_with_state" );
-  t.add( &hash_test::remains, h_test, "erase in hash_map" );
+  t.add( &hash_test::hmap1, h_test, "hmap1", fwd_l_tc[0] );
+  t.add( &hash_test::hmmap1, h_test, "hmmap1", fwd_l_tc[0] );
+  t.add( &hash_test::hmmap2, h_test, "hmmap2", fwd_l_tc[0] );
+  t.add( &hash_test::hmset1, h_test, "hmset1", fwd_l_tc[0] );
+  t.add( &hash_test::hmset1, h_test, "hmset1", fwd_l_tc[0] );
+  t.add( &hash_test::hset2, h_test, "hset2", fwd_l_tc[0] );
+  t.add( &hash_test::insert_erase, h_test, "hash insert_erase", fwd_l_tc[0] );
+  t.add( &hash_test::allocator_with_state, h_test, "hash allocator_with_state", fwd_l_tc[0] );
+  t.add( &hash_test::remains, h_test, "erase in hash_map", fwd_l_tc[0] );
 
   unordered_test uo_test;
 
-  t.add( &unordered_test::uset, uo_test, "unordered uset" );
-  t.add( &unordered_test::umultiset, uo_test, "unordered umultiset" );
-  t.add( &unordered_test::umap, uo_test, "unordered umap" );
-  t.add( &unordered_test::umultimap, uo_test, "unordered umultimap" );
-  t.add( &unordered_test::user_case, uo_test, "unordered user_case" );
-  t.add( &unordered_test::hash_policy, uo_test, "unordered hash_policy" );
-  t.add( &unordered_test::buckets, uo_test, "unordered buckets" );
-  t.add( &unordered_test::equal_range, uo_test, "unordered equal_range" );
-  t.add( &unordered_test::template_methods, uo_test, "unordered template_methods" );
+  t.add( &unordered_test::uset, uo_test, "unordered uset", fwd_l_tc[0] );
+  t.add( &unordered_test::umultiset, uo_test, "unordered umultiset", fwd_l_tc[0] );
+  t.add( &unordered_test::umap, uo_test, "unordered umap", fwd_l_tc[0] );
+  t.add( &unordered_test::umultimap, uo_test, "unordered umultimap", fwd_l_tc[0] );
+  t.add( &unordered_test::user_case, uo_test, "unordered user_case", fwd_l_tc[0] );
+  t.add( &unordered_test::hash_policy, uo_test, "unordered hash_policy", fwd_l_tc[0] );
+  t.add( &unordered_test::buckets, uo_test, "unordered buckets", fwd_l_tc[0] );
+  t.add( &unordered_test::equal_range, uo_test, "unordered equal_range", fwd_l_tc[0] );
+  t.add( &unordered_test::template_methods, uo_test, "unordered template_methods", fwd_l_tc[0] );
   t.add( &unordered_test::remains, uo_test, "erase in unordered_map" );
 
   valarray_test val_test;

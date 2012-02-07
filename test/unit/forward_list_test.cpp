@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-06 17:47:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-07 00:55:49 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -166,73 +166,89 @@ int EXAM_IMPL(forward_list_test::splice)
 {
   int array[] = { 0, 1, 2, 3, 4 };
 
-  //splice_after
-  {
-    forward_list<int> sl1(array, array + 5);
-    forward_list<int> sl2(array, array + 5);
-    forward_list<int>::iterator slit;
+  // splice_after
+  forward_list<int> sl1(array, array + 5);
+  forward_list<int> sl2(array, array + 5);
+  forward_list<int>::iterator slit;
 
-    //a no op:
-    sl1.splice_after(sl1.begin(), sl1, sl1.begin());
-    EXAM_CHECK( sl1 == sl2 );
+  // a no op:
+  sl1.splice_after(sl1.begin(), sl1, sl1.begin());
+  EXAM_CHECK( sl1 == sl2 );
+  EXAM_CHECK( sl1.get_allocator() == sl2.get_allocator() );
+  slit = sl1.begin();
+  EXAM_CHECK( *(slit++) == 0 );
+  EXAM_CHECK( *(slit++) == 1 );
+  EXAM_CHECK( *(slit++) == 2 );
+  EXAM_CHECK( *(slit++) == 3 );
+  EXAM_CHECK( *(slit++) == 4 );
+  EXAM_CHECK( slit == sl1.end() );
 
-    sl1.splice_after(sl1.before_begin(), sl1, sl1.begin());
-    slit = sl1.begin();
-    EXAM_CHECK( *(slit++) == 1 );
-    EXAM_CHECK( *(slit++) == 0 );
-    EXAM_CHECK( *(slit++) == 2 );
-    EXAM_CHECK( *(slit++) == 3 );
-    EXAM_CHECK( *slit == 4 );
-    sl1.splice_after(sl1.before_begin(), sl1, sl1.begin());
-    EXAM_CHECK( sl1 == sl2 );
+  sl1.splice_after(sl1.before_begin(), sl1, sl1.begin());
+  slit = sl1.begin();
+  EXAM_CHECK( *(slit++) == 1 );
+  EXAM_CHECK( *(slit++) == 0 );
+  EXAM_CHECK( *(slit++) == 2 );
+  EXAM_CHECK( *(slit++) == 3 );
+  EXAM_CHECK( *slit == 4 );
 
-    sl1.splice_after(sl1.before_begin(), sl2);
-    size_t i;
-    for (i = 0, slit = sl1.begin(); slit != sl1.end(); ++slit, ++i) {
-      if (i == 5) i = 0;
-      EXAM_CHECK( *slit == array[i] );
-    }
+  sl1.splice_after(sl1.before_begin(), sl1, sl1.begin());
+  slit = sl1.begin();
+  EXAM_CHECK( *(slit++) == 0 );
+  EXAM_CHECK( *(slit++) == 1 );
+  EXAM_CHECK( *(slit++) == 2 );
+  EXAM_CHECK( *(slit++) == 3 );
+  EXAM_CHECK( *(slit++) == 4 );
+  EXAM_CHECK( slit == sl1.end() );
 
-    slit = sl1.begin();
-    advance(slit, 4);
-    EXAM_CHECK( *slit == 4 );
-    sl2.splice_after(sl2.before_begin(), sl1, sl1.before_begin(), slit);
-    EXAM_CHECK( sl1 == sl2 );
+  EXAM_CHECK( sl1 == sl2 );
 
-    sl1.splice_after(sl1.before_begin(), sl1, sl1.begin(), sl1.previous(sl1.end()));
-#if 0
-    for ( auto i = sl1.begin(); i != sl1.end(); ++i ) {
-      cerr << *i << endl;
-    }
-#endif
+  sl1.splice_after(sl1.before_begin(), sl2);
 
-    // sl1.splice_after(sl1.before_begin(), sl1, sl1.begin(), sl1.end());
-    slit = sl1.begin();
-    EXAM_CHECK( *(slit++) == 1 );
-    EXAM_CHECK( *(slit++) == 2 );
-    EXAM_CHECK( *(slit++) == 3 );
-    EXAM_CHECK( *(slit++) == 4 );
-    EXAM_CHECK( *slit == 0 );
+  EXAM_CHECK( sl2.empty() );
 
-    // a no op
-    sl2.splice_after(sl2.before_begin(), sl2, sl2.before_begin(), sl2.previous(sl2.end()));
-    // sl2.splice_after(sl2.before_begin(), sl2, sl2.before_begin(), sl2.end());
-    for (i = 0, slit = sl2.begin(); slit != sl2.end(); ++slit, ++i) {
-      EXAM_CHECK( i < 5 );
-      EXAM_CHECK( *slit == array[i] );
-    }
-
-    slit = sl2.begin();
-    advance(slit, 2);
-
-    sl2.splice_after(sl2.previous(sl2.end()), sl2, sl2.before_begin(), slit);
-    slit = sl2.begin();
-    EXAM_CHECK( *(slit++) == 3 );
-    EXAM_CHECK( *(slit++) == 4 );
-    EXAM_CHECK( *(slit++) == 0 );
-    EXAM_CHECK( *(slit++) == 1 );
-    EXAM_CHECK( *slit == 2 );
+  size_t i;
+  for (i = 0, slit = sl1.begin(); slit != sl1.end(); ++slit, ++i) {
+    if (i == 5) i = 0;
+    EXAM_CHECK( *slit == array[i] );
   }
+
+  slit = sl1.begin();
+  advance(slit, 5);
+  EXAM_CHECK( *slit == 0 );
+  sl2.splice_after(sl2.before_begin(), sl1, sl1.before_begin(), slit);
+  EXAM_CHECK( sl1 == sl2 );
+
+  sl1.splice_after(sl1.before_begin(), sl2, sl2.before_begin(), sl2.end());
+  EXAM_CHECK( sl2.empty() );
+  for (i = 0, slit = sl1.begin(); slit != sl1.end(); ++slit, ++i) {
+    if (i == 5) i = 0;
+    EXAM_CHECK( *slit == array[i] );
+  }
+
+  // a no op
+  sl1.splice_after(sl1.before_begin(), sl2, sl2.before_begin(), sl2.end());
+  EXAM_CHECK( sl2.empty() );
+  for (i = 0, slit = sl1.begin(); slit != sl1.end(); ++slit, ++i) {
+    EXAM_CHECK( *slit == array[i % (sizeof(array)/sizeof(int))] );
+  }
+  EXAM_CHECK( i == 10 );
+
+  slit = sl1.begin();
+  advance(slit, 2);
+
+  sl1.splice_after(sl1.before_begin(), sl1, sl1.begin(), slit);
+
+  slit = sl1.begin();
+  EXAM_CHECK( *(slit++) == 1 );
+  EXAM_CHECK( *(slit++) == 0 );
+  EXAM_CHECK( *(slit++) == 2 );
+  EXAM_CHECK( *(slit++) == 3 );
+  EXAM_CHECK( *(slit++) == 4 );
+  EXAM_CHECK( *(slit++) == 0 );
+  EXAM_CHECK( *(slit++) == 1 );
+  EXAM_CHECK( *(slit++) == 2 );
+  EXAM_CHECK( *(slit++) == 3 );
+  EXAM_CHECK( *(slit++) == 4 );
 
   return EXAM_RESULT;
 }
@@ -247,6 +263,7 @@ int EXAM_IMPL(forward_list_test::allocator_with_state)
   char buf2[1024];
   StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
 
+
   typedef forward_list<int, StackAllocator<int> > SlistInt;
   {
     SlistInt slint1(10, 0, stack1);
@@ -254,6 +271,8 @@ int EXAM_IMPL(forward_list_test::allocator_with_state)
 
     SlistInt slint2(10, 1, stack2);
     SlistInt slint2Cpy(slint2);
+
+    EXAM_CHECK( slint1.get_allocator() != slint2.get_allocator() );
 
     slint1.swap(slint2);
 
@@ -343,7 +362,7 @@ int EXAM_IMPL(forward_list_test::allocator_with_state)
     SlistInt slint2(10, 1, stack2);
 
     SlistInt::iterator lit(slint2.begin());
-    advance(lit, 4);
+    advance(lit, 5);
     slint1.splice_after(slint1.before_begin(), slint2, slint2.before_begin(), lit);
     EXAM_CHECK( slint1.size() == 15 );
     EXAM_CHECK( slint2.size() == 5 );
