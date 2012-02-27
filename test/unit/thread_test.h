@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 13:58:19 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 20:04:43 ptr>
 
 /*
  * Copyright (c) 2006-2012
@@ -18,7 +18,7 @@
 #ifndef __TEST_THREAD_H
 #define __TEST_THREAD_H
 
-#define FIT_EXAM
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

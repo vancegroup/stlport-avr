@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 14:05:31 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:09:52 ptr>
 
 /*
  * Copyright (c) 2006-2012
@@ -19,24 +19,21 @@
 
 // #include <mt/date_time>
 #include <thread>
-
-#if 0
-
 #include <mutex>
 #include <condition_variable>
 // #include <misc/type_traits.h>
-// #include <typeinfo>
+#include <typeinfo>
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
+//#include <iostream>
+//#include <iomanip>
+//#include <sstream>
 
-#include <sys/wait.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+//#include <sys/wait.h>
+//#include <sys/ipc.h>
+//#include <sys/shm.h>
 
-#include <string>
-#include <set>
+//#include <string>
+//#include <set>
 
 static int val = 0;
 
@@ -54,7 +51,7 @@ int EXAM_IMPL(thread_test::thread_call)
 {
   val = -1;
  
-  std::basic_thread<0,0> t( thread_func );
+  typename std::basic_thread<0,0> t( thread_func );
 
   t.join();
 
@@ -75,7 +72,7 @@ static std::mutex lk;
 
 void thread_func2()
 {
-  std::lock_guard<std::tr2::mutex> lock( lk );
+  std::lock_guard<std::mutex> lock( lk );
 
   ++val;
 }
@@ -115,10 +112,10 @@ void run()
 {
   for ( int i = 0; i < n_times; ++i ) {
     if ( rand() % 2 ) {
-      std::lock_guard<std::tr2::rw_mutex> lk( _lock_heap );
+      std::lock_guard<std::rw_mutex> lk( _lock_heap );
       ++shared_res;
     } else {
-      std::basic_read_lock<std::tr2::rw_mutex> lk(_lock_heap);
+      std::basic_read_lock<std::rw_mutex> lk(_lock_heap);
       int tmp = shared_res;
       ++tmp;
     }
@@ -152,7 +149,7 @@ void thread_func3()
 
     bar.wait();
 
-    std::lock_guard<std::tr2::mutex> lock( lk );
+    std::lock_guard<std::mutex> lock( lk );
 
     ++val;
   }
@@ -246,11 +243,12 @@ void thread_func5()
 
 int EXAM_IMPL(thread_test::condition_var)
 {
+#if 0
   val = 0;
   
   std::thread t( thread_func5 );
   
-  std::unique_lock<std::tr2::mutex> lk( cond_mtx );
+  std::unique_lock<std::mutex> lk( cond_mtx );
   
   EXAM_CHECK( cnd.timed_wait( lk, std::tr2::milliseconds(500), true_val() ) );
   
@@ -259,8 +257,7 @@ int EXAM_IMPL(thread_test::condition_var)
   t.join();
   
   val = 0;
+#endif
   
   return EXAM_RESULT;
 }
-
-#endif

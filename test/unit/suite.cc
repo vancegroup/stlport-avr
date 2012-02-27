@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-07 14:37:07 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:50:24 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -70,6 +70,7 @@
 #include "locale_test.h"
 #include "chrono_test.h"
 #include "null_ptr.h"
+#include "thread_test.h"
 
 int main( int argc, const char** argv )
 {
@@ -953,6 +954,15 @@ int main( int argc, const char** argv )
 
   t.add( &locale_test::default_locale, ltest, "default_locale" );
   t.add( &locale_test::combine, ltest, "combine" );
+
+  thread_test test_thr;
+
+  t.add( &thread_test::thread_call, test_thr, "thread thread_call" );
+  t.add( &thread_test::mutex_rw_test, test_thr, "rw mutex",
+    t.add( &thread_test::mutex_test, test_thr, "mutex_test" ) );
+  t.add( &thread_test::barrier, test_thr, "barrier" );
+  t.add( &thread_test::semaphore, test_thr, "semaphore" );
+  t.add( &thread_test::condition_var, test_thr, "condition_variable" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cout );
