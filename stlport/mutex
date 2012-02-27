@@ -1,29 +1,27 @@
-// -*- C++ -*- Time-stamp: <09/03/14 00:46:21 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 17:24:28 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2009
+ * Copyright (c) 1997-1999, 2002-2012
  * Petr Ovtchenkov
  *
- * Portion Copyright (c) 1999-2001
- * Parallel Graphics Ltd.
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
  *
- * Licensed under the Academic Free License version 3.0
+ * Permission to use or copy this software for any purpose is hereby granted
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
  *
- * Derived from original <mt/xmt.h> of 'complement' project
- * [http://complement.sourceforge.net]
- * to make it close to JTC1/SC22/WG21 C++ 0x working draft
- * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2521.pdf]
  */
 
-#ifndef __MUTEX_H
-#define __MUTEX_H
-
-#ifndef __config_feature_h
-#include <config/feature.h>
-#endif
+#ifndef _STLP_MUTEX
+#define _STLP_MUTEX
 
 #include <cstddef>
 #include <stdexcept>
+#include <cerrno>
+#include <system_error>
 
 #ifdef WIN32
 # include <windows.h>
@@ -38,12 +36,12 @@
 # include <sched.h>
 #endif // __unix
 
-#include <cerrno>
-#include <mt/system_error>
+#ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x8
+#  include <stl/_prolog.h>
+#endif
 
-namespace std {
-
-namespace tr2 {
+_STLP_BEGIN_NAMESPACE
 
 class lock_error :
         public std::exception
@@ -92,7 +90,7 @@ class __mutex_base
   public:
     __mutex_base()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         if ( SCOPE || RECURSIVE_SAFE ) {
           pthread_mutexattr_t att;
           pthread_mutexattr_init( &att );
@@ -118,14 +116,14 @@ class __mutex_base
           pthread_mutex_init( &_M_lock, 0 );
         }
 #endif // _PTHREADS
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
         InitializeCriticalSection( &_M_lock );
 #endif
       }
 
     ~__mutex_base()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_mutex_destroy( &_M_lock );
 #endif
 #ifdef WIN32
@@ -133,10 +131,10 @@ class __mutex_base
 #endif
       }
 
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     typedef pthread_mutex_t* native_handle_type;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
     typedef CRITICAL_SECTION* native_handle_type;
 #endif
 
@@ -151,14 +149,14 @@ class __mutex_base
       { return *this; }
 
   protected:
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     pthread_mutex_t _M_lock;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
     CRITICAL_SECTION _M_lock;
 #endif
 
-#ifndef __FIT_WIN32THREADS
+#ifndef _STLP_WIN32THREADS
   private:
     friend class __condition_variable<SCOPE>;
     friend class __condition_event<SCOPE>;
@@ -174,19 +172,19 @@ class __spinlock_base
   public:
     __spinlock_base()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_spin_init( &_M_lock, SCOPE ? 1 : 0 );
 #endif // _PTHREADS
       }
 
     ~__spinlock_base()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_spin_destroy( &_M_lock );
 #endif
       }
 
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     typedef pthread_spinlock_t* native_handle_type;
 #endif
 
@@ -194,7 +192,7 @@ class __spinlock_base
       { return &_M_lock; }
 
   protected:
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     pthread_spinlock_t _M_lock;
 #endif
 };
@@ -222,13 +220,13 @@ class __mutex :
 
     void lock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         int e = pthread_mutex_lock( &this->_M_lock );
         if ( e ) {
-          throw std::system_error( e, std::get_posix_category() );
+          throw _STLP_STD::system_error( e, _STLP_STD::get_posix_category() );
         }
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
         EnterCriticalSection( &this->_M_lock );
 #endif
       }
@@ -236,19 +234,19 @@ class __mutex :
 #if !defined( WIN32 ) || (defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0400)
     bool try_lock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         int r = pthread_mutex_trylock( &this->_M_lock );
         if ( r != 0 ) {
           if ( r == EBUSY ) {
             return false;
           }
 
-          throw std::tr2::lock_error( r );
+          throw _STLP_STD::lock_error( r );
         }
 
         return true;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
         return TryEnterCriticalSection( &this->_M_lock ) != 0;
 #endif
       }
@@ -256,10 +254,10 @@ class __mutex :
 
     void unlock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_mutex_unlock( &this->_M_lock );
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
         LeaveCriticalSection( &this->_M_lock );
 #endif
       }
@@ -271,7 +269,7 @@ class __mutex :
     __mutex& operator =( const __mutex& )
       { return *this; }
 
-#ifndef __FIT_WIN32THREADS
+#ifndef _STLP_WIN32THREADS
   private:
     friend class __condition_variable<SCOPE>;
     friend class __condition_event<SCOPE>;
@@ -296,21 +294,21 @@ class __spinlock<false,SCOPE> :
 
     void lock()
       {
-# ifdef __FIT_PTHREADS
+# ifdef _STLP_PTHREADS
         pthread_spin_lock( &this->_M_lock );
 # endif
       }
 
     bool try_lock()
       {
-# ifdef __FIT_PTHREADS
+# ifdef _STLP_PTHREADS
         int r = pthread_spin_trylock( &this->_M_lock );
         if ( r != 0 ) {
           if ( r == EBUSY ) {
             return false;
           }
 
-          throw std::tr2::lock_error( r );
+          throw _STLP_STD::lock_error( r );
         }
 
         return true;
@@ -319,7 +317,7 @@ class __spinlock<false,SCOPE> :
 
     void unlock()
       {
-# ifdef __FIT_PTHREADS
+# ifdef _STLP_PTHREADS
         pthread_spin_unlock( &this->_M_lock );
 # endif
       }
@@ -343,14 +341,14 @@ class __spinlock<true,SCOPE> : //  Recursive safe
 
     void lock()
       {
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
         pthread_t _c_id = pthread_self();
 #  endif
         if ( _c_id == _id ) {
           ++_count;
           return;
         }
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
         pthread_spin_lock( &this->_M_lock );
 #  endif
         _id = _c_id;
@@ -359,14 +357,14 @@ class __spinlock<true,SCOPE> : //  Recursive safe
 
     bool try_lock()
       {
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
         pthread_t _c_id = pthread_self();
 #  endif
         if ( _c_id == _id ) {
           ++_count;
           return true;
         }
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
         int res = pthread_spin_trylock( &this->_M_lock );
 #  endif
         if ( res != 0 ) {
@@ -374,7 +372,7 @@ class __spinlock<true,SCOPE> : //  Recursive safe
             return false;
           }
 
-          throw std::tr2::lock_error( res );
+          throw _STLP_STD::lock_error( res );
         }
 
         _id = _c_id;
@@ -386,7 +384,7 @@ class __spinlock<true,SCOPE> : //  Recursive safe
     void unlock()
       {
         if ( --_count == 0 ) {
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
           _id =  static_cast<pthread_t>(-1);
           pthread_spin_unlock( &this->_M_lock );
 #  endif
@@ -395,7 +393,7 @@ class __spinlock<true,SCOPE> : //  Recursive safe
   protected:
     unsigned _count;
 
-# ifdef __FIT_PTHREADS
+# ifdef _STLP_PTHREADS
     pthread_t _id;
 # endif
 
@@ -428,7 +426,7 @@ class __mutex<true,SCOPE> : // Recursive Safe
   public:
     __mutex() :
         _count( 0 )
-# ifdef __FIT_PTHREADS
+# ifdef _STLP_PTHREADS
         , _id( __STATIC_CAST(pthread_t,-1) )
 # endif
       { }
@@ -438,15 +436,15 @@ class __mutex<true,SCOPE> : // Recursive Safe
 
     void lock()
       {
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
         pthread_t _c_id = pthread_self();
 #  endif
         if ( _c_id == _id ) {
           ++_count;
           return;
         }
-#  ifdef __FIT_PTHREADS
-        pthread_mutex_lock( &_M_lock );
+#  ifdef _STLP_PTHREADS
+        pthread_mutex_lock( &this->_M_lock );
 #  endif
         _id = _c_id;
         _count = 0;
@@ -461,22 +459,22 @@ class __mutex<true,SCOPE> : // Recursive Safe
 
     bool try_lock()
       {
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
         pthread_t _c_id = pthread_self();
 #  endif
         if ( _c_id == _id ) {
           ++_count;
           return true;
         }
-#  ifdef __FIT_PTHREADS
-        int res = pthread_mutex_trylock( &_M_lock );
+#  ifdef _STLP_PTHREADS
+        int res = pthread_mutex_trylock( &this->_M_lock );
 #  endif
         if ( res != 0 ) {
           if ( res == EBUSY ) {
             return false;
           }
 
-          throw std::tr2::lock_error( res );
+          throw _STLP_STD::lock_error( res );
         }
 
         _id = _c_id;
@@ -488,9 +486,9 @@ class __mutex<true,SCOPE> : // Recursive Safe
     void unlock()
       {
         if ( --_count == 0 ) {
-#  ifdef __FIT_PTHREADS
+#  ifdef _STLP_PTHREADS
           _id =  __STATIC_CAST(pthread_t,-1);
-          pthread_mutex_unlock( &_M_lock );
+          pthread_mutex_unlock( &this->_M_lock );
 #  endif
         }
       }
@@ -504,7 +502,7 @@ class __mutex<true,SCOPE> : // Recursive Safe
   protected:
     unsigned _count;
 
-# ifdef __FIT_PTHREADS
+# ifdef _STLP_PTHREADS
     pthread_t _id;
 # endif
 };
@@ -519,14 +517,14 @@ class __rw_mutex_base
   public:
     __rw_mutex_base()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         if ( SCOPE ) {
           pthread_rwlockattr_t att;
           pthread_rwlockattr_init( &att );
 # ifdef __FIT_PSHARED_MUTEX
           int ret = pthread_rwlockattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
           if ( ret != 0 ) {
-            throw std::system_error( ret, std::get_posix_category(), std::tr2::detail::_notpshared );
+            throw _STLP_STD::system_error( ret, std::get_posix_category(), std::tr2::detail::_notpshared );
           }
 # endif // __FIT_PSHARED_MUTEX
           pthread_rwlock_init( &_M_lock, &att );
@@ -535,7 +533,7 @@ class __rw_mutex_base
           pthread_rwlock_init( &_M_lock, 0 );
         }
 #endif // _PTHREADS
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
         InitializeCriticalSection( &_M_lock );
 #endif
@@ -560,7 +558,7 @@ class __rw_mutex_base
 #ifdef _PTHREADS
     pthread_rwlock_t _M_lock;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
     CRITICAL_SECTION _M_lock;
 #endif
@@ -579,10 +577,10 @@ class __rw_mutex :
 
     void rdlock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_rwlock_rdlock( &this->_M_lock );
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
         EnterCriticalSection( &this->_M_lock );
 #endif
@@ -593,7 +591,7 @@ class __rw_mutex :
 #ifdef _PTHREADS
         pthread_rwlock_wrlock( &this->_M_lock );
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
         EnterCriticalSection( &this->_M_lock );
 #endif
@@ -602,7 +600,7 @@ class __rw_mutex :
 #if !defined( WIN32 ) || (defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0400)
     bool try_rdlock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         int res = pthread_rwlock_tryrdlock( &this->_M_lock );
         if ( res != 0 ) {
           if ( res == EBUSY ) {
@@ -612,7 +610,7 @@ class __rw_mutex :
         }
         return true;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
         return TryEnterCriticalSection( &this->_M_lock ) != 0 ? 0 : -1;
 #endif
@@ -620,7 +618,7 @@ class __rw_mutex :
 
     bool try_lock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         int res = pthread_rwlock_trywrlock( &this->_M_lock );
         if ( res != 0 ) {
           if ( res == EBUSY ) {
@@ -630,7 +628,7 @@ class __rw_mutex :
         }
         return true;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
         return TryEnterCriticalSection( &this->_M_lock ) != 0 ? 0 : -1;
 #endif
@@ -643,7 +641,7 @@ class __rw_mutex :
 #ifdef _PTHREADS
         pthread_rwlock_unlock( &this->_M_lock );
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
 #error Fix me!
         LeaveCriticalSection( &this->_M_lock );
 #endif
@@ -725,7 +723,7 @@ class unique_lock
         const_cast<M*>(m)->lock();
         if ( lk ) {
           const_cast<M*>(m)->unlock();
-          throw std::tr2::lock_error( 0 );
+          throw _STLP_STD::lock_error( 0 );
         }
         lk = true;
       }
@@ -735,7 +733,7 @@ class unique_lock
         if ( const_cast<M*>(m)->try_lock() ) {          
           if ( lk ) {
             const_cast<M*>(m)->unlock();
-            throw std::tr2::lock_error( 0 );
+            throw _STLP_STD::lock_error( 0 );
           }
           lk = true;
           return true;
@@ -746,7 +744,7 @@ class unique_lock
     void unlock()
       {
         if ( !lk ) {
-          throw std::tr2::lock_error( 0 );
+          throw _STLP_STD::lock_error( 0 );
         }
         lk = false;
         const_cast<M*>(m)->unlock();
@@ -817,7 +815,7 @@ class basic_read_lock
         const_cast<M&>(m).rdlock();
         if ( lk ) {
           const_cast<M&>(m).unlock();
-          throw std::tr2::lock_error( 0 );
+          throw _STLP_STD::lock_error( 0 );
         }
         lk = true;
       }
@@ -825,7 +823,7 @@ class basic_read_lock
     void unlock()
       {
         if ( !lk ) {
-          throw std::tr2::lock_error( 0 );
+          throw _STLP_STD::lock_error( 0 );
         }
         lk = false;
         const_cast<M&>(m).unlock();
@@ -869,30 +867,30 @@ typedef lock_guard<recursive_spinlock>  recursive_spin_scoped_lock;
 class native_scoped_lock
 {
   public:
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     typedef pthread_mutex_t mutex_type;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
     typedef CRITICAL_SECTION mutex_type;
 #endif
 
     explicit native_scoped_lock( const mutex_type& m ) :
         _M_lock( m )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_mutex_lock( const_cast<mutex_type *>(&_M_lock) );
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
         EnterCriticalSection( const_cast<mutex_type *>(&_M_lock) );
 #endif
       }
 
     ~native_scoped_lock()
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_mutex_unlock( const_cast<mutex_type *>(&_M_lock) );
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
         LeaveCriticalSection( const_cast<mutex_type *>(&_M_lock) );
 #endif
       }
@@ -904,8 +902,11 @@ class native_scoped_lock
     const mutex_type& _M_lock;
 };
 
-} // namespace tr2
+_STLP_END_NAMESPACE
 
-} // namespace std
+#if (_STLP_OUTERMOST_HEADER_ID == 0x8)
+#  include <stl/_epilog.h>
+#  undef _STLP_OUTERMOST_HEADER_ID
+#endif
 
-#endif /* __MUTEX_H */
+#endif /* _STLP_MUTEX */

@@ -1,23 +1,33 @@
-// -*- C++ -*- Time-stamp: <08/10/07 01:02:13 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 17:45:54 ptr>
 
 /*
- * Copyright (c) 2007-2008
+ * Copyright (c) 2007-2012
  * Petr Ovtchenkov
  *
- * Licensed under the Academic Free License version 3.0
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
  *
- * Based on JTC1/SC22/WG21 C++ 0x working draft;
+ * Permission to use or copy this software for any purpose is hereby granted
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
  *
- * http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2008/n2691.pdf
  */
 
-#include "mt/system_error"
+#include "stlport_prefix.h"
+
 #include <cerrno>
-#include "mt/callstack.h"
+#include "callstack.h"
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+
+#include <vector>
+// #include <typeinfo>
+
+#include <system_error>
 
 #if 0
 #ifdef STLPORT
@@ -43,9 +53,6 @@
 typedef std::hash_map<error_catalog::value_type,char *> _sys_err_vector_type;
 #endif
 #endif // 0
-
-#include <vector>
-#include <typeinfo>
 
 namespace detail {
 
@@ -835,18 +842,18 @@ const char* posix_error_category::name() const
   return "POSIX";
 }
 
-std::string posix_error_category::message( int err ) const
+_STLP_STD::string posix_error_category::message( int err ) const
 {
   // bad: allocation present, so no memory may happens...
   return (err >= 0) && (err <= _syserr._last_value) && (_syserr._sys_err[err] != 0) ? std::string( _syserr._sys_err[err] ) : _unknown;
 }
 
 class system_error_category :
-    public std::error_category
+    public _STLP_STD::error_category
 {
   public:
     virtual const char* name() const;
-    virtual std::string message( int err ) const;
+    virtual _STLP_STD::string message( int err ) const;
 
 };
 
@@ -855,7 +862,7 @@ const char* system_error_category::name() const
   return "system";
 }
 
-std::string system_error_category::message( int err ) const
+_STLP_STD::string system_error_category::message( int err ) const
 {
   // bad: allocation present, so no memory may happens...
   return (err >= 0) && (err <= _syserr._last_value) && (_syserr._sys_err[err] != 0) ? std::string( _syserr._sys_err[err] ) : _unknown;
@@ -866,7 +873,7 @@ static system_error_category _system_error_category;
 
 } // namespace detail
 
-namespace std {
+_STLP_BEGIN_NAMESPACE
 
 using namespace detail;
 
@@ -1102,4 +1109,4 @@ const char* system_error::what() const throw()
   return _buf;
 }
 
-} // namespace std
+_STLP_END_NAMESPACE

@@ -1,33 +1,37 @@
-// -*- C++ -*- Time-stamp: <2011-03-23 16:27:03 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 17:41:47 ptr>
 
 /*
- * Copyright (c) 2007-2011
+ * Copyright (c) 2007-2012
  * Petr Ovtchenkov
  *
- * Licensed under the Academic Free License version 3.0
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
  *
- * Based on JTC1/SC22/WG21 C++ 0x working draft;
+ * Permission to use or copy this software for any purpose is hereby granted
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
  *
- * http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2008/n2691.pdf
  */
 
-#ifndef __SYSTEM_ERROR
-#define __SYSTEM_ERROR
+#ifndef _STLP_SYSTEM_ERROR
+#define _STLP_SYSTEM_ERROR
+
+#ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x9
+#  include <stl/_prolog.h>
+#endif
 
 // #include <locale>
 #include <string>
 #include <stdexcept>
-
-#if (defined(STLPORT) && ((_STLPORT_MAJOR > 5) || ((_STLPORT_MAJOR == 5) && (_STLPORT_MINOR > 1)))) || (defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))) && defined(__GXX_EXPERIMENTAL_CXX0X__))
-# include <type_traits>
-#else
-# include <misc/type_traits.h>
-#endif
+#include <type_traits>
 
 #include <cerrno>
 #include <ostream>
 
-namespace std {
+_STLP_BEGIN_NAMESPACE
 
 class error_category;
 class error_code;
@@ -421,11 +425,11 @@ class error_condition
     error_condition( int val, const error_category& category );
     template <class ErrorConditionEnum>
     error_condition( ErrorConditionEnum err,
-                     typename std::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
+                     typename _STLP_STD::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
 
     void assign( int val, const error_category& category );
     template <class ErrorConditionEnum>
-    typename std::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
+    typename _STLP_STD::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
     void clear();
 
     int value() const
@@ -450,11 +454,11 @@ class error_code
     error_code();
     error_code( int val, const error_category& );
     template <class ErrorCodeEnum>
-    error_code( ErrorCodeEnum err, typename std::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
+    error_code( ErrorCodeEnum err, typename _STLP_STD::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
 
     void assign( int val, const error_category& );
     template <class ErrorCodeEnum>
-    typename std::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
+    typename _STLP_STD::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
     void clear();
 
     int value() const
@@ -503,6 +507,11 @@ class system_error :
     mutable char *_dbuf;
 };
 
-} // namespace std
+_STLP_END_NAMESPACE
 
-#endif // __SYSTEM_ERROR
+#if (_STLP_OUTERMOST_HEADER_ID == 0x8)
+#  include <stl/_epilog.h>
+#  undef _STLP_OUTERMOST_HEADER_ID
+#endif
+
+#endif // _STLP_SYSTEM_ERROR
