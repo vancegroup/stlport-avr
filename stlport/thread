@@ -1,26 +1,22 @@
-// -*- C++ -*- Time-stamp: <2011-08-26 07:41:24 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 17:14:00 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2011
+ * Copyright (c) 1997-1999, 2002-2012
  * Petr Ovtchenkov
  *
- * Portion Copyright (c) 1999-2001
- * Parallel Graphics Ltd.
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
  *
- * Licensed under the Academic Free License version 3.0
+ * Permission to use or copy this software for any purpose is hereby granted
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
  *
- * Derived from original <mt/xmt.h> of 'complement' project
- * [http://complement.sourceforge.net]
- * to make it close to JTC1/SC22/WG21 C++ 0x working draft
- * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2521.pdf]
  */
 
-#ifndef __THREAD_H
-#define __THREAD_H
-
-#ifndef __config_feature_h
-#include <config/feature.h>
-#endif
+#ifndef _STLP_THREAD
+#define _STLP_THREAD
 
 #include <memory>
 #include <cstddef>
@@ -35,56 +31,38 @@
 #endif // __unix
 
 #include <cerrno>
-#include <mt/mutex>
-#include <mt/condition_variable>
-#include <mt/date_time>
-#include <mt/callstack.h>
+#include <mutex>
+#include <condition_variable>
+// #include <date_time>
+// #include <callstack.h>
 
-namespace std {
+#ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x6
+#  include <stl/_prolog.h>
+#endif
 
-namespace tr2 {
+_STLP_BEGIN_NAMESPACE
 
 namespace this_thread
 { }
 
-class fork_in_parent :
-        public std::exception
-{
-  public:
-    fork_in_parent() throw()
-      { _pid = 0; }
-    fork_in_parent( pid_t p ) throw()
-      { _pid = p; }
-    virtual ~fork_in_parent() throw()
-      { }
-    virtual const char *what() const throw()
-      { return "class fork_in_parent"; }
-    pid_t pid() throw()
-      { return _pid; }
-
-  private:
-    pid_t _pid;
-};
-
-__FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
-
 class thread_base
 {
   public:
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     typedef void * ret_t;
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
     typedef long ret_t;
 #endif
 
     typedef ret_t (*entrance_type)( void * );
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
     typedef unsigned long thread_key_type;
     typedef HANDLE native_handle_type;
     // typedef unsigned long thread_id_type;
 #endif
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
     typedef pthread_t     native_handle_type;
 #endif
 
@@ -92,7 +70,7 @@ class thread_base
     {
       private:
         typedef thread_base::native_handle_type _thread_id_type;
-// #ifdef __FIT_WIN32THREADS
+// #ifdef _STLP_WIN32THREADS
 //         typedef unsigned long _thread_id_type;
 // #endif
 
@@ -128,14 +106,14 @@ class thread_base
 
     enum {
       // thread mode flags
-#if defined(__FIT_PTHREADS)
+#if defined(_STLP_PTHREADS)
       bound     = PTHREAD_SCOPE_SYSTEM,   // otherwise, PTHREAD_SCOPE_PROCESS, default
       detached  = PTHREAD_CREATE_DETACHED,// otherwise, PTHREAD_CREATE_JOINABLE, default
       new_lwp   = 0, // pthread_setconcurrency( pthread_getconcurrency() + 1 );
       suspended = 0,
       daemon    = detached
 #endif
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
       bound     = 0,
       detached  = 0x2,
       new_lwp   = 0,
@@ -144,10 +122,10 @@ class thread_base
 #endif
     };
 
-    __FIT_DECLSPEC thread_base();
-    __FIT_DECLSPEC ~thread_base();
+    _STLP_DECLSPEC thread_base();
+    _STLP_DECLSPEC ~thread_base();
 
-    __FIT_DECLSPEC void join();
+    _STLP_DECLSPEC void join();
 
     native_handle_type native_handle()
       { return _id; }
@@ -179,14 +157,14 @@ class thread_base
 
   private:
     mutex _id_lock;
-#ifdef __FIT_WIN32THREADS
+#ifdef _STLP_WIN32THREADS
     unsigned long _thr_id;
 #endif
 #ifdef __FIT_CREATE_THREAD_STACK_INFO
     std::string _stack_on_create;
 #endif
     friend class Init;
-    friend __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
+    // friend _STLP_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
 };
 
 template <unsigned F, size_t S>
@@ -199,7 +177,7 @@ class basic_thread :
         _entry(0),
         sem( 0 )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_attr_t attr;
         if ( F != 0 || S != 0 ) {
           pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
@@ -246,7 +224,7 @@ class basic_thread :
         _entry( 0 ),
         sem( 0 )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_attr_t attr;
         if ( F != 0 || S != 0 ) {
           pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
@@ -391,7 +369,7 @@ class basic_thread<0,0> :
     template <class Entry, class Arg1 >
     basic_thread( Entry e, Arg1 arg1 )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         _entry = static_cast<void *>(new void *[2]);
         static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
         static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
@@ -502,7 +480,7 @@ class basic_thread<0,S> :
     template <class Entry, class Arg1 >
     basic_thread( Entry e, Arg1 arg1 )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_attr_t attr;
         pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
         // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
@@ -594,38 +572,33 @@ pid_t getppid();
 
 namespace this_thread
 {
-using tr2::fork;
-
-__FIT_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
 
 // std::thread_base::id get_id();
-using tr2::get_id;
+using _STLP_STD::get_id;
 
 inline void yield()
 {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
   // sched_yield();
   pthread_yield();
 #endif
 }
 
-__FIT_DECLSPEC void sleep( const std::tr2::system_time& abs_t );
+// _STLP_DECLSPEC void sleep( const std::tr2::system_time& abs_t );
 
-__FIT_DECLSPEC void sleep( const std::tr2::nanoseconds& rel_t );
+// _STLP_DECLSPEC void sleep( const std::tr2::nanoseconds& rel_t );
 
-template <class Duration>
-void sleep( const Duration& rel_t )
-{ std::tr2::this_thread::sleep( static_cast<std::tr2::nanoseconds>(rel_t) ); }
-
-__FIT_DECLSPEC void block_signal( int sig );
-__FIT_DECLSPEC void unblock_signal( int sig );
-__FIT_DECLSPEC int signal_handler( int sig, void (*handler)(int) );
-__FIT_DECLSPEC int signal_handler( int sig, void (*handler)(int, siginfo_t*, void*) );
+// template <class Duration>
+// void sleep( const Duration& rel_t )
+// { std::this_thread::sleep( static_cast<std::tr2::nanoseconds>(rel_t) ); }
 
 } // namespace this_thread
 
-} // namespace tr2
+_STLP_END_NAMESPACE
 
-} // namespace std
+#if (_STLP_OUTERMOST_HEADER_ID == 0x6)
+#  include <stl/_epilog.h>
+#  undef _STLP_OUTERMOST_HEADER_ID
+#endif
 
-#endif /* __THREAD_H */
+#endif /* _STLP_THREAD */
