@@ -16,15 +16,7 @@
 #ifndef _STLP_INTERNAL_CCTYPE
 #define _STLP_INTERNAL_CCTYPE
 
-#if defined (_STLP_USE_NEW_C_HEADERS)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cctype>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cctype)
-#  endif
-#else
-#  include <ctype.h>
-#endif /* _STLP_USE_NEW_C_HEADERS */
+#include <ctype.h>
 
 #if ! defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 #  if defined ( _STLP_IMPORT_VENDOR_CSTD )

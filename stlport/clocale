@@ -27,14 +27,6 @@
 #  endif
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x109) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <clocale>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(clocale)
-#  endif
-#endif
-
 #if (_STLP_OUTERMOST_HEADER_ID == 0x109)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID

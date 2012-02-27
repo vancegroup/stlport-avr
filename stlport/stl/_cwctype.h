@@ -21,25 +21,7 @@
 #endif
 
 #if !defined (_STLP_WCE_EVC3)
-#  if defined (_STLP_USE_NEW_C_HEADERS)
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <cwctype>
-#    else
-#      include _STLP_NATIVE_CPP_C_HEADER(cwctype)
-#    endif
-#    if defined (__MSL__)
-namespace std {
-  typedef wchar_t wctrans_t;
-  wint_t towctrans(wint_t c, wctrans_t value);
-  wctrans_t wctrans(const char *name);
-}
-using std::wctrans_t;
-using std::towctrans;
-using std::wctrans;
-#    endif
-#  else
-#    include <wctype.h>
-#  endif
+#  include <wctype.h>
 
 #  if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (__hpux)
 

@@ -14,24 +14,16 @@
  */
 
 #ifndef _STLP_CSETJMP
+#define _STLP_CSETJMP
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x111
-#  define _STLP_CSETJMP
 #  include <stl/_prolog.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x111)
 #  ifndef _STLP_INTERNAL_CSETJMP
 #    include <stl/_csetjmp.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x111) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <csetjmp>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(csetjmp)
 #  endif
 #endif
 

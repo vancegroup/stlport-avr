@@ -23,19 +23,11 @@
 #  define _STLP_DONT_POP_HEADER_ID
 #endif
 
-#ifdef _STLP_USE_NEW_C_HEADERS
-#  ifdef _STLP_HAS_INCLUDE_NEXT
-#    include_next <cstdint>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdint)
-#  endif
-#else // _STLP_USE_NEW_C_HEADERS
 #  include <stdint.h>
 
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x119) && !defined(_STLP_INTERNAL_CSTDINT)
 #    include "stl/_cstdint.h"
 #  endif
-#endif // _STLP_USE_NEW_C_HEADERS
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x119)
 #  ifndef _STLP_DONT_POP_HEADER_ID

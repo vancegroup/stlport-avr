@@ -14,24 +14,16 @@
  */
 
 #ifndef _STLP_NEW_HEADER
+#define _STLP_NEW_HEADER
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x447
-#  define _STLP_NEW_HEADER
 #  include <stl/_prolog.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x447)
 #  ifndef _STLP_NEW_H_HEADER
 #    include <stl/_new.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x447) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <new>
-#  else
-#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
 #  endif
 #endif
 

@@ -18,25 +18,10 @@
 
 // if the macro is on, the header is already there
 #if !defined (setjmp)
-#  if defined (_STLP_USE_NEW_C_HEADERS)
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <csetjmp>
-#    else
-#      include _STLP_NATIVE_CPP_C_HEADER(csetjmp)
-#    endif
-#  else
-#    include <setjmp.h>
-#  endif
+#  include <setjmp.h>
 #endif
 
 #if defined (_STLP_IMPORT_VENDOR_CSTD)
-
-#  if defined (__BORLANDC__) && defined (_STLP_USE_NEW_C_HEADERS)
-/* For Borland, even if stdjmp.h is included symbols won't be in global namespace
- * so we need to reach them in vendor namespace:
- */
-#    undef _STLP_NATIVE_SETJMP_H_INCLUDED
-#  endif
 
 _STLP_BEGIN_NAMESPACE
 #  if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED)

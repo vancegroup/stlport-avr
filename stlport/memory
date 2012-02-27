@@ -17,13 +17,13 @@
  */
 
 #ifndef _STLP_MEMORY
+#define _STLP_MEMORY
 
 #include <type_traits>
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x46
 #  include <stl/_prolog.h>
-#  define _STLP_MEMORY
 #endif
 
 #ifndef _STLP_INTERNAL_ALLOC_H

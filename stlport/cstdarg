@@ -14,24 +14,16 @@
  */
 
 #ifndef _STLP_CSTDARG
+#define _STLP_CSTDARG
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x113
-#  define _STLP_CSTDARG
 #  include <stl/_prolog.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x113)
 #  ifndef _STLP_INTERNAL_CSTDARG
 #    include <stl/_cstdarg.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x113) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cstdarg>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdarg)
 #  endif
 #endif
 

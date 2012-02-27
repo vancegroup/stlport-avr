@@ -16,33 +16,7 @@
 #ifndef _STLP_INTERNAL_CMATH
 #define _STLP_INTERNAL_CMATH
 
-/* gcc do not like when a using directive appear after a function
- * declaration. cmath have abs overloads and cstdlib a using directive
- * so cstdlib has to be included first.
- */
-#if defined (__GNUC__) && defined (_STLP_USE_NEW_C_HEADERS)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cstdlib>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
-#  endif
-#endif
-
-#if defined (_STLP_USE_NEW_C_HEADERS)
-#  if defined (_STLP_HAS_NO_NAMESPACES) && !defined (exception)
-#    define exception __math_exception
-#  endif
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cmath>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cmath)
-#  endif
-#  if defined (_STLP_HAS_NO_NAMESPACES)
-#    undef exception
-#  endif
-#else
-#  include <math.h>
-#endif
+#include <math.h>
 
 #if (defined (__SUNPRO_CC) && (__SUNPRO_CC > 0x500)) || \
      !(defined (__IBMCPP__) && (__IBMCPP__ >= 500) || !(defined(__HP_aCC) && (__HP_aCC >= 30000) ))

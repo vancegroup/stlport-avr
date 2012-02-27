@@ -17,6 +17,7 @@
  */
 
 #ifndef _STLP_BITSET
+#define _STLP_BITSET
 
 // This implementation of bitset<> has a second template parameter,
 // _WordT, which defaults to unsigned long.  *YOU SHOULD NOT USE
@@ -41,20 +42,11 @@
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x2
 #  include <stl/_prolog.h>
-#  define _STLP_BITSET
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x2)
 #  ifndef _STLP_INTERNAL_BITSET
 #    include <stl/_bitset.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x2) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <bitset>
-#  else
-#    include _STLP_NATIVE_HEADER(bitset)
 #  endif
 #endif
 

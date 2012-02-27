@@ -24,15 +24,7 @@
 #  endif
 #endif
 
-#if defined (_STLP_USE_NEW_C_HEADERS)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cstdio>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdio)
-#  endif
-#else
-#  include <stdio.h>
-#endif
+#include <stdio.h>
 
 #if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 inline int vsnprintf(char *s1, size_t n, const char *s2, va_list v)

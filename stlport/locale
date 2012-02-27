@@ -16,17 +16,16 @@
  *
  */
 #ifndef _STLP_LOCALE
+#define _STLP_LOCALE
 
 // Basic framework: class locale and class locale::facet
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1041
 #  include <stl/_prolog.h>
-#  define _STLP_LOCALE
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x1041) && \
-   !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1041)
 #  include <stl/_ioserr.h>
 
 // Individual facets
@@ -133,14 +132,6 @@ inline _CharT tolower(_CharT c, const locale& loc)
 
 _STLP_END_NAMESPACE
 
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x1041) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <locale>
-#  else
-#    include _STLP_NATIVE_HEADER(locale)
-#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1041)

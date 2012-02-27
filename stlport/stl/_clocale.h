@@ -18,15 +18,7 @@
 
 #if !defined (_STLP_WCE_EVC3)
 
-#  if defined (_STLP_USE_NEW_C_HEADERS)
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <clocale>
-#    else
-#      include _STLP_NATIVE_CPP_C_HEADER(clocale)
-#    endif
-#  else
-#    include <locale.h>
-#  endif
+#  include <locale.h>
 
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)
 _STLP_BEGIN_NAMESPACE

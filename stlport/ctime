@@ -29,14 +29,6 @@
 #  endif
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x118) || defined (_STLP_DONT_POP_HEADER_ID) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <ctime>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(ctime)
-#  endif
-#endif
-
 #if (_STLP_OUTERMOST_HEADER_ID == 0x118)
 #  if !defined (_STLP_DONT_POP_HEADER_ID)
 #    include <stl/_epilog.h>

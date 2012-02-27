@@ -16,15 +16,7 @@
 #ifndef _STLP_INTERNAL_CSTDLIB
 #define _STLP_INTERNAL_CSTDLIB
 
-#if defined (_STLP_USE_NEW_C_HEADERS)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cstdlib>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
-#  endif
-#else
-#  include <stdlib.h>
-#endif
+#include <stdlib.h>
 
 #if defined (__BORLANDC__) && !defined (__linux__)
 /* Borland process.h header do not bring anything here and is just included

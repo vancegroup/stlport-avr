@@ -14,10 +14,10 @@
  */
 
 #ifndef _STLP_CSTDLIB
+#define _STLP_CSTDLIB
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x116
-#  define _STLP_CSTDLIB
 #  include <stl/_prolog.h>
 #endif
 
@@ -31,14 +31,6 @@
 #if (_STLP_OUTERMOST_HEADER_ID == 0x116)
 #  ifndef _STLP_INTERNAL_CSTDLIB
 #    include <stl/_cstdlib.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x116) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cstdlib>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
 #  endif
 #endif
 

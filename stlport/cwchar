@@ -14,24 +14,16 @@
  */
 
 #ifndef _STLP_CWCHAR
+#define _STLP_CWCHAR
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x120
-#  define _STLP_CWCHAR
 #  include <stl/_prolog.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x120)
 #  ifndef _STLP_INTERNAL_CWCHAR
 #    include <stl/_cwchar.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x120) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cwchar>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cwchar)
 #  endif
 #endif
 

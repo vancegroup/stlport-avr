@@ -17,15 +17,14 @@
  */
 
 #ifndef _STLP_IOSTREAM
+#define _STLP_IOSTREAM
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1037
 #  include <stl/_prolog.h>
-#  define _STLP_IOSTREAM
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x1037) && \
-   !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1037)
 #  include <stl/_ioserr.h>
 
 #  ifdef _STLP_REDIRECT_STDSTREAMS
@@ -82,14 +81,6 @@ extern _STLP_DECLSPEC wostream wclog;
 
 _STLP_END_NAMESPACE
 
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x1037) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <iostream>
-#  else
-#    include _STLP_NATIVE_HEADER(iostream)
-#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1037)

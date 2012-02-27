@@ -24,24 +24,16 @@
  */
 
 #ifndef _STLP_SET
+#define _STLP_SET
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x55
 #  include <stl/_prolog.h>
-#  define _STLP_SET
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x55)
 #  ifndef _STLP_INTERNAL_SET_H
 #    include <stl/_set.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x55) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <set>
-#  else
-#    include _STLP_NATIVE_HEADER(set)
 #  endif
 #endif
 

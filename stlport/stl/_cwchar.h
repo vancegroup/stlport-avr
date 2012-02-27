@@ -21,29 +21,8 @@
 #    include <stl/_mbstate_t.h>
 #  endif
 #else
-#  if defined (__GNUC__)
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <cstddef>
-#    else
-#      include _STLP_NATIVE_CPP_C_HEADER(cstddef)
-#    endif
-#  endif
 
-#  if !defined (_STLP_NO_CWCHAR) && defined (_STLP_USE_NEW_C_HEADERS)
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <cwchar>
-#    else
-#      include _STLP_NATIVE_CPP_C_HEADER(cwchar)
-#    endif
-#    if defined (__OpenBSD__)
-typedef _BSD_WINT_T_ wint_t;
-#    endif /* __OpenBSD__ */
-
-#    if defined (__DMC__)
-#      define __STDC_LIMIT_MACROS
-#      include <stdint.h> // WCHAR_MIN, WCHAR_MAX
-#    endif
-#  elif defined (_STLP_NO_WCHAR_T) || \
+#  if defined (_STLP_NO_WCHAR_T) || \
        (defined (__BORLANDC__) && (__BORLANDC__ < 0x570)) || \
         defined (__OpenBSD__) || defined (__FreeBSD__) || \
        (defined (__GNUC__) && (defined (__APPLE__) || defined ( __Lynx__ )))

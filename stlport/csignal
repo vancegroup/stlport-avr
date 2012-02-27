@@ -14,24 +14,16 @@
  */
 
 #ifndef _STLP_CSIGNAL
+#define _STLP_CSIGNAL
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x112
-#  define _STLP_CSIGNAL
 #  include <stl/_prolog.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x112)
 #  ifndef _STLP_INTERNAL_CSIGNAL
 #    include <stl/_csignal.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x112) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <csignal>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(csignal)
 #  endif
 #endif
 

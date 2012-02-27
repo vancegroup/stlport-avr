@@ -17,11 +17,11 @@
  */
 
 #ifndef _STLP_STRING
+#define _STLP_STRING
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x68
 #  include <stl/_prolog.h>
-#  define _STLP_STRING
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x68)
@@ -35,14 +35,6 @@
 
 #  if !defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_STRING_IO_H)
 #    include <stl/_string_io.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x68) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <string>
-#  else
-#    include _STLP_NATIVE_HEADER(string)
 #  endif
 #endif
 

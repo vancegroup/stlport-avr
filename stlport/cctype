@@ -14,24 +14,16 @@
  */
 
 #ifndef _STLP_CCTYPE
+#define _STLP_CCTYPE
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x104
-#  define _STLP_CCTYPE
 #  include <stl/_prolog.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x104 )
 #  ifndef _STLP_INTERNAL_CCTYPE
 #    include <stl/_cctype.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x104) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cctype>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cctype)
 #  endif
 #endif
 

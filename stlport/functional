@@ -17,24 +17,16 @@
  */
 
 #ifndef _STLP_FUNCTIONAL
+#define _STLP_FUNCTIONAL
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x27
 #  include <stl/_prolog.h>
-#  define _STLP_FUNCTIONAL
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x27)
 #  ifndef _STLP_INTERNAL_FUNCTION_H
 #    include <stl/_function.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x27) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <functional>
-#  else
-#    include _STLP_NATIVE_HEADER(functional)
 #  endif
 #endif
 

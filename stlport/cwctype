@@ -14,25 +14,15 @@
  */
 
 #ifndef _STLP_CWCTYPE
+#define _STLP_CWCTYPE
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x121
-#  define _STLP_CWCTYPE
 #  include <stl/_prolog.h>
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x121)
-#  ifndef _STLP_INTERNAL_CWCTYPE
-#    include <stl/_cwctype.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x121) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <cwctype>
-#  else
-#    include _STLP_NATIVE_CPP_C_HEADER(cwctype)
-#  endif
+#ifndef _STLP_INTERNAL_CWCTYPE
+#  include <stl/_cwctype.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x121)

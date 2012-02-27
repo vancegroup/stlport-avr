@@ -24,24 +24,16 @@
  */
 
 #ifndef _STLP_LIST
+#define _STLP_LIST
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x40
 #  include <stl/_prolog.h>
-#  define _STLP_LIST
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x40)
 #  ifndef _STLP_INTERNAL_LIST_H
 #    include <stl/_list.h>
-#  endif
-#endif
-
-#if (_STLP_OUTERMOST_HEADER_ID != 0x40) || defined (_STLP_IMPORT_VENDOR_STD)
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <list>
-#  else
-#    include _STLP_NATIVE_HEADER(list)
 #  endif
 #endif
 
