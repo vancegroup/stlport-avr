@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 17:07:07 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:27:51 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <cstdlib>
 
+#include <string>
 #include <mutex>
 #include <thread>
 #include <callstack.h>
@@ -73,17 +74,17 @@ static pid_t _pid  = syscall( SYS_getpid );
 static pid_t _ppid = syscall( SYS_getppid );
 #endif // __FIT_SYSCALL
 
-#ifdef __FIT_PSHARED_MUTEX
-_STLP_STD::string _notpshared( "Platform not support process shared mutex" );
+#ifdef _STLP_PSHARED_MUTEX
+_STLP_DECLSPEC _STLP_STD::string _notpshared( "Platform not support process shared mutex" );
 #endif
 
-#ifdef __FIT_XSI_THR
-_STLP_STD::string _notrecursive( "Platform not support recursive mutex" );
+#ifdef _STLP_XSI_THR
+_STLP_DECLSPEC _STLP_STD::string _notrecursive( "Platform not support recursive mutex" );
 #endif
 
 } // namespace detail
-} // namespace tr2
-} // namespace std
+
+_STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
@@ -91,8 +92,8 @@ defer_lock_t defer_lock;
 try_to_lock_t try_to_lock;
 adopt_lock_t adopt_lock;
 
-const std::string msg1( "Can't create thread" );
-const std::string msg2( "Can't fork" );
+const _STLP_STD::string msg1( "Can't create thread" );
+const _STLP_STD::string msg2( "Can't fork" );
 
 // _STLP_DECLSPEC
 // void signal_throw( int sig ) throw( int )
@@ -114,33 +115,29 @@ static const thread_base::native_handle_type _bad_thread_id = static_cast<thread
 # endif // !(__FreeBSD__ || __OpenBSD__)
 #endif // __FIT_UITHREADS || _PTHREADS
 
-thread_base::id::id() :
+_STLP_DECLSPEC thread_base::id::id() :
     _id( _bad_thread_id )
 { }
 
-_STLP_DECLSPEC
-thread_base::thread_base() :
+_STLP_DECLSPEC thread_base::thread_base() :
     _id( _bad_thread_id )
 {
 }
 
-_STLP_DECLSPEC
-thread_base::~thread_base()
+_STLP_DECLSPEC thread_base::~thread_base()
 {
   if ( joinable() ) {
     thread_base::join();
   }
 }
 
-_STLP_DECLSPEC
-bool thread_base::joinable() const // if true, you can (and should) use join()
+_STLP_DECLSPEC bool thread_base::joinable() const // if true, you can (and should) use join()
 {
   lock_guard<mutex> lk( _id_lock );
   return (_id != _bad_thread_id);
 }
 
-_STLP_DECLSPEC
-void thread_base::join()
+_STLP_DECLSPEC void thread_base::join()
 {
 #ifdef _STLP_WIN32THREADS
   ret_t rt = 0;
@@ -157,8 +154,7 @@ void thread_base::join()
 #endif // PTHREADS
 }
 
-_STLP_DECLSPEC
-void thread_base::detach()
+_STLP_DECLSPEC void thread_base::detach()
 {
 #ifdef _STLP_PTHREADS
   lock_guard<mutex> lk( _id_lock );
@@ -169,7 +165,7 @@ void thread_base::detach()
 #endif
 }
 
-thread_base::id get_id()
+_STLP_DECLSPEC thread_base::id get_id()
 {
 #ifdef _STLP_PTHREADS
   return thread_base::id( pthread_self() );
@@ -194,7 +190,8 @@ std::thread_base::id get_id()
 }
 #endif // 0
 
-__FIT_DECLSPEC
+#if 0
+_STLP_DECLSPEC
 void sleep( const std::tr2::system_time& abstime )
 {
   std::tr2::system_time ct = std::tr2::get_system_time();
@@ -225,6 +222,7 @@ void sleep( const std::tr2::nanoseconds& rel_t )
   t.tv_nsec = rel_t.count() % std::tr2::nanoseconds::ticks_per_second;
   ::nanosleep( const_cast<const ::timespec *>(&t), 0 );
 }
+#endif // 0
 
 } // namespace this_thread
 

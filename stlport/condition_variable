@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 17:23:13 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 20:43:19 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -584,7 +584,7 @@ class __semaphore
 #ifdef _STLP_WIN32THREADS
         CloseHandle( _sem );
 #endif
-#ifdef __FIT__PTHREADS
+#ifdef _STLP_PTHREADS
         sem_destroy( &_sem );
 #endif        
       }

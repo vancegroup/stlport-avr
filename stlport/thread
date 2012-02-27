@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 17:14:00 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:30:36 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -75,7 +75,7 @@ class thread_base
 // #endif
 
       public:
-        id();
+        _STLP_DECLSPEC id();
 
         bool operator == ( const thread_base::id& r ) const
           { return _id == r._id; }
@@ -130,16 +130,16 @@ class thread_base
     native_handle_type native_handle()
       { return _id; }
 
-    bool joinable() const; // if true, you can (and should) use join()
+    _STLP_DECLSPEC bool joinable() const; // if true, you can (and should) use join()
     id get_id() const
       { return id(_id); }
-    void detach();
+    _STLP_DECLSPEC void detach();
 
   protected:
     void print_stack()
       {
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
-        std::stringstream s;
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
+        _STLP_STD::stringstream s;
         callstack( s );
 
         std::cerr << "Suspected uncatched exception, threas id " << me._id
@@ -156,12 +156,12 @@ class thread_base
     native_handle_type _id;
 
   private:
-    mutex _id_lock;
+    _STLP_STD::mutex _id_lock;
 #ifdef _STLP_WIN32THREADS
     unsigned long _thr_id;
 #endif
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
-    std::string _stack_on_create;
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
+    _STLP_STD::string _stack_on_create;
 #endif
     friend class Init;
     // friend _STLP_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
@@ -195,7 +195,7 @@ class basic_thread :
           // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
         }
         _entry = static_cast<void *>( new Entry( e ) );
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
           std::stringstream s;
@@ -244,7 +244,7 @@ class basic_thread :
         _entry = static_cast<void *>(new void *[2]);
         static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
         static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
+#ifdef __STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
           std::stringstream s;
@@ -279,7 +279,7 @@ class basic_thread :
          }
       }
 
-#ifdef __FIT_CPP_0X
+#ifdef _STLP_CPP_0X
     basic_thread( const basic_thread& ) = delete;
 #else
   private:
@@ -348,9 +348,9 @@ class basic_thread<0,0> :
     template <class Entry>
     basic_thread( Entry e )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         _entry = static_cast<void *>( new Entry( e ) );
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
           std::stringstream s;
@@ -373,7 +373,7 @@ class basic_thread<0,0> :
         _entry = static_cast<void *>(new void *[2]);
         static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
         static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
           std::stringstream s;
@@ -394,7 +394,7 @@ class basic_thread<0,0> :
     ~basic_thread()
       { }
 
-#ifdef __FIT_CPP_0X
+#ifdef _STLP_CPP_0X
     basic_thread( const basic_thread& ) = delete;
 #else
   private:
@@ -452,7 +452,7 @@ class basic_thread<0,S> :
     template <class Entry>
     basic_thread( Entry e )
       {
-#ifdef __FIT_PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_attr_t attr;
         pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
         // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
@@ -460,7 +460,7 @@ class basic_thread<0,S> :
         // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
         // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
         _entry = static_cast<void *>( new Entry( e ) );
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
           std::stringstream s;
@@ -490,7 +490,7 @@ class basic_thread<0,S> :
         _entry = static_cast<void *>(new void *[2]);
         static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
         static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
-#ifdef __FIT_CREATE_THREAD_STACK_INFO
+#ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
           std::stringstream s;
@@ -512,7 +512,7 @@ class basic_thread<0,S> :
     ~basic_thread()
       { }
 
-#ifdef __FIT_CPP_0X
+#ifdef _STLP_CPP_0X
     basic_thread( const basic_thread& ) = delete;
 #else
   private:
@@ -534,7 +534,7 @@ class basic_thread<0,S> :
          }
          catch ( ... ) {
            me.print_stack();
-           std::terminate();
+           _STLP_STD::terminate();
          }
 
          return 0;
@@ -555,7 +555,7 @@ class basic_thread<0,S> :
          }
          catch ( ... ) {
            me.print_stack();
-           std::terminate();
+           _STLP_STD::terminate();
          }
 
          return 0;
@@ -565,10 +565,10 @@ class basic_thread<0,S> :
 typedef basic_thread<0,0> thread;
 
 // trick to declare thread_base::id get_id() as friend in thread_base::id
-thread_base::id get_id();
+_STLP_DECLSPEC thread_base::id get_id();
 
-pid_t getpid();
-pid_t getppid();
+//pid_t getpid();
+//pid_t getppid();
 
 namespace this_thread
 {
