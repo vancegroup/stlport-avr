@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 17:41:47 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:46:17 ptr>
 
 /*
  * Copyright (c) 2007-2012
@@ -374,22 +374,22 @@ struct is_error_condition_enum<posix_error::posix_errno> :
 
 namespace posix_error {
 
-error_code make_error_code( posix_errno err );
-error_condition make_error_condition( posix_errno err );
+_STLP_DECLSPEC error_code make_error_code( posix_errno err );
+_STLP_DECLSPEC error_condition make_error_condition( posix_errno err );
 
 } // namespace posix_error
 
-bool operator ==(const error_code& l, const error_code& r );
-bool operator ==(const error_code& l, const error_condition& r );
-bool operator ==(const error_condition& l, const error_code& r );
-bool operator ==(const error_condition& l, const error_condition& r );
+_STLP_DECLSPEC bool operator ==(const error_code& l, const error_code& r );
+_STLP_DECLSPEC bool operator ==(const error_code& l, const error_condition& r );
+_STLP_DECLSPEC bool operator ==(const error_condition& l, const error_code& r );
+_STLP_DECLSPEC bool operator ==(const error_condition& l, const error_condition& r );
 
-bool operator !=(const error_code& l, const error_code& r );
-bool operator !=(const error_code& l, const error_condition& r );
-bool operator !=(const error_condition& l, const error_code& r );
-bool operator !=(const error_condition& l, const error_condition& r );
+_STLP_DECLSPEC bool operator !=(const error_code& l, const error_code& r );
+_STLP_DECLSPEC bool operator !=(const error_code& l, const error_condition& r );
+_STLP_DECLSPEC bool operator !=(const error_condition& l, const error_code& r );
+_STLP_DECLSPEC bool operator !=(const error_condition& l, const error_condition& r );
 
-class error_category
+class _STLP_CLASS_DECLSPEC error_category
 {
   public:
     virtual ~error_category();
@@ -412,8 +412,8 @@ class error_category
     bool operator <( const error_category& ) const;
 };
 
-const error_category& get_posix_category();
-const error_category& get_system_category();
+_STLP_DECLSPEC const error_category& get_posix_category();
+_STLP_DECLSPEC const error_category& get_system_category();
 
 static const error_category& posix_category = get_posix_category();
 static const error_category& native_category = get_system_category();
@@ -421,13 +421,13 @@ static const error_category& native_category = get_system_category();
 class error_condition
 {
   public:
-    error_condition();
-    error_condition( int val, const error_category& category );
+    _STLP_DECLSPEC error_condition();
+    _STLP_DECLSPEC error_condition( int val, const error_category& category );
     template <class ErrorConditionEnum>
     error_condition( ErrorConditionEnum err,
                      typename _STLP_STD::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
 
-    void assign( int val, const error_category& category );
+    _STLP_DECLSPEC void assign( int val, const error_category& category );
     template <class ErrorConditionEnum>
     typename _STLP_STD::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
     void clear();
@@ -446,17 +446,17 @@ class error_condition
     const error_category* c;
 };
 
-bool operator <( const error_condition&, const error_condition& );
+_STLP_DECLSPEC bool operator <( const error_condition&, const error_condition& );
 
 class error_code
 {
   public:
-    error_code();
-    error_code( int val, const error_category& );
+    _STLP_DECLSPEC error_code();
+    _STLP_DECLSPEC error_code( int val, const error_category& );
     template <class ErrorCodeEnum>
     error_code( ErrorCodeEnum err, typename _STLP_STD::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
 
-    void assign( int val, const error_category& );
+    _STLP_DECLSPEC void assign( int val, const error_category& );
     template <class ErrorCodeEnum>
     typename _STLP_STD::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
     void clear();
@@ -477,13 +477,13 @@ class error_code
     const error_category* c;
 };
 
-bool operator <( const error_code&, const error_code& );
+_STLP_DECLSPEC bool operator <( const error_code&, const error_code& );
 
 template <class charT, class traits>
 basic_ostream<charT,traits>& operator <<( basic_ostream<charT,traits>& os, const error_code& e )
 { return os << e.category().name() << ':' << e.value(); }
 
-class system_error :
+class _STLP_CLASS_DECLSPEC system_error :
     public runtime_error
 {
   public:
@@ -509,7 +509,7 @@ class system_error :
 
 _STLP_END_NAMESPACE
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x8)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x9)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
 #endif

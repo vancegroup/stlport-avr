@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 17:45:54 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:47:16 ptr>
 
 /*
  * Copyright (c) 2007-2012
@@ -19,46 +19,20 @@
 
 #include <cerrno>
 #include "callstack.h"
-#include <sstream>
-#include <iostream>
+#include <string>
 #include <cstdlib>
 #include <cstring>
 
 #include <vector>
-// #include <typeinfo>
 
 #include <system_error>
-
-#if 0
-#ifdef STLPORT
-#  include <unordered_map>
-#  include <unordered_set>
-// #  include <hash_map>
-// #  include <hash_set>
-// #  define __USE_STLPORT_HASH
-#  define __USE_STLPORT_TR1
-#else
-#  if defined(__GNUC__) && (__GNUC__ < 4)
-#    include <ext/hash_map>
-#    include <ext/hash_set>
-#    define __USE_STD_HASH
-#  else
-#    include <tr1/unordered_map>
-#    include <tr1/unordered_set>
-#    define __USE_STD_TR1
-#  endif
-#endif
-
-#ifdef __USE_STLPORT_HASH
-typedef std::hash_map<error_catalog::value_type,char *> _sys_err_vector_type;
-#endif
-#endif // 0
+// #include <typeinfo>
 
 namespace detail {
 
 struct _SysErrInit
 {
-    typedef std::vector<const char *> container_type;
+    typedef _STLP_STD::vector<const char *> container_type;
 
     _SysErrInit();
 
@@ -827,14 +801,14 @@ _SysErrInit::_SysErrInit() :
 
 static _SysErrInit _syserr;
 
-static const std::string _unknown( "Code not specified in this category" );
+static const _STLP_STD::string _unknown( "Code not specified in this category" );
 
 class posix_error_category :
-    public std::error_category
+    public _STLP_STD::error_category
 {
   public:
     virtual const char* name() const;
-    virtual std::string message( int err ) const;
+    virtual _STLP_STD::string message( int err ) const;
 };
 
 const char* posix_error_category::name() const
@@ -845,7 +819,7 @@ const char* posix_error_category::name() const
 _STLP_STD::string posix_error_category::message( int err ) const
 {
   // bad: allocation present, so no memory may happens...
-  return (err >= 0) && (err <= _syserr._last_value) && (_syserr._sys_err[err] != 0) ? std::string( _syserr._sys_err[err] ) : _unknown;
+  return (err >= 0) && (err <= _syserr._last_value) && (_syserr._sys_err[err] != 0) ? _STLP_STD::string( _syserr._sys_err[err] ) : _unknown;
 }
 
 class system_error_category :
@@ -865,7 +839,7 @@ const char* system_error_category::name() const
 _STLP_STD::string system_error_category::message( int err ) const
 {
   // bad: allocation present, so no memory may happens...
-  return (err >= 0) && (err <= _syserr._last_value) && (_syserr._sys_err[err] != 0) ? std::string( _syserr._sys_err[err] ) : _unknown;
+  return (err >= 0) && (err <= _syserr._last_value) && (_syserr._sys_err[err] != 0) ? _STLP_STD::string( _syserr._sys_err[err] ) : _unknown;
 }
 
 static posix_error_category _posix_error_category;
@@ -910,33 +884,33 @@ bool error_category::operator <( const error_category& cat ) const
   return this < &cat;
 }
 
-const error_category& get_posix_category()
+_STLP_DECLSPEC const error_category& get_posix_category()
 {
   return ::detail::_posix_error_category;
 }
 
-const error_category& get_system_category()
+_STLP_DECLSPEC const error_category& get_system_category()
 {
   return ::detail::_system_error_category;
 }
 
-error_code::error_code() :
+_STLP_DECLSPEC error_code::error_code() :
     v( 0 ),
     c( &::detail::_system_error_category )
 { }
 
-error_code::error_code( int val, const error_category& cat ) :
+_STLP_DECLSPEC error_code::error_code( int val, const error_category& cat ) :
     v( val ),
     c( &cat )
 { }
 
-void error_code::assign( int val, const error_category& cat )
+_STLP_DECLSPEC void error_code::assign( int val, const error_category& cat )
 {
   v = val;
   c = &cat;
 }
 
-void error_code::clear()
+_STLP_DECLSPEC void error_code::clear()
 {
   v = 0;
   c = &::detail::_system_error_category;
@@ -944,68 +918,68 @@ void error_code::clear()
 
 namespace posix_error {
 
-error_code make_error_code( posix_errno err )
+_STLP_DECLSPEC error_code make_error_code( posix_errno err )
 { return error_code( err, ::detail::_posix_error_category ); }
 
-error_condition make_error_condition( posix_errno err )
+_STLP_DECLSPEC error_condition make_error_condition( posix_errno err )
 { return error_condition( err, ::detail::_posix_error_category ); }
 
 } // namespace posix_error
 
-bool operator <( const error_code& l, const error_code& r )
+_STLP_DECLSPEC bool operator <( const error_code& l, const error_code& r )
 {
   return l.category() == r.category() ? l.value() < r.value() : l.category() < r.category();
 }
 
-error_condition::error_condition() :
+_STLP_DECLSPEC error_condition::error_condition() :
     v( 0 ),
     c( &::detail::_posix_error_category )
 { }
 
-error_condition::error_condition( int val, const error_category& cat ) :
+_STLP_DECLSPEC error_condition::error_condition( int val, const error_category& cat ) :
     v( val ),
     c( &cat )
 { }
 
-void error_condition::assign( int val, const error_category& cat )
+_STLP_DECLSPEC void error_condition::assign( int val, const error_category& cat )
 {
   v = val;
   c = &cat;
 }
 
-void error_condition::clear()
+_STLP_DECLSPEC void error_condition::clear()
 {
   v = 0;
   c = &::detail::_posix_error_category;
 }
 
-bool operator <( const error_condition& l, const error_condition& r )
+_STLP_DECLSPEC bool operator <( const error_condition& l, const error_condition& r )
 {
   return l.category() == r.category() ? l.value() < r.value() : l.category() < r.category();
 }
 
-bool operator ==( const error_code& l, const error_code& r )
+_STLP_DECLSPEC bool operator ==( const error_code& l, const error_code& r )
 { return l.category() == r.category() && l.value() == r.value(); }
 
-bool operator ==( const error_code& l, const error_condition& r )
+_STLP_DECLSPEC bool operator ==( const error_code& l, const error_condition& r )
 { return l.category().equivalent( l.value(), r ) || r.category().equivalent( l, r.value() ); }
 
-bool operator ==( const error_condition& l, const error_code& r )
+_STLP_DECLSPEC bool operator ==( const error_condition& l, const error_code& r )
 { return r.category().equivalent( r.value(), l ) || l.category().equivalent( r, l.value() ); }
 
-bool operator ==( const error_condition& l, const error_condition& r )
+_STLP_DECLSPEC bool operator ==( const error_condition& l, const error_condition& r )
 { return l.category() == r.category() && l.value() == r.value(); }
 
-bool operator !=( const error_code& l, const error_code& r )
+_STLP_DECLSPEC bool operator !=( const error_code& l, const error_code& r )
 { return !(l == r); }
 
-bool operator !=( const error_code& l, const error_condition& r )
+_STLP_DECLSPEC bool operator !=( const error_code& l, const error_condition& r )
 { return !(l == r); }
 
-bool operator !=( const error_condition& l, const error_code& r )
+_STLP_DECLSPEC bool operator !=( const error_condition& l, const error_code& r )
 { return !(l == r); }
 
-bool operator !=( const error_condition& l, const error_condition& r )
+_STLP_DECLSPEC bool operator !=( const error_condition& l, const error_condition& r )
 { return !(l == r); }
 
 // char _stack_buf[4096];

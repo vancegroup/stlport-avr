@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 17:24:28 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-27 21:24:41 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -64,12 +64,12 @@ class lock_error :
 
 namespace detail {
 
-#ifdef __FIT_PSHARED_MUTEX
-extern std::string _notpshared;
+#ifdef _STLP_PSHARED_MUTEX
+extern _STLP_DECLSPEC _STLP_STD::string _notpshared;
 #endif
 
-#ifdef __FIT_XSI_THR
-extern std::string _notrecursive;
+#ifdef _STLP_XSI_THR
+extern _STLP_DECLSPEC _STLP_STD::string _notrecursive;
 #endif
 
 } // namespace detail
@@ -94,19 +94,19 @@ class __mutex_base
         if ( SCOPE || RECURSIVE_SAFE ) {
           pthread_mutexattr_t att;
           pthread_mutexattr_init( &att );
-# ifdef __FIT_PSHARED_MUTEX
+# ifdef _STLP_PSHARED_MUTEX
           if ( SCOPE ) {
             int ret = pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
             if ( ret != 0 ) {
-              throw std::system_error( ret, std::get_posix_category(), detail::_notpshared );
+              throw _STLP_STD::system_error( ret, _STLP_STD::get_posix_category(), detail::_notpshared );
             }
           }
-# endif // __FIT_PSHARED_MUTEX
-# ifdef __FIT_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
+# endif // _STLP_PSHARED_MUTEX
+# ifdef _STLP_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
           if ( RECURSIVE_SAFE ) {
             int ret = pthread_mutexattr_settype( &att, PTHREAD_MUTEX_RECURSIVE );
             if ( ret != 0 ) {
-              throw std::system_error( ret, std::get_posix_category(), detail::_notrecursive );
+              throw _STLP_STD::system_error( ret, _STLP_STD::get_posix_category(), detail::_notrecursive );
             }
           }
 # endif
@@ -163,7 +163,7 @@ class __mutex_base
 #endif
 };
 
-#ifdef __FIT_PTHREAD_SPINLOCK
+#ifdef _STLP_PTHREAD_SPINLOCK
 
 // The IEEE Std. 1003.1j-2000 introduces functions to implement spinlocks.
 template <bool SCOPE>
@@ -197,7 +197,7 @@ class __spinlock_base
 #endif
 };
 
-#endif // __FIT_PTHREAD_SPINLOCK
+#endif // _STLP_PTHREAD_SPINLOCK
 
 // Portable mutex implementation. If the parameter RECURSIVE_SAFE
 // is true, mutex will be recursive safe (detect deadlock).
@@ -276,7 +276,7 @@ class __mutex :
 #endif
 };
 
-#ifdef __FIT_PTHREAD_SPINLOCK
+#ifdef _STLP_PTHREAD_SPINLOCK
 // Spinlock-based locks (IEEE Std. 1003.1j-2000)
 
 template <bool RS, bool SCOPE> class __spinlock;
@@ -401,7 +401,7 @@ class __spinlock<true,SCOPE> : //  Recursive safe
     __spinlock( const __spinlock& )
       { }
 };
-#endif // __FIT_PTHREAD_SPINLOCK
+#endif // _STLP_PTHREAD_SPINLOCK
 
 // Recursive Safe mutex.
 
@@ -411,7 +411,7 @@ class __spinlock<true,SCOPE> : //  Recursive safe
 // (or XSI---X/Open System Interfaces Extention) has recursive mutex option.
 // Another specialization?
 
-#if (defined(__unix) && !defined(__FIT_XSI_THR))
+#if (defined(__unix) && !defined(_STLP_XSI_THR))
 
 // This specialization need for old POSIX and DCE threads,
 // before XSI (X/Open System Interfaces Extention) or Unix 98.
@@ -506,9 +506,9 @@ class __mutex<true,SCOPE> : // Recursive Safe
     pthread_t _id;
 # endif
 };
-#endif // __unix && !__FIT_XSI_THR
+#endif // __unix && !_STLP_XSI_THR
 
-#ifdef __FIT_RWLOCK
+#ifdef _STLP_RWLOCK
 // Read-write mutex: IEEE Std 1003.1, 2001, 2004 Editions
 
 template <bool SCOPE>
@@ -521,12 +521,12 @@ class __rw_mutex_base
         if ( SCOPE ) {
           pthread_rwlockattr_t att;
           pthread_rwlockattr_init( &att );
-# ifdef __FIT_PSHARED_MUTEX
+# ifdef _STLP_PSHARED_MUTEX
           int ret = pthread_rwlockattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
           if ( ret != 0 ) {
-            throw _STLP_STD::system_error( ret, std::get_posix_category(), std::tr2::detail::_notpshared );
+            throw _STLP_STD::system_error( ret, _STLP_STD::get_posix_category(), detail::_notpshared );
           }
-# endif // __FIT_PSHARED_MUTEX
+# endif // _STLP_PSHARED_MUTEX
           pthread_rwlock_init( &_M_lock, &att );
           pthread_rwlockattr_destroy( &att );
         } else {
@@ -541,7 +541,7 @@ class __rw_mutex_base
 
     ~__rw_mutex_base()
       {
-#ifdef _PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_rwlock_destroy( &_M_lock );
 #endif
 #ifdef WIN32
@@ -555,7 +555,7 @@ class __rw_mutex_base
       { }
 
   protected:
-#ifdef _PTHREADS
+#ifdef _STLP_PTHREADS
     pthread_rwlock_t _M_lock;
 #endif
 #ifdef _STLP_WIN32THREADS
@@ -588,7 +588,7 @@ class __rw_mutex :
 
     void lock()
       {
-#ifdef _PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_rwlock_wrlock( &this->_M_lock );
 #endif
 #ifdef _STLP_WIN32THREADS
@@ -606,7 +606,7 @@ class __rw_mutex :
           if ( res == EBUSY ) {
             return false;
           }
-          throw std::tr2::lock_error( res );
+          throw _STLP_STD::lock_error( res );
         }
         return true;
 #endif
@@ -624,7 +624,7 @@ class __rw_mutex :
           if ( res == EBUSY ) {
             return false;
           }
-          throw std::tr2::lock_error( res );
+          throw _STLP_STD::lock_error( res );
         }
         return true;
 #endif
@@ -638,7 +638,7 @@ class __rw_mutex :
 
     void unlock()
       {
-#ifdef _PTHREADS
+#ifdef _STLP_PTHREADS
         pthread_rwlock_unlock( &this->_M_lock );
 #endif
 #ifdef _STLP_WIN32THREADS
@@ -652,7 +652,7 @@ class __rw_mutex :
       { }
 };
 
-#endif // __FIT_RWLOCK
+#endif // _STLP_RWLOCK
 
 struct defer_lock_t
 { };
@@ -796,7 +796,7 @@ class unique_lock
     friend class __condition_variable<false>;
 };
 
-#ifdef __FIT_RWLOCK
+#ifdef _STLP_RWLOCK
 template <class M>
 class basic_read_lock
 {
@@ -838,31 +838,31 @@ class basic_read_lock
     const M& m;
     bool lk;
 };
-#endif // __FIT_RWLOCK
+#endif // _STLP_RWLOCK
 
 typedef __mutex<false,false>  mutex;
 typedef __mutex<true,false>   recursive_mutex;
 typedef __mutex<false,true>   mutex_ip;
 typedef __mutex<true,true>    recursive_mutex_ip;
-#ifdef __FIT_RWLOCK
+#ifdef _STLP_RWLOCK
 typedef __rw_mutex<false>     rw_mutex;
 typedef __rw_mutex<true>      rw_mutex_ip;
-#endif // __FIT_RWLOCK
-#ifdef __FIT_PTHREAD_SPINLOCK
+#endif // _STLP_RWLOCK
+#ifdef _STLP_PTHREAD_SPINLOCK
 typedef __spinlock<false,false> spinlock;
 typedef __spinlock<true,false>  recursive_spinlock;
-#endif // __FIT_RWLOCK
+#endif // _STLP_RWLOCK
 
 typedef lock_guard<mutex>           scoped_lock;
 typedef lock_guard<recursive_mutex> recursive_scoped_lock;
-#ifdef __FIT_RWLOCK
+#ifdef _STLP_RWLOCK
 typedef basic_read_lock<__rw_mutex<false> >  rd_scoped_lock;
 typedef lock_guard<__rw_mutex<false> >       wr_scoped_lock;
-#endif // __FIT_RWLOCK
-#ifdef __FIT_PTHREAD_SPINLOCK
+#endif // _STLP_RWLOCK
+#ifdef _STLP_PTHREAD_SPINLOCK
 typedef lock_guard<spinlock>            spin_scoped_lock;
 typedef lock_guard<recursive_spinlock>  recursive_spin_scoped_lock;
-#endif // __FIT_RWLOCK
+#endif // _STLP_RWLOCK
 
 class native_scoped_lock
 {
