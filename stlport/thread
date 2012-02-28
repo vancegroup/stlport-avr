@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:30:36 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-28 13:46:18 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -18,10 +18,7 @@
 #ifndef _STLP_THREAD
 #define _STLP_THREAD
 
-#include <memory>
-#include <cstddef>
 #include <climits>
-#include <stdexcept>
 
 #ifdef __unix
 # include <pthread.h>
@@ -33,12 +30,22 @@
 #include <cerrno>
 #include <mutex>
 #include <condition_variable>
-// #include <date_time>
-// #include <callstack.h>
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x6
 #  include <stl/_prolog.h>
+#endif
+
+#ifndef _STLP_INTERNAL_ALLOC_H
+#  include <stl/_alloc.h>
+#endif
+
+#ifndef _STLP_INTERNAL_CSTDDEF
+#  include <stl/_cstddef.h>
+#endif
+
+#ifndef _STLP_INTERNAL_STDEXCEPT
+#  include <stl/_stdexcept.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE

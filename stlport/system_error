@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:46:17 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-28 13:44:29 ptr>
 
 /*
  * Copyright (c) 2007-2012
@@ -23,13 +23,20 @@
 #  include <stl/_prolog.h>
 #endif
 
-// #include <locale>
-#include <string>
-#include <stdexcept>
-#include <type_traits>
+#ifndef _STLP_INTERNAL_STRING_H
+#  include <stl/_string.h>
+#endif
 
+#ifndef _STLP_INTERNAL_STDEXCEPT
+#  include <stl/_stdexcept.h>
+#endif
+
+#include <type_traits>
 #include <cerrno>
-#include <ostream>
+
+#ifndef _STLP_INTERNAL_OSTREAM
+#  include <stl/_ostream.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -40,12 +47,12 @@ class system_error;
 
 template <class T>
 struct is_error_code_enum :
-        public false_type
+    public tr1::false_type
 { };
 
 template <class T>
 struct is_error_condition_enum :
-        public false_type
+    public tr1::false_type
 { };
 
 namespace posix_error {
@@ -369,7 +376,7 @@ enum posix_errno {
 
 template <>
 struct is_error_condition_enum<posix_error::posix_errno> :
-    public true_type
+    public tr1::true_type
 { };
 
 namespace posix_error {
@@ -425,11 +432,11 @@ class error_condition
     _STLP_DECLSPEC error_condition( int val, const error_category& category );
     template <class ErrorConditionEnum>
     error_condition( ErrorConditionEnum err,
-                     typename _STLP_STD::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
+                     typename tr1::enable_if<is_error_condition_enum<ErrorConditionEnum>::value,void>::type* = 0 );
 
     _STLP_DECLSPEC void assign( int val, const error_category& category );
     template <class ErrorConditionEnum>
-    typename _STLP_STD::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
+    typename tr1::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
     void clear();
 
     int value() const
@@ -454,11 +461,11 @@ class error_code
     _STLP_DECLSPEC error_code();
     _STLP_DECLSPEC error_code( int val, const error_category& );
     template <class ErrorCodeEnum>
-    error_code( ErrorCodeEnum err, typename _STLP_STD::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
+    error_code( ErrorCodeEnum err, typename tr1::enable_if<is_error_code_enum<ErrorCodeEnum>::value,void>::type* = 0 );
 
     _STLP_DECLSPEC void assign( int val, const error_category& );
     template <class ErrorCodeEnum>
-    typename _STLP_STD::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
+    typename tr1::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
     void clear();
 
     int value() const
