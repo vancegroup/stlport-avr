@@ -37,6 +37,8 @@ SET( SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/string.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bitset.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/allocators.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src/thread.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src/system_error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/c_locale.c
   ${CMAKE_CURRENT_SOURCE_DIR}/../../src/cxa.c
 )
@@ -192,6 +194,7 @@ SET( TEST_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/strstream_header_test.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/swap_test.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/times_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/thread_test.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/transform_test.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/type_traits_test.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../../test/unit/typeinfo_header_test.cpp
