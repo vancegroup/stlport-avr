@@ -1,11 +1,9 @@
-# -*- Makefile -*- Time-stamp: <06/09/08 11:50:49 ptr>
+# -*- Makefile -*- Time-stamp: <2012-02-28 13:54:38 ptr>
 
 LIBNAME = stlport
 MAJOR = 5
 MINOR = 2
 PATCH = 2
-SRC_CC = ../../src/system_error.cc \
-         ../../src/thread.cc
 SRC_CPP = ../../src/dll_main.cpp \
           ../../src/fstream.cpp \
           ../../src/strstream.cpp \
@@ -35,7 +33,9 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/complex_trig.cpp \
           ../../src/string.cpp \
           ../../src/bitset.cpp \
-          ../../src/allocators.cpp
+          ../../src/allocators.cpp \
+          ../../src/system_error.cpp \
+          ../../src/thread.cpp
 
 SRC_C = ../../src/c_locale.c \
         ../../src/cxa.c
