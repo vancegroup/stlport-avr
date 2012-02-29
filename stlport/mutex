@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:24:41 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-29 05:31:22 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -72,8 +72,6 @@ extern _STLP_DECLSPEC _STLP_STD::string _notpshared;
 extern _STLP_DECLSPEC _STLP_STD::string _notrecursive;
 #endif
 
-} // namespace detail
-
 template <bool SCOPE> class __condition_variable;
 template <bool SCOPE> class __condition_variable_any;
 template <bool SCOPE> class __condition_event;
@@ -141,12 +139,17 @@ class __mutex_base
     native_handle_type native_handle()
       { return &_M_lock; }
 
+#ifdef _STLP_CPP_0X
+    __mutex_base( const __mutex_base& ) = delete;
+    __mutex_base& operator =( const __mutex_base& ) = delete;
+#else
   private:
     __mutex_base( const __mutex_base& )
       { }
 
     __mutex_base& operator =( const __mutex_base& )
       { return *this; }
+#endif
 
   protected:
 #ifdef _STLP_PTHREADS
@@ -177,6 +180,17 @@ class __spinlock_base
 #endif // _PTHREADS
       }
 
+#ifdef _STLP_CPP_0X
+    __spinlock_base( const __spinlock_base& ) = delete;
+    __spinlock_base& operator =( const __spinlock_base& ) = delete;
+#else
+  private:
+    __spinlock_base( const __spinlock_base& )
+      { }
+    __spinlock_base& operator =( const __spinlock_base& )
+      { return *this; }
+  public:
+#endif
     ~__spinlock_base()
       {
 #ifdef _STLP_PTHREADS
@@ -262,12 +276,17 @@ class __mutex :
 #endif
       }
 
+#ifdef _STLP_CPP_0X
+    __mutex( const __mutex& ) = delete;
+    __mutex& operator =( const __mutex& ) = delete;
+#else
   private:
     __mutex( const __mutex& )
       { }
 
     __mutex& operator =( const __mutex& )
       { return *this; }
+#endif
 
 #ifndef _STLP_WIN32THREADS
   private:
@@ -322,10 +341,16 @@ class __spinlock<false,SCOPE> :
 # endif
       }
 
+#ifdef _STLP_CPP_0X
+    __spinlock( const __spinlock& ) = delete;
+    __spinlock& operator =( const __spinlock& ) = delete;
+#else
   private:
     __spinlock( const __spinlock& )
       { }
-
+    __spinlock& operator =( const __spinlock& )
+      { return *this; }
+#endif
 };
 
 template <bool SCOPE>
@@ -397,9 +422,16 @@ class __spinlock<true,SCOPE> : //  Recursive safe
     pthread_t _id;
 # endif
 
+#ifdef _STLP_CPP_0X
+    __spinlock( const __spinlock& ) = delete;
+    __spinlock& operator =( const __spinlock& ) = delete;
+#else
   private:
     __spinlock( const __spinlock& )
       { }
+    __spinlock& operator =( const __spinlock& )
+      { return *this; }
+#endif
 };
 #endif // _STLP_PTHREAD_SPINLOCK
 
@@ -493,11 +525,17 @@ class __mutex<true,SCOPE> : // Recursive Safe
         }
       }
 
+#ifdef _STLP_CPP_0X
+    __mutex( const __mutex& ) = delete;
+    __mutex& operator =( const __mutex& ) = delete;
+#else
   private:
     __mutex( const __mutex& )
       { }
+
     __mutex& operator =( const __mutex& )
       { return *this; }
+#endif
 
   protected:
     unsigned _count;
@@ -550,9 +588,17 @@ class __rw_mutex_base
 #endif
       }
 
+#ifdef _STLP_CPP_0X
+    __rw_mutex_base( const __rw_mutex_base& ) = delete;
+    __rw_mutex_base& operator =( const __rw_mutex_base& ) = delete;
+#else
   private:
     __rw_mutex_base( const __rw_mutex_base& )
       { }
+
+    __rw_mutex_base& operator =( const __rw_mutex_base& )
+      { return *this; }
+#endif
 
   protected:
 #ifdef _STLP_PTHREADS
@@ -647,12 +693,22 @@ class __rw_mutex :
 #endif
       }
 
+#ifdef _STLP_CPP_0X
+    __rw_mutex( const __rw_mutex& ) = delete;
+    __rw_mutex& operator =( const __rw_mutex& ) = delete;
+#else
   private:
     __rw_mutex( const __rw_mutex& )
       { }
+
+    __rw_mutex& operator =( const __rw_mutex& )
+      { return *this; }
+#endif
 };
 
 #endif // _STLP_RWLOCK
+
+} // namespace detail
 
 struct defer_lock_t
 { };
@@ -792,8 +848,8 @@ class unique_lock
   private:
 #endif
     bool lk;
-    friend class __condition_variable<true>;
-    friend class __condition_variable<false>;
+    friend class detail::__condition_variable<true>;
+    friend class detail::__condition_variable<false>;
 };
 
 #ifdef _STLP_RWLOCK
@@ -840,24 +896,24 @@ class basic_read_lock
 };
 #endif // _STLP_RWLOCK
 
-typedef __mutex<false,false>  mutex;
-typedef __mutex<true,false>   recursive_mutex;
-typedef __mutex<false,true>   mutex_ip;
-typedef __mutex<true,true>    recursive_mutex_ip;
+typedef detail::__mutex<false,false>  mutex;
+typedef detail::__mutex<true,false>   recursive_mutex;
+typedef detail::__mutex<false,true>   mutex_ip;
+typedef detail::__mutex<true,true>    recursive_mutex_ip;
 #ifdef _STLP_RWLOCK
-typedef __rw_mutex<false>     rw_mutex;
-typedef __rw_mutex<true>      rw_mutex_ip;
+typedef detail::__rw_mutex<false>     rw_mutex;
+typedef detail::__rw_mutex<true>      rw_mutex_ip;
 #endif // _STLP_RWLOCK
 #ifdef _STLP_PTHREAD_SPINLOCK
-typedef __spinlock<false,false> spinlock;
-typedef __spinlock<true,false>  recursive_spinlock;
+typedef detail::__spinlock<false,false> spinlock;
+typedef detail::__spinlock<true,false>  recursive_spinlock;
 #endif // _STLP_RWLOCK
 
 typedef lock_guard<mutex>           scoped_lock;
 typedef lock_guard<recursive_mutex> recursive_scoped_lock;
 #ifdef _STLP_RWLOCK
-typedef basic_read_lock<__rw_mutex<false> >  rd_scoped_lock;
-typedef lock_guard<__rw_mutex<false> >       wr_scoped_lock;
+typedef basic_read_lock<detail::__rw_mutex<false> >  rd_scoped_lock;
+typedef lock_guard<detail::__rw_mutex<false> >       wr_scoped_lock;
 #endif // _STLP_RWLOCK
 #ifdef _STLP_PTHREAD_SPINLOCK
 typedef lock_guard<spinlock>            spin_scoped_lock;

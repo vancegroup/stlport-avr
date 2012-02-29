@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 20:43:19 ptr>
+// -*- C++ -*- Time-stamp: <2012-02-29 05:17:29 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -32,6 +32,8 @@
 #include <system_error>
 
 _STLP_BEGIN_NAMESPACE
+
+namespace detail {
 
 template <bool SCOPE>
 class __condition_variable
@@ -188,8 +190,12 @@ class __condition_variable
       { }
 };
 
-typedef __condition_variable<false> condition_variable;
-typedef __condition_variable<true>  condition_variable_ip;
+} // namespace detail
+
+typedef detail::__condition_variable<false> condition_variable;
+typedef detail::__condition_variable<true>  condition_variable_ip;
+
+namespace detail {
 
 template <bool SCOPE>
 class __condition_variable_any
@@ -378,8 +384,12 @@ class __condition_variable_any
       { }
 };
 
-typedef __condition_variable_any<false> condition_variable_any;
-typedef __condition_variable_any<true>  condition_variable_any_ip;
+} // namespace detail
+
+typedef detail::__condition_variable_any<false> condition_variable_any;
+typedef detail::__condition_variable_any<true>  condition_variable_any_ip;
+
+namespace detail {
 
 template <bool SCOPE>
 class __condition_event
@@ -561,8 +571,12 @@ class __condition_event
       { }
 };
 
-typedef __condition_event<false> condition_event;
-typedef __condition_event<true>  condition_event_ip;
+} // namespace detail
+
+typedef detail::__condition_event<false> condition_event;
+typedef detail::__condition_event<true>  condition_event_ip;
+
+namespace detail {
 
 template <bool SCOPE>
 class __semaphore
@@ -721,8 +735,12 @@ class __semaphore
       { }
 };
 
-typedef __semaphore<false> semaphore;
-typedef __semaphore<true> semaphore_ip;
+} // namespace detail
+
+typedef detail::__semaphore<false> semaphore;
+typedef detail::__semaphore<true>  semaphore_ip;
+
+namespace detail {
 
 template <bool SCOPE>
 class __barrier
@@ -762,8 +780,10 @@ class __barrier
 #endif
 };
 
-typedef __barrier<false> barrier;
-typedef __barrier<true>  barrier_ip;
+} // namespace detail
+
+typedef detail::__barrier<false> barrier;
+typedef detail::__barrier<true>  barrier_ip;
 
 _STLP_END_NAMESPACE
 
