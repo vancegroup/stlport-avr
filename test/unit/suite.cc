@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-02 01:14:44 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 14:12:00 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -963,7 +963,7 @@ int main( int argc, const char** argv )
     thr_tc[1] = t.add( &thread_test::mutex_test, test_thr, "mutex_test", thr_tc[0] ) );
   thr_tc[2] = t.add( &thread_test::barrier, test_thr, "barrier" );
   t.add( &thread_test::semaphore, test_thr, "semaphore" );
-  t.add( &thread_test::condition_var, test_thr, "condition_variable" );
+  t.add( &thread_test::condition_var, test_thr, "condition_variable", thr_tc, thr_tc + 2 );
   t.add( &thread_test::timed_mutex, test_thr, "timed_mutex", thr_tc, thr_tc + 3 );
   t.add( &thread_test::try_lock, test_thr, "try_lock", thr_tc, thr_tc + 3 );
 

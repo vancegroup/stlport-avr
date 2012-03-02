@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:27:51 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 13:24:25 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -187,40 +187,6 @@ std::thread_base::id get_id()
 #ifdef _STLP_WIN32THREADS
   return thread_base::id( GetCurrentThread() );
 #endif
-}
-#endif // 0
-
-#if 0
-_STLP_DECLSPEC
-void sleep( const std::tr2::system_time& abstime )
-{
-  std::tr2::system_time ct = std::tr2::get_system_time();
-
-  if ( abstime > ct ) {
-    std::tr2::nanoseconds delta = abstime - ct;
-
-#ifdef __unix
-    ::timespec t;
-    t.tv_sec = delta.count() / std::tr2::nanoseconds::ticks_per_second;
-    t.tv_nsec = delta.count() % std::tr2::nanoseconds::ticks_per_second;
-    nanosleep( const_cast<const ::timespec *>(&t), 0 );
-#endif
-  }
-#ifdef WIN32
-  time_t ct = time( 0 );
-  time_t _conv = abstime.tv_sec * 1000 + abstime.tv_nsec / 1000000;
-
-  Sleep( _conv >= ct ? _conv - ct : 1 );
-#endif
-}
-
-_STLP_DECLSPEC
-void sleep( const std::tr2::nanoseconds& rel_t )
-{
-  ::timespec t;
-  t.tv_sec = rel_t.count() / std::tr2::nanoseconds::ticks_per_second;
-  t.tv_nsec = rel_t.count() % std::tr2::nanoseconds::ticks_per_second;
-  ::nanosleep( const_cast<const ::timespec *>(&t), 0 );
 }
 #endif // 0
 

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-02 09:38:48 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 15:33:20 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -18,29 +18,30 @@
 #ifndef _STLP_MUTEX
 #define _STLP_MUTEX
 
-#include <cstddef>
 #include <stdexcept>
+
+#ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x8
+#  include <stl/_prolog.h>
+#endif
+
+#include <cstddef>
 #include <cerrno>
-#include <system_error>
 #include <chrono>
+#include <system_error>
 
 #ifdef WIN32
-# include <windows.h>
+//# include <windows.h>
 # include <memory>
 # include <limits>
-# define ETIME   62      /* timer expired */
-# pragma warning( disable : 4290)
+//# define ETIME   62      /* timer expired */
+//# pragma warning( disable : 4290)
 #endif // WIN32
 
 #ifdef _STLP_UNIX
 # include <pthread.h>
 # include <sched.h>
 #endif // __unix
-
-#ifndef _STLP_OUTERMOST_HEADER_ID
-#  define _STLP_OUTERMOST_HEADER_ID 0x8
-#  include <stl/_prolog.h>
-#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -367,11 +368,11 @@ class __timed_mutex :
       }
 
     template <class Clock, class Duration>
-    bool try_lock_until(const _STLP_STD::chrono::time_point<Clock, Duration>& abs_time)
+    bool try_lock_until( const _STLP_STD::chrono::time_point<Clock, Duration>& abs_time )
       {
 #ifdef _STLP_PTHREADS
         chrono::seconds s = chrono::duration_cast<chrono::seconds>( abs_time.time_since_epoch() );
-        timespec ts;
+        ::timespec ts;
         ts.tv_sec = s.count();
         ts.tv_nsec = chrono::duration_cast<chrono::nanoseconds>( abs_time.time_since_epoch() - s ).count();
         int r = pthread_mutex_timedlock( &this->_M_lock, &ts );
@@ -1200,6 +1201,20 @@ class native_scoped_lock
 #endif
       }
 
+#ifdef _STLP_CPP_0X
+    native_scoped_lock( const native_scoped_lock& ) = delete;
+    native_scoped_lock& operator =( const native_scoped_lock& ) = delete;
+#else
+  private:
+    native_scoped_lock( const native_scoped_lock& m ) :
+        _M_lock( m._M_lock )
+      { }
+    native_scoped_lock& operator =( const native_scoped_lock& )
+      { return *this; }
+
+  public:
+#endif
+
     ~native_scoped_lock()
       {
 #ifdef _STLP_PTHREADS
@@ -1211,11 +1226,38 @@ class native_scoped_lock
       }
 
   private:
-    native_scoped_lock( const native_scoped_lock& m ) :
-        _M_lock( m._M_lock )
-      { }
     const mutex_type& _M_lock;
 };
+
+class once_flag
+{
+  private:
+#ifdef _STLP_PTHREADS
+    typedef pthread_once_t _once_type;
+#endif
+
+  public:
+    /* constexpr */ once_flag() /* noexcept */
+#ifdef _STLP_PTHREADS
+        :
+        once_control( PTHREAD_ONCE_INIT )
+#endif
+      { }
+
+
+    once_flag( const once_flag& ) = delete;
+    once_flag& operator =( const once_flag& ) = delete;
+
+  private:
+    _once_type once_control;
+
+    template <class Callable, class ...Args>
+    friend void call_once( once_flag& flag, Callable func, Args&&... args );
+};
+
+template <class Callable, class ...Args>
+void call_once( once_flag& flag, Callable func, Args&&... args );
+
 
 _STLP_END_NAMESPACE
 

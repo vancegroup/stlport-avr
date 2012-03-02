@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:30:36 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 13:23:52 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -23,17 +23,17 @@
 #include <climits>
 #include <stdexcept>
 
-#ifdef __unix
+#ifdef _STLP_UNIX
 # include <pthread.h>
 # include <semaphore.h>
 # include <sched.h>
 # include <signal.h>
-#endif // __unix
+#endif // _STLP_UNIX
 
 #include <cerrno>
+#include <chrono>
 #include <mutex>
 #include <condition_variable>
-// #include <date_time>
 // #include <callstack.h>
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
@@ -584,13 +584,38 @@ inline void yield()
 #endif
 }
 
-// _STLP_DECLSPEC void sleep( const std::tr2::system_time& abs_t );
+template <class Clock, class Duration>
+void sleep_until( const chrono::time_point<Clock, Duration>& abs_time )
+{
+#ifdef _STLP_PTHREADS
+  chrono::time_point<Clock, Duration> t( Clock::now() );
+  if ( t < abs_time ) {
+    Duration d( abs_time - t );
+    chrono::seconds s = chrono::duration_cast<chrono::seconds>( d );
 
-// _STLP_DECLSPEC void sleep( const std::tr2::nanoseconds& rel_t );
+    ::timespec ts;
+    ts.tv_sec = s.count();
+    ts.tv_nsec = chrono::duration_cast<chrono::nanoseconds>( d ).count();
 
-// template <class Duration>
-// void sleep( const Duration& rel_t )
-// { std::this_thread::sleep( static_cast<std::tr2::nanoseconds>(rel_t) ); }
+    ::nanosleep( &ts, 0 );
+  }
+#endif
+}
+
+template <class Rep, class Period>
+void sleep_for( const chrono::duration<Rep, Period>& rel_time )
+{
+#ifdef _STLP_PTHREADS
+  chrono::seconds s = chrono::duration_cast<chrono::seconds>( rel_time );
+
+  ::timespec ts;
+  ts.tv_sec = s.count();
+  ts.tv_nsec = chrono::duration_cast<chrono::nanoseconds>( rel_time ).count();
+
+  ::nanosleep( &ts, 0 );
+#endif
+}
+
 
 } // namespace this_thread
 
