@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:50:24 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 01:14:44 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -956,13 +956,16 @@ int main( int argc, const char** argv )
   t.add( &locale_test::combine, ltest, "combine" );
 
   thread_test test_thr;
+  exam::test_suite::test_case_type thr_tc[10];
 
-  t.add( &thread_test::thread_call, test_thr, "thread thread_call" );
+  thr_tc[0] = t.add( &thread_test::thread_call, test_thr, "thread thread_call" );
   t.add( &thread_test::mutex_rw_test, test_thr, "rw mutex",
-    t.add( &thread_test::mutex_test, test_thr, "mutex_test" ) );
-  t.add( &thread_test::barrier, test_thr, "barrier" );
+    thr_tc[1] = t.add( &thread_test::mutex_test, test_thr, "mutex_test", thr_tc[0] ) );
+  thr_tc[2] = t.add( &thread_test::barrier, test_thr, "barrier" );
   t.add( &thread_test::semaphore, test_thr, "semaphore" );
   t.add( &thread_test::condition_var, test_thr, "condition_variable" );
+  t.add( &thread_test::timed_mutex, test_thr, "timed_mutex", thr_tc, thr_tc + 3 );
+  t.add( &thread_test::try_lock, test_thr, "try_lock", thr_tc, thr_tc + 3 );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cout );

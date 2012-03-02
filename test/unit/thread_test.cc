@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 21:09:52 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 01:24:45 ptr>
 
 /*
  * Copyright (c) 2006-2012
@@ -259,5 +259,95 @@ int EXAM_IMPL(thread_test::condition_var)
   val = 0;
 #endif
   
+  return EXAM_RESULT;
+}
+
+static std::timed_mutex tm;
+static const std::chrono::milliseconds time_mark(500);
+
+void func_a()
+{
+  try {
+    std::unique_lock<std::timed_mutex> lock( tm, std::defer_lock );
+
+    /*
+      I'm hope that 0.5 sec is enough to start another thread;
+      if not, test will pass, but really test nothing.
+    */
+
+    lock.try_lock_for( time_mark );
+
+    bar.wait();
+  }
+  catch ( std::runtime_error& err ) {
+    EXAM_ERROR_ASYNC( err.what() );
+  }
+}
+
+int EXAM_IMPL(thread_test::timed_mutex)
+{
+  std::chrono::system_clock::time_point t0( std::chrono::system_clock::now() );
+
+  std::thread t1( func_a );
+  std::thread t2( func_a );
+
+  t2.join();
+  t1.join();
+
+  EXAM_CHECK( (std::chrono::system_clock::now() - t0) > time_mark );
+
+  std::unique_lock<std::timed_mutex> lock( tm, std::defer_lock );
+  EXAM_CHECK( lock.try_lock() );
+
+  return EXAM_RESULT;
+}
+
+static std::mutex lk2;
+
+int res[2];
+
+void func_b()
+{
+  try {
+    std::unique_lock<std::mutex> lock( lk, std::defer_lock );
+    std::unique_lock<std::mutex> lock2( lk2, std::defer_lock );
+
+    res[0] = std::try_lock( lock, lock2 );
+
+    bar.wait();
+  }
+  catch ( std::runtime_error& err ) {
+    EXAM_ERROR_ASYNC( err.what() );
+  }
+}
+
+void func_c()
+{
+  try {
+    std::unique_lock<std::mutex> lock( lk, std::defer_lock );
+    std::unique_lock<std::mutex> lock2( lk2, std::defer_lock );
+
+    res[1] = std::try_lock( lock2, lock );
+
+    bar.wait();
+  }
+  catch ( std::runtime_error& err ) {
+    EXAM_ERROR_ASYNC( err.what() );
+  }
+}
+
+int EXAM_IMPL(thread_test::try_lock)
+{
+  res[0] = 10;
+  res[1] = 10;
+
+  std::thread t1( func_b );
+  std::thread t2( func_c );
+
+  t2.join();
+  t1.join();
+
+  EXAM_CHECK( ((res[0] == -1 && res[1] >= 0 && res[1] < 2) || (res[1] == -1 && res[0] >= 0 && res[0] < 2)  || (res[0] >= 0 && res[0] < 2 && res[1] >= 0 && res[1] < 2)) );
+
   return EXAM_RESULT;
 }

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-27 20:04:43 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 01:02:32 ptr>
 
 /*
  * Copyright (c) 2006-2012
@@ -31,6 +31,8 @@ class thread_test
     int EXAM_DECL(barrier);
     int EXAM_DECL(semaphore);
     int EXAM_DECL(condition_var);
+    int EXAM_DECL(timed_mutex);
+    int EXAM_DECL(try_lock);
 };
 
 #endif // __TEST_THREAD_H
