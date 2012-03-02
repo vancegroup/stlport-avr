@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-02 15:33:20 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-02 15:40:50 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2012
@@ -18,13 +18,12 @@
 #ifndef _STLP_MUTEX
 #define _STLP_MUTEX
 
-#include <stdexcept>
-
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x8
 #  include <stl/_prolog.h>
 #endif
 
+#include <stdexcept>
 #include <cstddef>
 #include <cerrno>
 #include <chrono>

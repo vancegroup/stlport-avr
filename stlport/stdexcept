@@ -17,11 +17,11 @@
  */
 
 #ifndef _STLP_STDEXCEPT
+#define _STLP_STDEXCEPT
 
 #  if !defined (_STLP_OUTERMOST_HEADER_ID)
 #    define _STLP_OUTERMOST_HEADER_ID 0x63
 #    include <stl/_prolog.h>
-#    define _STLP_STDEXCEPT
 #  endif
 
 #ifndef _STLP_INTERNAL_STDEXCEPT_BASE
