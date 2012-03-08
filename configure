@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <09/01/09 12:08:03 ptr>
+# Time-stamp: <2012-03-08 12:53:51 ptr>
 
 #
 # Copyright (c) 2003-2010
@@ -248,7 +248,7 @@ do
       ;;
     --use-compiler-family=*)
       case `echo $option | sed -e 's/^[^=]*=//'` in
-        gcc|icc|aCC|CC|bcc|dmc)
+        gcc|clang|icc|aCC|CC|bcc|dmc)
           target=`echo $option | sed -e 's/^[^=]*=//'`
           echo COMPILER_NAME := $target >> ${configmak}
           ln -sf Makefiles/$target.mak ${base}/src/Makefile
