@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <06/11/17 10:34:26 ptr>
+# -*- makefile -*- Time-stamp: <2012-03-08 10:46:34 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -72,25 +72,25 @@ endef
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_lnk,$(prg))))
 
 ifeq ("${_C_SOURCES_ONLY}","")
-${PRG}:	$(OBJ) $(LIBSDEP)
-	$(call cpplnk_str,$(OBJ))
+${PRG}:	$(PRI_OBJ) $(LIBSDEP)
+	$(call cpplnk_str,$(PRI_OBJ))
 
-${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP)
-	$(call cpplnk_str,$(OBJ_DBG))
+${PRG_DBG}:	$(PRI_OBJ_DBG) $(LIBSDEP)
+	$(call cpplnk_str,$(PRI_OBJ_DBG))
 
 ifndef WITHOUT_STLPORT
-${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP)
-	$(call cpplnk_str,$(OBJ_STLDBG))
+${PRG_STLDBG}:	$(PRI_OBJ_STLDBG) $(LIBSDEP)
+	$(call cpplnk_str,$(PRI_OBJ_STLDBG))
 endif
 else
-${PRG}:	$(OBJ) $(LIBSDEP)
-	$(LINK.c) $(LINK_OUTPUT_OPTION) $(OBJ) $(LDLIBS)
+${PRG}:	$(PRI_OBJ) $(LIBSDEP)
+	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ) $(LDLIBS)
 
-${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP)
-	$(LINK.c) $(LINK_OUTPUT_OPTION) $(OBJ_DBG) $(LDLIBS)
+${PRG_DBG}:	$(PRI_OBJ_DBG) $(LIBSDEP)
+	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ_DBG) $(LDLIBS)
 
 ifndef WITHOUT_STLPORT
-${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP)
-	$(LINK.c) $(LINK_OUTPUT_OPTION) $(OBJ_STLDBG) $(LDLIBS)
+${PRG_STLDBG}:	$(PRI_OBJ_STLDBG) $(LIBSDEP)
+	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ_STLDBG) $(LDLIBS)
 endif
 endif
