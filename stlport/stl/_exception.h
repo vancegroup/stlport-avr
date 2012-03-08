@@ -48,13 +48,6 @@
 #    endif
 #  endif
 
-#  if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG) && defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1300)
-// dwa 02/04/00
-// The header <yvals.h> which ships with vc6 and is included by its native <exception>
-// actually turns on warnings, so we have to turn them back off.
-#    include <stl/config/_warnings_off.h>
-#  endif
-
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 
 _STLP_BEGIN_NAMESPACE
