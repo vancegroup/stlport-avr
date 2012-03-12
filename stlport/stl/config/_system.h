@@ -47,7 +47,9 @@
 #  endif
 #elif defined (__hpux)
 #  include <stl/config/_hpux.h>
-#  if defined (__GNUC__)
+#  if defined (__clang__)
+#    include <stl/config/_clang.h>
+#  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  elif defined (__HP_aCC)
 #    include <stl/config/_hpacc.h>
@@ -59,6 +61,8 @@
 /* Intel's icc define __GNUC__! */
 #  elif defined (__INTEL_COMPILER)
 #    include <stl/config/_icc.h>
+#  elif defined (__clang__)
+#    include <stl/config/_clang.h>
 #  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
@@ -69,12 +73,16 @@
 #  endif
 #elif defined (__FreeBSD__)
 #  include <stl/config/_freebsd.h>
-#  if defined (__GNUC__)
+#  if defined (__clang__)
+#    include <stl/config/_clang.h>
+#  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
 #elif defined (__OpenBSD__)
 #  include <stl/config/_openbsd.h>
-#  if defined (__GNUC__)
+#  if defined (__clang__)
+#    include <stl/config/_clang.h>
+#  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
 #elif defined (__OS400__) /* AS/400 C++ */
@@ -102,12 +110,16 @@
 #  endif
 #elif defined (__CYGWIN__)
 #  include <stl/config/_cygwin.h>
-#  if defined (__GNUC__)
+#  if defined (__clang__)
+#    include <stl/config/_clang.h>
+#  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
 #elif defined (__MINGW32__)
 #  define _STLP_PLATFORM "MinGW"
-#  if defined (__GNUC__)
+#  if defined (__clang__)
+#    include <stl/config/_clang.h>
+#  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
 #  include <stl/config/_windows.h>

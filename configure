@@ -73,6 +73,7 @@ Available options:
   --with-cc=<name>      use <name> as C compiler (use --target= for cross-compilation)
   --use-compiler-family=<name> use compiler family; one of:
                         gcc      GNU compilers (default)
+                        clang    CLang compilers
                         icc      Intel compilers
                         aCC      HP's aCC compilers
                         CC       SunPro's CC compilers
