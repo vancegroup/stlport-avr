@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 11:19:23 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-13 12:24:53 ptr>
 
 /*
  * Copyright (c) 2011
@@ -14,9 +14,6 @@
  * modified is included with the above copyright notice.
  *
  */
-
-#include <type_traits>
-// #include <typeinfo>
 
 _STLP_BEGIN_NAMESPACE
 
