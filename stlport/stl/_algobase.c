@@ -299,11 +299,12 @@ inline bool __stlp_eq(_Tp, _Tp)
 { return true; }
 #endif
 
-template <class _InputIter, class _ForwardIter, class _Tp2, class _Predicate>
+template <class _InputIter, class _ForwardIter, class _Predicate>
 inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
-                                       _Tp2*, _Predicate __pred,
-                                       const true_type& /* _UseStrcspnLikeAlgo */) {
+                                       _Predicate __pred,
+                                       const true_type& /* _UseStrcspnLikeAlgo */)
+{
   unsigned char __hints[(UCHAR_MAX + 1) / CHAR_BIT];
   memset(__hints, 0, sizeof(__hints) / sizeof(unsigned char));
   for (; __first2 != __last2; ++__first2) {
@@ -312,7 +313,7 @@ inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
   }
 
   for (; __first1 != __last1; ++__first1) {
-    _Tp2 __tmp = (_Tp2)*__first1;
+    typename iterator_traits<_ForwardIter>::value_type __tmp = static_cast<typename iterator_traits<_ForwardIter>::value_type>(*__first1);
     if (__stlp_eq(*__first1, __tmp) &&
         __pred((__hints[(unsigned char)__tmp / CHAR_BIT] & (1 << ((unsigned char)__tmp % CHAR_BIT))) != 0))
       break;
@@ -320,38 +321,47 @@ inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
   return __first1;
 }
 
-template <class _InputIter, class _ForwardIter, class _Tp2, class _Predicate>
+template <class _InputIter, class _ForwardIter, class _Predicate>
 inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
-                                       _Tp2* /* __dummy */, _Predicate /* __pred */,
-                                       const false_type& /* _UseStrcspnLikeAlgo */) {
+                                       _Predicate /* __pred */,
+                                       const false_type& /* _UseStrcspnLikeAlgo */)
+{
   return _STLP_PRIV __find_first_of(__first1, __last1, __first2, __last2,
-                                    _STLP_PRIV __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
+                                    equal_to<typename iterator_traits<_InputIter>::value_type>());
 }
 
-template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
-inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
-                                       _ForwardIter __first2, _ForwardIter __last2,
-                                       _Tp1*, _Tp2* __pt2) {
-  typedef _STLP_TYPENAME _STLP_STD::integral_constant<bool, is_integral<_Tp1>::value && _STLP_PRIV is_char<_Tp2>::value>::type _UseStrcspnLikeAlgo;
-  return _STLP_PRIV __find_first_of_aux2(__first1, __last1,
-                                         __first2, __last2,
-                                         __pt2, _Identity<bool>(), _UseStrcspnLikeAlgo());
-}
+//template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
+//inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
+//                                       _ForwardIter __first2, _ForwardIter __last2,
+//                                       _Tp1*, _Tp2* __pt2)
+//{
+//  typedef _STLP_TYPENAME _STLP_STD::integral_constant<bool, is_integral<_Tp1>::value && _STLP_PRIV is_char<_Tp2>::value>::type _UseStrcspnLikeAlgo;
+//  return _STLP_PRIV __find_first_of_aux2(__first1, __last1,
+//                                         __first2, __last2,
+//                                         _Identity<bool>(), _UseStrcspnLikeAlgo());
+//}
 
 template <class _InputIter, class _ForwardIter>
 inline _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
-                                  _ForwardIter __first2, _ForwardIter __last2) {
-  return _STLP_PRIV __find_first_of_aux1(__first1, __last1, __first2, __last2,
-                                         _STLP_VALUE_TYPE(__first1, _InputIter),
-                                         _STLP_VALUE_TYPE(__first2, _ForwardIter));
+                                  _ForwardIter __first2, _ForwardIter __last2)
+{
+  typedef _STLP_TYPENAME _STLP_STD::integral_constant<bool, is_integral<typename iterator_traits<_InputIter>::value_type>::value && _STLP_PRIV is_char<typename iterator_traits<_ForwardIter>::value_type>::value>::type _UseStrcspnLikeAlgo;
+  return _STLP_PRIV __find_first_of_aux2(__first1, __last1,
+                                         __first2, __last2,
+                                         _Identity<bool>(), _UseStrcspnLikeAlgo());
+
+  //return _STLP_PRIV __find_first_of_aux1(__first1, __last1, __first2, __last2,
+  //                                       typename iterator_traits<_InputIter>::pointer,
+  //                                       typename iterator_traits<_ForwardIter>::pointer);
 }
 
 // find_first_of, with and without an explicitly supplied comparison function.
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
 _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
                            _ForwardIter __first2, _ForwardIter __last2,
-                           _BinaryPredicate __comp) {
+                           _BinaryPredicate __comp)
+{
   for ( ; __first1 != __last1; ++__first1) {
     for (_ForwardIter __iter = __first2; __iter != __last2; ++__iter) {
       if (__comp(*__first1, *__iter)) {
@@ -372,8 +382,9 @@ template <class _ForwardIter1, class _ForwardIter2,
   class _BinaryPredicate>
 _ForwardIter1 __find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
                          _ForwardIter2 __first2, _ForwardIter2 __last2,
-                         const forward_iterator_tag &, const forward_iterator_tag &,
-                         _BinaryPredicate __comp) {
+                         const forward_iterator_tag &, const forward_iterator_tag&,
+                         _BinaryPredicate __comp)
+{
   if (__first2 == __last2)
     return __last1;
   else {

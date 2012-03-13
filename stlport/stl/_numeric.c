@@ -34,16 +34,15 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIterator, class _OutputIterator, class _Tp,
-          class _BinaryOperation>
-_OutputIterator
-__partial_sum(_InputIterator __first, _InputIterator __last,
-              _OutputIterator __result, _Tp*, _BinaryOperation __binary_op) {
+template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
+_OutputIterator __partial_sum(_InputIterator __first, _InputIterator __last,
+                              _OutputIterator __result, _BinaryOperation __binary_op)
+{
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   if (__first == __last) return __result;
   *__result = *__first;
 
-  _Tp __val = *__first;
+  typename iterator_traits<_InputIterator>::value_type __val = *__first;
   while (++__first != __last) {
     __val = __binary_op(__val, *__first);
     *++__result = __val;
@@ -51,18 +50,17 @@ __partial_sum(_InputIterator __first, _InputIterator __last,
   return ++__result;
 }
 
-template <class _InputIterator, class _OutputIterator, class _Tp,
-          class _BinaryOperation>
-_OutputIterator
-__adjacent_difference(_InputIterator __first, _InputIterator __last,
-                      _OutputIterator __result, _Tp*,
-                      _BinaryOperation __binary_op) {
+template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
+_OutputIterator __adjacent_difference(_InputIterator __first, _InputIterator __last,
+                                      _OutputIterator __result,
+                                      _BinaryOperation __binary_op)
+{
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   if (__first == __last) return __result;
   *__result = *__first;
-  _Tp __val = *__first;
+  typename iterator_traits<_InputIterator>::value_type __val = *__first;
   while (++__first != __last) {
-    _Tp __tmp = *__first;
+    typename iterator_traits<_InputIterator>::value_type __tmp = *__first;
     *++__result = __binary_op(__tmp, __val);
     __val = __tmp;
   }

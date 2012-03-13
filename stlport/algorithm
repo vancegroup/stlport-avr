@@ -95,30 +95,10 @@ adjacent_find(_ForwardIter __first, _ForwardIter __last,
 
 template <class _ForwardIter>
 inline _ForwardIter
-adjacent_find(_ForwardIter __first, _ForwardIter __last) {
-  return adjacent_find(__first, __last,
-                       _STLP_PRIV __equal_to(_STLP_VALUE_TYPE(__first, _ForwardIter)));
+adjacent_find(_ForwardIter __first, _ForwardIter __last)
+{
+  return adjacent_find(__first, __last, equal_to<typename iterator_traits<_ForwardIter>::value_type>());
 }
-
-#if !defined (_STLP_NO_ANACHRONISMS)
-template <class _InputIter, class _Tp, class _Size>
-inline void
-count(_InputIter __first, _InputIter __last, const _Tp& __val, _Size& __n) {
-  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-    for ( ; __first != __last; ++__first)
-      if (*__first == __val)
-        ++__n;
-}
-
-template <class _InputIter, class _Predicate, class _Size>
-inline void
-count_if(_InputIter __first, _InputIter __last, _Predicate __pred, _Size& __n) {
-  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  for ( ; __first != __last; ++__first)
-    if (__pred(*__first))
-      ++__n;
-}
-#endif
 
 template <class _ForwardIter1, class _ForwardIter2>
 _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
@@ -466,14 +446,6 @@ struct __less_2 {
   bool operator() (const _T1& __x, const _T2& __y) const { return __x < __y ; }
 };
 
-template <class _T1, class _T2>
-__less_2<_T1,_T2> __less2(_T1*, _T2* ) { return __less_2<_T1, _T2>(); }
-
-#if defined (_STLP_FUNCTION_PARTIAL_ORDER)
-template <class _Tp>
-less<_Tp> __less2(_Tp*, _Tp* ) { return less<_Tp>(); }
-#endif
-
 _STLP_MOVE_TO_STD_NAMESPACE
 
 // Binary search (lower_bound, upper_bound, equal_range, binary_search).
@@ -482,13 +454,14 @@ inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
                                    const _Tp& __val) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __lower_bound(__first, __last, __val,
-                                  _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
-                                  _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)));
+                                  _STLP_PRIV __less_2<typename iterator_traits<_ForwardIter>::value_type,_Tp>(),
+                                  _STLP_PRIV __less_2<_Tp,typename iterator_traits<_ForwardIter>::value_type>());
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
 inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
-                                const _Tp& __val, _Compare __comp) {
+                                const _Tp& __val, _Compare __comp)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __lower_bound(__first, __last, __val, __comp, __comp);
 }
@@ -502,12 +475,12 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last, const _Tp&
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
-inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last,
-                                const _Tp& __val) {
+inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __upper_bound(__first, __last, __val,
-                                  _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
-                                  _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)));
+                                  _STLP_PRIV __less_2<typename iterator_traits<_ForwardIter>::value_type,_Tp>(),
+                                  _STLP_PRIV __less_2<_Tp,typename iterator_traits<_ForwardIter>::value_type>());
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
@@ -527,29 +500,28 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
-inline pair<_ForwardIter, _ForwardIter>
-equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
+inline pair<_ForwardIter, _ForwardIter> equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __equal_range(__first, __last, __val,
-                                  _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
-                                  _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)));
+                                  _STLP_PRIV __less_2<typename iterator_traits<_ForwardIter>::value_type,_Tp>(),
+                                  _STLP_PRIV __less_2<_Tp,typename iterator_traits<_ForwardIter>::value_type>());
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
-inline pair<_ForwardIter, _ForwardIter>
-equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-            _Compare __comp) {
+inline pair<_ForwardIter, _ForwardIter> equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val, _Compare __comp)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __equal_range(__first, __last, __val, __comp, __comp);
 }
 
 template <class _ForwardIter, class _Tp>
-inline bool binary_search(_ForwardIter __first, _ForwardIter __last,
-                   const _Tp& __val) {
+inline bool binary_search(_ForwardIter __first, _ForwardIter __last, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   _ForwardIter __i = _STLP_PRIV __lower_bound(__first, __last, __val,
-                                              _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
-                                              _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)));
+                                              _STLP_PRIV __less_2<typename iterator_traits<_ForwardIter>::value_type,_Tp>(),
+                                              _STLP_PRIV __less_2<_Tp,typename iterator_traits<_ForwardIter>::value_type>());
   return __i != __last && !(__val < *__i);
 }
 
@@ -658,16 +630,15 @@ set_symmetric_difference(_InputIter1 __first1, _InputIter1 __last1,
 
 template <class _ForwardIter>
 _ForwardIter max_element(_ForwardIter __first, _ForwardIter __last);
+
 template <class _ForwardIter, class _Compare>
-_ForwardIter max_element(_ForwardIter __first, _ForwardIter __last,
-                            _Compare __comp);
+_ForwardIter max_element(_ForwardIter __first, _ForwardIter __last, _Compare __comp);
 
 template <class _ForwardIter>
 _ForwardIter min_element(_ForwardIter __first, _ForwardIter __last);
 
 template <class _ForwardIter, class _Compare>
-_ForwardIter min_element(_ForwardIter __first, _ForwardIter __last,
-                            _Compare __comp);
+_ForwardIter min_element(_ForwardIter __first, _ForwardIter __last, _Compare __comp);
 
 // next_permutation and prev_permutation, with and without an explicitly
 // supplied comparison function.
@@ -676,8 +647,7 @@ template <class _BidirectionalIter>
 bool next_permutation(_BidirectionalIter __first, _BidirectionalIter __last);
 
 template <class _BidirectionalIter, class _Compare>
-bool next_permutation(_BidirectionalIter __first, _BidirectionalIter __last,
-                      _Compare __comp);
+bool next_permutation(_BidirectionalIter __first, _BidirectionalIter __last, _Compare __comp);
 
 
 template <class _BidirectionalIter>
@@ -706,19 +676,19 @@ bool is_heap(_RandomAccessIter __first, _RandomAccessIter __last,
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _ForwardIter, class _StrictWeakOrdering>
-bool __is_sorted(_ForwardIter __first, _ForwardIter __last,
-                 _StrictWeakOrdering __comp);
+bool __is_sorted(_ForwardIter __first, _ForwardIter __last, _StrictWeakOrdering __comp);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 template <class _ForwardIter>
-inline bool is_sorted(_ForwardIter __first, _ForwardIter __last) {
+inline bool is_sorted(_ForwardIter __first, _ForwardIter __last)
+{
   return _STLP_PRIV __is_sorted(__first, __last,
-                                _STLP_PRIV __less(_STLP_VALUE_TYPE(__first, _ForwardIter)));
+                                less<typename iterator_traits<_ForwardIter>::value_type>());
 }
 
 template <class _ForwardIter, class _StrictWeakOrdering>
-inline bool is_sorted(_ForwardIter __first, _ForwardIter __last,
-                      _StrictWeakOrdering __comp) {
+inline bool is_sorted(_ForwardIter __first, _ForwardIter __last, _StrictWeakOrdering __comp)
+{
   return _STLP_PRIV __is_sorted(__first, __last, __comp);
 }
 #endif

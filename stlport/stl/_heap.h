@@ -35,79 +35,69 @@ _STLP_BEGIN_NAMESPACE
 // Heap-manipulation functions: push_heap, pop_heap, make_heap, sort_heap.
 
 template <class _RandomAccessIterator>
-void
-push_heap(_RandomAccessIterator __first, _RandomAccessIterator __last);
+void push_heap(_RandomAccessIterator __first, _RandomAccessIterator __last);
 
 
 template <class _RandomAccessIterator, class _Compare>
-void
-push_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
-          _Compare __comp);
+void push_heap(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __comp);
 
-template <class _RandomAccessIterator, class _Distance, class _Tp>
-void
-__adjust_heap(_RandomAccessIterator __first, _Distance __holeIndex,
-              _Distance __len, _Tp __val);
+template <class _RandomAccessIterator>
+void __adjust_heap(_RandomAccessIterator __first,
+              typename iterator_traits<_RandomAccessIterator>::difference_type __holeIndex,
+              typename iterator_traits<_RandomAccessIterator>::difference_type __len,
+              typename iterator_traits<_RandomAccessIterator>::value_type __val);
 
-template <class _RandomAccessIterator, class _Tp>
-inline void
-__pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
-           _RandomAccessIterator __result, _Tp __val)
+template <class _RandomAccessIterator>
+inline void __pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
+                       _RandomAccessIterator __result,
+                       typename iterator_traits<_RandomAccessIterator>::value_type __val)
 {
   typedef typename iterator_traits<_RandomAccessIterator>::difference_type _Distance;
 
   *__result = *__first;
-  __adjust_heap(__first, _Distance(0), _Distance(__last - __first), __val);
+  __adjust_heap(__first, _Distance(0), (__last - __first), __val);
 }
 
 template <class _RandomAccessIterator>
-void pop_heap(_RandomAccessIterator __first,
-        _RandomAccessIterator __last);
+void pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last);
 
-template <class _RandomAccessIterator, class _Distance,
-          class _Tp, class _Compare>
-void
-__adjust_heap(_RandomAccessIterator __first, _Distance __holeIndex,
-              _Distance __len, _Tp __val, _Compare __comp);
+template <class _RandomAccessIterator, class _Compare>
+void __adjust_heap(_RandomAccessIterator __first,
+                   typename iterator_traits<_RandomAccessIterator>::difference_type __holeIndex,
+                   typename iterator_traits<_RandomAccessIterator>::difference_type __len,
+                   typename iterator_traits<_RandomAccessIterator>::value_type __val,
+                   _Compare __comp);
 
-template <class _RandomAccessIterator, class _Tp, class _Compare>
-inline void
-__pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
-           _RandomAccessIterator __result, _Tp __val, _Compare __comp)
+template <class _RandomAccessIterator, class _Compare>
+inline void __pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
+                       _RandomAccessIterator __result,
+                       typename iterator_traits<_RandomAccessIterator>::value_type __val,
+                       _Compare __comp)
 {
   typedef typename iterator_traits<_RandomAccessIterator>::difference_type _Distance;
 
   *__result = *__first;
-  __adjust_heap(__first, _Distance(0), _Distance(__last - __first), __val, __comp);
+  __adjust_heap(__first, _Distance(0), (__last - __first), __val, __comp);
 }
 
 template <class _RandomAccessIterator, class _Compare>
-void
-pop_heap(_RandomAccessIterator __first,
-         _RandomAccessIterator __last, _Compare __comp);
+void pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __comp);
 
 template <class _RandomAccessIterator>
-void
-make_heap(_RandomAccessIterator __first, _RandomAccessIterator __last);
+void make_heap(_RandomAccessIterator __first, _RandomAccessIterator __last);
 
 template <class _RandomAccessIterator, class _Compare>
-void
-make_heap(_RandomAccessIterator __first,
-          _RandomAccessIterator __last, _Compare __comp);
+void make_heap(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __comp);
 
 template <class _RandomAccessIterator>
-inline
-void sort_heap(_RandomAccessIterator __first, _RandomAccessIterator __last)
+inline void sort_heap(_RandomAccessIterator __first, _RandomAccessIterator __last)
 {
   while (__last - __first > 1)
     pop_heap(__first, __last--);
 }
 
 template <class _RandomAccessIterator, class _Compare>
-inline
-void
-sort_heap(_RandomAccessIterator __first,
-          _RandomAccessIterator __last, _Compare __comp)
+inline void sort_heap(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __comp)
 {
   while (__last - __first > 1)
     pop_heap(__first, __last--, __comp);

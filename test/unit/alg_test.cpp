@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 16:46:52 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-14 00:45:28 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -282,11 +282,6 @@ int EXAM_IMPL(alg_test::count_test)
     int i[] = { 1, 4, 2, 8, 2, 2 };
     int n = count(i, i + 6, 2);
     EXAM_CHECK(n==3);
-#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
-    n = 0;
-    count(i, i + 6, 2, n);
-    EXAM_CHECK(n==3);
-#endif
   }
   {
     vector<int> i;
@@ -298,11 +293,6 @@ int EXAM_IMPL(alg_test::count_test)
     i.push_back(2);
     int n = count(i.begin(), i.end(), 2);
     EXAM_CHECK(n==3);
-#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
-    n = 0;
-    count(i.begin(), i.end(), 2, n);
-    EXAM_CHECK(n==3);
-#endif
   }
 
   return EXAM_RESULT;
@@ -1052,11 +1042,6 @@ int EXAM_IMPL(count_test::count0)
 
   int result = count(numbers, numbers + 10, 1);
   EXAM_CHECK(result==4);
-#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
-  result = 0;
-  count(numbers, numbers + 10, 1, result);
-  EXAM_CHECK(result==4);
-#endif
 
   return EXAM_RESULT;
 }
@@ -1068,11 +1053,6 @@ int EXAM_IMPL(count_test::count1)
   numbers[i] = i % 3;
   int elements = count(numbers.begin(), numbers.end(), 2);
   EXAM_CHECK(elements==33);
-#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
-  elements = 0;
-  count(numbers.begin(), numbers.end(), 2, elements);
-  EXAM_CHECK(elements==33);
-#endif
 
   return EXAM_RESULT;
 }
@@ -1084,11 +1064,6 @@ int EXAM_IMPL(count_test::countif1)
     numbers[i] = i % 3;
   int elements = count_if(numbers.begin(), numbers.end(), odd);
   EXAM_CHECK(elements==33);
-#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
-  elements = 0;
-  count_if(numbers.begin(), numbers.end(), odd, elements);
-  EXAM_CHECK(elements==33);
-#endif
 
   return EXAM_RESULT;
 }

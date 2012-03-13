@@ -63,7 +63,6 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 };
 
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#    define _STLP_VALUE_TYPE(_It, _Tp)        (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::value_type*)0
 #    if defined (__BORLANDC__) || defined (__SUNPRO_CC)
 #      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_STD::iterator_traits< _Tp >::iterator_category()
 #    else
@@ -72,7 +71,6 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 // #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::is_reference< _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
 #  else
 #    define _STLP_ITERATOR_CATEGORY(_It, _Tp)   _STLP_STD::__iterator_category(_It, _STLP_STD::is_pointer<_Tp>::type())
-#    define _STLP_VALUE_TYPE(_It, _Tp)          _STLP_STD::__value_type(_It, _STLP_STD::is_pointer<_Tp>::type())
 #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) false_type()
 #  endif
 

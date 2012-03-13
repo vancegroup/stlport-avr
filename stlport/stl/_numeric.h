@@ -81,58 +81,47 @@ _Tp inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIterator, class _OutputIterator, class _Tp,
-          class _BinaryOperation>
-_OutputIterator
-__partial_sum(_InputIterator __first, _InputIterator __last,
-              _OutputIterator __result, _Tp*, _BinaryOperation __binary_op);
+template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
+_OutputIterator __partial_sum(_InputIterator __first, _InputIterator __last,
+                              _OutputIterator __result, _BinaryOperation __binary_op);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIterator, class _OutputIterator>
-inline _OutputIterator
-partial_sum(_InputIterator __first, _InputIterator __last,
-            _OutputIterator __result) {
-  return _STLP_PRIV __partial_sum(__first, __last, __result, _STLP_VALUE_TYPE(__first, _InputIterator),
-                                  _STLP_PRIV __plus(_STLP_VALUE_TYPE(__first, _InputIterator)));
+inline _OutputIterator partial_sum(_InputIterator __first, _InputIterator __last, _OutputIterator __result)
+{
+  return _STLP_PRIV __partial_sum(__first, __last, __result,
+                                  plus<typename iterator_traits<_InputIterator>::value_type>());
 }
 
 template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
 inline _OutputIterator
 partial_sum(_InputIterator __first, _InputIterator __last,
-            _OutputIterator __result, _BinaryOperation __binary_op) {
-  return _STLP_PRIV __partial_sum(__first, __last, __result, _STLP_VALUE_TYPE(__first, _InputIterator),
-                                  __binary_op);
-}
+            _OutputIterator __result, _BinaryOperation __binary_op)
+{ return _STLP_PRIV __partial_sum(__first, __last, __result, __binary_op); }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIterator, class _OutputIterator, class _Tp,
-          class _BinaryOperation>
-_OutputIterator
-__adjacent_difference(_InputIterator __first, _InputIterator __last,
-                      _OutputIterator __result, _Tp*,
-                      _BinaryOperation __binary_op);
+template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
+_OutputIterator __adjacent_difference(_InputIterator __first, _InputIterator __last,
+                                      _OutputIterator __result,
+                                      _BinaryOperation __binary_op);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIterator, class _OutputIterator>
 inline _OutputIterator
-adjacent_difference(_InputIterator __first,
-                    _InputIterator __last, _OutputIterator __result) {
+adjacent_difference(_InputIterator __first, _InputIterator __last, _OutputIterator __result)
+{
   return _STLP_PRIV __adjacent_difference(__first, __last, __result,
-                                          _STLP_VALUE_TYPE(__first, _InputIterator),
-                                          _STLP_PRIV __minus(_STLP_VALUE_TYPE(__first, _InputIterator)));
+                                          minus<typename iterator_traits<_InputIterator>::value_type>());
 }
 
 template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
 _OutputIterator
 adjacent_difference(_InputIterator __first, _InputIterator __last,
-                    _OutputIterator __result, _BinaryOperation __binary_op) {
-  return _STLP_PRIV __adjacent_difference(__first, __last, __result,
-                                          _STLP_VALUE_TYPE(__first, _InputIterator),
-                                          __binary_op);
-}
+                    _OutputIterator __result, _BinaryOperation __binary_op)
+{ return _STLP_PRIV __adjacent_difference(__first, __last, __result, __binary_op); }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
