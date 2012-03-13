@@ -49,8 +49,9 @@ using ::ptrdiff_t;
 using ::size_t;
 _STLP_END_NAMESPACE
 
-#if defined(_STLP_NULLPTR)
 _STLP_BEGIN_NAMESPACE
+
+#if defined(_STLP_NO_NULLPTR_T)
 
 class nullptr_t
 {
@@ -97,9 +98,13 @@ bool operator !=( const nullptr_t&, T C::*pmf )
 { return pmf != 0; }
 
 /* extern */ const nullptr_t nullptr = {};
+#else /* _STLP_NO_NULLPTR_T */
+
+typedef decltype(nullptr) nullptr_t;
+
+#endif /* _STLP_NO_NULLPTR_T */
 
 _STLP_END_NAMESPACE
-#endif /* _STLP_NULLPTR */
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x114 )
 #  include <stl/_epilog.h>
