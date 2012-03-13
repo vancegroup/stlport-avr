@@ -112,7 +112,7 @@ template <class _RandomAccessIter, class _Tp>
 inline _RandomAccessIter __find(_RandomAccessIter __first, _RandomAccessIter __last,
                                            const _Tp& __val,
                                            const random_access_iterator_tag &) {
-  _STLP_DIFFERENCE_TYPE(_RandomAccessIter) __trip_count = (__last - __first) >> 2;
+  typename iterator_traits<_RandomAccessIter>::difference_type __trip_count = (__last - __first) >> 2;
 
   for ( ; __trip_count > 0 ; --__trip_count) {
     if (*__first == __val) return __first;
@@ -159,7 +159,7 @@ template <class _RandomAccessIter, class _Predicate>
 inline _RandomAccessIter __find_if(_RandomAccessIter __first, _RandomAccessIter __last,
                                               _Predicate __pred,
                                               const random_access_iterator_tag &) {
-  _STLP_DIFFERENCE_TYPE(_RandomAccessIter) __trip_count = (__last - __first) >> 2;
+  typename iterator_traits<_RandomAccessIter>::difference_type __trip_count = (__last - __first) >> 2;
 
   for ( ; __trip_count > 0 ; --__trip_count) {
     if (__pred(*__first)) return __first;
@@ -453,15 +453,16 @@ find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2, class _Distance>
+template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2>
 _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
                            _Compare1 __comp1, _Compare2
 #ifdef _STLP_DEBUG
                                                         __comp2
 #endif
-                                                               , _Distance*) {
-  _Distance __len = _STLP_STD::distance(__first, __last);
-  _Distance __half;
+  )
+{
+  typename iterator_traits<_ForwardIter>::difference_type __len = _STLP_STD::distance(__first, __last);
+  typename iterator_traits<_ForwardIter>::difference_type __half;
   _ForwardIter __middle;
 
   while (__len > 0) {

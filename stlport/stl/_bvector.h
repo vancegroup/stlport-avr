@@ -354,7 +354,7 @@ protected:
   void _M_insert_aux(iterator __position, bool __x) {
     if (this->_M_finish._M_p != this->_M_end_of_storage._M_data) {
       _STLP_PRIV __copy_backward(__position, this->_M_finish, this->_M_finish + 1,
-                                 random_access_iterator_tag(), (difference_type*)0 );
+                                 random_access_iterator_tag() );
       *__position = __x;
       ++this->_M_finish;
     }
@@ -406,7 +406,7 @@ protected:
       size_type __n = _STLP_STD::distance(__first, __last);
       if (capacity() - size() >= __n) {
         _STLP_PRIV __copy_backward(__position, end(), this->_M_finish + difference_type(__n),
-                                   random_access_iterator_tag(), (difference_type*)0 );
+                                   random_access_iterator_tag());
         _STLP_STD::copy(__first, __last, __position);
         this->_M_finish += difference_type(__n);
       }

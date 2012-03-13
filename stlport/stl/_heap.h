@@ -49,11 +49,13 @@ void
 __adjust_heap(_RandomAccessIterator __first, _Distance __holeIndex,
               _Distance __len, _Tp __val);
 
-template <class _RandomAccessIterator, class _Tp, class _Distance>
+template <class _RandomAccessIterator, class _Tp>
 inline void
 __pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
-           _RandomAccessIterator __result, _Tp __val, _Distance*)
+           _RandomAccessIterator __result, _Tp __val)
 {
+  typedef typename iterator_traits<_RandomAccessIterator>::difference_type _Distance;
+
   *__result = *__first;
   __adjust_heap(__first, _Distance(0), _Distance(__last - __first), __val);
 }
@@ -68,16 +70,15 @@ void
 __adjust_heap(_RandomAccessIterator __first, _Distance __holeIndex,
               _Distance __len, _Tp __val, _Compare __comp);
 
-template <class _RandomAccessIterator, class _Tp, class _Compare,
-          class _Distance>
+template <class _RandomAccessIterator, class _Tp, class _Compare>
 inline void
 __pop_heap(_RandomAccessIterator __first, _RandomAccessIterator __last,
-           _RandomAccessIterator __result, _Tp __val, _Compare __comp,
-           _Distance*)
+           _RandomAccessIterator __result, _Tp __val, _Compare __comp)
 {
+  typedef typename iterator_traits<_RandomAccessIterator>::difference_type _Distance;
+
   *__result = *__first;
-  __adjust_heap(__first, _Distance(0), _Distance(__last - __first),
-                __val, __comp);
+  __adjust_heap(__first, _Distance(0), _Distance(__last - __first), __val, __comp);
 }
 
 template <class _RandomAccessIterator, class _Compare>

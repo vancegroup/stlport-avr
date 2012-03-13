@@ -417,7 +417,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
     _STLP_TRY {
       if (__elems_before >= difference_type(__n)) {
         iterator __start_n = this->_M_start + difference_type(__n);
-        _STLP_PRIV __ucopy(this->_M_start, __start_n, __new_start);
+        uninitialized_copy(this->_M_start, __start_n, __new_start);
         this->_M_start = __new_start;
         _STLP_STD::copy(__start_n, __pos, __old_start);
         _STLP_STD::fill(__pos - difference_type(__n), __pos, __x_copy);
@@ -439,7 +439,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
     _STLP_TRY {
       if (__elems_after > difference_type(__n)) {
         iterator __finish_n = this->_M_finish - difference_type(__n);
-        _STLP_PRIV __ucopy(__finish_n, this->_M_finish, this->_M_finish);
+        uninitialized_copy(__finish_n, this->_M_finish, this->_M_finish);
         this->_M_finish = __new_finish;
         copy_backward(__pos, __finish_n, __old_finish);
         fill(__pos, __pos + difference_type(__n), __x_copy);

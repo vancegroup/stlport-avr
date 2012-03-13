@@ -48,14 +48,15 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // uninitialized_copy
 
-template <class _InputIter, class _OutputIter, class _Distance>
+template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
-                            _OutputIter __result, _Distance* )
+                            _OutputIter __result,
+                            const input_iterator_tag&)
 {
   _OutputIter __cur = __result;
   _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur ) {
-      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_InputIter>::value_type(*__first);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_OutputIter>::value_type(*__first);
     }
     return __cur;
   }
@@ -63,35 +64,15 @@ inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
   _STLP_RET_AFTER_THROW(__cur)
 }
 
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
-                            _OutputIter __result,
-                            const input_iterator_tag&, _Distance* __d )
-{ return __ucopy(__first, __last, __result, __d); }
-
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
-                            _OutputIter __result,
-                            const forward_iterator_tag&, _Distance* __d )
-{ return __ucopy(__first, __last, __result, __d); }
-
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
-                            _OutputIter __result,
-                            const bidirectional_iterator_tag&, _Distance* __d )
-{ return __ucopy(__first, __last, __result, __d); }
-#endif
-
-template <class _RandomAccessIter, class _OutputIter, class _Distance>
+template <class _RandomAccessIter, class _OutputIter>
 inline _OutputIter __ucopy( _RandomAccessIter __first, _RandomAccessIter __last,
                             _OutputIter __result,
-                            const random_access_iterator_tag&, _Distance* )
+                            const random_access_iterator_tag&)
 {
   _OutputIter __cur = __result;
   _STLP_TRY {
-    for ( _Distance __n = __last - __first; __n > 0; --__n ) {
-      ::new (static_cast<void*>(&*__cur)) typename _STLP_STD::iterator_traits<_RandomAccessIter>::value_type(*__first);
+    for ( typename iterator_traits<_RandomAccessIter>::difference_type __n = __last - __first; __n > 0; --__n ) {
+      ::new (static_cast<void*>(&*__cur)) typename _STLP_STD::iterator_traits<_OutputIter>::value_type(*__first);
       ++__first;
       ++__cur;
     }
@@ -100,12 +81,6 @@ inline _OutputIter __ucopy( _RandomAccessIter __first, _RandomAccessIter __last,
   _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__result, __cur))
   _STLP_RET_AFTER_THROW(__cur)
 }
-
-//Used internaly
-template <class _RandomAccessIter, class _OutputIter>
-inline _OutputIter __ucopy( _RandomAccessIter __first, _RandomAccessIter __last,
-                            _OutputIter __result )
-{ return __ucopy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0); }
 
 inline void* __ucopy_trivial( const void* __first, const void* __last, void* __result )
 {
@@ -118,7 +93,7 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs( _InputIter __first, _InputIter __last,
                                  _OutputIter __result,
                                  const false_type& /*TrivialUCopy*/ )
-{ return __ucopy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0); }
+{ return __ucopy(__first, __last, __result, random_access_iterator_tag()); }
 
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs( _InputIter __first, _InputIter __last,
@@ -151,8 +126,7 @@ inline _OutputIter __ucopy_aux( _InputIter __first, _InputIter __last,
                                 _OutputIter __result, const false_type& /*BothPtrType*/ )
 {
   return __ucopy(__first, __last, __result,
-                 _STLP_ITERATOR_CATEGORY(__first, _InputIter),
-                 _STLP_DISTANCE_TYPE(__first, _InputIter));
+                 _STLP_ITERATOR_CATEGORY(__first, _InputIter));
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -183,7 +157,7 @@ pair<_InputIter, _ForwardIter> __ucopy_n( _InputIter __first, _Size __count,
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __count > 0 ; --__count, ++__first, ++__cur ) {
-      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_InputIter>::value_type(*__first);
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_ForwardIter>::value_type(*__first);
     }
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
@@ -233,8 +207,8 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #endif
 
-template <class _ForwardIter, class _Tp, class _Distance>
-inline void __ufill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x, _Distance* )
+template <class _ForwardIter, class _Tp>
+inline void __ufill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x)
 {
   _ForwardIter __cur = __first;
   _STLP_TRY {
@@ -245,31 +219,19 @@ inline void __ufill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x, 
   _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__first, __cur))
 }
 
-template <class _ForwardIter, class _Tp, class _Distance>
+template <class _ForwardIter, class _Tp>
 inline void __ufill( _ForwardIter __first, _ForwardIter __last,
-                     const _Tp& __x, const input_iterator_tag &, _Distance* __d )
-{ __ufill(__first, __last, __x, __d); }
+                     const _Tp& __x, const input_iterator_tag &)
+{ __ufill(__first, __last, __x); }
 
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _ForwardIter, class _Tp, class _Distance>
-inline void __ufill( _ForwardIter __first, _ForwardIter __last,
-                     const _Tp& __x, const forward_iterator_tag&, _Distance* __d )
-{ __ufill(__first, __last, __x, __d); }
-
-template <class _ForwardIter, class _Tp, class _Distance>
-inline void __ufill( _ForwardIter __first, _ForwardIter __last,
-                     const _Tp& __x, const bidirectional_iterator_tag&, _Distance* __d )
-{ __ufill(__first, __last, __x, __d); }
-#endif
-
-template <class _ForwardIter, class _Tp, class _Distance>
-inline void __ufill( _ForwardIter __first, _ForwardIter __last,
-                     const _Tp& __x, const random_access_iterator_tag&, _Distance* )
+template <class _Iter, class _Tp>
+inline void __ufill( _Iter __first, _Iter __last,
+                     const _Tp& __x, const random_access_iterator_tag&)
 {
-  _ForwardIter __cur = __first;
+  _Iter __cur = __first;
   _STLP_TRY {
-    for (_Distance __n = __last - __first; __n > 0; --__n, ++__cur ) {
-      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_ForwardIter>::value_type(__x);
+    for (typename iterator_traits<_Iter>::difference_type __n = __last - __first; __n > 0; --__n, ++__cur ) {
+      ::new (static_cast<void*>(&*__cur)) typename iterator_traits<_Iter>::value_type(__x);
     }
   }
   _STLP_UNWIND(_STLP_STD::detail::_Destroy_Range(__first, __cur))
@@ -278,12 +240,10 @@ inline void __ufill( _ForwardIter __first, _ForwardIter __last,
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
-inline void uninitialized_fill( _ForwardIter __first, _ForwardIter __last,
-                                const _Tp& __x )
+inline void uninitialized_fill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x )
 {
   _STLP_PRIV __ufill(__first, __last, __x,
-                     _STLP_ITERATOR_CATEGORY(__first, _ForwardIter),
-                     _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+                     _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
 // Specialization: for one-byte types we can use memset.
@@ -329,23 +289,11 @@ inline _ForwardIter __ufill_n( _ForwardIter __first, _Size __n, const _Tp& __x,
                                const input_iterator_tag& )
 { return __ufill_n(__first, __n, __x); }
 
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter __ufill_n( _ForwardIter __first, _Size __n, const _Tp& __x,
-                               const forward_iterator_tag& )
-{ return __ufill_n(__first, __n, __x); }
-
-template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter __ufill_n( _ForwardIter __first, _Size __n, const _Tp& __x,
-                               const bidirectional_iterator_tag& )
-{ return __ufill_n(__first, __n, __x); }
-#endif
-
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uninitialized_fill_n( _ForwardIter __first, _Size __n, const _Tp& __x)
 {
   _ForwardIter __last = __first + __n;
-  __ufill(__first, __last, __x, random_access_iterator_tag(), (ptrdiff_t*)0);
+  __ufill(__first, __last, __x, random_access_iterator_tag());
   return __last;
 }
 

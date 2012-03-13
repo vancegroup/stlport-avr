@@ -145,12 +145,13 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _RandomAccessIter, class _Integer, class _Tp,
-          class _BinaryPred, class _Distance>
+template <class _RandomAccessIter, class _Integer, class _Tp, class _BinaryPred>
 _RandomAccessIter __search_n(_RandomAccessIter __first, _RandomAccessIter __last,
                              _Integer __count, const _Tp& __val, _BinaryPred __pred,
-                             _Distance*, const random_access_iterator_tag &)
+                             const random_access_iterator_tag &)
 {
+  typedef typename iterator_traits<_RandomAccessIter>::difference_type _Distance;
+
   _Distance __tailSize = __last - __first;
   const _Distance __pattSize = __count;
   const _Distance __skipOffset = __pattSize - 1;
@@ -211,11 +212,11 @@ _RandomAccessIter __search_n(_RandomAccessIter __first, _RandomAccessIter __last
   return __last; //failure
 }
 
-template <class _ForwardIter, class _Integer, class _Tp,
-          class _Distance, class _BinaryPred>
+template <class _ForwardIter, class _Integer, class _Tp, class _BinaryPred>
 _ForwardIter __search_n(_ForwardIter __first, _ForwardIter __last,
                         _Integer __count, const _Tp& __val, _BinaryPred __pred,
-                        _Distance*, const forward_iterator_tag &) {
+                        const forward_iterator_tag &)
+{
   for (; (__first != __last) && !__pred(*__first, __val); ++__first) {}
   while (__first != __last) {
     _Integer __n = __count - 1;
@@ -248,7 +249,6 @@ _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
     //We use find when __count == 1 to use potential find overload.
     return find(__first, __last, __val);
   return _STLP_PRIV __search_n(__first, __last, __count, __val, equal_to<_Tp>(),
-                               _STLP_DISTANCE_TYPE(__first, _ForwardIter),
                                _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
@@ -260,7 +260,6 @@ _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
   if (__count <= 0)
     return __first;
   return _STLP_PRIV __search_n(__first, __last, __count, __val, __binary_pred,
-                               _STLP_DISTANCE_TYPE(__first, _ForwardIter),
                                _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
@@ -362,12 +361,12 @@ unique_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
 // rotate and rotate_copy, and their auxiliary functions
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Distance>
+template <class _ForwardIter>
 _ForwardIter __rotate_aux(_ForwardIter __first,
                           _ForwardIter __middle,
                           _ForwardIter __last,
-                          _Distance*,
-                          const forward_iterator_tag &) {
+                          const forward_iterator_tag &)
+{
   if (__first == __middle)
     return __last;
   if (__last  == __middle)
@@ -395,12 +394,12 @@ _ForwardIter __rotate_aux(_ForwardIter __first,
   return __new_middle;
 }
 
-template <class _BidirectionalIter, class _Distance>
+template <class _BidirectionalIter>
 _BidirectionalIter __rotate_aux(_BidirectionalIter __first,
                                 _BidirectionalIter __middle,
                                 _BidirectionalIter __last,
-                                _Distance*,
-                                const bidirectional_iterator_tag &) {
+                                const bidirectional_iterator_tag &)
+{
   if (__first == __middle)
     return __last;
   if (__last  == __middle)
@@ -435,11 +434,13 @@ _EuclideanRingElement __gcd(_EuclideanRingElement __m,
   return __m;
 }
 
-template <class _RandomAccessIter, class _Distance, class _Tp>
+template <class _RandomAccessIter, class _Tp>
 _RandomAccessIter __rotate_aux(_RandomAccessIter __first,
                                _RandomAccessIter __middle,
                                _RandomAccessIter __last,
-                               _Distance *, _Tp *) {
+                               _Tp *)
+{
+  typedef typename iterator_traits<_RandomAccessIter>::difference_type _Distance;
 
   _Distance __n = __last   - __first;
   _Distance __k = __middle - __first;
@@ -470,9 +471,7 @@ _RandomAccessIter __rotate_aux(_RandomAccessIter __first,
         *__p = *(__p + __k);
         __p += __k;
       }
-    }
-
-    else {
+    } else {
       for (_Distance __j = 0; __j < __k/__d - 1; __j ++) {
         if (__p < __last - __k) {
           *__p = *(__p + __k);
@@ -491,21 +490,20 @@ _RandomAccessIter __rotate_aux(_RandomAccessIter __first,
   return __result;
 }
 
-template <class _RandomAccessIter, class _Distance>
+template <class _RandomAccessIter>
 inline _RandomAccessIter
 __rotate_aux(_RandomAccessIter __first, _RandomAccessIter __middle, _RandomAccessIter __last,
-             _Distance * __dis, const random_access_iterator_tag &) {
-  return _STLP_PRIV __rotate_aux(__first, __middle, __last,
-                                 __dis, _STLP_VALUE_TYPE(__first, _RandomAccessIter));
+             const random_access_iterator_tag &)
+{
+  return _STLP_PRIV __rotate_aux(__first, __middle, __last, _STLP_VALUE_TYPE(__first, _RandomAccessIter));
 }
 
 template <class _ForwardIter>
-_ForwardIter
-__rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last) {
+_ForwardIter __rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last)
+{
   _STLP_DEBUG_CHECK(__check_range(__first, __middle))
   _STLP_DEBUG_CHECK(__check_range(__middle, __last))
   return __rotate_aux(__first, __middle, __last,
-                      _STLP_DISTANCE_TYPE(__first, _ForwardIter),
                       _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
@@ -805,10 +803,13 @@ _ForwardIter __stable_partition_adaptive(_ForwardIter __first,
   }
 }
 
-template <class _ForwardIter, class _Predicate, class _Tp, class _Distance>
+template <class _ForwardIter, class _Predicate, class _Tp>
 inline _ForwardIter
 __stable_partition_aux_aux(_ForwardIter __first, _ForwardIter __last,
-                           _Predicate __pred, _Tp*, _Distance*, bool __pred_of_before_last) {
+                           _Predicate __pred, _Tp*, bool __pred_of_before_last)
+{
+  typedef typename iterator_traits<_ForwardIter>::difference_type _Distance;
+
   _Temporary_buffer<_ForwardIter, _Tp> __buf(__first, __last);
   _STLP_MPWFIX_TRY    //*TY 06/01/2000 - they forget to call dtor for _Temporary_buffer if no try/catch block is present
   return (__buf.size() > 0) ?
@@ -827,8 +828,7 @@ _ForwardIter
 __stable_partition_aux(_ForwardIter __first, _ForwardIter __last, _Predicate __pred,
                        const forward_iterator_tag &) {
   return __stable_partition_aux_aux(__first, __last, __pred,
-                                    _STLP_VALUE_TYPE(__first, _ForwardIter),
-                                    _STLP_DISTANCE_TYPE(__first, _ForwardIter), false);
+                                    _STLP_VALUE_TYPE(__first, _ForwardIter), false);
 }
 
 template <class _BidirectIter, class _Predicate>
@@ -846,8 +846,7 @@ __stable_partition_aux(_BidirectIter __first, _BidirectIter __last, _Predicate _
   ++__last;
   //Here we know that __pred(*--__last) is true
   return __stable_partition_aux_aux(__first, __last, __pred,
-                                    _STLP_VALUE_TYPE(__first, _BidirectIter),
-                                    _STLP_DISTANCE_TYPE(__first, _BidirectIter), true);
+                                    _STLP_VALUE_TYPE(__first, _BidirectIter), true);
 }
 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
@@ -1178,10 +1177,13 @@ void __stable_sort_adaptive(_RandomAccessIter __first,
                    __comp);
 }
 
-template <class _RandomAccessIter, class _Tp, class _Distance, class _Compare>
+template <class _RandomAccessIter, class _Tp, class _Compare>
 void __stable_sort_aux(_RandomAccessIter __first,
-                       _RandomAccessIter __last, _Tp*, _Distance*,
-                       _Compare __comp) {
+                       _RandomAccessIter __last, _Tp*,
+                       _Compare __comp)
+{
+  typedef typename iterator_traits<_RandomAccessIter>::difference_type _Distance;
+
   _Temporary_buffer<_RandomAccessIter, _Tp> buf(__first, __last);
   if (buf.begin() == 0)
     __inplace_stable_sort(__first, __last, __comp);
@@ -1199,7 +1201,6 @@ void stable_sort(_RandomAccessIter __first,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   _STLP_PRIV __stable_sort_aux(__first, __last,
                                _STLP_VALUE_TYPE(__first, _RandomAccessIter),
-                               _STLP_DISTANCE_TYPE(__first, _RandomAccessIter),
                                _STLP_PRIV __less(_STLP_VALUE_TYPE(__first, _RandomAccessIter)));
 }
 
@@ -1209,7 +1210,6 @@ void stable_sort(_RandomAccessIter __first,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   _STLP_PRIV __stable_sort_aux(__first, __last,
                                _STLP_VALUE_TYPE(__first, _RandomAccessIter),
-                               _STLP_DISTANCE_TYPE(__first, _RandomAccessIter),
                                __comp);
 }
 
@@ -1223,8 +1223,7 @@ void __partial_sort(_RandomAccessIter __first, _RandomAccessIter __middle,
   for (_RandomAccessIter __i = __middle; __i < __last; ++__i) {
     if (__comp(*__i, *__first)) {
       _STLP_VERBOSE_ASSERT(!__comp(*__first, *__i), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
-      __pop_heap(__first, __middle, __i, _Tp(*__i), __comp,
-                 _STLP_DISTANCE_TYPE(__first, _RandomAccessIter));
+      __pop_heap(__first, __middle, __i, _Tp(*__i), __comp);
     }
   }
   sort_heap(__first, __middle, __comp);
@@ -1251,13 +1250,15 @@ void partial_sort(_RandomAccessIter __first,_RandomAccessIter __middle,
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIter, class _RandomAccessIter, class _Compare,
-          class _Distance, class _Tp>
+template <class _InputIter, class _RandomAccessIter, class _Compare, class _Tp>
 _RandomAccessIter __partial_sort_copy(_InputIter __first,
                                       _InputIter __last,
                                       _RandomAccessIter __result_first,
                                       _RandomAccessIter __result_last,
-                                      _Compare __comp, _Distance*, _Tp*) {
+                                      _Compare __comp, _Tp*)
+{
+  typedef typename iterator_traits<_RandomAccessIter>::difference_type _Distance;
+
   if (__result_first == __result_last) return __result_last;
   _RandomAccessIter __result_real_last = __result_first;
   while(__first != __last && __result_real_last != __result_last) {
@@ -1290,7 +1291,6 @@ partial_sort_copy(_InputIter __first, _InputIter __last,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__result_first, __result_last))
   return _STLP_PRIV __partial_sort_copy(__first, __last, __result_first, __result_last,
                                         _STLP_PRIV __less(_STLP_VALUE_TYPE(__first, _InputIter)),
-                                        _STLP_DISTANCE_TYPE(__result_first, _RandomAccessIter),
                                         _STLP_VALUE_TYPE(__first, _InputIter));
 }
 
@@ -1303,7 +1303,6 @@ partial_sort_copy(_InputIter __first, _InputIter __last,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__result_first, __result_last))
   return _STLP_PRIV __partial_sort_copy(__first, __last, __result_first, __result_last,
                                         __comp,
-                                        _STLP_DISTANCE_TYPE(__result_first, _RandomAccessIter),
                                         _STLP_VALUE_TYPE(__first, _InputIter));
 }
 
@@ -1351,16 +1350,16 @@ void nth_element(_RandomAccessIter __first, _RandomAccessIter __nth,
 // Binary search (lower_bound, upper_bound, equal_range, binary_search).
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp,
-          class _Compare1, class _Compare2, class _Distance>
+template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2>
 _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
                            _Compare1
 #ifdef _STLP_DEBUG
                                      __comp1
 #endif
-                                            , _Compare2 __comp2, _Distance*) {
-  _Distance __len = _STLP_STD::distance(__first, __last);
-  _Distance __half;
+                                            , _Compare2 __comp2)
+{
+  typename iterator_traits<_ForwardIter>::difference_type __len = _STLP_STD::distance(__first, __last);
+  typename iterator_traits<_ForwardIter>::difference_type __half;
 
   while (__len > 0) {
     __half = __len >> 1;
@@ -1380,12 +1379,13 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last, const _Tp&
 }
 
 template <class _ForwardIter, class _Tp,
-          class _Compare1, class _Compare2, class _Distance>
+          class _Compare1, class _Compare2>
 pair<_ForwardIter, _ForwardIter>
 __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-              _Compare1 __comp1, _Compare2 __comp2, _Distance* __dist) {
-  _Distance __len = _STLP_STD::distance(__first, __last);
-  _Distance __half;
+              _Compare1 __comp1, _Compare2 __comp2)
+{
+  typename iterator_traits<_ForwardIter>::difference_type __len = _STLP_STD::distance(__first, __last);
+  typename iterator_traits<_ForwardIter>::difference_type __half;
 
   while (__len > 0) {
     __half = __len >> 1;
@@ -1402,7 +1402,7 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
       __len = __half;
     }
     else {
-      _ForwardIter __left = _STLP_PRIV __lower_bound(__first, __middle, __val, __comp1, __comp2, __dist);
+      _ForwardIter __left = _STLP_PRIV __lower_bound(__first, __middle, __val, __comp1, __comp2);
       //Small optim: If lower_bound haven't found an equivalent value
       //there is no need to call upper_bound.
       if (__comp1(*__left, __val)) {
@@ -1410,7 +1410,7 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
         return pair<_ForwardIter, _ForwardIter>(__left, __left);
       }
       _STLP_STD::advance(__first, __len);
-      _ForwardIter __right = _STLP_PRIV __upper_bound(++__middle, __first, __val, __comp1, __comp2, __dist);
+      _ForwardIter __right = _STLP_PRIV __upper_bound(++__middle, __first, __val, __comp1, __comp2);
       return pair<_ForwardIter, _ForwardIter>(__left, __right);
     }
   }
@@ -1533,12 +1533,14 @@ _BidirectionalIter3 __merge_backward(_BidirectionalIter1 __first1,
   }
 }
 
-template <class _BidirectionalIter, class _Tp,
-          class _Distance, class _Compare>
+template <class _BidirectionalIter, class _Tp, class _Compare>
 inline void __inplace_merge_aux(_BidirectionalIter __first,
                                 _BidirectionalIter __middle,
-                                _BidirectionalIter __last, _Tp*, _Distance*,
-                                _Compare __comp) {
+                                _BidirectionalIter __last, _Tp*,
+                                _Compare __comp)
+{
+  typedef typename iterator_traits<_BidirectionalIter>::difference_type _Distance;
+
   _Distance __len1 = _STLP_STD::distance(__first, __middle);
   _Distance __len2 = _STLP_STD::distance(__middle, __last);
 
@@ -1562,7 +1564,7 @@ void inplace_merge(_BidirectionalIter __first,
   if (__first == __middle || __middle == __last)
     return;
   _STLP_PRIV __inplace_merge_aux(__first, __middle, __last,
-                                 _STLP_VALUE_TYPE(__first, _BidirectionalIter), _STLP_DISTANCE_TYPE(__first, _BidirectionalIter),
+                                 _STLP_VALUE_TYPE(__first, _BidirectionalIter),
                                  _STLP_PRIV __less(_STLP_VALUE_TYPE(__first, _BidirectionalIter)));
 }
 
@@ -1575,8 +1577,7 @@ void inplace_merge(_BidirectionalIter __first,
   if (__first == __middle || __middle == __last)
     return;
   _STLP_PRIV __inplace_merge_aux(__first, __middle, __last,
-                                 _STLP_VALUE_TYPE(__first, _BidirectionalIter), _STLP_DISTANCE_TYPE(__first, _BidirectionalIter),
-                                 __comp);
+                                 _STLP_VALUE_TYPE(__first, _BidirectionalIter), __comp);
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

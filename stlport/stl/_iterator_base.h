@@ -64,7 +64,6 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #    define _STLP_VALUE_TYPE(_It, _Tp)        (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::value_type*)0
-#    define _STLP_DISTANCE_TYPE(_It, _Tp)     (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::difference_type*)0
 #    if defined (__BORLANDC__) || defined (__SUNPRO_CC)
 #      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_STD::iterator_traits< _Tp >::iterator_category()
 #    else
@@ -73,177 +72,76 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 // #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::is_reference< _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
 #  else
 #    define _STLP_ITERATOR_CATEGORY(_It, _Tp)   _STLP_STD::__iterator_category(_It, _STLP_STD::is_pointer<_Tp>::type())
-#    define _STLP_DISTANCE_TYPE(_It, _Tp)       _STLP_STD::__distance_type(_It, _STLP_STD::is_pointer<_Tp>::type())
 #    define _STLP_VALUE_TYPE(_It, _Tp)          _STLP_STD::__value_type(_It, _STLP_STD::is_pointer<_Tp>::type())
 #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) false_type()
 #  endif
 
 template <class _Iterator>
-struct iterator_traits {
-  typedef typename _Iterator::iterator_category iterator_category;
-  typedef typename _Iterator::value_type        value_type;
-  typedef typename _Iterator::difference_type   difference_type;
-  typedef typename _Iterator::pointer           pointer;
-  typedef typename _Iterator::reference         reference;
-};
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (__SUNPRO_CC)
-#  define _STLP_DIFFERENCE_TYPE(_Iterator) typename iterator_traits<_Iterator>::difference_type
-#else
-#  define _STLP_DIFFERENCE_TYPE(_Iterator) ptrdiff_t
-#endif
-
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-
-// fbp : this order keeps gcc happy
-template <class _Tp>
-struct iterator_traits<const _Tp*> {
-  typedef random_access_iterator_tag  iterator_category;
-  typedef _Tp                         value_type;
-  typedef ptrdiff_t                   difference_type;
-  typedef const _Tp*                  pointer;
-  typedef const _Tp&                  reference;
+struct iterator_traits
+{
+    typedef typename _Iterator::difference_type   difference_type;
+    typedef typename _Iterator::value_type        value_type;
+    typedef typename _Iterator::pointer           pointer;
+    typedef typename _Iterator::reference         reference;
+    typedef typename _Iterator::iterator_category iterator_category;
 };
 
 template <class _Tp>
-struct iterator_traits<_Tp*> {
-  typedef random_access_iterator_tag  iterator_category;
-  typedef _Tp                         value_type;
-  typedef ptrdiff_t                   difference_type;
-  typedef _Tp*                        pointer;
-  typedef _Tp&                        reference;
+struct iterator_traits<_Tp*>
+{
+    typedef ptrdiff_t                  difference_type;
+    typedef _Tp                        value_type;
+    typedef _Tp*                       pointer;
+    typedef _Tp&                       reference;
+    typedef random_access_iterator_tag iterator_category;
 };
 
-#  if defined (__BORLANDC__)
 template <class _Tp>
-struct iterator_traits<_Tp* const> {
-  typedef random_access_iterator_tag  iterator_category;
-  typedef _Tp                         value_type;
-  typedef ptrdiff_t                   difference_type;
-  typedef const _Tp*                  pointer;
-  typedef const _Tp&                  reference;
+struct iterator_traits<const _Tp*>
+{
+    typedef ptrdiff_t                  difference_type;
+    typedef _Tp                        value_type;
+    typedef const _Tp*                 pointer;
+    typedef const _Tp&                 reference;
+    typedef random_access_iterator_tag iterator_category;
 };
-#  endif
 
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+// specialization for _Tp __far* ? What is platforms for?
 
 _STLP_END_NAMESPACE
 #include <stl/_ptrs_specialize.h>
 _STLP_BEGIN_NAMESPACE
 
-// The overloaded functions iterator_category, distance_type, and
-// value_type are not part of the C++ standard.  (They have been
-// replaced by struct iterator_traits.)  They are included for
-// backward compatibility with the HP STL.
-// We introduce internal names for these functions.
-
-#ifndef _STLP_CLASS_PARTIAL_SPECIALIZATION
-
-template <class _Tp>
-inline _STLP_STD::random_access_iterator_tag
-__iterator_category(const _Tp*, const true_type&)
-{ return _STLP_STD::random_access_iterator_tag(); }
-
-template <class _Iter>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::iterator_category
-__iterator_category(const _Iter&, const false_type&) {
-  typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::iterator_category _Category;
-  return _Category();
-}
-
-template <class _Tp>
-inline ptrdiff_t*
-__distance_type(const _Tp*, const true_type&)
-{ return __STATIC_CAST(ptrdiff_t*, 0); }
-
-template <class _Iter>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::difference_type*
-__distance_type(const _Iter&, const false_type&) {
-  typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::difference_type _diff_type;
-  return __STATIC_CAST(_diff_type*,0);
-}
-
-template <class _Tp>
-inline _Tp*
-__value_type(const _Tp*, const true_type&)
-{ return __STATIC_CAST(_Tp*, 0); }
-
-template <class _Iter>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::value_type*
-__value_type(const _Iter&, const false_type&) {
-  typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::value_type _value_type;
-  return __STATIC_CAST(_value_type*,0);
-}
-
-#endif // !_STLP_CLASS_PARTIAL_SPECIALIZATION
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIterator>
-inline _STLP_DIFFERENCE_TYPE(_InputIterator) _STLP_CALL
-__distance(const _InputIterator& __first, const _InputIterator& __last,
-           const input_iterator_tag &) {
-  _STLP_DIFFERENCE_TYPE(_InputIterator) __n = 0;
-  _InputIterator __it(__first);
-  while (__it != __last) {
-    ++__it; ++__n;
-  }
-  return __n;
-}
+template <class _IteratorCategory>
+struct __distance_aux
+{
+    template <class _Iterator>
+    static typename iterator_traits<_Iterator>::difference_type _STLP_CALL distance(const _Iterator& __first, const _Iterator& __last)
+      {
+        typename iterator_traits<_Iterator>::difference_type __n = 0;
+        for (_Iterator __it(__first); __it != __last; ++__it) {
+          ++__n;
+        }
+        return __n;
+      }
+};
 
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _ForwardIterator>
-inline _STLP_DIFFERENCE_TYPE(_ForwardIterator) _STLP_CALL
-__distance(const _ForwardIterator& __first, const _ForwardIterator& __last,
-           const forward_iterator_tag &) {
-  _STLP_DIFFERENCE_TYPE(_ForwardIterator) __n = 0;
-  _ForwardIterator __it(__first);
-  while (__it != __last) {
-    ++__it; ++__n;
-  }
-  return __n;
-}
-
-template <class _BidirectionalIterator>
-inline _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) _STLP_CALL
-__distance(const _BidirectionalIterator& __first, const _BidirectionalIterator& __last,
-           const bidirectional_iterator_tag &) {
-  _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) __n = 0;
-  _BidirectionalIterator __it(__first);
-  while (__it != __last) {
-    ++__it; ++__n;
-  }
-  return __n;
-}
-#endif
-
-template <class _RandomAccessIterator>
-inline _STLP_DIFFERENCE_TYPE(_RandomAccessIterator) _STLP_CALL
-__distance(const _RandomAccessIterator& __first, const _RandomAccessIterator& __last,
-           const random_access_iterator_tag &)
-{ return __last - __first; }
+template <>
+struct __distance_aux<typename _STLP_STD::random_access_iterator_tag>
+{
+    template <class _Iterator>
+    static typename iterator_traits<_Iterator>::difference_type _STLP_CALL distance(const _Iterator& __first, const _Iterator& __last)
+      { return __last - __first; }
+};
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template <class _InputIterator>
-inline _STLP_DIFFERENCE_TYPE(_InputIterator) _STLP_CALL
-distance(_InputIterator __first, _InputIterator __last)
-{ return _STLP_PRIV __distance(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
-
-#if !defined (_STLP_NO_ANACHRONISMS)
-template <class _InputIterator, class _Distance>
-inline void _STLP_CALL distance(const _InputIterator& __first,
-                                const _InputIterator& __last, _Distance& __n)
-{ __n += _STLP_STD::distance(__first, __last); }
-
-#  if defined (_STLP_MSVC)
-// MSVC specific
-template <class _InputIterator, class _Dist>
-inline void  _STLP_CALL _Distance(_InputIterator __first,
-                                  _InputIterator __last, _Dist& __n)
-{ __n += _STLP_STD::distance(__first, __last); }
-#  endif
-#endif
+template <class _Iterator>
+inline
+typename iterator_traits<_Iterator>::difference_type _STLP_CALL distance(_Iterator __first, _Iterator __last)
+{ return _STLP_PRIV __distance_aux<typename iterator_traits<_Iterator>::iterator_category>::distance(__first, __last); }
 
 // fbp: those are being used for iterator/const_iterator definitions everywhere
 template <class _Tp>

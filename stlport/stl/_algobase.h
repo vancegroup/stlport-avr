@@ -174,10 +174,9 @@ inline const _Tp (max)(const _Tp __a, const _Tp __b, _Compare __comp) {
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy( _InputIter __first, _InputIter __last,
-                           _OutputIter __result, const input_iterator_tag&,
-                           _Distance* )
+template <class _InputIter, class _OutputIter>
+inline _OutputIter __copy(_InputIter __first, _InputIter __last,
+                          _OutputIter __result, const input_iterator_tag&)
 {
   for ( ; __first != __last; ++__result, ++__first ) {
     *__result = *__first;
@@ -185,35 +184,12 @@ inline _OutputIter __copy( _InputIter __first, _InputIter __last,
   return __result;
 }
 
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy( _InputIter __first, _InputIter __last,
-                           _OutputIter __result, const forward_iterator_tag&,
-                           _Distance* )
+template <class _RandomAccessIter, class _OutputIter>
+inline _OutputIter __copy(_RandomAccessIter __first, _RandomAccessIter __last,
+                          _OutputIter __result, const random_access_iterator_tag&)
 {
-  for ( ; __first != __last; ++__result, ++__first ) {
-    *__result = *__first;
-  }
-  return __result;
-}
+  typedef typename iterator_traits<_RandomAccessIter>::difference_type _Distance;
 
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy( _InputIter __first, _InputIter __last,
-                           _OutputIter __result, const bidirectional_iterator_tag&,
-                           _Distance* )
-{
-  for ( ; __first != __last; ++__result, ++__first ) {
-    *__result = *__first;
-  }
-  return __result;
-}
-#endif
-
-template <class _RandomAccessIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy( _RandomAccessIter __first, _RandomAccessIter __last,
-                           _OutputIter __result, const random_access_iterator_tag&,
-                           _Distance* )
-{
   for ( _Distance __n = __last - __first; __n > 0; --__n ) {
     *__result = *__first;
     ++__first;
@@ -231,13 +207,11 @@ inline void* __copy_trivial( const void* __first, const void* __last, void* __re
 //--------------------------------------------------
 // copy_backward auxiliary functions
 
-template <class _BidirectionalIter1, class _BidirectionalIter2,
-          class _Distance>
+template <class _BidirectionalIter1, class _BidirectionalIter2>
 inline _BidirectionalIter2 __copy_backward( _BidirectionalIter1 __first,
                                             _BidirectionalIter1 __last,
                                             _BidirectionalIter2 __result,
-                                            const bidirectional_iterator_tag&,
-                                            _Distance* )
+                                            const bidirectional_iterator_tag&)
 {
   while ( __first != __last ) {
     *--__result = *--__last;
@@ -245,13 +219,14 @@ inline _BidirectionalIter2 __copy_backward( _BidirectionalIter1 __first,
   return __result;
 }
 
-template <class _RandomAccessIter, class _BidirectionalIter, class _Distance>
+template <class _RandomAccessIter, class _BidirectionalIter>
 inline _BidirectionalIter __copy_backward( _RandomAccessIter __first,
                                            _RandomAccessIter __last,
                                            _BidirectionalIter __result,
-                                           const random_access_iterator_tag&,
-                                           _Distance* )
+                                           const random_access_iterator_tag&)
 {
+  typedef typename iterator_traits<_RandomAccessIter>::difference_type _Distance;
+
   for ( _Distance __n = __last - __first; __n > 0; --__n ) {
     *--__result = *--__last;
   }
@@ -270,7 +245,7 @@ inline _OutputIter __copy_ptrs( _InputIter __first, _InputIter __last,
                                 _OutputIter __result,
                                 const false_type& /*IsOKToMemCpy*/)
 {
-  return _STLP_PRIV __copy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0);
+  return _STLP_PRIV __copy(__first, __last, __result, random_access_iterator_tag());
 }
 
 template <class _InputIter, class _OutputIter>
@@ -305,9 +280,7 @@ inline _OutputIter __copy_aux( _InputIter __first, _InputIter __last,
                                _OutputIter __result,
                                const false_type& /*BothPtrType*/)
 {
-  return _STLP_PRIV __copy(__first, __last, __result,
-                           _STLP_ITERATOR_CATEGORY(__first, _InputIter),
-                           _STLP_DISTANCE_TYPE(__first, _InputIter));
+  return _STLP_PRIV __copy(__first, __last, __result, typename iterator_traits<_InputIter>::iterator_category());
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -325,8 +298,7 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_backward_ptrs( _InputIter __first, _InputIter __last,
                                          _OutputIter __result, const false_type& /*TrivialAssignment*/) {
   return _STLP_PRIV __copy_backward(__first, __last, __result,
-                                    _STLP_ITERATOR_CATEGORY(__first, _InputIter),
-                                    _STLP_DISTANCE_TYPE(__first, _InputIter));
+                                    _STLP_ITERATOR_CATEGORY(__first, _InputIter));
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_backward_ptrs( _InputIter __first, _InputIter __last,
@@ -339,8 +311,7 @@ inline _OutputIter __copy_backward_aux( _InputIter __first, _InputIter __last,
                                         _OutputIter __result, const false_type& )
 {
   return _STLP_PRIV __copy_backward(__first, __last, __result,
-                                    _STLP_ITERATOR_CATEGORY(__first,_InputIter),
-                                    _STLP_DISTANCE_TYPE(__first, _InputIter));
+                                    _STLP_ITERATOR_CATEGORY(__first,_InputIter));
 }
 
 template <class _InputIter, class _OutputIter>
@@ -455,33 +426,16 @@ void __fill_fwd(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
     *__first = __val;
 }
 
-template <class _ForwardIter, class _Tp, class _Distance>
+template <class _ForwardIter, class _Tp>
 inline void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-                   const input_iterator_tag &, _Distance*) {
-  _STLP_PRIV __fill_fwd(__first, __last, __val);
-}
+                   const input_iterator_tag &)
+{ _STLP_PRIV __fill_fwd(__first, __last, __val); }
 
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _ForwardIter, class _Tp, class _Distance>
-inline
-void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-            const forward_iterator_tag &, _Distance*) {
-  _STLP_PRIV __fill_fwd(__first, __last, __val);
-}
-
-template <class _ForwardIter, class _Tp, class _Distance>
-inline
-void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-            const bidirectional_iterator_tag &, _Distance*) {
-  _STLP_PRIV __fill_fwd(__first, __last, __val);
-}
-#endif
-
-template <class _RandomAccessIter, class _Tp, class _Distance>
-inline
-void __fill(_RandomAccessIter __first, _RandomAccessIter __last, const _Tp& __val,
-            const random_access_iterator_tag &, _Distance*) {
-  for (_Distance __n = __last - __first ; __n > 0; ++__first, --__n)
+template <class _RandomAccessIter, class _Tp>
+inline void __fill(_RandomAccessIter __first, _RandomAccessIter __last, const _Tp& __val,
+                   const random_access_iterator_tag &)
+{
+  for (typename iterator_traits<_RandomAccessIter>::difference_type __n = __last - __first ; __n > 0; ++__first, --__n)
     *__first = __val;
 }
 
@@ -490,9 +444,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _ForwardIter, class _Tp>
 inline void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  _STLP_PRIV __fill(__first, __last, __val,
-                    _STLP_ITERATOR_CATEGORY(__first, _ForwardIter),
-                    _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+  _STLP_PRIV __fill(__first, __last, __val, _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
 // Specialization: for one-byte types we can use memset.
@@ -694,10 +646,11 @@ int lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
 
 // count
 template <class _InputIter, class _Tp>
-inline _STLP_DIFFERENCE_TYPE(_InputIter)
-count(_InputIter __first, _InputIter __last, const _Tp& __val) {
+inline typename iterator_traits<_InputIter>::difference_type
+count(_InputIter __first, _InputIter __last, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  _STLP_DIFFERENCE_TYPE(_InputIter) __n = 0;
+  typename iterator_traits<_InputIter>::difference_type __n = 0;
   for ( ; __first != __last; ++__first)
     if (*__first == __val)
       ++__n;
@@ -750,9 +703,9 @@ replace(_ForwardIter __first, _ForwardIter __last,
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2, class _Distance>
+template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2>
 _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
-                           const _Tp& __val, _Compare1 __comp1, _Compare2 __comp2, _Distance*);
+                           const _Tp& __val, _Compare1 __comp1, _Compare2 __comp2);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 

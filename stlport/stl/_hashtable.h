@@ -120,6 +120,32 @@ struct _Ht_iterator {
   //copy constructor for iterator and constructor from iterator for const_iterator
   _Ht_iterator(const iterator& __it) : _M_ite(__it._M_ite) {}
   _Ht_iterator(_BaseIte __it) : _M_ite(__it) {}
+#if 0
+    _Ht_iterator(const iterator& __it) :
+        _M_ite(_STLP_STD::forward(__it._M_ite))
+      { }
+    _Ht_iterator(iterator&& __it) :
+        _M_ite(_STLP_STD::move(__it._M_ite))
+      { }
+    _Ht_iterator(const const_iterator& __it) :
+        _M_ite(_STLP_STD::forward(__it._M_ite))
+      { }
+    _Ht_iterator(const_iterator&& __it) :
+        _M_ite(_STLP_STD::move(__it._M_ite))
+      { }
+    _Ht_iterator(const _BaseIte& __it) :
+        _M_ite(_STLP_STD::forward(__it))
+      { }
+    _Ht_iterator(_BaseIte&& __it) :
+        _M_ite(_STLP_STD::move(__it))
+      { }
+    //_Ht_iterator(const _Ht_iterator& __it) :
+    //    _M_ite(_STLP_STD::forward(__it._M_ite))
+    //  { }
+    //_Ht_iterator(_Ht_iterator&& __it) :
+    //    _M_ite(_STLP_STD::move(__it._M_ite))
+    //  { }
+#endif
 
   reference operator*() const {
     return *_M_ite;

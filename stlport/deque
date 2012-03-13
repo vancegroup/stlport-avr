@@ -494,7 +494,7 @@ class deque :
 
     deque(const _Self& __x) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__x.get_allocator(), __x.size())
-      { _STLP_PRIV __ucopy(__x.begin(), __x.end(), this->_M_start); }
+      { uninitialized_copy(__x.begin(), __x.end(), this->_M_start); }
 
   public:
     explicit deque(size_type __n) :
