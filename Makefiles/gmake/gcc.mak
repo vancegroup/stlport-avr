@@ -187,7 +187,7 @@ endif
 #endif
 #endif
 
-CXXFLAGS += ${EXTRA_CXXFLAGS}
+CXXFLAGS += -std=gnu++0x ${EXTRA_CXXFLAGS}
 CFLAGS += ${EXTRA_CFLAGS}
 
 CDEPFLAGS = -E -M
