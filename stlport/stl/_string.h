@@ -242,9 +242,8 @@ _STLP_PRIVATE:
   }
 
   template <class _InputIter>
-  void _M_range_initializeT(_InputIter __f, _InputIter __l) {
-    _M_range_initialize(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
-  }
+  void _M_range_initializeT(_InputIter __f, _InputIter __l)
+      { _M_range_initialize(__f, __l, typename iterator_traits<_InputIter>::iterator_category()); }
 
   template <class _Integer>
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const true_type& /*_Integral*/) {
@@ -408,7 +407,7 @@ private:
 
   template <class _InputIter>
   _Self& _M_append_dispatch(_InputIter __f, _InputIter __l, const false_type& /*Integral*/)
-  { return _M_appendT(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter)); }
+  { return _M_appendT(__f, __l, typename iterator_traits<_InputIter>::iterator_category()); }
 
 public:
   // Check to see if _InputIterator is an integer type.  If so, then
@@ -488,19 +487,20 @@ private:
   { return assign((size_type) __n, (_CharT) __x); }
 
   template <class _InputIter>
-  _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l, const false_type& /*_Integral*/) {
-    pointer __cur = this->_M_Start();
-    while (__f != __l && __cur != this->_M_Finish()) {
-      _Traits::assign(*__cur, *__f);
-      ++__f;
-      ++__cur;
-    }
-    if (__f == __l)
-      erase(__cur, this->end());
-    else
-      _M_appendT(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
-    return *this;
-  }
+  _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l, const false_type& /*_Integral*/)
+      {
+        pointer __cur = this->_M_Start();
+        while (__f != __l && __cur != this->_M_Finish()) {
+          _Traits::assign(*__cur, *__f);
+          ++__f;
+          ++__cur;
+        }
+        if (__f == __l)
+          erase(__cur, this->end());
+        else
+          _M_appendT(__f, __l, typename iterator_traits<_InputIter>::iterator_category());
+        return *this;
+      }
 
 public:
   // Check to see if _InputIterator is an integer type.  If so, then

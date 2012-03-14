@@ -514,7 +514,7 @@ class deque :
 
     template <class _InputIter>
     void _M_initialize_dispatch( _InputIter __first, _InputIter __last, const false_type& )
-      { _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
+      { _M_range_initialize(__first, __last, typename iterator_traits<_InputIter>::iterator_category()); }
 
   public:
     // Check whether it's an integral type.  If so, it's not an iterator.
@@ -584,7 +584,7 @@ class deque :
     template <class _InputIterator>
     void _M_assign_dispatch( _InputIterator __first, _InputIterator __last,
                              const false_type& /*_IsIntegral*/)
-      { _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
+      { _M_assign_aux(__first, __last, typename iterator_traits<_InputIterator>::iterator_category()); }
 
     template <class _InputIter>
     void _M_assign_aux( _InputIter __first, _InputIter __last, const input_iterator_tag& )
@@ -687,7 +687,7 @@ class deque :
     template <class _InputIterator>
     void _M_insert_dispatch( iterator __pos, _InputIterator __first, _InputIterator __last,
                              const false_type& /*_IsIntegral*/)
-      { _M_insert(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
+      { _M_insert(__pos, __first, __last, typename iterator_traits<_InputIterator>::iterator_category()); }
 
   public:
     // Check whether it's an integral type.  If so, it's not an iterator.

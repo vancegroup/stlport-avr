@@ -192,17 +192,17 @@ inline _RandomAccessIter __find_if(_RandomAccessIter __first, _RandomAccessIter 
 }
 
 template <class _InputIter, class _Tp>
-inline _InputIter __find(_InputIter __first, _InputIter __last,
-                                    const _Tp& __val,
-                                    const input_iterator_tag &) {
+inline _InputIter __find(_InputIter __first, _InputIter __last, const _Tp& __val,
+                         const input_iterator_tag&)
+{
   while (__first != __last && !(*__first == __val)) ++__first;
   return __first;
 }
 
 template <class _InputIter, class _Predicate>
-inline _InputIter __find_if(_InputIter __first, _InputIter __last,
-                                       _Predicate __pred,
-                                       const input_iterator_tag &) {
+inline _InputIter __find_if(_InputIter __first, _InputIter __last, _Predicate __pred,
+                            const input_iterator_tag&)
+{
   while (__first != __last && !__pred(*__first))
     ++__first;
   return __first;
@@ -211,22 +211,24 @@ inline _InputIter __find_if(_InputIter __first, _InputIter __last,
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _Predicate>
-_InputIter find_if(_InputIter __first, _InputIter __last,
-                   _Predicate __pred) {
+_InputIter find_if(_InputIter __first, _InputIter __last, _Predicate __pred)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __find_if(__first, __last, __pred, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+  return _STLP_PRIV __find_if(__first, __last, __pred, typename iterator_traits<_InputIter>::iterator_category());
 }
 
 template <class _InputIter, class _Tp>
-_InputIter find(_InputIter __first, _InputIter __last, const _Tp& __val) {
+_InputIter find(_InputIter __first, _InputIter __last, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __find(__first, __last, __val, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+  return _STLP_PRIV __find(__first, __last, __val, typename iterator_traits<_InputIter>::iterator_category());
 }
 
 template <class _ForwardIter1, class _ForwardIter2, class _BinaryPred>
 _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
                      _ForwardIter2 __first2, _ForwardIter2 __last2,
-                     _BinaryPred  __pred) {
+                     _BinaryPred  __pred)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
   // Test for empty ranges
@@ -415,13 +417,12 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _BidirectionalIter1, class _BidirectionalIter2,
-          class _BinaryPredicate>
-_BidirectionalIter1
-__find_end(_BidirectionalIter1 __first1, _BidirectionalIter1 __last1,
-           _BidirectionalIter2 __first2, _BidirectionalIter2 __last2,
-           const bidirectional_iterator_tag &, const bidirectional_iterator_tag &,
-           _BinaryPredicate __comp) {
+template <class _BidirectionalIter1, class _BidirectionalIter2, class _BinaryPredicate>
+_BidirectionalIter1 __find_end(_BidirectionalIter1 __first1, _BidirectionalIter1 __last1,
+                               _BidirectionalIter2 __first2, _BidirectionalIter2 __last2,
+                               const bidirectional_iterator_tag&, const bidirectional_iterator_tag&,
+                               _BinaryPredicate __comp)
+{
   typedef _STLP_STD::reverse_iterator<_BidirectionalIter1> _RevIter1;
   typedef _STLP_STD::reverse_iterator<_BidirectionalIter2> _RevIter2;
 
@@ -433,32 +434,25 @@ __find_end(_BidirectionalIter1 __first1, _BidirectionalIter1 __last1,
 
   if (__rresult == __rlast1)
     return __last1;
-  else {
-    _BidirectionalIter1 __result = __rresult.base();
-    _STLP_STD::advance(__result, -_STLP_STD::distance(__first2, __last2));
-    return __result;
-  }
+
+  _BidirectionalIter1 __result = __rresult.base();
+  _STLP_STD::advance(__result, -_STLP_STD::distance(__first2, __last2));
+  return __result;
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-template <class _ForwardIter1, class _ForwardIter2,
-          class _BinaryPredicate>
-_ForwardIter1
-find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
-         _ForwardIter2 __first2, _ForwardIter2 __last2,
-         _BinaryPredicate __comp) {
+template <class _ForwardIter1, class _ForwardIter2, class _BinaryPredicate>
+_ForwardIter1 find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
+                       _ForwardIter2 __first2, _ForwardIter2 __last2,
+                       _BinaryPredicate __comp)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
   return _STLP_PRIV __find_end(__first1, __last1, __first2, __last2,
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-                               _STLP_ITERATOR_CATEGORY(__first1, _ForwardIter1),
-                               _STLP_ITERATOR_CATEGORY(__first2, _ForwardIter2),
-#else
-                               forward_iterator_tag(),
-                               forward_iterator_tag(),
-#endif
+                               typename iterator_traits<_ForwardIter1>::iterator_category(),
+                               typename iterator_traits<_ForwardIter2>::iterator_category(),
                                __comp);
 }
 

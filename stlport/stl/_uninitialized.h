@@ -126,7 +126,7 @@ inline _OutputIter __ucopy_aux( _InputIter __first, _InputIter __last,
                                 _OutputIter __result, const false_type& /*BothPtrType*/ )
 {
   return __ucopy(__first, __last, __result,
-                 _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+                 typename iterator_traits<_InputIter>::iterator_category());
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -192,7 +192,7 @@ inline pair<_RandomAccessIter, _ForwardIter> __ucopy_n(_RandomAccessIter __first
 template <class _InputIter, class _Size, class _ForwardIter>
 inline pair<_InputIter, _ForwardIter> __ucopy_n( _InputIter __first, _Size __count,
                                                  _ForwardIter __result )
-{ return _STLP_PRIV __ucopy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
+{ return _STLP_PRIV __ucopy_n(__first, __count, __result, typename iterator_traits<_InputIter>::iterator_category()); }
 
 #if !defined (_STLP_NO_EXTENSIONS)
 
@@ -243,7 +243,7 @@ template <class _ForwardIter, class _Tp>
 inline void uninitialized_fill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x )
 {
   _STLP_PRIV __ufill(__first, __last, __x,
-                     _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+                     typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 // Specialization: for one-byte types we can use memset.
@@ -338,7 +338,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Size, class _Tp>
 inline void uninitialized_fill_n( _ForwardIter __first, _Size __n, const _Tp& __x )
-{ _STLP_PRIV __ufill_n(__first, __n, __x, _STLP_ITERATOR_CATEGORY(__first, _ForwardIter)); }
+{ _STLP_PRIV __ufill_n(__first, __n, __x, typename iterator_traits<_ForwardIter>::iterator_category()); }
 
 // Extensions: __uninitialized_copy_copy, __uninitialized_copy_fill,
 // __uninitialized_fill_copy.

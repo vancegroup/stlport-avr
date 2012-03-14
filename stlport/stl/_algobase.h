@@ -298,7 +298,7 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_backward_ptrs( _InputIter __first, _InputIter __last,
                                          _OutputIter __result, const false_type& /*TrivialAssignment*/) {
   return _STLP_PRIV __copy_backward(__first, __last, __result,
-                                    _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+                                    typename iterator_traits<_InputIter>::iterator_category());
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_backward_ptrs( _InputIter __first, _InputIter __last,
@@ -311,7 +311,7 @@ inline _OutputIter __copy_backward_aux( _InputIter __first, _InputIter __last,
                                         _OutputIter __result, const false_type& )
 {
   return _STLP_PRIV __copy_backward(__first, __last, __result,
-                                    _STLP_ITERATOR_CATEGORY(__first,_InputIter));
+                                    typename iterator_traits<_InputIter>::iterator_category());
 }
 
 template <class _InputIter, class _OutputIter>
@@ -386,9 +386,10 @@ _STLP_DECLARE_COPY_TRIVIAL(long double)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
-inline _STLP_STD::pair<_InputIter, _OutputIter>
-__copy_n(_InputIter __first, _Size __count, _OutputIter __result,
-         const input_iterator_tag &) {
+inline
+_STLP_STD::pair<_InputIter, _OutputIter> __copy_n(_InputIter __first, _Size __count, _OutputIter __result,
+                                                  const input_iterator_tag&)
+{
   for ( ; __count > 0; --__count) {
     *__result = *__first;
     ++__first;
@@ -398,9 +399,10 @@ __copy_n(_InputIter __first, _Size __count, _OutputIter __result,
 }
 
 template <class _RAIter, class _Size, class _OutputIter>
-inline _STLP_STD::pair<_RAIter, _OutputIter>
-__copy_n(_RAIter __first, _Size __count, _OutputIter __result,
-         const random_access_iterator_tag &) {
+inline
+_STLP_STD::pair<_RAIter, _OutputIter> __copy_n(_RAIter __first, _Size __count, _OutputIter __result,
+                                               const random_access_iterator_tag&)
+{
   _RAIter __last = __first + __count;
   return _STLP_STD::pair<_RAIter, _OutputIter>(__last, _STLP_STD::copy(__first, __last, __result));
 }
@@ -408,10 +410,11 @@ __copy_n(_RAIter __first, _Size __count, _OutputIter __result,
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
-inline pair<_InputIter, _OutputIter>
-copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
+inline
+pair<_InputIter, _OutputIter> copy_n(_InputIter __first, _Size __count, _OutputIter __result)
+{
   _STLP_FIX_LITERAL_BUG(__first)
-  return _STLP_PRIV __copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+  return _STLP_PRIV __copy_n(__first, __count, __result, typename iterator_traits<_InputIter>::iterator_category());
 }
 #endif
 
@@ -442,25 +445,27 @@ inline void __fill(_RandomAccessIter __first, _RandomAccessIter __last, const _T
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
-inline void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
+inline void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  _STLP_PRIV __fill(__first, __last, __val, _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+  _STLP_PRIV __fill(__first, __last, __val, typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 // Specialization: for one-byte types we can use memset.
-inline void fill(unsigned char* __first, unsigned char* __last,
-                 const unsigned char& __val) {
+inline void fill(unsigned char* __first, unsigned char* __last, const unsigned char& __val)
+{
   unsigned char __tmp = __val;
   memset(__first, __tmp, __last - __first);
 }
 #if !defined (_STLP_NO_SIGNED_BUILTINS)
-inline void fill(signed char* __first, signed char* __last,
-                 const signed char& __val) {
+inline void fill(signed char* __first, signed char* __last, const signed char& __val)
+{
   signed char __tmp = __val;
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
 #endif
-inline void fill(char* __first, char* __last, const char& __val) {
+inline void fill(char* __first, char* __last, const char& __val)
+{
   char __tmp = __val;
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
@@ -468,8 +473,8 @@ inline void fill(char* __first, char* __last, const char& __val) {
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _OutputIter, class _Size, class _Tp>
-inline
-_OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
+inline _OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val)
+{
   _STLP_FIX_LITERAL_BUG(__first)
   for ( ; __n > 0; --__n, ++__first)
     *__first = __val;
@@ -478,22 +483,22 @@ _OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
 
 #if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _Size>
-inline unsigned char* __fill_n(unsigned char* __first, _Size __n,
-                               const unsigned char& __val) {
+inline unsigned char* __fill_n(unsigned char* __first, _Size __n, const unsigned char& __val)
+{
   _STLP_STD::fill(__first, __first + __n, __val);
   return __first + __n;
 }
 #if !defined (_STLP_NO_SIGNED_BUILTINS)
 template <class _Size>
-inline signed char* __fill_n(signed char* __first, _Size __n,
-                             const signed char& __val) {
+inline signed char* __fill_n(signed char* __first, _Size __n, const signed char& __val)
+{
   _STLP_STD::fill(__first, __first + __n, __val);
   return __first + __n;
 }
 #endif
 template <class _Size>
-inline char* __fill_n(char* __first, _Size __n,
-                      const char& __val) {
+inline char* __fill_n(char* __first, _Size __n, const char& __val)
+{
   _STLP_STD::fill(__first, __first + __n, __val);
   return __first + __n;
 }
@@ -502,7 +507,8 @@ inline char* __fill_n(char* __first, _Size __n,
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _OutputIter, class _Size, class _Tp>
-inline void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
+inline void fill_n(_OutputIter __first, _Size __n, const _Tp& __val)
+{
   _STLP_FIX_LITERAL_BUG(__first)
   _STLP_PRIV __fill_n(__first, __n, __val);
 }
@@ -515,7 +521,8 @@ template <class _InputIter1, class _InputIter2>
 inline
 _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
                                                    _InputIter1 __last1,
-                                                   _InputIter2 __first2) {
+                                                   _InputIter2 __first2)
+{
   _STLP_FIX_LITERAL_BUG(__first2)
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   while (__first1 != __last1 && *__first1 == *__first2) {
@@ -530,7 +537,8 @@ inline
 _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
                                                    _InputIter1 __last1,
                                                    _InputIter2 __first2,
-                                                   _BinaryPredicate __binary_pred) {
+                                                   _BinaryPredicate __binary_pred)
+{
   _STLP_FIX_LITERAL_BUG(__first2)
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   while (__first1 != __last1 && __binary_pred(*__first1, *__first2)) {
@@ -543,7 +551,8 @@ _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
 template <class _InputIter1, class _InputIter2>
 inline
 bool equal(_InputIter1 __first1, _InputIter1 __last1,
-           _InputIter2 __first2) {
+           _InputIter2 __first2)
+{
   _STLP_FIX_LITERAL_BUG(__first1) _STLP_FIX_LITERAL_BUG(__last1)  _STLP_FIX_LITERAL_BUG(__first2)
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   for ( ; __first1 != __last1; ++__first1, ++__first2)
@@ -555,7 +564,8 @@ bool equal(_InputIter1 __first1, _InputIter1 __last1,
 template <class _InputIter1, class _InputIter2, class _BinaryPredicate>
 inline
 bool equal(_InputIter1 __first1, _InputIter1 __last1,
-           _InputIter2 __first2, _BinaryPredicate __binary_pred) {
+           _InputIter2 __first2, _BinaryPredicate __binary_pred)
+{
   _STLP_FIX_LITERAL_BUG(__first2)
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   for ( ; __first1 != __last1; ++__first1, ++__first2)
@@ -581,7 +591,8 @@ inline bool
 lexicographical_compare(const unsigned char* __first1,
                         const unsigned char* __last1,
                         const unsigned char* __first2,
-                        const unsigned char* __last2) {
+                        const unsigned char* __last2)
+{
   const size_t __len1 = __last1 - __first1;
   const size_t __len2 = __last2 - __first2;
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
@@ -594,7 +605,8 @@ lexicographical_compare(const unsigned char* __first1,
 
 #if !(CHAR_MAX == SCHAR_MAX)
 inline bool lexicographical_compare(const char* __first1, const char* __last1,
-                                    const char* __first2, const char* __last2) {
+                                    const char* __first2, const char* __last2)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
 
@@ -615,7 +627,8 @@ inline int
 __lexicographical_compare_3way(const unsigned char* __first1,
                                const unsigned char* __last1,
                                const unsigned char* __first2,
-                               const unsigned char* __last2) {
+                               const unsigned char* __last2)
+{
   const ptrdiff_t __len1 = __last1 - __first1;
   const ptrdiff_t __len2 = __last2 - __first2;
   const int __result = memcmp(__first1, __first2, (min) (__len1, __len2));
@@ -627,7 +640,8 @@ __lexicographical_compare_3way(const unsigned char* __first1,
 #if !(CHAR_MAX == SCHAR_MAX)
 inline int
 __lexicographical_compare_3way(const char* __first1, const char* __last1,
-                               const char* __first2, const char* __last2) {
+                               const char* __first2, const char* __last2)
+{
   return __lexicographical_compare_3way((const unsigned char*) __first1,
                                         (const unsigned char*) __last1,
                                         (const unsigned char*) __first2,
@@ -685,16 +699,15 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter1, class _ForwardIter2,
           class _BinaryPredicate>
-_ForwardIter1
-find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
-         _ForwardIter2 __first2, _ForwardIter2 __last2,
-         _BinaryPredicate __comp);
+_ForwardIter1 find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
+                       _ForwardIter2 __first2, _ForwardIter2 __last2,
+                       _BinaryPredicate __comp);
 
 // replace
 template <class _ForwardIter, class _Tp>
-inline void
-replace(_ForwardIter __first, _ForwardIter __last,
-        const _Tp& __old_value, const _Tp& __new_value) {
+inline void replace(_ForwardIter __first, _ForwardIter __last,
+                    const _Tp& __old_value, const _Tp& __new_value)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     if (*__first == __old_value)

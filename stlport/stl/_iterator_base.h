@@ -62,18 +62,6 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #endif
 };
 
-#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#    if defined (__BORLANDC__) || defined (__SUNPRO_CC)
-#      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_STD::iterator_traits< _Tp >::iterator_category()
-#    else
-#      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::iterator_category()
-#    endif
-// #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::is_reference< _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
-#  else
-#    define _STLP_ITERATOR_CATEGORY(_It, _Tp)   _STLP_STD::__iterator_category(_It, _STLP_STD::is_pointer<_Tp>::type())
-#    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) false_type()
-#  endif
-
 template <class _Iterator>
 struct iterator_traits
 {
@@ -225,60 +213,40 @@ struct _##Motif {                                               \
 };                                                              \
 _STLP_MOVE_TO_STD_NAMESPACE
 
-/*
-#  if defined (_STLP_BASE_TYPEDEF_BUG)
-// this workaround is needed for SunPro 4.0.1
-template <class _Traits>
-struct __cnst_traits_aux : private _Traits {
-  typedef typename _Traits::value_type value_type;
-};
-#  define __TRAITS_VALUE_TYPE(_Traits) __cnst_traits_aux<_Traits>::value_type
-#  else
-#  define __TRAITS_VALUE_TYPE(_Traits) _Traits::value_type
-#  endif
-*/
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _InputIter, class _Distance>
+template <class _InputIter>
 inline void _STLP_CALL
-__advance(_InputIter& __i, _Distance __n, const input_iterator_tag &)
+__advance(_InputIter& __i, typename iterator_traits<_InputIter>::difference_type __n, const input_iterator_tag&)
 { while (__n--) ++__i; }
 
 // fbp : added output iterator tag variant
-template <class _InputIter, class _Distance>
+template <class _Iterator>
 inline void _STLP_CALL
-__advance(_InputIter& __i, _Distance __n, const output_iterator_tag &)
+__advance(_Iterator& __i, typename iterator_traits<_Iterator>::difference_type __n, const output_iterator_tag&)
 { while (__n--) ++__i; }
 
-#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class _ForwardIterator, class _Distance>
+template <class _BidirectionalIterator>
 inline void _STLP_CALL
-__advance(_ForwardIterator& i, _Distance n, const forward_iterator_tag &)
-{ while (n--) ++i; }
-#endif
-
-template <class _BidirectionalIterator, class _Distance>
-inline void _STLP_CALL
-__advance(_BidirectionalIterator& __i, _Distance __n,
-          const bidirectional_iterator_tag &) {
+__advance(_BidirectionalIterator& __i, typename iterator_traits<_BidirectionalIterator>::difference_type __n,
+          const bidirectional_iterator_tag&)
+{
   if (__n > 0)
     while (__n--) ++__i;
   else
     while (__n++) --__i;
 }
 
-template <class _RandomAccessIterator, class _Distance>
+template <class _RandomAccessIterator>
 inline void _STLP_CALL
-__advance(_RandomAccessIterator& __i, _Distance __n,
-          const random_access_iterator_tag &)
+__advance(_RandomAccessIterator& __i, typename iterator_traits<_RandomAccessIterator>::difference_type __n, const random_access_iterator_tag&)
 { __i += __n; }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template <class _InputIterator, class _Distance>
-inline void _STLP_CALL advance(_InputIterator& __i, _Distance __n)
-{ _STLP_PRIV __advance(__i, __n, _STLP_ITERATOR_CATEGORY(__i, _InputIterator)); }
+template <class _InputIterator>
+inline void _STLP_CALL advance(_InputIterator& __i, typename iterator_traits<_InputIterator>::difference_type __n)
+{ _STLP_PRIV __advance(__i, __n, typename iterator_traits<_InputIterator>::iterator_category()); }
 
 _STLP_END_NAMESPACE
 

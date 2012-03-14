@@ -490,7 +490,7 @@ public:
   template <class _InputIterator>
   void _M_initialize_dispatch(_InputIterator __first, _InputIterator __last,
                               const false_type&) {
-    _M_initialize_range(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
+    _M_initialize_range(__first, __last, typename iterator_traits<_InputIterator>::iterator_category());
   }
   template <class _InputIterator>
   __BVECTOR(_InputIterator __first, _InputIterator __last,
@@ -547,7 +547,7 @@ public:
 
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last, const false_type&)
-    { _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
+    { _M_assign_aux(__first, __last, typename iterator_traits<_InputIter>::iterator_category()); }
 
   template <class _InputIterator>
   void _M_assign_aux(_InputIterator __first, _InputIterator __last,
@@ -622,16 +622,13 @@ public:
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          const true_type&) {
-    _M_fill_insert(__pos, (size_type) __n, (bool) __x);
-  }
+                          const true_type&)
+      { _M_fill_insert(__pos, (size_type) __n, (bool) __x); }
 
   template <class _InputIterator>
-  void _M_insert_dispatch(iterator __pos,
-                          _InputIterator __first, _InputIterator __last,
-                          const false_type&) {
-    _M_insert_range(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
-  }
+  void _M_insert_dispatch(iterator __pos, _InputIterator __first, _InputIterator __last,
+                          const false_type&)
+      { _M_insert_range(__pos, __first, __last, typename iterator_traits<_InputIterator>::iterator_category()); }
 
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>

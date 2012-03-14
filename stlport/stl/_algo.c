@@ -242,7 +242,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
 // search_n.  Search for __count consecutive copies of __val.
 template <class _ForwardIter, class _Integer, class _Tp>
 _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
-                      _Integer __count, const _Tp& __val) {
+                      _Integer __count, const _Tp& __val)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   if (__count <= 0)
     return __first;
@@ -250,36 +251,32 @@ _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
     //We use find when __count == 1 to use potential find overload.
     return find(__first, __last, __val);
   return _STLP_PRIV __search_n(__first, __last, __count, __val, equal_to<_Tp>(),
-                               _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+                               typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 template <class _ForwardIter, class _Integer, class _Tp, class _BinaryPred>
 _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
                       _Integer __count, const _Tp& __val,
-                      _BinaryPred __binary_pred) {
+                      _BinaryPred __binary_pred)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   if (__count <= 0)
     return __first;
   return _STLP_PRIV __search_n(__first, __last, __count, __val, __binary_pred,
-                               _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+                               typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
 _ForwardIter1
 find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
-         _ForwardIter2 __first2, _ForwardIter2 __last2) {
+         _ForwardIter2 __first2, _ForwardIter2 __last2)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
   return _STLP_PRIV __find_end(__first1, __last1, __first2, __last2,
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-                               _STLP_ITERATOR_CATEGORY(__first1, _ForwardIter1),
-                               _STLP_ITERATOR_CATEGORY(__first2, _ForwardIter2),
-#else
-                               forward_iterator_tag(),
-                               forward_iterator_tag(),
-#endif
-                               equal_to<typename iterator_traits<_ForwardIter1>::value_type>()
-    );
+                               typename iterator_traits<_ForwardIter1>::iterator_category(),
+                               typename iterator_traits<_ForwardIter2>::iterator_category(),
+                               equal_to<typename iterator_traits<_ForwardIter1>::value_type>());
 }
 
 // unique and unique_copy
@@ -323,7 +320,7 @@ _OutputIter unique_copy(_InputIter __first, _InputIter __last, _OutputIter __res
   if (__first == __last) return __result;
   return _STLP_PRIV __unique_copy(__first, __last, __result,
                                   equal_to<typename iterator_traits<_InputIter>::value_type>(),
-                                  _STLP_ITERATOR_CATEGORY(__result, _OutputIter));
+                                  typename iterator_traits<_OutputIter>::iterator_category());
 }
 
 template <class _InputIter, class _OutputIter, class _BinaryPredicate>
@@ -333,7 +330,7 @@ _OutputIter unique_copy(_InputIter __first, _InputIter __last,_OutputIter __resu
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   if (__first == __last) return __result;
   return _STLP_PRIV __unique_copy(__first, __last, __result, __binary_pred,
-                                  _STLP_ITERATOR_CATEGORY(__result, _OutputIter));
+                                  typename iterator_traits<_OutputIter>::iterator_category());
 }
 
 // rotate and rotate_copy, and their auxiliary functions
@@ -343,7 +340,7 @@ template <class _ForwardIter>
 _ForwardIter __rotate_aux(_ForwardIter __first,
                           _ForwardIter __middle,
                           _ForwardIter __last,
-                          const forward_iterator_tag &)
+                          const forward_iterator_tag&)
 {
   if (__first == __middle)
     return __last;
@@ -478,8 +475,7 @@ _ForwardIter __rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter 
 {
   _STLP_DEBUG_CHECK(__check_range(__first, __middle))
   _STLP_DEBUG_CHECK(__check_range(__middle, __last))
-  return __rotate_aux(__first, __middle, __last,
-                      _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+  return __rotate_aux(__first, __middle, __last, typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -697,9 +693,10 @@ inline _BidirectionalIter __partition(_BidirectionalIter __first,
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Predicate>
-_ForwardIter partition(_ForwardIter __first, _ForwardIter __last, _Predicate   __pred) {
+_ForwardIter partition(_ForwardIter __first, _ForwardIter __last, _Predicate __pred)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __partition(__first, __last, __pred, _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+  return _STLP_PRIV __partition(__first, __last, __pred, typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 
@@ -827,7 +824,7 @@ _ForwardIter stable_partition(_ForwardIter __first, _ForwardIter __last, _Predic
       break;
   }
   return _STLP_PRIV __stable_partition_aux(__first, __last, __pred,
-                                           _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+                                           typename iterator_traits<_ForwardIter>::iterator_category());
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

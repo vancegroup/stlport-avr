@@ -292,15 +292,15 @@ inline _ForwardIter unique(_ForwardIter __first, _ForwardIter __last,
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _BidirectionalIter>
-inline void
-__reverse(_BidirectionalIter __first, _BidirectionalIter __last, const bidirectional_iterator_tag &) {
+inline void __reverse(_BidirectionalIter __first, _BidirectionalIter __last, const bidirectional_iterator_tag &)
+{
   for (; __first != __last && __first != --__last; ++__first)
     _STLP_STD::iter_swap(__first,__last);
 }
 
 template <class _RandomAccessIter>
-inline void
-__reverse(_RandomAccessIter __first, _RandomAccessIter __last, const random_access_iterator_tag &) {
+inline void __reverse(_RandomAccessIter __first, _RandomAccessIter __last, const random_access_iterator_tag&)
+{
   for (; __first < __last; ++__first)
     _STLP_STD::iter_swap(__first, --__last);
 }
@@ -308,17 +308,16 @@ __reverse(_RandomAccessIter __first, _RandomAccessIter __last, const random_acce
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _BidirectionalIter>
-inline void
-reverse(_BidirectionalIter __first, _BidirectionalIter __last) {
+inline void reverse(_BidirectionalIter __first, _BidirectionalIter __last)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  _STLP_PRIV __reverse(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _BidirectionalIter));
+  _STLP_PRIV __reverse(__first, __last, typename iterator_traits<_BidirectionalIter>::iterator_category());
 }
 
 template <class _BidirectionalIter, class _OutputIter>
-inline
-_OutputIter reverse_copy(_BidirectionalIter __first,
-                         _BidirectionalIter __last,
-                         _OutputIter __result) {
+inline _OutputIter reverse_copy(_BidirectionalIter __first, _BidirectionalIter __last,
+                                _OutputIter __result)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   while (__first != __last) {
     --__last;
@@ -333,9 +332,8 @@ void rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last);
 
 template <class _ForwardIter, class _OutputIter>
 inline _OutputIter rotate_copy(_ForwardIter __first, _ForwardIter __middle,
-                               _ForwardIter __last, _OutputIter __result) {
-  return _STLP_STD::copy(__first, __middle, copy(__middle, __last, __result));
-}
+                               _ForwardIter __last, _OutputIter __result)
+{ return _STLP_STD::copy(__first, __middle, copy(__middle, __last, __result)); }
 
 // random_shuffle
 

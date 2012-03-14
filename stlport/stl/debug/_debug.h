@@ -270,7 +270,7 @@ inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&,
 
 template <class _Iterator>
 inline bool _STLP_CALL __valid_range(const _Iterator& __i1, const _Iterator& __i2)
-{ return __valid_range(__i1,__i2,_STLP_ITERATOR_CATEGORY(__i1, _Iterator)); }
+{ return __valid_range(__i1,__i2,typename iterator_traits<_Iterator>::iterator_category()); }
 
 // Note : that means in range [i1, i2].
 template <class _Iterator>
