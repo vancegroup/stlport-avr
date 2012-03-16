@@ -36,7 +36,7 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<locale::facet*>;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<locale::facet**, locale::facet*, allocator<locale::facet*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<locale::facet**, allocator<locale::facet*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<locale::facet*, allocator<locale::facet*> >;
 
 _STLP_MOVE_TO_STD_NAMESPACE

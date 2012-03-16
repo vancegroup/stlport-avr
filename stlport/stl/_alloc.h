@@ -994,14 +994,14 @@ inline void swap(allocator<_Tp>&, allocator<_Tp>&)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // inheritance is being used for EBO optimization
-template <class _Value, class _Tp, class _MaybeReboundAlloc>
+template <class _Value, class _MaybeReboundAlloc>
 class _STLP_alloc_proxy :
     public _MaybeReboundAlloc
 {
   private:
     typedef _MaybeReboundAlloc _Base;
     typedef typename _Base::size_type size_type;
-    typedef _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
+    typedef _STLP_alloc_proxy<_Value, _MaybeReboundAlloc> _Self;
 
   public:
     _Value _M_data;
@@ -1028,19 +1028,19 @@ class _STLP_alloc_proxy :
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char*, char, allocator<char> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char*, allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t*, wchar_t, allocator<wchar_t> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t*, allocator<wchar_t> >;
 #  endif
 #  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, allocator<void*> >;
 #  endif
 #endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template <class _Value, class _Tp, class _MaybeReboundAlloc>
-inline void swap( _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& __a, _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& __b)
+template <class _Value, class _MaybeReboundAlloc>
+inline void swap( _STLP_PRIV _STLP_alloc_proxy<_Value,_MaybeReboundAlloc>& __a, _STLP_PRIV _STLP_alloc_proxy<_Value,_MaybeReboundAlloc>& __b)
 { __a.swap( __b ); }
 
 _STLP_END_NAMESPACE

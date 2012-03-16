@@ -63,7 +63,7 @@ class _Vector_base
     typedef _Vector_base<_Tp, _Alloc> _Self;
     typedef _Alloc allocator_type;
     typedef _Tp* pointer;
-    typedef _STLP_alloc_proxy<pointer, _Tp, allocator_type> _AllocProxy;
+    typedef _STLP_alloc_proxy<pointer, allocator_type> _AllocProxy;
 
     _Vector_base(const _Alloc& __a) 
         : _M_start(0),

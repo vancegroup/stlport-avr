@@ -333,7 +333,7 @@ public:
 
   unsigned char _M_depth;
   _CharT* _STLP_VOLATILE _M_c_string;
-  _STLP_PRIV _STLP_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
+  _STLP_PRIV _STLP_alloc_proxy<size_t, allocator_type> _M_size;
 
   /* Flattened version of string, if needed.  */
   /* typically 0.                             */
@@ -1049,7 +1049,7 @@ public:
 
 public:
   // The only data member of a rope:
-  _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type> _M_tree_ptr;
+  _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, allocator_type> _M_tree_ptr;
 
 public:
   allocator_type get_allocator() const { return allocator_type(_M_tree_ptr); }

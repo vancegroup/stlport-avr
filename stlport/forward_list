@@ -172,7 +172,7 @@ class forward_list
     typedef _STLP_PRIV _Slist_node<_Tp> _Node;
     typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
 
-    typedef _STLP_PRIV _STLP_alloc_proxy<_STLP_PRIV _Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
+    typedef _STLP_PRIV _STLP_alloc_proxy<_STLP_PRIV _Slist_node_base, _M_node_allocator_type> _AllocProxy;
     typedef forward_list<_Tp,_Alloc> _Self;
 
   public:

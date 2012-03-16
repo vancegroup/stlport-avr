@@ -1335,7 +1335,7 @@ const _CharT* rope<_CharT,_Alloc>::c_str() const {
   _CharT* __old_c_string = _M_tree_ptr._M_data->_M_c_string;
   if (0 != __old_c_string) return __old_c_string;
   size_t __s = size();
-  _CharT* __result = const_cast<typename _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type>&>(_M_tree_ptr).allocate( __s + 1 );
+  _CharT* __result = const_cast<typename _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, allocator_type>&>(_M_tree_ptr).allocate( __s + 1 );
 
   _S_flatten(_M_tree_ptr._M_data, __result);
   _S_construct_null(__result + __s);
@@ -1346,7 +1346,7 @@ const _CharT* rope<_CharT,_Alloc>::c_str() const {
     // separately allocated.  Deallocate the old copy, since we just
     // replaced it.
     _STLP_STD::detail::_Destroy_Range( __old_c_string, __old_c_string + __s + 1 );
-    const_cast<typename _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type>&>(_M_tree_ptr).deallocate( __old_c_string, __s + 1 );
+    const_cast<typename _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, allocator_type>&>(_M_tree_ptr).deallocate( __old_c_string, __s + 1 );
   }
   return __result;
 }

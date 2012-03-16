@@ -46,7 +46,7 @@ class _String_base
     // enum {_DEFAULT_SIZE = 4 * sizeof( void * )};
     //This is needed by the full move framework
     typedef _Alloc allocator_type;
-    typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
+    typedef _STLP_alloc_proxy<_Tp*, allocator_type> _AllocProxy;
     typedef size_t size_type;
 
   protected:

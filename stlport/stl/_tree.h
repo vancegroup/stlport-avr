@@ -210,7 +210,7 @@ class _Rb_tree_base
   private:
     typedef _Rb_tree_base<_Tp, _Alloc> _Self;
     typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
-    typedef _STLP_alloc_proxy<_Node_base, _Node, _M_node_allocator_type> _AllocProxy;
+    typedef _STLP_alloc_proxy<_Node_base, _M_node_allocator_type> _AllocProxy;
 
   public:
     allocator_type get_allocator() const

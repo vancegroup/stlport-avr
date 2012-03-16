@@ -43,7 +43,7 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<_STLP_PRIV _List_node<void*> >;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_List_node_base, _List_node<void*>, allocator<_List_node<void*> > >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_List_node_base, allocator<_List_node<void*> > >;
 _STLP_EXPORT_TEMPLATE_CLASS _List_base<void*, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS LIST_IMPL<void*, allocator<void*> >;
 

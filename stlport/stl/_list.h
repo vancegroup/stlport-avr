@@ -150,7 +150,7 @@ protected:
   typedef _List_base<_Tp, _Alloc> _Self;
   typedef typename _Alloc::template rebind<_Node>::other _Node_allocator_type;
 public:
-  typedef _STLP_alloc_proxy<_Node_base, _Node, _Node_allocator_type> _AllocProxy;
+  typedef _STLP_alloc_proxy<_Node_base, _Node_allocator_type> _AllocProxy;
   typedef _Alloc allocator_type;
 
     allocator_type get_allocator() const

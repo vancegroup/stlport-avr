@@ -33,7 +33,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 _STLP_EXPORT_TEMPLATE_CLASS _Slist_node<void*>;
 typedef _Slist_node<void*> _VoidPtrSNode;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Slist_node_base, _VoidPtrSNode, allocator<_VoidPtrSNode> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Slist_node_base, allocator<_VoidPtrSNode> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Slist_base<void*, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS SLIST_IMPL<void*, allocator<void*> >;
 

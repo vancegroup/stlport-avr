@@ -34,7 +34,7 @@ template class _STLP_CLASS_DECLSPEC allocator<char>;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<char*, char, allocator<char> >;
+template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<char*, allocator<char> >;
 template class _STLP_CLASS_DECLSPEC _String_base<char, allocator<char> >;
 
 #  if defined (_STLP_DEBUG) && !defined (__SUNPRO_CC) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)

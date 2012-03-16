@@ -65,7 +65,7 @@ _STLP_BEGIN_NAMESPACE
 _STLP_EXPORT_TEMPLATE_CLASS allocator<_STLP_PRIV _Slist_node_base*>;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Slist_node_base**, _Slist_node_base*,
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Slist_node_base**,
                                               allocator<_Slist_node_base*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<_Slist_node_base*,
                                          allocator<_Slist_node_base*> >;
