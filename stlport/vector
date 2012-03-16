@@ -68,13 +68,13 @@ class _Vector_base
     _Vector_base(const _Alloc& __a) 
         : _M_start(0),
           _M_finish(0),
-          _M_end_of_storage(__a, 0)
+          _M_end_of_storage(__a, pointer(0))
       { }
 
     _Vector_base(size_t __n, const _Alloc& __a) :
         _M_start(0),
         _M_finish(0),
-        _M_end_of_storage(__a, 0)
+        _M_end_of_storage(__a, pointer(0))
       {
         _M_start = _M_end_of_storage.allocate(__n);
         _M_finish = _M_start;

@@ -1006,20 +1006,16 @@ class _STLP_alloc_proxy :
   public:
     _Value _M_data;
 
-    _STLP_alloc_proxy (const _MaybeReboundAlloc& __a, _Value __p) :
+    explicit _STLP_alloc_proxy (const _MaybeReboundAlloc& __a) :
+        _MaybeReboundAlloc(__a)
+      { }
+
+    template <class...Args>
+    _STLP_alloc_proxy (const _MaybeReboundAlloc& __a, Args... __p) :
         _MaybeReboundAlloc(__a),
-        _M_data(__p)
+        _M_data(_STLP_STD::forward<Args>(__p)...)
       { }
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-    _STLP_alloc_proxy (__move_source<_Self> src) :
-        _Base(src.get()._M_base()),
-        _M_data(src.get()._M_data)
-      { }
-
-    _Base& _M_base()
-      { return *this; }
-#endif
     void swap( _Self& r )
       {
         _STLP_STD::swap( static_cast<_Base&>(*this), static_cast<_Base&>(r) );

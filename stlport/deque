@@ -350,14 +350,14 @@ class _Deque_base
     _Deque_base(const allocator_type& __a, size_t __num_elements) :
         _M_start(),
         _M_finish(),
-        _M_map(__a, 0),
+        _M_map(__a, (value_type**)(0)),
         _M_map_size(__a, (size_t)0)
       { _M_initialize_map(__num_elements); }
 
     _Deque_base(const allocator_type& __a) :
         _M_start(),
         _M_finish(),
-        _M_map(__a, 0),
+        _M_map(__a, (value_type**)(0)),
         _M_map_size(__a, (size_t)0)
       { }
 
