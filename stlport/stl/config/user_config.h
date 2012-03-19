@@ -316,6 +316,7 @@
 #define _STLP_USE_BOOST_SUPPORT 1
 */
 
+#  define _STLP_NO_MOVE_SEMANTIC
 
 /*==========================================================*/
 
