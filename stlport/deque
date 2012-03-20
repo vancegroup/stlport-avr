@@ -92,13 +92,11 @@ struct _Deque_iterator_base
 
     typedef random_access_iterator_tag iterator_category;
 
-    typedef _Tp value_type;
+    typedef typename remove_const<_Tp>::type value_type;
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
 
     typedef value_type** _Map_pointer;
-
-    typedef _Deque_iterator_base< _Tp > _Self;
 
     value_type* _M_cur;
     value_type* _M_first;
@@ -129,7 +127,7 @@ struct _Deque_iterator_base
       { }
 #endif
 
-    difference_type _M_subtract( const _Self& __x ) const
+    difference_type _M_subtract( const _Deque_iterator_base& __x ) const
       {
         return difference_type(_S_buffer_size()) * (_M_node - __x._M_node - 1) +
           (_M_cur - _M_first) + (__x._M_last - __x._M_cur);
@@ -170,24 +168,23 @@ struct _Deque_iterator_base
       { _M_last = (_M_first = *(_M_node = __new_node)) + difference_type(_S_buffer_size()); }
 };
 
-template <class _Tp, class _Traits>
+template <class _Tp> struct _Deque_iterator;
+template <class _Tp> struct _Deque_iterator<_Tp const>;
+
+template <class _Tp>
 struct _Deque_iterator :
-    public _Deque_iterator_base< _Tp>
+    public _Deque_iterator_base<_Tp>
 {
+    typedef typename remove_const<_Tp>::type value_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
     typedef random_access_iterator_tag iterator_category;
-    typedef _Tp value_type;
-    typedef typename _Traits::reference  reference;
-    typedef typename _Traits::pointer    pointer;
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
     typedef value_type** _Map_pointer;
 
-    typedef _Deque_iterator_base< _Tp > _Base;
-    typedef _Deque_iterator<_Tp, _Traits> _Self;
-    typedef typename _Traits::_NonConstTraits     _NonConstTraits;
-    typedef _Deque_iterator<_Tp, _NonConstTraits> iterator;
-    typedef typename _Traits::_ConstTraits        _ConstTraits;
-    typedef _Deque_iterator<_Tp, _ConstTraits>    const_iterator;
+    typedef _Deque_iterator_base<_Tp> _Base;
+    typedef _Deque_iterator<_Tp> _Self;
 
     _Deque_iterator( value_type* __x, _Map_pointer __y ) :
         _Deque_iterator_base<value_type>(__x,__y)
@@ -196,20 +193,23 @@ struct _Deque_iterator :
     _Deque_iterator()
       { }
 
-    //copy constructor for iterator and constructor from iterator for const_iterator
-    _Deque_iterator( const iterator& __x ) :
-        _Deque_iterator_base<value_type>(__x)
-      { }
+    _Deque_iterator( const _Deque_iterator& ) = default;
+    _Deque_iterator( _Deque_iterator&& ) = default;
 
-    reference operator*() const
+    _Deque_iterator& operator =( const _Deque_iterator& ) = default;
+
+    reference operator *() const
       { return *this->_M_cur; }
 
-    _STLP_DEFINE_ARROW_OPERATOR
+    pointer operator ->() const
+      { return addressof(*this->_M_cur); }
 
-    difference_type operator-( const const_iterator& __x ) const
+    difference_type operator -( const _Deque_iterator& __x ) const
+      { return this->_M_subtract(__x); }
+    difference_type operator -( const _Deque_iterator<_Tp const>& __x ) const
       { return this->_M_subtract(__x); }
 
-    _Self& operator++()
+    _Self& operator ++()
       { this->_M_increment(); return *this; }
     _Self operator++(int)
       {
@@ -218,7 +218,7 @@ struct _Deque_iterator :
         return __tmp;
       }
 
-    _Self& operator--()
+    _Self& operator --()
       { this->_M_decrement(); return *this; }
     _Self operator--(int)
       {
@@ -227,7 +227,7 @@ struct _Deque_iterator :
         return __tmp;
       }
 
-    _Self& operator+=(difference_type __n)
+    _Self& operator +=(difference_type __n)
       { this->_M_advance(__n); return *this; }
     _Self operator+(difference_type __n) const
       {
@@ -235,92 +235,140 @@ struct _Deque_iterator :
         return __tmp += __n;
       }
 
-    _Self& operator-=(difference_type __n)
+    _Self& operator -=(difference_type __n)
       { return *this += -__n; }
-    _Self operator-(difference_type __n) const
+    _Self operator -(difference_type __n) const
       {
         _Self __tmp = *this;
         return __tmp -= __n;
       }
 
-    reference operator[](difference_type __n) const
+    reference operator [](difference_type __n) const
       { return *(*this + __n); }
 };
 
+template <class _Tp>
+struct _Deque_iterator<_Tp const> :
+    public _Deque_iterator_base<_Tp>
+{
+    typedef _Tp value_type;
+    typedef value_type const* pointer;
+    typedef value_type const& reference;
+    typedef random_access_iterator_tag iterator_category;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type** _Map_pointer;
 
-template <class _Tp, class _Traits>
-inline _Deque_iterator<_Tp, _Traits> _STLP_CALL operator +( ptrdiff_t __n,
-                                                            const _Deque_iterator<_Tp, _Traits>& __x )
+    typedef _Deque_iterator_base<value_type const> _Base;
+    typedef _Deque_iterator<value_type const> _Self;
+
+    _Deque_iterator( value_type* __x, _Map_pointer __y ) :
+        _Deque_iterator_base<value_type>(__x,__y)
+      { }
+
+    _Deque_iterator()
+      { }
+
+    _Deque_iterator( const _Deque_iterator& ) = default;
+    _Deque_iterator( _Deque_iterator&& ) = default;
+    _Deque_iterator( const _Deque_iterator<value_type>& x ) :
+        _Deque_iterator_base<value_type>( static_cast<const _Deque_iterator_base<value_type>&>(x) )
+      { }
+
+    _Deque_iterator& operator =( const _Deque_iterator& ) = default;
+
+    _Deque_iterator& operator =( const _Deque_iterator<value_type>& x )
+      {
+        static_cast<_Deque_iterator_base<value_type>&>(*this) = static_cast<const _Deque_iterator_base<value_type>&>(x);
+        return *this;
+      }
+
+    reference operator *() const
+      { return *this->_M_cur; }
+
+    pointer operator ->() const
+      { return addressof(*this->_M_cur); }
+
+    difference_type operator-( const _Deque_iterator& __x ) const
+      { return this->_M_subtract(__x); }
+    difference_type operator-( const _Deque_iterator<_Tp>& __x ) const
+      { return this->_M_subtract(__x); }
+
+    _Self& operator ++()
+      { this->_M_increment(); return *this; }
+    _Self operator++(int)
+      {
+        _Self __tmp = *this;
+        ++*this;
+        return __tmp;
+      }
+
+    _Self& operator --()
+      { this->_M_decrement(); return *this; }
+    _Self operator--(int)
+      {
+        _Self __tmp = *this;
+        --*this;
+        return __tmp;
+      }
+
+    _Self& operator +=(difference_type __n)
+      { this->_M_advance(__n); return *this; }
+    _Self operator+(difference_type __n) const
+      {
+        _Self __tmp = *this;
+        return __tmp += __n;
+      }
+
+    _Self& operator -=(difference_type __n)
+      { return *this += -__n; }
+    _Self operator -(difference_type __n) const
+      {
+        _Self __tmp = *this;
+        return __tmp -= __n;
+      }
+
+    reference operator [](difference_type __n) const
+      { return *(*this + __n); }
+};
+
+template <class _Tp>
+inline _Deque_iterator<_Tp> _STLP_CALL operator +( ptrdiff_t __n,
+                                                   const _Deque_iterator<_Tp>& __x )
 { return __x + __n; }
 
 
-#if defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 template <class _Tp>
-inline bool _STLP_CALL operator ==( const _Deque_iterator_base<_Tp >& __x,
-                                    const _Deque_iterator_base<_Tp >& __y )
+inline bool _STLP_CALL operator ==( const _Deque_iterator_base<_Tp>& __x,
+                                    const _Deque_iterator_base<_Tp>& __y )
 { return __x._M_cur == __y._M_cur; }
 
 template <class _Tp>
-inline bool _STLP_CALL operator <( const _Deque_iterator_base<_Tp >& __x,
-                                   const _Deque_iterator_base<_Tp >& __y)
+inline bool _STLP_CALL operator <( const _Deque_iterator_base<_Tp>& __x,
+                                   const _Deque_iterator_base<_Tp>& __y)
 {
   return (__x._M_node == __y._M_node) ? (__x._M_cur < __y._M_cur) : (__x._M_node < __y._M_node);
 }
 
 template <class _Tp>
-inline bool _STLP_CALL operator !=( const _Deque_iterator_base<_Tp >& __x,
-                                    const _Deque_iterator_base<_Tp >& __y)
+inline bool _STLP_CALL operator !=( const _Deque_iterator_base<_Tp>& __x,
+                                    const _Deque_iterator_base<_Tp>& __y)
 { return __x._M_cur != __y._M_cur; }
 
 template <class _Tp>
-inline bool _STLP_CALL operator >( const _Deque_iterator_base<_Tp >& __x,
-                                   const _Deque_iterator_base<_Tp >& __y )
+inline bool _STLP_CALL operator >( const _Deque_iterator_base<_Tp>& __x,
+                                   const _Deque_iterator_base<_Tp>& __y )
 { return __y < __x; }
 
 template <class _Tp>
-inline bool  _STLP_CALL operator >=( const _Deque_iterator_base<_Tp >& __x,
-                                     const _Deque_iterator_base<_Tp >& __y )
+inline bool  _STLP_CALL operator >=( const _Deque_iterator_base<_Tp>& __x,
+                                     const _Deque_iterator_base<_Tp>& __y )
 { return !(__x < __y); }
 
 template <class _Tp>
-inline bool  _STLP_CALL operator <=( const _Deque_iterator_base<_Tp >& __x,
-                                     const _Deque_iterator_base<_Tp >& __y )
+inline bool  _STLP_CALL operator <=( const _Deque_iterator_base<_Tp>& __x,
+                                     const _Deque_iterator_base<_Tp>& __y )
 { return !(__y < __x); }
-
-#else /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
-
-template <class _Tp, class _Traits1, class _Traits2>
-inline bool  _STLP_CALL operator ==( const _Deque_iterator<_Tp, _Traits1 >& __x,
-                                     const _Deque_iterator<_Tp, _Traits2 >& __y )
-{ return __x._M_cur == __y._M_cur; }
-
-template <class _Tp, class _Traits1, class _Traits2>
-inline bool _STLP_CALL operator <( const _Deque_iterator<_Tp, _Traits1 >& __x,
-                                   const _Deque_iterator<_Tp, _Traits2 >& __y )
-{
-  return (__x._M_node == __y._M_node) ? (__x._M_cur < __y._M_cur) : (__x._M_node < __y._M_node);
-}
-
-template <class _Tp>
-inline bool _STLP_CALL operator !=( const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-                                    const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y )
-{ return __x._M_cur != __y._M_cur; }
-
-template <class _Tp>
-inline bool _STLP_CALL operator >( const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-                                   const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y )
-{ return __y < __x; }
-
-template <class _Tp>
-inline bool  _STLP_CALL operator >=( const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-                                     const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y )
-{ return !(__x < __y); }
-
-template <class _Tp>
-inline bool _STLP_CALL operator <=( const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-                                    const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y )
-{ return !(__y < __x); }
-#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 /* Deque base class.  It has two purposes.  First, its constructor
  *  and destructor allocate (but don't initialize) storage.  This makes
@@ -341,8 +389,8 @@ class _Deque_base
     typedef typename _Alloc::template rebind<_Tp*>::other _Map_alloc_type;
     typedef _STLP_alloc_proxy<value_type**, _Map_alloc_type> _Map_alloc_proxy;
 
-    typedef _Deque_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
-    typedef _Deque_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
+    typedef _Deque_iterator<typename remove_const<_Tp>::type> iterator;
+    typedef _Deque_iterator<typename add_const<_Tp>::type>    const_iterator;
 
     static size_t _STLP_CALL buffer_size()
       { return _Deque_iterator_base<_Tp>::_S_buffer_size(); }
