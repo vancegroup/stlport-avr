@@ -88,7 +88,7 @@ forward_list<_Tp,_Alloc>& forward_list<_Tp,_Alloc>::operator=(const forward_list
 }
 
 template <class _Tp, class _Alloc>
-void forward_list<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
+void forward_list<_Tp,_Alloc>::resize(size_type __len, const value_type& __x) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next != 0 && __len > 0) {
     --__len;
@@ -101,7 +101,8 @@ void forward_list<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
 }
 
 template <class _Tp, class _Alloc>
-void forward_list<_Tp,_Alloc>::remove(const _Tp& __val) {
+void forward_list<_Tp,_Alloc>::remove(const value_type& __val)
+{
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur && __cur->_M_next) {
     if (__STATIC_CAST(_Node*, __cur->_M_next)->_M_data == __val)
@@ -111,75 +112,55 @@ void forward_list<_Tp,_Alloc>::remove(const _Tp& __val) {
   }
 }
 
-#if !defined (forward_list)
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif
-
-template <class _Tp, class _Alloc, class _BinaryPredicate>
-void _Slist_unique(forward_list<_Tp, _Alloc>& __that, _BinaryPredicate __pred) {
-  typedef _Slist_node<_Tp> _Node;
-  typename forward_list<_Tp, _Alloc>::iterator __ite(__that.begin());
-  if (__ite != __that.end()) {
-    while (__ite._M_node->_M_next) {
-      if (__pred(*__ite, __STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data))
-        __that.erase_after(__ite);
-      else
-        ++__ite;
-    }
-  }
-}
-
-template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_merge(forward_list<_Tp, _Alloc>& __that, forward_list<_Tp, _Alloc>& __x,
-                  _StrictWeakOrdering __comp) {
-  typedef _Slist_node<_Tp> _Node;
-  typedef _STLP_PRIV _Slist_node_base _Node_base;
-  if (__that.get_allocator() == __x.get_allocator()) {
-    typename forward_list<_Tp, _Alloc>::iterator __ite(__that.before_begin());
+template <class _Tp, class _Alloc>
+template <class _StrictWeakOrdering>
+void forward_list<_Tp,_Alloc>::merge(_Self& __x, _StrictWeakOrdering __comp)
+{
+  if (this->get_allocator() == __x.get_allocator()) {
+    iterator __ite = this->before_begin();
     while (__ite._M_node->_M_next && !__x.empty()) {
       if (__comp(__x.front(), __STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data)) {
         _STLP_VERBOSE_ASSERT(!__comp(__STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data, __x.front()),
                              _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
-        __that.splice_after(__ite, __x, __x.before_begin());
+        this->splice_after(__ite, __x, __x.before_begin());
       }
       ++__ite;
     }
     if (!__x.empty()) {
-      __that.splice_after(__ite, __x);
+      this->splice_after(__ite, __x);
     }
-  }
-  else {
-    typename forward_list<_Tp, _Alloc>::iterator __i1(__that.before_begin()), __i2(__x.begin());
+  } else {
+    iterator __i1 = this->before_begin(), __i2 = __x.begin();
     while (__i1._M_node->_M_next && __i2._M_node) {
       if (__comp(__STATIC_CAST(_Node*, __i1._M_node->_M_next)->_M_data, *__i2)) {
         _STLP_VERBOSE_ASSERT(!__comp(*__i2, __STATIC_CAST(_Node*, __i1._M_node->_M_next)->_M_data),
                              _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         ++__i1;
-      }
-      else {
-        __i1 = __that.insert_after(__i1, *(__i2++));
+      } else {
+        __i1 = this->insert_after(__i1, *(__i2++));
       }
     }
-    __that.insert_after(__i1, __i2, __x.end());
+    this->insert_after(__i1, __i2, __x.end());
     __x.clear();
   }
 }
 
-template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp)
+template <class _Tp, class _Alloc>
+template <class _StrictWeakOrdering>
+void forward_list<_Tp,_Alloc>::sort(_StrictWeakOrdering __comp)
 {
-  if (!__that.begin()._M_node || !__that.begin()._M_node->_M_next)
+  if (!this->begin()._M_node || !this->begin()._M_node->_M_next)
     return;
 
-  forward_list<_Tp, _Alloc> __carry(__that.get_allocator());
+  forward_list<_Tp, _Alloc> __carry(this->get_allocator());
   const int NB = 64;
   _STLP_PRIV _CArray<forward_list<_Tp, _Alloc>, NB> __counter(__carry);
   int __fill = 0;
-  while (!__that.empty()) {
-    __carry.splice_after(__carry.before_begin(), __that, __that.before_begin());
+  while (!this->empty()) {
+    __carry.splice_after(__carry.before_begin(), *this, this->before_begin());
     int __i = 0;
     while (__i < __fill && !__counter[__i].empty()) {
-      _STLP_PRIV _Slist_merge(__counter[__i], __carry, __comp);
+      __counter[__i].merge(__carry, __comp);
       __carry.swap(__counter[__i]);
       ++__i;
     }
@@ -194,15 +175,13 @@ void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp)
   }
 
   for (int __i = 1; __i < __fill; ++__i)
-    _STLP_PRIV _Slist_merge(__counter[__i], __counter[__i - 1], __comp);
-  __that.swap(__counter[__fill-1]);
+     __counter[__i].merge(__counter[__i - 1], __comp);
+  this->swap(__counter[__fill-1]);
 }
 
 #if defined (forward_list)
 #  undef forward_list
 #endif
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

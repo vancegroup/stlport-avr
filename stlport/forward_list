@@ -61,78 +61,159 @@ struct _Slist_node_base
     _Slist_node_base* _M_next;
 };
 
-#if 0
-inline _Slist_node_base* __slist_make_link(_Slist_node_base* __prev_node,
-                                           _Slist_node_base* __new_node)
+template <class _Tp>
+struct _Slist_node :
+    public _Slist_node_base
 {
-  __new_node->_M_next = __prev_node->_M_next;
-  __prev_node->_M_next = __new_node;
-  return __new_node;
-}
-#endif
+    _Tp _M_data;
+};
 
 template <class _Tp>
-class _Slist_node : public _Slist_node_base {
-public:
-  _Tp _M_data;
-  __TRIVIAL_STUFF(_Slist_node)
+class _Slist_iterator;
+
+template <class _Tp>
+class _Slist_iterator<_Tp const>;
+
+template <class _Tp>
+class _Slist_iterator
+{
+  public:
+    typedef typename remove_const<_Tp>::type value_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+    typedef forward_iterator_tag iterator_category;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+
+  private:
+    typedef _Slist_iterator<value_type> _Self;
+    typedef _Slist_node<value_type> _Node;
+
+  public:
+    _Slist_iterator() = default;
+    _Slist_iterator(const _Slist_iterator&) = default;
+    _Slist_iterator(_Slist_iterator&&) = default;
+    explicit _Slist_iterator(_Slist_node_base* __x) :
+        _M_node(static_cast<_Node*>(__x))
+      { }
+
+    _Slist_iterator& operator =( const _Slist_iterator& ) = default;
+
+    reference operator *() const
+      { return _M_node->_M_data; }
+
+    pointer operator ->() const
+      { return addressof(_M_node->_M_data); }
+
+    _Self& operator++()
+      {
+        _M_incr();
+        return *this;
+      }
+    _Self operator++(int)
+      {
+        _Self __tmp = *this;
+        _M_incr();
+        return __tmp;
+      }
+
+    bool operator ==(const _Self& __y ) const
+      { return _M_node == __y._M_node; }
+    bool operator ==(const _Slist_iterator<_Tp const>& __y ) const
+      { return _M_node == reinterpret_cast<_Node*>(__y._M_node); }
+    bool operator !=(const _Self& __y ) const
+      { return _M_node != __y._M_node; }
+    bool operator !=(const _Slist_iterator<_Tp const>& __y ) const
+      { return _M_node != reinterpret_cast<_Node*>(__y._M_node); }
+
+
+  private:
+    void _M_incr()
+      { _M_node = static_cast<_Node*>(_M_node->_M_next); }
+    _Node* _M_node;
+     
+    template <class _TTp, class _Alloc>
+    friend class forward_list;
+
+    template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
+    friend class hashtable;
+
+    friend class _Slist_iterator<_Tp const>;
 };
 
-struct _Slist_iterator_base {
-  typedef size_t               size_type;
-  typedef ptrdiff_t            difference_type;
-  typedef forward_iterator_tag iterator_category;
+template <class _Tp>
+class _Slist_iterator<_Tp const>
+{
+  public:
+    typedef _Tp value_type;
+    typedef value_type const* pointer;
+    typedef value_type const& reference;
+    typedef forward_iterator_tag iterator_category;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
 
-  _Slist_node_base *_M_node;
+  private:
+    typedef _Slist_iterator<value_type const> _Self;
+    typedef _Slist_node<value_type const> _Node;
 
-  _Slist_iterator_base(_Slist_node_base *__x) : _M_node(__x) {}
+  public:
+    _Slist_iterator() = default;
+    _Slist_iterator(const _Slist_iterator&) = default;
+    _Slist_iterator(_Slist_iterator&&) = default;
+    _Slist_iterator(const _Slist_iterator<value_type>& x) :
+        _M_node( reinterpret_cast<_Node*>(x._M_node) )
+      { }
+    explicit _Slist_iterator(_Slist_node_base* __x) :
+        _M_node(static_cast<_Node*>(__x))
+      { }
 
-  void _M_incr() {
-    _M_node = _M_node->_M_next;
-  }
-};
+    _Slist_iterator& operator =( const _Slist_iterator& ) = default;
+    _Slist_iterator& operator =( const _Slist_iterator<value_type>& x )
+      {
+        _M_node = reinterpret_cast<_Node*>(x._M_node);
+        return *this;
+      }
 
-template <class _Tp, class _Traits>
-class _Slist_iterator : public _Slist_iterator_base {
-public:
-  typedef typename _Traits::value_type value_type;
-  typedef typename _Traits::pointer    pointer;
-  typedef typename _Traits::reference  reference;
-  typedef forward_iterator_tag iterator_category;
-  typedef size_t size_type;
-  typedef ptrdiff_t difference_type;
+    reference operator *() const
+      { return _M_node->_M_data; }
 
-  typedef _Slist_iterator<_Tp, _Traits>         _Self;
-  typedef typename _Traits::_NonConstTraits     _NonConstTraits;
-  typedef _Slist_iterator<_Tp, _NonConstTraits> iterator;
-  typedef typename _Traits::_ConstTraits        _ConstTraits;
-  typedef _Slist_iterator<_Tp, _ConstTraits>    const_iterator;
+    reference operator ->() const
+      { return _M_node->_M_data; }
 
-  typedef _Slist_node<value_type> _Node;
+    _Self& operator++()
+      {
+        _M_incr();
+        return *this;
+      }
+    _Self operator++(int)
+      {
+        _Self __tmp = *this;
+        _M_incr();
+        return __tmp;
+      }
 
-  explicit _Slist_iterator(_Slist_node_base *__x) : _Slist_iterator_base(__x) {}
-  _Slist_iterator() : _Slist_iterator_base(0) {}
-  //copy constructor for iterator and constructor from iterator for const_iterator
-  _Slist_iterator(const iterator& __x) : _Slist_iterator_base(__x._M_node) {}
+    bool operator ==(const _Self& __y ) const
+      { return _M_node == __y._M_node; }
+    bool operator ==(const _Slist_iterator<_Tp>& __y ) const
+      { return _M_node == reinterpret_cast<_Node*>(__y._M_node); }
+    bool operator !=(const _Self& __y ) const
+      { return _M_node != __y._M_node; }
+    bool operator !=(const _Slist_iterator<_Tp>& __y ) const
+      { return _M_node != reinterpret_cast<_Node*>(__y._M_node); }
 
-  reference operator*() const { return __STATIC_CAST(_Node*, this->_M_node)->_M_data; }
+  private:
+    void _M_incr()
+      { _M_node = static_cast<_Node*>(_M_node->_M_next); }
 
-  _STLP_DEFINE_ARROW_OPERATOR
+    _Node* _M_node;
+     
+    template <class _TTp, class _Alloc>
+    friend class forward_list;
 
-  _Self& operator++() {
-    _M_incr();
-    return *this;
-  }
-  _Self operator++(int) {
-    _Self __tmp = *this;
-    _M_incr();
-    return __tmp;
-  }
+    template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
+    friend class hashtable;
 
-  bool operator ==(const const_iterator& __y ) const
-      { return this->_M_node == __y._M_node; }
-  bool operator !=(const const_iterator& __y ) const
-      { return this->_M_node != __y._M_node; }
+    friend class _Slist_iterator<_Tp>;
 };
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
@@ -143,57 +224,32 @@ public:
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
-template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
-class forward_list;
-
-#if !defined (forward_list)
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif
-
-// helper functions to reduce code duplication
-template <class _Tp, class _Alloc, class _BinaryPredicate>
-void _Slist_unique(forward_list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred);
-
-template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_merge(forward_list<_Tp, _Alloc>& __that, forward_list<_Tp, _Alloc>& __x,
-                  _StrictWeakOrdering __comp);
-
-template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _Slist_sort(forward_list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp);
-
-#if !defined (forward_list)
-_STLP_MOVE_TO_STD_NAMESPACE
-#endif
-
-template <class _Tp, class _Alloc>
+template <class _Tp, class _Alloc = allocator<_Tp>>
 class forward_list
 {
   private:
     typedef _STLP_PRIV _Slist_node<_Tp> _Node;
     typedef typename _Alloc::template rebind<_Node>::other _M_node_allocator_type;
+    typedef _STLP_PRIV _Slist_node_base _Node_base;
 
-    typedef _STLP_PRIV _STLP_alloc_proxy<_STLP_PRIV _Slist_node_base, _M_node_allocator_type> _AllocProxy;
+    typedef _STLP_PRIV _STLP_alloc_proxy<_Node_base, _M_node_allocator_type> _AllocProxy;
     typedef forward_list<_Tp,_Alloc> _Self;
 
   public:
-    typedef _Tp               value_type;
+    typedef typename remove_const<_Tp>::type value_type;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
-    typedef _STLP_PRIV _Slist_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
-    typedef _STLP_PRIV _Slist_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
+    typedef _STLP_PRIV _Slist_iterator<typename remove_const<_Tp>::type> iterator;
+    typedef _STLP_PRIV _Slist_iterator<typename add_const<_Tp>::type>  const_iterator;
     typedef size_t            size_type;
     typedef ptrdiff_t         difference_type;
 
     typedef _Alloc            allocator_type;
     typedef typename allocator_traits<allocator_type>::pointer pointer;
     typedef typename allocator_traits<allocator_type>::const_pointer const_pointer;
-    typedef forward_iterator_tag _Iterator_category;
-
 
   private:
-    typedef _STLP_PRIV _Slist_node_base _Node_base;
-
-    _Node_base* __slist_make_link(_Node_base* __prev_node, _Node_base* __new_node)
+    _Node* __slist_make_link(_Node_base* __prev_node, _Node* __new_node)
       {
         __new_node->_M_next = __prev_node->_M_next;
         __prev_node->_M_next = __new_node;
@@ -227,11 +283,11 @@ class forward_list
       { return (const _M_node_allocator_type&)_M_head; }
 
     explicit forward_list(const allocator_type& __a = allocator_type()) :
-        _M_head(__a, _STLP_PRIV _Slist_node_base() )
+        _M_head(__a)
       { _M_head._M_data._M_next = 0; }
 
     explicit forward_list(size_type __n) :
-        _M_head(allocator_type(), _STLP_PRIV _Slist_node_base() )
+        _M_head(allocator_type())
       {
         _M_head._M_data._M_next = 0;
         _M_insert_after_fill(&this->_M_head._M_data, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp));
@@ -377,13 +433,9 @@ class forward_list
     const_reference front() const
       { return *begin(); }
     void push_front(const value_type& __x)
-      {
-        _Self::__slist_make_link(&this->_M_head._M_data, _M_create_node(__x));
-      }
+      { _Self::__slist_make_link(&this->_M_head._M_data, _M_create_node(__x)); }
     void push_front(value_type&& __x)
-      {
-        _Self::__slist_make_link(&this->_M_head._M_data, _M_create_node(_STLP_STD::move(__x)));
-      }
+      { _Self::__slist_make_link(&this->_M_head._M_data, _M_create_node(_STLP_STD::move(__x))); }
 
     void pop_front()
       {
@@ -395,17 +447,12 @@ class forward_list
 
   private:
     _Node* _M_insert_after(_Node_base* __pos, const value_type& __x)
-      {
-        return __STATIC_CAST(_Node*, _Self::__slist_make_link(__pos, _M_create_node(__x)));
-      }
+      { return _Self::__slist_make_link(__pos, _M_create_node(__x)); }
 
     _Node* _M_insert_after(_Node_base* __pos, value_type&& __x)
-      {
-        return __STATIC_CAST(_Node*, _Self::__slist_make_link(__pos, _M_create_node(_STLP_STD::move(__x))));
-      }
+      { return _Self::__slist_make_link(__pos, _M_create_node(_STLP_STD::move(__x))); }
 
-    void _M_insert_after_fill(_Node_base* __pos,
-                              size_type __n, const value_type& __x)
+    void _M_insert_after_fill(_Node_base* __pos, size_type __n, const value_type& __x)
       {
         for (size_type __i = 0; __i < __n; ++__i) {
           __pos = _Self::__slist_make_link(__pos, _M_create_node(__x));
@@ -414,22 +461,18 @@ class forward_list
 
     // Check whether it's an integral type.  If so, it's not an iterator.
     template <class _InIter>
-    void _M_insert_after_range(_Node_base* __pos,
-                               _InIter __first, _InIter __last)
+    void _M_insert_after_range(_Node_base* __pos, _InIter __first, _InIter __last)
       {
         typedef typename is_integral<_InIter>::type _Integral;
         _M_insert_after_range(__pos, __first, __last, _Integral());
       }
 
     template <class _Integer>
-    void _M_insert_after_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                               const true_type&)
+    void _M_insert_after_range(_Node_base* __pos, _Integer __n, _Integer __x, const true_type&)
       { _M_insert_after_fill(__pos, __n, __x); }
 
     template <class _InIter>
-    void _M_insert_after_range(_Node_base* __pos,
-                               _InIter __first, _InIter __last,
-                               const false_type&)
+    void _M_insert_after_range(_Node_base* __pos, _InIter __first, _InIter __last, const false_type&)
       {
         while (__first != __last) {
           __pos = _Self::__slist_make_link(__pos, _M_create_node(*__first));
@@ -460,7 +503,7 @@ class forward_list
     void resize(size_type new_size, const value_type& __x);
 
     void resize(size_type new_size)
-      { resize(new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+      { resize(new_size, value_type()); }
 
     void clear()
       { this->_M_erase_after(&this->_M_head._M_data, 0); }
@@ -506,8 +549,7 @@ class forward_list
 
     // Moves the range (first, last) to *this,
     // inserting it immediately after __pos.  This is O(distance(first,last)) time.
-    void splice_after(const_iterator __pos, _Self& __x,
-                      const_iterator first, const_iterator last)
+    void splice_after(const_iterator __pos, _Self& __x, const_iterator first, const_iterator last)
       {
         if ( first._M_node->_M_next == last._M_node ) {
           return;
@@ -528,8 +570,7 @@ class forward_list
        }
       }
 
-    void splice_after(const_iterator __pos, _Self&& __x,
-                      const_iterator first, const_iterator last)
+    void splice_after(const_iterator __pos, _Self&& __x, const_iterator first, const_iterator last)
       {
         if ( first._M_node->_M_next == last._M_node ) {
           return;
@@ -602,46 +643,72 @@ class forward_list
         }
       }
 
-  void remove(const _Tp& __val);
+    void remove(const value_type& __val);
 
-  void unique() { _STLP_PRIV _Slist_unique(*this, equal_to<value_type>()); }
-  void merge(_Self& __x) { _STLP_PRIV _Slist_merge(*this, __x, less<value_type>()); }
-  void sort() { _STLP_PRIV _Slist_sort(*this, less<value_type>()); }
+    void unique()
+      { this->unique( equal_to<value_type>() ); }
+    void merge(_Self& __x)
+      { this->merge( __x, less<value_type>() ); }
+    void sort()
+      { this->sort( less<value_type>() ); }
 
-  template <class _Predicate>
-  void remove_if(_Predicate __pred) {
-    _Node_base* __cur = &this->_M_head._M_data;
-    while (__cur->_M_next) {
-      if (__pred(__STATIC_CAST(_Node*, __cur->_M_next)->_M_data))
-        this->_M_erase_after(__cur);
-      else
-        __cur = __cur->_M_next;
-    }
-  }
+    template <class _Predicate>
+    void remove_if(_Predicate __pred)
+      {
+        _Node_base* __cur = &this->_M_head._M_data;
+        while (__cur->_M_next) {
+          if (__pred(__STATIC_CAST(_Node*, __cur->_M_next)->_M_data)) {
+            this->_M_erase_after(__cur);
+          } else {
+            __cur = __cur->_M_next;
+          }
+        }
+      }
 
-  template <class _BinaryPredicate>
-  void unique(_BinaryPredicate __pred)
-  { _STLP_PRIV _Slist_unique(*this, __pred); }
+    template <class _BinaryPredicate>
+    void unique(_BinaryPredicate __pred)
+      {
+        /*
+          iterator i2 = begin();
+          if ( i1 != end() ) {
+            iterator i1 = i2++;
+            if ( i2 != end() ) {
+              if ( *i1 == *i2 ) {
+                erase_after( i1 );
+              }
+            }
+          }
+         */
 
-  template <class _StrictWeakOrdering>
-  void merge(_Self& __x, _StrictWeakOrdering __comp)
-  { _STLP_PRIV _Slist_merge(*this, __x, __comp); }
+        iterator __ite = this->begin();
+        if (__ite != this->end()) {
+          while (__ite._M_node->_M_next) {
+            if ( __pred( *__ite, static_cast<_Node*>(__ite._M_node->_M_next)->_M_data ) ) {
+              this->erase_after(__ite);
+            } else {
+              ++__ite;
+            }
+          }
+        }
+      }
 
-  template <class _StrictWeakOrdering>
-  void sort(_StrictWeakOrdering __comp)
-  { _STLP_PRIV _Slist_sort(*this, __comp); }
+    template <class _StrictWeakOrdering>
+    void merge(_Self& __x, _StrictWeakOrdering __comp);
+
+    template <class _StrictWeakOrdering>
+    void sort(_StrictWeakOrdering __comp);
 
   private:
-    _STLP_PRIV _Slist_node_base* _M_erase_after(_STLP_PRIV _Slist_node_base* __pos)
+    _Node_base* _M_erase_after(_Node_base* __pos)
       {
         _Node* __next = __STATIC_CAST(_Node*, __pos->_M_next);
-        _STLP_PRIV _Slist_node_base* __next_next = __next->_M_next;
+        _Node_base* __next_next = __next->_M_next;
         __pos->_M_next = __next_next;
         this->get_allocator().destroy( &__next->_M_data );
         _M_head.deallocate(__next,1);
         return __next_next;
       }
-    _STLP_PRIV _Slist_node_base* _M_erase_after(_STLP_PRIV _Slist_node_base*, _STLP_PRIV _Slist_node_base*);
+    _Node_base* _M_erase_after(_Node_base*, _Node_base*);
 
     _AllocProxy _M_head;
 };
@@ -665,15 +732,17 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-template <class _Tp, class _Alloc>
-inline bool  _STLP_CALL
-operator == (const forward_list<_Tp,_Alloc>& _SL1, const forward_list<_Tp,_Alloc>& _SL2) {
-  typedef typename forward_list<_Tp,_Alloc>::const_iterator const_iterator;
-  const_iterator __end1 = _SL1.end();
-  const_iterator __end2 = _SL2.end();
+template <class _Tp1, class _Alloc1, class _Tp2, class _Alloc2>
+inline
+bool  _STLP_CALL operator ==(const forward_list<_Tp1,_Alloc1>& _SL1, const forward_list<_Tp2,_Alloc2>& _SL2)
+{
+  typedef typename forward_list<_Tp1,_Alloc1>::const_iterator const_iterator1;
+  typedef typename forward_list<_Tp2,_Alloc2>::const_iterator const_iterator2;
+  const_iterator1 __end1 = _SL1.end();
+  const_iterator2 __end2 = _SL2.end();
 
-  const_iterator __i1 = _SL1.begin();
-  const_iterator __i2 = _SL2.begin();
+  const_iterator1 __i1 = _SL1.begin();
+  const_iterator2 __i2 = _SL2.begin();
   while (__i1 != __end1 && __i2 != __end2 && *__i1 == *__i2) {
     ++__i1;
     ++__i2;
@@ -681,51 +750,53 @@ operator == (const forward_list<_Tp,_Alloc>& _SL1, const forward_list<_Tp,_Alloc
   return __i1 == __end1 && __i2 == __end2;
 }
 
-#define _STLP_EQUAL_OPERATOR_SPECIALIZED
-#define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
-#define _STLP_TEMPLATE_CONTAINER forward_list<_Tp, _Alloc>
-#include <stl/_relops_cont.h>
-#undef _STLP_TEMPLATE_CONTAINER
-#undef _STLP_TEMPLATE_HEADER
-#undef _STLP_EQUAL_OPERATOR_SPECIALIZED
+template <class _Tp1, class _Alloc1, class _Tp2, class _Alloc2>
+inline
+bool  _STLP_CALL operator <(const forward_list<_Tp1,_Alloc1>& x, const forward_list<_Tp2,_Alloc2>& y)
+{ return lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()); }
 
+template <class _Tp, class _Alloc>
+inline void _STLP_CALL swap( forward_list<_Tp,_Alloc>& x, forward_list<_Tp,_Alloc>& y )
+{ x.swap( y ); }
+
+#if 0
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
 // Specialization of insert_iterator so that insertions will be constant
 // time rather than linear time.
 template <class _Tp, class _Alloc>
-class insert_iterator<forward_list<_Tp, _Alloc> > {
-protected:
-  typedef forward_list<_Tp, _Alloc> _Container;
-  _Container* _M_container;
-  typename _Container::iterator _M_iter;
-public:
-  typedef _Container          container_type;
-  typedef output_iterator_tag iterator_category;
-  typedef void                value_type;
-  typedef void                difference_type;
-  typedef void                pointer;
-  typedef void                reference;
+class insert_iterator<forward_list<_Tp, _Alloc> >
+{
+  protected:
+    typedef forward_list<_Tp, _Alloc> _Container;
+    _Container* _M_container;
+    typename _Container::iterator _M_iter;
+  public:
+    typedef _Container          container_type;
+    typedef output_iterator_tag iterator_category;
+    typedef void                value_type;
+    typedef void                difference_type;
+    typedef void                pointer;
+    typedef void                reference;
 
-  insert_iterator(_Container& __x, typename _Container::iterator __i)
-    : _M_container(&__x) {
-    if (__i == __x.begin())
-      _M_iter = __x.before_begin();
-    else
-      _M_iter = __x.previous(__i);
-  }
+    insert_iterator(_Container& __x, typename _Container::iterator __i) :
+        _M_container(&__x),
+        _M_iter( __i == __x.begin() ? __x.before_begin() : __x.previous(__i) ) // ups, prev!?...
+      { }
 
-  insert_iterator<_Container>&
-  operator = (const typename _Container::value_type& __val) {
-    _M_iter = _M_container->insert_after(_M_iter, __val);
-    return *this;
-  }
+    insert_iterator<_Container>&
+    operator = (const typename _Container::value_type& __val)
+      {
+        _M_iter = _M_container->insert_after(_M_iter, __val);
+        return *this;
+      }
 
   insert_iterator<_Container>& operator*() { return *this; }
   insert_iterator<_Container>& operator++() { return *this; }
   insert_iterator<_Container>& operator++(int) { return *this; }
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif // 0
 
 _STLP_END_NAMESPACE
 

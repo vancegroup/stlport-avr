@@ -26,9 +26,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-//Specific iterator traits creation
-_STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMapTraitsT, traits)
-
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
@@ -41,12 +38,8 @@ public:
   typedef _Tp data_type;
   typedef _Tp mapped_type;
   typedef pair<_STLP_CONST key_type, data_type> value_type;
-private:
-  //Specific iterator traits creation
-  typedef _STLP_PRIV _UnorderedMapTraitsT<value_type> _UnorderedMapTraits;
-
 public:
-  typedef hashtable<value_type, key_type, _HashFcn, _UnorderedMapTraits,
+  typedef hashtable<value_type, key_type, _HashFcn,
                     _STLP_SELECT1ST(value_type,  _Key), _EqualKey, _Alloc > _Ht;
 
   typedef typename _Ht::hasher hasher;
@@ -165,9 +158,6 @@ public:
 #endif
 };
 
-//Specific iterator traits creation
-_STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultimapTraitsT, traits)
-
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
@@ -180,12 +170,8 @@ public:
   typedef _Tp data_type;
   typedef _Tp mapped_type;
   typedef pair<_STLP_CONST key_type, data_type> value_type;
-private:
-  //Specific iterator traits creation
-  typedef _STLP_PRIV _UnorderedMultimapTraitsT<value_type> _UnorderedMultimapTraits;
-
 public:
-  typedef hashtable<value_type, key_type, _HashFcn, _UnorderedMultimapTraits,
+  typedef hashtable<value_type, key_type, _HashFcn,
                     _STLP_SELECT1ST(value_type,  _Key), _EqualKey, _Alloc > _Ht;
 
   typedef typename _Ht::hasher hasher;
