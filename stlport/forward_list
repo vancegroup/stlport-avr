@@ -68,11 +68,8 @@ struct _Slist_node :
     _Tp _M_data;
 };
 
-template <class _Tp>
-class _Slist_iterator;
-
-template <class _Tp>
-class _Slist_iterator<_Tp const>;
+template <class _Tp> class _Slist_iterator;
+template <class _Tp> class _Slist_iterator<_Tp const>;
 
 template <class _Tp>
 class _Slist_iterator
@@ -105,12 +102,12 @@ class _Slist_iterator
     pointer operator ->() const
       { return addressof(_M_node->_M_data); }
 
-    _Self& operator++()
+    _Self& operator ++()
       {
         _M_incr();
         return *this;
       }
-    _Self operator++(int)
+    _Self operator ++(int)
       {
         _Self __tmp = *this;
         _M_incr();
@@ -126,12 +123,11 @@ class _Slist_iterator
     bool operator !=(const _Slist_iterator<_Tp const>& __y ) const
       { return _M_node != reinterpret_cast<_Node*>(__y._M_node); }
 
-
   private:
     void _M_incr()
       { _M_node = static_cast<_Node*>(_M_node->_M_next); }
     _Node* _M_node;
-     
+
     template <class _TTp, class _Alloc>
     friend class forward_list;
 
@@ -734,7 +730,7 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Tp1, class _Alloc1, class _Tp2, class _Alloc2>
 inline
-bool  _STLP_CALL operator ==(const forward_list<_Tp1,_Alloc1>& _SL1, const forward_list<_Tp2,_Alloc2>& _SL2)
+bool _STLP_CALL operator ==(const forward_list<_Tp1,_Alloc1>& _SL1, const forward_list<_Tp2,_Alloc2>& _SL2)
 {
   typedef typename forward_list<_Tp1,_Alloc1>::const_iterator const_iterator1;
   typedef typename forward_list<_Tp2,_Alloc2>::const_iterator const_iterator2;

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-02 14:12:00 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-20 19:24:08 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -224,14 +224,14 @@ int main( int argc, const char** argv )
 
   t.add( &list_test::list1, lst_test, "list1" );
   t.add( &list_test::list2, lst_test, "list2" );
-  t.add( &list_test::list3, lst_test, "list3" );
+  t.add( &list_test::list3, lst_test, "list3",
+    t.add( &list_test::swap, lst_test, "list swap" ));
   t.add( &list_test::list4, lst_test, "list4" );
   t.add( &list_test::erase, lst_test, "list erase" );
   t.add( &list_test::resize, lst_test, "list resize" );
-  t.add( &list_test::push_back, lst_test, "list push_back" );
-  t.add( &list_test::push_front, lst_test, "list push_front" );
+  t.add( &list_test::push_front, lst_test, "list push_front",
+    t.add( &list_test::push_back, lst_test, "list push_back" ));
   t.add( &list_test::allocator_with_state, lst_test, "list allocator_with_state" );
-  t.add( &list_test::swap, lst_test, "list swap" );
   t.add( &list_test::adl, lst_test, "list adl" );
   t.add( &list_test::insert, lst_test, "list insert" );
   // t.add( &list_test::const_list, lst_test, "const_list" );

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2010-11-17 13:52:40 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-20 23:48:36 ptr>
 
 /*
  * Copyright (c) 2004-2009, 2010
@@ -440,6 +440,35 @@ int EXAM_IMPL(list_test::swap)
 
   EXAM_CHECK( lst1.empty() );
   EXAM_CHECK( lst2.empty() );
+
+  lst1.swap( lst2 ); // swap empty
+ 
+  EXAM_CHECK( lst1.empty() );
+  EXAM_CHECK( lst2.empty() );
+
+  lst1.push_back(1);
+  lst1.swap( lst2 ); // swap with empty
+
+  EXAM_CHECK( lst1.empty() );
+  EXAM_CHECK( lst2.size() == 1 );
+  EXAM_CHECK( lst2.front() == 1 );
+
+  lst1.swap( lst2 ); // swap empty
+
+  EXAM_CHECK( lst1.size() == 1 );
+  EXAM_CHECK( lst1.front() == 1 );
+  EXAM_CHECK( lst2.empty() );
+
+  lst1.push_back(2);
+  lst1.push_back(3);
+
+  lst1.swap( lst2 ); // swap, 3 elements
+
+  EXAM_CHECK( lst1.empty() );
+  EXAM_CHECK( lst2.front() == 1 );
+  EXAM_CHECK( lst2.back() == 3 );
+  EXAM_CHECK( lst2.size() == 3 );
+  EXAM_CHECK( *(++lst2.begin()) == 2 );
 
   return EXAM_RESULT;
 }
