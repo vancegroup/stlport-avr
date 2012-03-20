@@ -38,9 +38,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-//Specific iterator traits creation
-_STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
-
 template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
                       _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Key>) >
 class set
@@ -53,15 +50,10 @@ public:
   typedef _Compare key_compare;
   typedef _Compare value_compare;
 
-private:
-  //Specific iterator traits creation
-  typedef _STLP_PRIV _SetTraitsT<value_type> _SetTraits;
-
-public:
   //Following typedef have to be public for __move_traits specialization.
   typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
                               value_type, _STLP_PRIV _Identity<value_type>,
-                              _SetTraits, _Alloc> _Rep_type;
+                              _Alloc> _Rep_type;
 
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
@@ -167,9 +159,6 @@ public:
   { return _M_t.equal_range_unique(__x); }
 };
 
-//Specific iterator traits creation
-_STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
-
 template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
                       _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Key>) >
 class multiset
@@ -183,15 +172,10 @@ public:
   typedef _Compare key_compare;
   typedef _Compare value_compare;
 
-private:
-  //Specific iterator traits creation
-  typedef _STLP_PRIV _MultisetTraitsT<value_type> _MultisetTraits;
-
-public:
   //Following typedef have to be public for __move_traits specialization.
   typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
                               value_type, _STLP_PRIV _Identity<value_type>,
-                              _MultisetTraits, _Alloc> _Rep_type;
+                              _Alloc> _Rep_type;
 
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;

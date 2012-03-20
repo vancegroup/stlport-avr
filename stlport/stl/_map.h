@@ -36,9 +36,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-//Specific iterator traits creation
-_STLP_CREATE_ITERATOR_TRAITS(MapTraitsT, traits)
-
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key> ),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class map
@@ -66,14 +63,11 @@ public:
     { return comp(__x.first, __y.first); }
   };
 
-protected:
-  typedef _STLP_PRIV _MapTraitsT<value_type> _MapTraits;
-
 public:
   //Following typedef have to be public for __move_traits specialization.
   typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
                               value_type, _STLP_SELECT1ST(value_type, _Key),
-                              _MapTraits, _Alloc> _Rep_type;
+                              _Alloc> _Rep_type;
 
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
@@ -187,9 +181,6 @@ public:
   { return _M_t.equal_range_unique(__x); }
 };
 
-//Specific iterator traits creation
-_STLP_CREATE_ITERATOR_TRAITS(MultimapTraitsT, traits)
-
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key> ),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class multimap
@@ -216,15 +207,11 @@ public:
     { return comp(__x.first, __y.first); }
   };
 
-protected:
-  //Specific iterator traits creation
-  typedef _STLP_PRIV _MultimapTraitsT<value_type> _MultimapTraits;
-
 public:
   //Following typedef have to be public for __move_traits specialization.
   typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
                               value_type, _STLP_SELECT1ST(value_type, _Key),
-                              _MultimapTraits, _Alloc> _Rep_type;
+                              _Alloc> _Rep_type;
 
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;

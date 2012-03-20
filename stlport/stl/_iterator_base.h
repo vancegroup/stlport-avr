@@ -12,6 +12,9 @@
  * Copyright (c) 1999
  * Boris Fomitchev
  *
+ * Copyright (c) 2012
+ * Petr Ovtchenkov
+ *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
@@ -128,90 +131,6 @@ template <class _Iterator>
 inline
 typename iterator_traits<_Iterator>::difference_type _STLP_CALL distance(_Iterator __first, _Iterator __last)
 { return _STLP_PRIV __distance_aux<typename iterator_traits<_Iterator>::iterator_category>::distance(__first, __last); }
-
-// fbp: those are being used for iterator/const_iterator definitions everywhere
-template <class _Tp>
-struct _Nonconst_traits;
-
-template <class _Tp>
-struct _Const_traits {
-  typedef _Tp value_type;
-  typedef const _Tp&  reference;
-  typedef const _Tp*  pointer;
-  typedef _Const_traits<_Tp> _ConstTraits;
-  typedef _Nonconst_traits<_Tp> _NonConstTraits;
-};
-
-template <class _Tp>
-struct _Nonconst_traits {
-  typedef _Tp value_type;
-  typedef _Tp& reference;
-  typedef _Tp* pointer;
-  typedef _Const_traits<_Tp> _ConstTraits;
-  typedef _Nonconst_traits<_Tp> _NonConstTraits;
-};
-
-/*
- * dums: A special iterator/const_iterator traits for set and multiset for which even
- * the iterator is not mutable
- */
-template <class _Tp>
-struct _Nonconst_Const_traits;
-
-template <class _Tp>
-struct _Const_Const_traits {
-  typedef _Tp value_type;
-  typedef const _Tp&  reference;
-  typedef const _Tp*  pointer;
-  typedef _Const_Const_traits<_Tp> _ConstTraits;
-  typedef _Nonconst_Const_traits<_Tp> _NonConstTraits;
-};
-
-template <class _Tp>
-struct _Nonconst_Const_traits {
-  typedef _Tp value_type;
-  typedef const _Tp& reference;
-  typedef const _Tp* pointer;
-  typedef _Const_Const_traits<_Tp> _ConstTraits;
-  typedef _Nonconst_Const_traits<_Tp> _NonConstTraits;
-};
-
-/*
- * A macro to generate a new iterator traits from one of the
- * previous one. Changing the iterator traits type make iterators
- * from different containers not comparable.
- */
-#define _STLP_CREATE_ITERATOR_TRAITS_BASE(Motif, Traits)        \
-template <class _Tp>                                            \
-struct _##Motif;                                                \
-template <class _Tp>                                            \
-struct _Const##Motif : public _STLP_STD::_Const_##Traits<_Tp> {  \
-  typedef _Const##Motif<_Tp> _ConstTraits;                      \
-  typedef _##Motif<_Tp> _NonConstTraits;                        \
-};                                                              \
-template <class _Tp>                                            \
-struct _##Motif : public _STLP_STD::_Nonconst_##Traits<_Tp> {    \
-  typedef _Const##Motif<_Tp> _ConstTraits;                      \
-  typedef _##Motif<_Tp> _NonConstTraits;                        \
-};
-
-#define _STLP_CREATE_ITERATOR_TRAITS(Motif, Traits)             \
-_STLP_MOVE_TO_PRIV_NAMESPACE                                    \
-_STLP_CREATE_ITERATOR_TRAITS_BASE(Motif, Traits)                \
-_STLP_MOVE_TO_STD_NAMESPACE
-
-#define _STLP_CREATE_HASH_ITERATOR_TRAITS(Motif, Traits)        \
-_STLP_MOVE_TO_PRIV_NAMESPACE                                    \
-_STLP_CREATE_ITERATOR_TRAITS_BASE(NonLocal##Motif, Traits)      \
-_STLP_CREATE_ITERATOR_TRAITS_BASE(Local##Motif, Traits)         \
-template <class _Tp>                                            \
-struct _##Motif {                                               \
-  typedef _ConstNonLocal##Motif<_Tp> _ConstTraits;              \
-  typedef _NonLocal##Motif<_Tp> _NonConstTraits;                \
-  typedef _ConstLocal##Motif<_Tp> _ConstLocalTraits;            \
-  typedef _Local##Motif<_Tp> _NonConstLocalTraits;              \
-};                                                              \
-_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 

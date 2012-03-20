@@ -1,6 +1,5 @@
 /*
  *
- *
  * Copyright (c) 1994
  * Hewlett-Packard Company
  *
@@ -37,17 +36,6 @@
 
 #if defined (_STLP_DEBUG)
 #  define _Rb_tree _STLP_NON_DBG_NAME(Rb_tree)
-#endif
-
-// fbp: these defines are for outline methods definitions.
-// needed for definitions to be portable. Should not be used in method bodies.
-#if defined (_STLP_NESTED_TYPE_PARAM_BUG)
-#  define __iterator__  _Rb_tree_iterator<_Value, _STLP_HEADER_TYPENAME _Traits::_NonConstTraits>
-#  define __size_type__ size_t
-#  define iterator __iterator__
-#else
-#  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>::iterator
-#  define __size_type__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>::size_type
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -316,10 +304,10 @@ _Rb_global<_Dummy>::_M_increment(_Rb_tree_node_base* _M_node) {
 
 
 template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>&
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::operator=(
-  const _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>& __x) {
+          class _Value, class _KeyOfValue, class _Alloc>
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>&
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc> ::operator=(
+  const _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>& __x) {
   if (this != &__x) {
     // Note that _Key may be a constant type.
     clear();
@@ -344,13 +332,13 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::operator=(
 // act like __on_left and ignore a portion of the if conditions -- specify
 // __on_right != 0 to bypass comparison as false or __on_left != 0 to bypass
 // comparison as true)
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-__iterator__
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_insert(_Rb_tree_node_base * __parent,
-                                                                      const _Value& __val,
-                                                                      _Rb_tree_node_base * __on_left,
-                                                                      _Rb_tree_node_base * __on_right) {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+typename _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::iterator
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::_M_insert(_Rb_tree_node_base * __parent,
+                                                             const value_type& __val,
+                                                             _Rb_tree_node_base * __on_left,
+                                                             _Rb_tree_node_base * __on_right)
+{
   // We do not create the node here as, depending on tests, we might call
   // _M_key_compare that can throw an exception.
   _Base_ptr __new_node;
@@ -381,10 +369,10 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_insert(_Rb_tree_n
   return iterator(__new_node);
 }
 
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-__iterator__
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(const _Value& __val) {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+typename _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::iterator
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc> ::insert_equal(const value_type& __val)
+{
   _Base_ptr __y = &this->_M_header._M_data;
   _Base_ptr __x = _M_root();
   while (__x != 0) {
@@ -399,10 +387,10 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(const _
 }
 
 
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-pair<__iterator__, bool>
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(const _Value& __val) {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+pair<typename _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::iterator, bool>
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc> ::insert_unique(const value_type& __val)
+{
   _Base_ptr __y = &this->_M_header._M_data;
   _Base_ptr __x = _M_root();
   bool __comp = true;
@@ -426,11 +414,10 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(const 
 
 // Modifications CRP 7/10/00 as noted to improve conformance and
 // efficiency.
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-__iterator__
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterator __position,
-                                                                          const _Value& __val) {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+typename _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::iterator
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc> ::insert_unique(iterator __position, const value_type& __val)
+{
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
     // if the container is empty, fall back on insert_unique.
@@ -533,11 +520,10 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterat
   }
 }
 
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-__iterator__
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterator __position,
-                                                                         const _Value& __val) {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+typename _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::iterator
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc> ::insert_equal(iterator __position, const value_type& __val)
+{
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
     // Check for zero members
@@ -618,11 +604,11 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterato
   }
 }
 
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
 _Rb_tree_node_base*
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_copy(_Rb_tree_node_base* __x,
-                                                                    _Rb_tree_node_base* __p) {
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc> ::_M_copy(_Rb_tree_node_base* __x,
+                                                            _Rb_tree_node_base* __p)
+{
   // structural copy.  __x and __p must be non-null.
   _Base_ptr __top = _M_clone_node(__x);
   _S_parent(__top) = __p;
@@ -649,10 +635,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_copy(_Rb_tree_nod
 }
 
 // this has to stay out-of-line : it's recursive
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-void
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::_M_erase(_Rb_tree_node_base *__x) {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+void _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::_M_erase(_Rb_tree_node_base *__x)
+{
   // erase without rebalancing
   while (__x != 0) {
     _M_erase(_S_right(__x));
@@ -677,9 +662,9 @@ __black_count(_Rb_tree_node_base* __node, _Rb_tree_node_base* __root) {
   }
 }
 
-template <class _Key, class _Compare,
-          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-bool _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::__rb_verify() const {
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Alloc>
+bool _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Alloc>::__rb_verify() const
+{
   if (_M_node_count == 0 || begin() == end())
     return ((_M_node_count == 0) &&
             (begin() == end()) &&
