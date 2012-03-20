@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-02-06 22:25:50 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-19 17:39:58 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -32,8 +32,8 @@
 #include <unordered_set>
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <hash_map>
-#  include <hash_set>
+//#  include <hash_map>
+//#  include <hash_set>
 #  include <rope>
 #endif
 
@@ -49,18 +49,18 @@ const char star = 42;
 using namespace std;
 #endif
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-typedef hash_multiset<char, hash<char>, equal_to<char> > hmset;
-typedef hash_multimap<int, int> hashType;
+// #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+typedef unordered_multiset<char, hash<char>, equal_to<char> > hmset;
+typedef unordered_multimap<int, int> hashType;
 typedef multimap<int, int> mapType;
 
 int check_keys( hashType& h, mapType& m );
-#endif
+// #endif
 
 int EXAM_IMPL(hash_test::hmap1)
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
+  typedef unordered_map<char, crope, hash<char>, equal_to<char> > maptype;
   maptype m;
   // Store mappings between roman numerals and decimals.
   m['l'] = "50";
@@ -100,8 +100,8 @@ int EXAM_IMPL(hash_test::hmap1)
 
 int EXAM_IMPL(hash_test::hmmap1)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  typedef hash_multimap<char, int, hash<char>,equal_to<char> > mmap;
+// #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  typedef unordered_multimap<char, int, hash<char>,equal_to<char> > mmap;
   mmap m;
   EXAM_CHECK(m.count('X')==0);
   m.insert(pair<const char,int>('X', 10)); // Standard way.
@@ -135,7 +135,7 @@ int EXAM_IMPL(hash_test::hmmap1)
   EXAM_CHECK( cite == ite );
   EXAM_CHECK( !(cite != ite) );
 
-  typedef hash_multimap<size_t, size_t> HMapType;
+  typedef unordered_multimap<size_t, size_t> HMapType;
   HMapType hmap;
 
   //We fill the map to implicitely start a rehash.
@@ -151,9 +151,9 @@ int EXAM_IMPL(hash_test::hmmap1)
   hmap.insert(HMapType::value_type(23, 0));
 
   EXAM_CHECK( hmap.count(12325) == 2 );
-#else
-  throw exam::skip_exception();
-#endif
+//#else
+//  throw exam::skip_exception();
+//#endif
 
   return EXAM_RESULT;
 }
@@ -301,25 +301,25 @@ int EXAM_IMPL(hash_test::hmset1)
 
 int EXAM_IMPL(hash_test::hset2)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  hash_set<int, hash<int>, equal_to<int> > s;
-  pair<hash_set<int, hash<int>, equal_to<int> >::iterator, bool> p = s.insert(42);
+// #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  unordered_set<int, hash<int>, equal_to<int> > s;
+  pair<unordered_set<int, hash<int>, equal_to<int> >::iterator, bool> p = s.insert(42);
   EXAM_CHECK( p.second );
   EXAM_CHECK( *(p.first) == 42 );
 
   p = s.insert(42);
   EXAM_CHECK( !p.second );
-#else
-  throw exam::skip_exception();
-#endif
+//#else
+//  throw exam::skip_exception();
+//#endif
 
   return EXAM_RESULT;
 }
 
 int EXAM_IMPL(hash_test::insert_erase)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  typedef hash_map<string, size_t, hash<string>, equal_to<string> > hmap;
+//#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  typedef unordered_map<string, size_t, hash<string>, equal_to<string> > hmap;
   typedef hmap::value_type val_type;
   {
     hmap values;
@@ -354,9 +354,9 @@ int EXAM_IMPL(hash_test::insert_erase)
     EXAM_CHECK( values.erase("bar") == 1 );
     EXAM_CHECK( values.erase("foo") == 1 );
   }
-#else
-  throw exam::skip_exception();
-#endif
+//#else
+//  throw exam::skip_exception();
+//#endif
 
   return EXAM_RESULT;
 }
@@ -388,7 +388,7 @@ void HashTest::equality()
 
 int EXAM_IMPL(hash_test::allocator_with_state)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+//#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   char buf1[2048];
   StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
 
@@ -396,7 +396,7 @@ int EXAM_IMPL(hash_test::allocator_with_state)
   StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
 
   {
-    typedef hash_set<int, hash<int>, equal_to<int>, StackAllocator<int> > HashSetInt;
+    typedef unordered_set<int, hash<int>, equal_to<int>, StackAllocator<int> > HashSetInt;
     HashSetInt hint1(10, hash<int>(), equal_to<int>(), stack1);
 
     int i;
@@ -419,9 +419,9 @@ int EXAM_IMPL(hash_test::allocator_with_state)
   }
   EXAM_CHECK( stack1.ok() );
   EXAM_CHECK( stack2.ok() );
-#else
-  throw exam::skip_exception();
-#endif
+//#else
+//  throw exam::skip_exception();
+//#endif
 
   return EXAM_RESULT;
 }
@@ -438,10 +438,10 @@ class IncompleteClass;
 
 class IncompleteClass
 {
-  hash_set<IncompleteClass> hsinstances;
-  typedef hash_set<IncompleteClass>::iterator hsit;
-  hash_multiset<IncompleteClass> hsminstances;
-  typedef hash_multiset<IncompleteClass>::iterator hsmit;
+  unordered_set<IncompleteClass> hsinstances;
+  typedef unordered_set<IncompleteClass>::iterator hsit;
+  unordered_multiset<IncompleteClass> hsminstances;
+  typedef unordered_multiset<IncompleteClass>::iterator hsmit;
 
     // hash_map<IncompleteClass, IncompleteClass> hminstances;
   typedef typename unordered_map<IncompleteClass, IncompleteClass>::iterator hmit;
@@ -453,8 +453,8 @@ class IncompleteClass
 
 int EXAM_IMPL(hash_test::remains)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  typedef hash_map<int, int, hash<int>, equal_to<int> > hmap;
+//#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+  typedef unordered_map<int, int, hash<int>, equal_to<int> > hmap;
 
   hmap m;
 
@@ -548,9 +548,9 @@ int EXAM_IMPL(hash_test::remains)
 
   EXAM_CHECK( sz == 100 );
   EXAM_CHECK( m.size() == 0 );
-#else
-  throw exam::skip_exception();
-#endif
+//#else
+//  throw exam::skip_exception();
+//#endif
 
   return EXAM_RESULT;
 }

@@ -17,7 +17,7 @@
  */
 #include "stlport_prefix.h"
 
-#include <hash_map>
+#include <unordered_map>
 #include <string>
 
 #include <locale>
@@ -96,7 +96,7 @@ typedef char const* (*loc_extract_name_func_t)(const char*, char*, _Locale_name_
 // objects for a single locale.
 
 // Global hash tables for category objects.
-typedef hash_map<string, pair<void*, size_t>, hash<string>, equal_to<string> > Category_Map;
+typedef unordered_map<string, pair<void*, size_t>, hash<string>, equal_to<string> > Category_Map;
 
 // Look up a category by name
 static Category_Map** ctype_hash() {
@@ -176,7 +176,7 @@ __acquire_category(const char* &name, char *buf, _Locale_name_hint* hint,
     *M = new Category_Map();
 
   // Look for an existing entry with that name.
-  result = (*M)->insert_noresize(__e);
+  result = (*M)->insert(__e);
 
   if (result.second) {
     // There was no entry in the map already.  Create the category.

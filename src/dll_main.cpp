@@ -44,7 +44,6 @@
 #include <list>
 #include <forward_list>
 #include <deque>
-#include <hash_map>
 #include <limits>
 #include <string>
 #include <stdexcept>

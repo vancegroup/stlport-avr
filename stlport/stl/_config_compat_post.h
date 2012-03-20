@@ -38,10 +38,10 @@
 # define __set__           set
 # define __multiset__      multiset
 # define __list__          list
-# define __hash_map__      hash_map
-# define __hash_multimap__ hash_multimap
-# define __hash_set__      hash_set
-# define __hash_multiset__ hash_multiset
+# define __hash_map__      unordered_map
+# define __hash_multimap__ unordered_multimap
+# define __hash_set__      unordered_set
+# define __hash_multiset__ unordered_multiset
 # define __vector__        vector
 
 #endif
