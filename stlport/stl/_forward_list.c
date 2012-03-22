@@ -180,6 +180,7 @@ void forward_list<_Tp,_Alloc>::sort(_StrictWeakOrdering __comp)
 }
 
 #if defined (forward_list)
+_STLP_MOVE_TO_STD_NAMESPACE
 #  undef forward_list
 #endif
 
