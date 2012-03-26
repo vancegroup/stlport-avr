@@ -134,7 +134,7 @@
 #endif
 
 #if !defined (_STLP_DONT_USE_SHORT_STRING_OPTIM) && !defined (_STLP_USE_SHORT_STRING_OPTIM)
-#  define _STLP_USE_SHORT_STRING_OPTIM 1
+// #  define _STLP_USE_SHORT_STRING_OPTIM 1
 #endif
 
 #if !defined (_STLP_NO_EXTENSIONS) && \
@@ -807,6 +807,11 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_NOTHROW
 #  define _STLP_RET_AFTER_THROW(data)
 #endif
+
+#ifndef _STLP_NOEXCEPT
+#  define _STLP_NOEXCEPT
+#endif
+
 
 /*
  * Here we check _STLP_NO_EXCEPTIONS which means that the compiler has no

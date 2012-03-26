@@ -179,10 +179,9 @@ public:                         // Constructor, destructor, assignment.
     _M_terminate_string();
   }
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  basic_string(__move_source<_Self> src)
-    : _STLP_PRIV _String_base<_CharT,_Alloc>(__move_source<_Base>(src.get())) {}
-#endif
+  basic_string(_Self&& x) :
+      _STLP_PRIV _String_base<_CharT,_Alloc>(_STLP_STD::move(x))
+    { }
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.

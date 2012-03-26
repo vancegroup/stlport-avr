@@ -152,6 +152,25 @@ class _String_base
       { _M_swap(src.get()); }
 #endif
 
+    _String_base(_String_base&& x) :
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+        _M_finish(_M_buffers._M_static_buf),
+        _M_start_of_storage( allocator_type(), _M_buffers._M_static_buf)
+#else
+        _M_end_of_storage(0),
+        _M_finish(0),
+        _M_start_of_storage((const allocator_type&)x._M_start_of_storage, (_Tp*)0)
+#endif
+      {
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+# error "mot implemented"
+#else
+        _STLP_STD::swap(_M_end_of_storage, x._M_end_of_storage);
+        _M_start_of_storage.swap(x._M_start_of_storage);
+        _STLP_STD::swap(_M_finish, x._M_finish);
+#endif
+      }
+
     ~_String_base()
       { _M_deallocate_block(); }
 
