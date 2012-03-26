@@ -129,53 +129,40 @@ _STLP_EXPORT_TEMPLATE_CLASS _Rb_global<bool>;
 
 typedef _Rb_global<bool> _Rb_global_inst;
 
-struct _Rb_tree_base_iterator {
-  typedef _Rb_tree_node_base*        _Base_ptr;
-  typedef bidirectional_iterator_tag iterator_category;
-  typedef ptrdiff_t                  difference_type;
-  _Base_ptr _M_node;
-  _Rb_tree_base_iterator() : _M_node(0) {}
-  _Rb_tree_base_iterator(_Base_ptr __x) : _M_node(__x) {}
-};
-
 template <class _Value> struct _Rb_tree_iterator;
 template <class _Value> struct _Rb_tree_iterator<_Value const>;
 
 template <class _Value>
-struct _Rb_tree_iterator :
-    public _Rb_tree_base_iterator
+class _Rb_tree_iterator
 {
+  public:
     typedef typename remove_const<_Value>::type value_type;
     typedef value_type* pointer;
     typedef value_type& reference;
-    
+    typedef bidirectional_iterator_tag iterator_category;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+
+  private:
     typedef _Rb_tree_iterator<_Value> _Self;
     typedef _Rb_tree_node_base*    _Base_ptr;
     typedef _Rb_tree_node<_Value>* _Link_type;
 
-    _Rb_tree_iterator() {}
-#if !defined (_STLP_DEBUG)
-  /* In STL debug mode we need this constructor implicit for the pointer
-   * specialization implementation.
-   */
-    explicit
-#endif
-    _Rb_tree_iterator(_Base_ptr __x) :
-        _Rb_tree_base_iterator(__x)
+  public:
+    _Rb_tree_iterator() = default;
+    _Rb_tree_iterator(const _Rb_tree_iterator& ) = default;
+    _Rb_tree_iterator(_Rb_tree_iterator&& ) = default;
+    explicit _Rb_tree_iterator(_Base_ptr __x) :
+        _M_node(__x)
       { }
-  //copy constructor for iterator and constructor from iterator for const_iterator
-    _Rb_tree_iterator(const _Rb_tree_iterator& __it) :
-        _Rb_tree_base_iterator(__it._M_node)
-      { }
-    // _Rb_tree_iterator(const _Rb_tree_iterator<value_type const>& __it) :
-    //    _Rb_tree_base_iterator(__it._M_node)
-    //  { }
+
+    _Rb_tree_iterator& operator =( const _Rb_tree_iterator& ) = default;
 
     reference operator *() const
       { return __STATIC_CAST(_Link_type, _M_node)->_M_value_field; }
 
-    pointer operator ->() const
-      { return addressof(static_cast<_Link_type>(_M_node)->_M_value_field); }
+    const pointer operator ->() const
+      { return &static_cast<_Link_type>(_M_node)->_M_value_field; }
 
     _Self& operator++()
       {
@@ -209,43 +196,55 @@ struct _Rb_tree_iterator :
       { return _M_node != __rhs._M_node; }
     bool operator !=(const _Rb_tree_iterator<value_type const>& __rhs) const
       { return _M_node != __rhs._M_node; }
+
+  private:
+    _Base_ptr _M_node;
+
+    template <class _Key, class _Compare, class _XValue, class _KeyOfValue, class _Alloc>
+    friend class _Rb_tree;
+
+    friend class _Rb_tree_iterator<_Value const>;
 };
 
 template <class _Value>
-struct _Rb_tree_iterator<_Value const> :
-    public _Rb_tree_base_iterator
+class _Rb_tree_iterator<_Value const>
 {
+  public:
     typedef _Value value_type;
     typedef value_type const* pointer;
     typedef value_type const& reference;
-    
+    typedef bidirectional_iterator_tag iterator_category;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+
+  private:
     typedef _Rb_tree_iterator<_Value const> _Self;
     typedef _Rb_tree_node_base*    _Base_ptr;
     typedef _Rb_tree_node<_Value>* _Link_type;
 
-    _Rb_tree_iterator() {}
-#if !defined (_STLP_DEBUG)
-  /* In STL debug mode we need this constructor implicit for the pointer
-   * specialization implementation.
-   */
-    explicit
-#endif
-    _Rb_tree_iterator(_Base_ptr __x) :
-        _Rb_tree_base_iterator(__x)
+  public:
+    _Rb_tree_iterator() = default;
+    _Rb_tree_iterator(const _Rb_tree_iterator& ) = default;
+    _Rb_tree_iterator(_Rb_tree_iterator&& ) = default;
+    _Rb_tree_iterator( const _Rb_tree_iterator<value_type>& x ) :
+        _M_node(x._M_node)
       { }
-  //copy constructor for iterator and constructor from iterator for const_iterator
-    _Rb_tree_iterator(const _Rb_tree_iterator& __it) :
-        _Rb_tree_base_iterator(__it._M_node)
+    explicit _Rb_tree_iterator(_Base_ptr __x) :
+        _M_node(__x)
       { }
-    _Rb_tree_iterator(const _Rb_tree_iterator<value_type>& __it) :
-        _Rb_tree_base_iterator(__it._M_node)
-      { }
+
+    _Rb_tree_iterator& operator =( const _Rb_tree_iterator& ) = default;
+    _Rb_tree_iterator& operator =( const _Rb_tree_iterator<value_type>& x )
+      {
+        _M_node = x._M_node;
+        return *this;
+      }
 
     reference operator *() const
       { return __STATIC_CAST(_Link_type, _M_node)->_M_value_field; }
 
-    pointer operator ->() const
-      { return addressof(static_cast<_Link_type>(_M_node)->_M_value_field); }
+    const pointer operator ->() const
+      { return &static_cast<_Link_type>(_M_node)->_M_value_field; }
 
     _Self& operator++()
       {
@@ -279,6 +278,14 @@ struct _Rb_tree_iterator<_Value const> :
       { return _M_node != __rhs._M_node; }
     bool operator !=(const _Rb_tree_iterator<value_type>& __rhs) const
       { return _M_node != __rhs._M_node; }
+
+  private:
+    _Base_ptr _M_node;
+
+    template <class _Key, class _Compare, class _XValue, class _KeyOfValue, class _Alloc>
+    friend class _Rb_tree;
+
+    friend class _Rb_tree_iterator<value_type>;
 };
 
 // Base class to help EH
