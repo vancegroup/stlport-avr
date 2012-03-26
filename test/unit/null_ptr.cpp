@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-10-22 00:14:04 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-26 19:35:56 ptr>
 
 /*
  * Copyright (c) 2011
@@ -28,25 +28,25 @@ struct sample
 int EXAM_IMPL(null_ptr_test::convert)
 {
   void* p = 0;
-  void* p1 = std::nullptr;
-  int* p2 = std::nullptr;
+  void* p1 = nullptr;
+  int* p2 = nullptr;
   int v = 1;
   int* p3 = &v;
   int* p4 = NULL;
   int (sample::*pm)() = &sample::method;
-  int (sample::*pm0)() = std::nullptr;
-  int (sample::*pm1)() = std::nullptr;
+  int (sample::*pm0)() = nullptr;
+  int (sample::*pm1)() = nullptr;
 
-  EXAM_CHECK( std::nullptr == p );
-  EXAM_CHECK( std::nullptr == p1 );
-  EXAM_CHECK( p2 == std::nullptr );
-  EXAM_CHECK( p3 != std::nullptr );
-  EXAM_CHECK( p4 == std::nullptr );
-  EXAM_CHECK( !std::nullptr );
+  EXAM_CHECK( nullptr == p );
+  EXAM_CHECK( nullptr == p1 );
+  EXAM_CHECK( p2 == nullptr );
+  EXAM_CHECK( p3 != nullptr );
+  EXAM_CHECK( p4 == nullptr );
+  EXAM_CHECK( !nullptr );
   EXAM_CHECK( pm != pm0 );
   EXAM_CHECK( pm0 == pm1 );
-  EXAM_CHECK( pm != std::nullptr );
-  EXAM_CHECK( pm0 == std::nullptr );
+  EXAM_CHECK( pm != nullptr );
+  EXAM_CHECK( pm0 == nullptr );
 
   return EXAM_RESULT;
 }

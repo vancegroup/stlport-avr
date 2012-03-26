@@ -219,8 +219,11 @@ typedef unsigned int wint_t;
 /* #  if ((__GNUC__ == 4) && (__GNUC_MINOR__ < 6)) */
   /* at least for __clang_major__ >= 3 */
 #if !__has_feature(cxx_nullptr)
-#  define _STLP_NULLPTR
+#  define _STLP_NO_NULLPTR_T
 #endif
+
+#define _STLP_NOEXCEPT noexcept
+
 /* gcc 4.5, 4.6, 4.7; see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52108 */
 /* #  define _STLP_DECLVAL_INCOMPLETE_BUG */ /* */
 /* #endif */
