@@ -9,21 +9,11 @@
 #  include <string>
 #endif
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
 
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-#  if !defined (STLPORT) || !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 typedef istream_iterator<char> istream_char_ite;
 typedef istream_iterator<int> istream_int_ite;
 typedef istream_iterator<string> istream_string_ite;
-#  else
-typedef istream_iterator<char, ptrdiff_t> istream_char_ite;
-typedef istream_iterator<int, ptrdiff_t> istream_int_ite;
-typedef istream_iterator<string, ptrdiff_t> istream_string_ite;
-#  endif
-#endif
 
 int EXAM_IMPL(istream_iterator_test::istmit1)
 {
@@ -59,17 +49,15 @@ int EXAM_IMPL(istream_iterator_test::istmit1)
 
 int EXAM_IMPL(istream_iterator_test::copy_n_test)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (_STLP_USE_NO_IOSTREAMS)
   //This test check that no character is lost while reading the istream
   //through a istream_iterator.
   {
     istringstream istr("aabbcd");
     string chars;
-    istream_char_ite ite = copy_n(copy_n(istream_char_ite(istr),
-                                         2, back_inserter(chars)).first,
-                                  2, back_inserter(chars)).first;
+    back_insert_iterator<string> ite = copy_n(istream_char_ite(istr), 2, back_inserter(chars));
+    ite = copy_n(istream_char_ite(istr), 2, ite);
     EXAM_CHECK( chars == "aabb" );
-    copy_n(ite, 2, back_inserter(chars));
+    copy_n(istream_char_ite(istr), 2, ite);
     EXAM_CHECK( chars == "aabbcd" );
   }
 
@@ -116,26 +104,23 @@ int EXAM_IMPL(istream_iterator_test::copy_n_test)
     istringstream is("1 2 3 4 5 6 7 8 9 10");
     vector<int> ints;
     istream_iterator<int> itr(is);
-    itr = copy_n(itr, 0, back_inserter(ints)).first;
+    copy_n(itr, 0, back_inserter(ints));
     EXAM_CHECK( ints.empty() );
-    itr = copy_n(itr, -1, back_inserter(ints)).first;
+    copy_n(itr, -1, back_inserter(ints));
     EXAM_CHECK( ints.empty() );
-    itr = copy_n(itr, 2, back_inserter(ints)).first;
+    copy_n(itr, 2, back_inserter(ints));
     EXAM_CHECK( ints.size() == 2 );
     EXAM_CHECK( ints[0] == 1 );
     EXAM_CHECK( ints[1] == 2 );
-    itr = copy_n(itr, 2, back_inserter(ints)).first;
+    copy_n(itr, 2, back_inserter(ints));
     EXAM_CHECK( ints.size() == 4 );
     EXAM_CHECK( ints[2] == 3 );
     EXAM_CHECK( ints[3] == 4 );
-    itr = copy_n(itr, 2, back_inserter(ints)).first;
+    copy_n(itr, 2, back_inserter(ints));
     EXAM_CHECK( ints.size() == 6 );
     EXAM_CHECK( ints[4] == 5 );
     EXAM_CHECK( ints[5] == 6 );
   }
 
-#else
-  throw exam::skip_exception();
-#endif
   return EXAM_RESULT;
 }

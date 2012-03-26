@@ -379,44 +379,39 @@ _STLP_DECLARE_COPY_TRIVIAL(long double)
 #  undef _STLP_DECLARE_COPY_TRIVIAL
 #endif
 
-//--------------------------------------------------
-// copy_n (not part of the C++ standard)
-
-#if !defined (_STLP_NO_EXTENSIONS)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
 inline
-_STLP_STD::pair<_InputIter, _OutputIter> __copy_n(_InputIter __first, _Size __count, _OutputIter __result,
-                                                  const input_iterator_tag&)
+_OutputIter __copy_n(_InputIter __first, _Size __count, _OutputIter __result,
+                     const input_iterator_tag&)
 {
   for ( ; __count > 0; --__count) {
     *__result = *__first;
     ++__first;
     ++__result;
   }
-  return _STLP_STD::pair<_InputIter, _OutputIter>(__first, __result);
+  return __result;
 }
 
 template <class _RAIter, class _Size, class _OutputIter>
 inline
-_STLP_STD::pair<_RAIter, _OutputIter> __copy_n(_RAIter __first, _Size __count, _OutputIter __result,
-                                               const random_access_iterator_tag&)
+_OutputIter __copy_n(_RAIter __first, _Size __count, _OutputIter __result,
+                     const random_access_iterator_tag&)
 {
   _RAIter __last = __first + __count;
-  return _STLP_STD::pair<_RAIter, _OutputIter>(__last, _STLP_STD::copy(__first, __last, __result));
+  return _STLP_STD::copy(__first, __last, __result);
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
 inline
-pair<_InputIter, _OutputIter> copy_n(_InputIter __first, _Size __count, _OutputIter __result)
+_OutputIter copy_n(_InputIter __first, _Size __count, _OutputIter __result)
 {
   _STLP_FIX_LITERAL_BUG(__first)
   return _STLP_PRIV __copy_n(__first, __count, __result, typename iterator_traits<_InputIter>::iterator_category());
 }
-#endif
 
 //--------------------------------------------------
 // fill and fill_n
