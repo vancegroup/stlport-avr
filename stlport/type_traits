@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-11-26 08:54:28 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-26 21:31:46 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -791,7 +791,14 @@ struct add_rvalue_reference
 };
 
 template <class _Tp>
-typename add_rvalue_reference<_Tp>::type declval() throw();
+typename add_rvalue_reference<_Tp>::type declval() _STLP_NOEXCEPT;
+
+namespace detail {
+
+template <class _Tp>
+_Tp&& __declval_transparent() _STLP_NOEXCEPT;
+
+} // detail
 
 #if 0
 template <class Fn, class ... Args>
@@ -874,7 +881,7 @@ struct __is_assignable
   private:
 #ifdef _STLP_CPP_0X
     template <class _U1, class _U2>
-    static decltype((declval<_U1>() = declval<_U2>()), declval<true_type>()) __test(int);
+    static decltype((detail::__declval_transparent<_U1>() = detail::__declval_transparent<_U2>()), declval<true_type>()) __test(int);
 
     template <class, class>
     static false_type __test(...);
