@@ -112,8 +112,8 @@ class _List_iterator
     reference operator *() const
       { return _M_node->_M_data; }
 
-    pointer operator ->() const
-      { return addressof(_M_node->_M_data); }
+    const pointer operator ->() const
+      { return &_M_node->_M_data; }
 
     _Self& operator ++()
       {
@@ -198,8 +198,8 @@ class _List_iterator<_Tp const>
     reference operator *() const
       { return _M_node->_M_data; }
 
-    pointer operator ->() const
-      { return addressof(_M_node->_M_data); }
+    const pointer operator ->() const
+      { return &_M_node->_M_data; }
 
     _Self& operator ++()
       {

@@ -201,8 +201,8 @@ struct _Deque_iterator :
     reference operator *() const
       { return *this->_M_cur; }
 
-    pointer operator ->() const
-      { return addressof(*this->_M_cur); }
+    const pointer operator ->() const
+      { return &*this->_M_cur; }
 
     difference_type operator -( const _Deque_iterator& __x ) const
       { return this->_M_subtract(__x); }
@@ -286,8 +286,8 @@ struct _Deque_iterator<_Tp const> :
     reference operator *() const
       { return *this->_M_cur; }
 
-    pointer operator ->() const
-      { return addressof(*this->_M_cur); }
+    const pointer operator ->() const
+      { return &*this->_M_cur; }
 
     difference_type operator-( const _Deque_iterator& __x ) const
       { return this->_M_subtract(__x); }
