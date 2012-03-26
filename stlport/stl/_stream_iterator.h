@@ -107,6 +107,8 @@ public:
 
   istream_iterator() : _M_stream(0), _M_ok(false), _M_read_done(true) {}
   istream_iterator(istream_type& __s) : _M_stream(&__s), _M_ok(false), _M_read_done(false) {}
+  istream_iterator(const istream_iterator&) = default;
+  ~istream_iterator() = default;
 
   reference operator*() const {
     if (!_M_read_done) {
@@ -177,11 +179,16 @@ public:
   ostream_iterator(ostream_type& __s) : _M_stream(&__s), _M_string(0) {}
   ostream_iterator(ostream_type& __s, const _CharT* __c)
     : _M_stream(&__s), _M_string(__c)  {}
+  ostream_iterator( const ostream_iterator& x ) :
+      _M_stream(x._M_stream),
+      _M_string(x._M_string)
+    { }
   _Self& operator=(const _TpP& __val) {
     *_M_stream << __val;
     if (_M_string) *_M_stream << _M_string;
     return *this;
   }
+
   _Self& operator*() { return *this; }
   _Self& operator++() { return *this; }
   _Self& operator++(int) { return *this; }
