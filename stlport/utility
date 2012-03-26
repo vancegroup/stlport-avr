@@ -299,7 +299,7 @@ struct __declval_aux
 } // namespace detail
 
 template <class _Tp>
-inline typename add_rvalue_reference<_Tp>::type declval() throw()
+inline typename add_rvalue_reference<_Tp>::type declval() _STLP_NOEXCEPT
 {
   // protect declval() from call:
   _STLP_STATIC_ASSERT(detail::__declval_aux<_Tp>::__instance);
