@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2011-11-26 09:13:51 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-27 13:33:44 ptr>
 
 /*
- * Copyright (c) 2007, 2009-2011
+ * Copyright (c) 2007, 2009-2012
  * Petr Ovtchenkov
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -674,20 +674,59 @@ int EXAM_IMPL(type_traits_test::is_assignable)
         { }
   };
 
-  typedef std::is_assignable<int,double> T1;
-  typedef std::is_assignable<double,int> T2;
-  typedef std::is_assignable<MyOne,int> T3;
-  typedef std::is_assignable<MyTwo,int> T4;
-  typedef std::is_assignable<int,MyOne> T5;
-  typedef std::is_assignable<int,MyTwo> T6;
+  struct MyThree
+  {
+  };
 
-  EXAM_CHECK( T1::value == true );
-  EXAM_CHECK( T2::value == true );
-  EXAM_CHECK( T3::value == true );
-  EXAM_CHECK( T4::value == true );
+  struct MyFour
+  {
+      MyFour& operator =(int)
+        { return *this; }
+      MyFour& operator =(const MyFour&)
+        { return *this; }
+      MyFour& operator =(MyFour&&)
+        { return *this; }
+  };
 
-  EXAM_CHECK( T5::value == false );
-  EXAM_CHECK( T6::value == false );
+  struct MyFive
+  {
+      MyFive& operator =(const MyFive&) = delete;
+  };
+
+  // See also http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52683
+
+  EXAM_CHECK( (std::is_assignable<int,double>::value == false) ); // left side is rvalue; but true for gcc 4.5
+  EXAM_CHECK( (std::is_assignable<int,int>::value == false) ); // left side is rvalue; but true for gcc 4.5
+  EXAM_CHECK( (std::is_assignable<double,int>::value == false) ); // left side is rvalue; but true for gcc 4.5
+  EXAM_CHECK( (std::is_assignable<int&,double>::value == true) ); // reference on left side
+  EXAM_CHECK( (std::is_assignable<double&,int>::value == true) ); // reference on left side
+  EXAM_CHECK( (std::is_assignable<int&,int&&>::value == true) );
+  EXAM_CHECK( (std::is_assignable<MyOne,int>::value == true) );
+  EXAM_CHECK( (std::is_assignable<MyTwo,int>::value == true) );
+  EXAM_CHECK( (std::is_copy_assignable<MyTwo>::value == true) );
+  EXAM_CHECK( (std::is_move_assignable<MyTwo>::value == true) );
+  EXAM_CHECK( (std::is_copy_assignable<MyOne>::value == true) );
+  EXAM_CHECK( (std::is_move_assignable<MyOne>::value == true) );
+
+  EXAM_CHECK( (std::is_assignable<int,MyOne>::value == false) );
+  EXAM_CHECK( (std::is_assignable<int,MyTwo>::value == false) );
+
+  // rvalues of classes can act as lvalues when they call a member function:
+  EXAM_CHECK( (std::is_assignable<MyThree,MyThree>::value == true) );
+  EXAM_CHECK( (std::is_assignable<MyThree,int>::value == false) );
+  EXAM_CHECK( (std::is_copy_assignable<MyThree>::value == true) );
+  EXAM_CHECK( (std::is_move_assignable<MyThree>::value == true) );
+  EXAM_CHECK( (std::is_assignable<MyFour,MyFour>::value == true) );
+
+  EXAM_CHECK( (std::is_assignable<MyFour&,MyFour&&>::value == true) );
+  EXAM_CHECK( (std::is_assignable<MyFour&,int>::value == true) );
+  EXAM_CHECK( (std::is_copy_assignable<MyFour>::value == true) );
+  EXAM_CHECK( (std::is_move_assignable<MyFour>::value == true) );
+
+  EXAM_CHECK( (std::is_assignable<MyFive&,const MyFive&>::value == false) );
+  EXAM_CHECK( (std::is_assignable<MyFive&,MyFive&&>::value == false) );
+  EXAM_CHECK( (std::is_copy_assignable<MyFive>::value == false) );
+  EXAM_CHECK( (std::is_move_assignable<MyFive>::value == false) );
 
   return EXAM_RESULT;
 }
