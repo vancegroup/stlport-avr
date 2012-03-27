@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-13 12:24:53 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-27 14:49:33 ptr>
 
 /*
  * Copyright (c) 2011
@@ -20,9 +20,9 @@ _STLP_BEGIN_NAMESPACE
 template <class T>
 struct default_delete
 {
-    /* constexpr */ default_delete() /* noexcept */ = default;
+    /* constexpr */ default_delete() /* _STLP_NOEXCEPT */ = default;
     template <class U, class = typename enable_if<is_convertible<U*,T*>::value>::type>
-    default_delete( const default_delete<U>& ) /* noexcept */
+    default_delete( const default_delete<U>& ) _STLP_NOEXCEPT
       { }
     void operator()( T* p ) const
       { delete p; }
@@ -31,7 +31,7 @@ struct default_delete
 template <class T>
 struct default_delete<T[]>
 {
-    /* constexpr */ default_delete() /* noexcept */ = default;
+    /* constexpr */ default_delete() /* _STLP_NOEXCEPT */ = default;
     void operator()( T* p ) const
       { delete [] p; }
     template <class U>
@@ -47,14 +47,14 @@ template <class T, class A, class... Args>
 shared_ptr<T> allocate_shared( const A& a, Args&&... args );
 
 template <class T, class U>
-shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
 template <class T, class U>
-shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
 template <class T, class U>
-shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
 
 template <class D, class T>
-D* get_deleter( const shared_ptr<T>& ) /* noexcept */;
+D* get_deleter( const shared_ptr<T>& ) _STLP_NOEXCEPT;
 
 namespace detail {
 
@@ -218,7 +218,7 @@ class __shared_ref_deleter :
     //   { return is_convertible<DD*,D*>::value; }
 
   private:
-    template <class DD, class TT> friend DD* _STLP_STD::get_deleter( const _STLP_STD::shared_ptr<TT>& ) /* noexcept */;
+    template <class DD, class TT> friend DD* _STLP_STD::get_deleter( const _STLP_STD::shared_ptr<TT>& ) _STLP_NOEXCEPT;
     D _d;
 };
 
@@ -342,18 +342,18 @@ class unique_ptr
     typedef D deleter_type;
 
     // 20.7.1.2.1, constructors
-    /* constexpr */ unique_ptr() /* noexcept */ :
+    /* constexpr */ unique_ptr() _STLP_NOEXCEPT :
         _p( nullptr )
       { }
 
-    explicit unique_ptr( pointer p ) /* noexcept */ :
+    explicit unique_ptr( pointer p ) _STLP_NOEXCEPT :
         _p( p )
       { }
 
     unique_ptr( pointer p,
                 typename conditional<!is_reference<D>::value,
                                      typename add_const<typename add_lvalue_reference<D>::type>::type,
-                                     D>::type d2 ) /* noexcept */ :
+                                     D>::type d2 ) _STLP_NOEXCEPT :
         _p( p ),
         _d( d2 ) // _d( _STLP_STD::forward( d2 ) ) // copy ctor
       { }
@@ -361,17 +361,17 @@ class unique_ptr
     unique_ptr( pointer p,
                 typename conditional<!is_reference<D>::value,
                                      typename remove_const<typename add_rvalue_reference<D>::type>::type,
-                                     typename add_rvalue_reference<D>::type>::type d2 ) /* noexcept */ :
+                                     typename add_rvalue_reference<D>::type>::type d2 ) _STLP_NOEXCEPT :
         _p( p ),
         _d( _STLP_STD::move(d2) )
       { }
 
-    unique_ptr( unique_ptr&& u ) /* noexcept */ :
+    unique_ptr( unique_ptr&& u ) _STLP_NOEXCEPT :
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
       { u._p = NULL; /* ? */ }
 
-    /* constexpr */ unique_ptr( nullptr_t ) /* noexcept */ :
+    /* constexpr */ unique_ptr( nullptr_t ) _STLP_NOEXCEPT :
         _p( nullptr )
       { }
 
@@ -381,13 +381,13 @@ class unique_ptr
                 !is_array<U>::value &&
                 ((is_reference<D>::value && is_same<E,D>::value) ||
                  (!is_reference<D>::value && is_convertible<E,D>::value))>::type>
-    unique_ptr( unique_ptr<U, E>&& u ) /* noexcept */ :
+    unique_ptr( unique_ptr<U, E>&& u ) _STLP_NOEXCEPT :
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
     { u._p = nullptr; /* ? */ }
 
     template <class U>
-    unique_ptr( auto_ptr<U>&& u ) /* noexcept */ :
+    unique_ptr( auto_ptr<U>&& u ) _STLP_NOEXCEPT :
         _p( u.release() )
       { }
 
@@ -396,7 +396,7 @@ class unique_ptr
       { if ( _p != nullptr ) { _d(_p); } }
 
     // 20.7.1.2.3, assignment
-    unique_ptr& operator =( unique_ptr&& u ) /* noexcept */
+    unique_ptr& operator =( unique_ptr&& u ) _STLP_NOEXCEPT
       {
         reset( u.release() );
         _d = _STLP_STD::forward<D>(u.get_deleter());
@@ -408,14 +408,14 @@ class unique_ptr
                 !is_array<U>::value &&
                 ((is_reference<D>::value && is_same<E,D>::value) ||
                  (!is_reference<D>::value && is_convertible<E,D>::value))>::type>
-    unique_ptr& operator =(unique_ptr<U, E>&& u) /* noexcept */
+    unique_ptr& operator =(unique_ptr<U, E>&& u) _STLP_NOEXCEPT
       {
         reset( u.release() );
         _d = _STLP_STD::forward<D>(u.get_deleter());
         return *this;
       }
 
-    unique_ptr& operator =( nullptr_t ) /* noexcept */
+    unique_ptr& operator =( nullptr_t ) _STLP_NOEXCEPT
       {
         reset();
         return *this;
@@ -425,30 +425,30 @@ class unique_ptr
     typename add_lvalue_reference<T>::type operator*() const
       { return *get(); }
 
-    pointer operator->() const /* noexcept */
+    pointer operator->() const _STLP_NOEXCEPT
       { return get(); }
 
-    pointer get() const /* noexcept */
+    pointer get() const _STLP_NOEXCEPT
       { return _p; }
 
-    deleter_type& get_deleter() /* noexcept */
+    deleter_type& get_deleter() _STLP_NOEXCEPT
       { return _d; }
 
-    const deleter_type& get_deleter() const /* noexcept */
+    const deleter_type& get_deleter() const _STLP_NOEXCEPT
       { return _d; }
 
-    explicit operator bool() const /* noexcept */
+    explicit operator bool() const _STLP_NOEXCEPT
       { return _p != nullptr; }
 
     // 20.7.1.2.5 modifiers
-    pointer release() /* noexcept */
+    pointer release() _STLP_NOEXCEPT
       {
         pointer tmp = _p;
         _p = nullptr;
         return tmp;
       }
 
-    void reset( pointer p = pointer() ) /* noexcept */
+    void reset( pointer p = pointer() ) _STLP_NOEXCEPT
       {
         pointer tmp = _p;
         _p = p;
@@ -457,7 +457,7 @@ class unique_ptr
         }
       }
 
-    void reset( nullptr_t ) /* noexcept */
+    void reset( nullptr_t ) _STLP_NOEXCEPT
       {
         if ( _p != nullptr ) {
           _d( _p );
@@ -465,7 +465,7 @@ class unique_ptr
         _p = nullptr;
       }
 
-    void swap( unique_ptr& u ) /* noexcept */
+    void swap( unique_ptr& u ) _STLP_NOEXCEPT
       { swap( _p, u._p ); swap( _d, u._d ); }
 
     // disable copy from lvalue
@@ -490,11 +490,11 @@ class unique_ptr<T[], D>
     typedef D deleter_type;
 
     // 20.7.1.3.1, constructors
-    /* constexpr */ unique_ptr() /* noexcept */ :
+    /* constexpr */ unique_ptr() _STLP_NOEXCEPT :
         _p( nullptr )
       { }
 
-    explicit unique_ptr( pointer p ) /* noexcept */ :
+    explicit unique_ptr( pointer p ) _STLP_NOEXCEPT :
         _p( p )
       { }
 
@@ -503,7 +503,7 @@ class unique_ptr<T[], D>
 
     unique_ptr(pointer p, typename conditional<!is_reference<D>::value,
                                                typename add_const<typename add_lvalue_reference<D>::type>::type,
-                                     D>::type d2 ) /* noexcept */ :
+                                     D>::type d2 ) _STLP_NOEXCEPT :
         _p( p ),
         _d( d2 ) // _d( _STLP_STD::forward( d2 ) ) // copy ctor
       { }
@@ -515,7 +515,7 @@ class unique_ptr<T[], D>
 
     unique_ptr(pointer p, typename conditional<!is_reference<D>::value,
                                                typename remove_const<typename add_rvalue_reference<D>::type>::type,
-                                               typename add_rvalue_reference<D>::type>::type d2 ) /* noexcept */ :
+                                               typename add_rvalue_reference<D>::type>::type d2 ) _STLP_NOEXCEPT :
         _p( p ),
         _d( _STLP_STD::move(d2) )
       { }
@@ -525,12 +525,12 @@ class unique_ptr<T[], D>
                                          typename remove_const<typename add_rvalue_reference<D>::type>::type,
                                          typename add_rvalue_reference<D>::type>::type ) = delete; /* noexcept */
 
-    unique_ptr( unique_ptr&& u ) /* noexcept */ :
+    unique_ptr( unique_ptr&& u ) _STLP_NOEXCEPT :
         _p( _STLP_STD::move( u._p ) ),
         _d( _STLP_STD::forward( u._d ) )
       { u._p = NULL; /* ? */ }
 
-    /* constexpr */ unique_ptr( nullptr_t ) /* noexcept */ :
+    /* constexpr */ unique_ptr( nullptr_t ) _STLP_NOEXCEPT :
         _p( nullptr )
       { }
 
@@ -539,14 +539,14 @@ class unique_ptr<T[], D>
       { if ( _p != nullptr ) { _d(_p); } }
 
     // assignment
-    unique_ptr& operator =( unique_ptr&& u ) /* noexcept */
+    unique_ptr& operator =( unique_ptr&& u ) _STLP_NOEXCEPT
       {
         reset( u.release() );
         _d = _STLP_STD::forward<D>(u.get_deleter());
         return *this;
       }
 
-    unique_ptr& operator =( nullptr_t ) /* noexcept */
+    unique_ptr& operator =( nullptr_t ) _STLP_NOEXCEPT
       {
         reset();
         return *this;
@@ -556,27 +556,27 @@ class unique_ptr<T[], D>
     T& operator []( size_t i ) const
       { return _p[i]; }
 
-    pointer get() const /* noexcept */
+    pointer get() const _STLP_NOEXCEPT
       { return _p; }
 
-    deleter_type& get_deleter() /* noexcept */
+    deleter_type& get_deleter() _STLP_NOEXCEPT
       { return _d; }
 
-    const deleter_type& get_deleter() const /* noexcept */
+    const deleter_type& get_deleter() const _STLP_NOEXCEPT
       { return _d; }
 
-    explicit operator bool() const /* noexcept */
+    explicit operator bool() const _STLP_NOEXCEPT
       { return _p != nullptr; }
 
     // 20.7.1.3.3 modifiers
-    pointer release() /* noexcept */
+    pointer release() _STLP_NOEXCEPT
       {
         pointer tmp = _p;
         _p = nullptr;
         return tmp;
       }
 
-    void reset( pointer p = pointer() ) /* noexcept */
+    void reset( pointer p = pointer() ) _STLP_NOEXCEPT
       {
         pointer tmp = _p;
         _p = p;
@@ -585,7 +585,7 @@ class unique_ptr<T[], D>
         }
       }
 
-    void reset( nullptr_t ) /* noexcept */
+    void reset( nullptr_t ) _STLP_NOEXCEPT
       {
         if ( _p != nullptr ) {
           _d( _p );
@@ -596,7 +596,7 @@ class unique_ptr<T[], D>
     template <class U>
     void reset(U) = delete;
 
-    void swap( unique_ptr& u ) /* noexcept */
+    void swap( unique_ptr& u ) _STLP_NOEXCEPT
       { swap( _p, u._p ); swap( _d, u._d ); }
 
     // disable copy from lvalue
@@ -637,19 +637,19 @@ bool operator >=( const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y )
 { return !(x < y); }
 
 template <class T, class D>
-bool operator ==(const unique_ptr<T, D>& x, nullptr_t) /* noexcept */
+bool operator ==(const unique_ptr<T, D>& x, nullptr_t) _STLP_NOEXCEPT
 { return !x; }
 
 template <class T, class D>
-bool operator ==(nullptr_t, const unique_ptr<T, D>& x) /* noexcept */
+bool operator ==(nullptr_t, const unique_ptr<T, D>& x) _STLP_NOEXCEPT
 { return !x; }
 
 template <class T, class D>
-bool operator !=(const unique_ptr<T, D>& x, nullptr_t) /* noexcept */
+bool operator !=(const unique_ptr<T, D>& x, nullptr_t) _STLP_NOEXCEPT
 { return (bool)x; }
 
 template <class T, class D>
-bool operator !=(nullptr_t, const unique_ptr<T, D>& x) /* noexcept */
+bool operator !=(nullptr_t, const unique_ptr<T, D>& x) _STLP_NOEXCEPT
 { return (bool)x; }
 
 // Fix required: provide strict weak ordering
@@ -691,7 +691,7 @@ class _STLP_DECLSPEC bad_weak_ptr :
     public _STLP_STD::__Named_exception
 {
   public:
-    bad_weak_ptr() /* noexcept */ ;
+    bad_weak_ptr() _STLP_NOEXCEPT;
 };
 
 template <class T> class enable_shared_from_this;
@@ -710,7 +710,7 @@ class shared_ptr
     typedef T element_type;
 
     // 20.7.2.2.1, constructors:
-    /* constexpr */ shared_ptr() /* noexcept */ :
+    /* constexpr */ shared_ptr() _STLP_NOEXCEPT :
         _ref( NULL )
       { }
 
@@ -800,7 +800,7 @@ class shared_ptr
       }
 
     template <class Y>
-    shared_ptr( const shared_ptr<Y>& r, T* p ) /* noexcept */
+    shared_ptr( const shared_ptr<Y>& r, T* p ) _STLP_NOEXCEPT
       {
         try {
           _p = p;
@@ -811,7 +811,7 @@ class shared_ptr
         }
       }
 
-    shared_ptr( const shared_ptr& r ) /* noexcept */ :
+    shared_ptr( const shared_ptr& r ) _STLP_NOEXCEPT :
         _ref( r._ref == NULL ? NULL : r._ref->ref() )
       {
         if ( _ref != NULL ) {
@@ -823,7 +823,7 @@ class shared_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type >
-    shared_ptr( const shared_ptr<Y>& r ) /* noexcept */ :
+    shared_ptr( const shared_ptr<Y>& r ) _STLP_NOEXCEPT :
         _ref( r._ref == NULL ? NULL : r._ref->ref() )
       {
         // static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
@@ -836,7 +836,7 @@ class shared_ptr
         }
       }
 
-    shared_ptr( shared_ptr&& r ) /* noexcept */ :
+    shared_ptr( shared_ptr&& r ) _STLP_NOEXCEPT :
         _p( r._p ),
         _ref( r._ref )
       {
@@ -845,7 +845,7 @@ class shared_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr( shared_ptr<Y>&& r ) /* noexcept */ :
+    shared_ptr( shared_ptr<Y>&& r ) _STLP_NOEXCEPT :
         _p( r._p ),
         _ref( r._ref )
       {
@@ -911,7 +911,7 @@ class shared_ptr
         }
       }
 
-    /* constexpr */ shared_ptr( nullptr_t ) /* noexcept */ :
+    /* constexpr */ shared_ptr( nullptr_t ) _STLP_NOEXCEPT :
         _ref( NULL )
       { }
 
@@ -924,7 +924,7 @@ class shared_ptr
       }
 
     // 20.7.2.2.3, assignment:
-    shared_ptr& operator =( const shared_ptr& r ) /* noexcept */
+    shared_ptr& operator =( const shared_ptr& r ) _STLP_NOEXCEPT
       { // shared_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
           _p = r._p;
@@ -940,7 +940,7 @@ class shared_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr& operator =(const shared_ptr<Y>& r) /* noexcept */
+    shared_ptr& operator =(const shared_ptr<Y>& r) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _p = static_cast<T*>(r._p);
@@ -955,7 +955,7 @@ class shared_ptr
         return *this;
       }
 
-    shared_ptr& operator =( shared_ptr&& r ) /* noexcept */
+    shared_ptr& operator =( shared_ptr&& r ) _STLP_NOEXCEPT
       {
         if ( _ref != NULL ) {
           _ref->unlink();
@@ -970,7 +970,7 @@ class shared_ptr
      }
 
     template<class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    shared_ptr& operator =( shared_ptr<Y>&& r ) /* noexcept */
+    shared_ptr& operator =( shared_ptr<Y>&& r ) _STLP_NOEXCEPT
       {
         if ( _ref != NULL ) {
           _ref->unlink();
@@ -1026,7 +1026,7 @@ class shared_ptr
       }
 
     // 20.7.2.2.4, modifiers:
-    void swap( shared_ptr& r ) /* noexcept */
+    void swap( shared_ptr& r ) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _p, r._p );
@@ -1034,7 +1034,7 @@ class shared_ptr
         }
       }
 
-    void reset() /* noexcept */
+    void reset() _STLP_NOEXCEPT
       { // shared_ptr().swap( *this );
         if ( _ref != NULL ) {
           _ref->unlink();
@@ -1055,18 +1055,18 @@ class shared_ptr
       { shared_ptr(p, d, _STLP_STD::move(a)).swap( *this ); }
 
     // 20.7.2.2.5, observers:
-    T* get() const /* noexcept */
+    T* get() const _STLP_NOEXCEPT
       { return _p; }
-    T& operator*() const /* noexcept */
+    T& operator*() const _STLP_NOEXCEPT
       { return *_p; }
-    T* operator->() const /* noexcept */
+    T* operator->() const _STLP_NOEXCEPT
       { return get(); }
-    long use_count() const /* noexcept */
+    long use_count() const _STLP_NOEXCEPT
       { return _ref == NULL ? 0L : _ref->count(); }
-    bool unique() const /* noexcept */
+    bool unique() const _STLP_NOEXCEPT
       { return _ref == NULL ? false : _ref->count() == 1L; }
 
-    explicit operator bool() const /* noexcept */
+    explicit operator bool() const _STLP_NOEXCEPT
       { return _p != NULL; }
 
     template <class U>
@@ -1080,11 +1080,11 @@ class shared_ptr
     template <class Y> friend class weak_ptr;
     template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
     template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
-    template <class Y, class U> friend shared_ptr<Y> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
-    template <class Y, class U> friend shared_ptr<Y> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
-    template <class Y, class U> friend shared_ptr<Y> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
+    template <class Y, class U> friend shared_ptr<Y> static_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
+    template <class Y, class U> friend shared_ptr<Y> dynamic_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
+    template <class Y, class U> friend shared_ptr<Y> const_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
 
-    template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) /* noexcept */;
+    template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) _STLP_NOEXCEPT;
 
     T* _p;
     detail::__shared_ref_base* _ref;
@@ -1099,7 +1099,7 @@ class shared_ptr<void>
     typedef void element_type;
 
     // 20.7.2.2.1, constructors:
-    /* constexpr */ shared_ptr() /* noexcept */ :
+    /* constexpr */ shared_ptr() _STLP_NOEXCEPT :
         _ref( NULL )
       { }
 
@@ -1185,7 +1185,7 @@ class shared_ptr<void>
       }
 
     template <class Y>
-    shared_ptr( const shared_ptr<Y>& r, void* p ) /* noexcept */
+    shared_ptr( const shared_ptr<Y>& r, void* p ) _STLP_NOEXCEPT
       {
         try {
           _p = p;
@@ -1196,7 +1196,7 @@ class shared_ptr<void>
         }
       }
 
-    shared_ptr( const shared_ptr& r ) /* noexcept */ :
+    shared_ptr( const shared_ptr& r ) _STLP_NOEXCEPT :
         _ref( r._ref == NULL ? NULL : r._ref->ref() )
       {
         if ( _ref != NULL ) {
@@ -1208,7 +1208,7 @@ class shared_ptr<void>
       }
 
     template <class Y>
-    shared_ptr( const shared_ptr<Y>& r ) /* noexcept */ :
+    shared_ptr( const shared_ptr<Y>& r ) _STLP_NOEXCEPT :
         _ref( r._ref == NULL ? NULL : r._ref->ref() )
       {
         // static_assert( is_convertible<Y*,T*>::value, "pointers not convertible" );
@@ -1221,7 +1221,7 @@ class shared_ptr<void>
         }
       }
 
-    shared_ptr( shared_ptr&& r ) /* noexcept */ :
+    shared_ptr( shared_ptr&& r ) _STLP_NOEXCEPT :
         _p( r._p ),
         _ref( r._ref )
       {
@@ -1230,7 +1230,7 @@ class shared_ptr<void>
       }
 
     template <class Y>
-    shared_ptr( shared_ptr<Y>&& r ) /* noexcept */ :
+    shared_ptr( shared_ptr<Y>&& r ) _STLP_NOEXCEPT :
         _p( r._p ),
         _ref( r._ref )
       {
@@ -1290,7 +1290,7 @@ class shared_ptr<void>
         }
       }
 
-    /* constexpr */ shared_ptr( nullptr_t ) /* noexcept */ :
+    /* constexpr */ shared_ptr( nullptr_t ) _STLP_NOEXCEPT :
         _ref( NULL )
       { }
     
@@ -1303,7 +1303,7 @@ class shared_ptr<void>
       }
 
     // 20.7.2.2.3, assignment:
-    shared_ptr& operator =( const shared_ptr& r ) /* noexcept */
+    shared_ptr& operator =( const shared_ptr& r ) _STLP_NOEXCEPT
       { // shared_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
           _p = r._p;
@@ -1319,7 +1319,7 @@ class shared_ptr<void>
       }
 
     template <class Y>
-    shared_ptr& operator =(const shared_ptr<Y>& r) /* noexcept */
+    shared_ptr& operator =(const shared_ptr<Y>& r) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _p = static_cast<void*>(r._p);
@@ -1334,7 +1334,7 @@ class shared_ptr<void>
         return *this;
       }
 
-    shared_ptr& operator =( shared_ptr&& r ) /* noexcept */
+    shared_ptr& operator =( shared_ptr&& r ) _STLP_NOEXCEPT
       {
         if ( _ref != NULL ) {
           _ref->unlink();
@@ -1349,7 +1349,7 @@ class shared_ptr<void>
      }
 
     template<class Y>
-    shared_ptr& operator =( shared_ptr<Y>&& r ) /* noexcept */
+    shared_ptr& operator =( shared_ptr<Y>&& r ) _STLP_NOEXCEPT
       {
         if ( _ref != NULL ) {
           _ref->unlink();
@@ -1403,7 +1403,7 @@ class shared_ptr<void>
       }
 
     // 20.7.2.2.4, modifiers:
-    void swap( shared_ptr& r ) /* noexcept */
+    void swap( shared_ptr& r ) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _p, r._p );
@@ -1411,7 +1411,7 @@ class shared_ptr<void>
         }
       }
 
-    void reset() /* noexcept */
+    void reset() _STLP_NOEXCEPT
       { // shared_ptr().swap( *this );
         if ( _ref != NULL ) {
           _ref->unlink();
@@ -1432,16 +1432,16 @@ class shared_ptr<void>
       { shared_ptr(p, d, _STLP_STD::move(a)).swap( *this ); }
 
     // 20.7.2.2.5, observers:
-    void* get() const /* noexcept */
+    void* get() const _STLP_NOEXCEPT
       { return _p; }
-    void* operator->() const /* noexcept */
+    void* operator->() const _STLP_NOEXCEPT
       { return get(); }
-    long use_count() const /* noexcept */
+    long use_count() const _STLP_NOEXCEPT
       { return _ref == NULL ? 0L : _ref->count(); }
-    bool unique() const /* noexcept */
+    bool unique() const _STLP_NOEXCEPT
       { return _ref == NULL ? false : _ref->count() == 1L; }
 
-    explicit operator bool() const /* noexcept */
+    explicit operator bool() const _STLP_NOEXCEPT
       { return _p != NULL; }
 
     template <class U>
@@ -1455,10 +1455,10 @@ class shared_ptr<void>
     template <class Y> friend class weak_ptr;
     template <class Y, class... Args> friend shared_ptr<Y> make_shared(Args&&... args);
     template <class Y, class A, class... Args> friend shared_ptr<Y> allocate_shared(const A& a, Args&&... args);
-    template <class Y, class U> friend shared_ptr<Y> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
-    template <class Y, class U> friend shared_ptr<Y> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
-    template <class Y, class U> friend shared_ptr<Y> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */;
-    template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) /* noexcept */;
+    template <class Y, class U> friend shared_ptr<Y> static_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
+    template <class Y, class U> friend shared_ptr<Y> dynamic_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
+    template <class Y, class U> friend shared_ptr<Y> const_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT;
+    template <class D, class TT> friend D* get_deleter( const shared_ptr<TT>& p ) _STLP_NOEXCEPT;
 
     void* _p;
     detail::__shared_ref_base* _ref;
@@ -1523,87 +1523,87 @@ shared_ptr<T> make_shared(Args&&... args)
 
 // 20.7.2.2.7, shared_ptr comparisons:
 template<class T, class U>
-bool operator ==(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+bool operator ==(const shared_ptr<T>& a, const shared_ptr<U>& b) _STLP_NOEXCEPT
 { return a.get() == b.get(); }
 
 template<class T, class U>
-bool operator !=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+bool operator !=(const shared_ptr<T>& a, const shared_ptr<U>& b) _STLP_NOEXCEPT
 { return !(a == b); }
 
 template<class T, class U>
-bool operator <(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+bool operator <(const shared_ptr<T>& a, const shared_ptr<U>& b) _STLP_NOEXCEPT
 { return less<typename common_type<T*,U*>::type>()( a.get(), b.get() ); }
 
 template<class T, class U>
-bool operator >(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+bool operator >(const shared_ptr<T>& a, const shared_ptr<U>& b) _STLP_NOEXCEPT
 { return b < a; }
 
 template<class T, class U>
-bool operator <=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+bool operator <=(const shared_ptr<T>& a, const shared_ptr<U>& b) _STLP_NOEXCEPT
 { return !(a > b); }
 
 template<class T, class U>
-bool operator >=(const shared_ptr<T>& a, const shared_ptr<U>& b) /* noexcept */
+bool operator >=(const shared_ptr<T>& a, const shared_ptr<U>& b) _STLP_NOEXCEPT
 { return !(a < b); }
 
 template <class T>
-bool operator ==(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+bool operator ==(const shared_ptr<T>& a, nullptr_t) _STLP_NOEXCEPT
 { return !(bool)a; }
 
 template <class T>
-bool operator ==(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+bool operator ==(nullptr_t, const shared_ptr<T>& b) _STLP_NOEXCEPT
 { return !(bool)b; }
 
 template <class T>
-bool operator !=(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+bool operator !=(const shared_ptr<T>& a, nullptr_t) _STLP_NOEXCEPT
 { return (bool)a; }
 
 template <class T>
-bool operator !=(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+bool operator !=(nullptr_t, const shared_ptr<T>& b) _STLP_NOEXCEPT
 { return (bool)b; }
 
 template <class T>
-bool operator <(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+bool operator <(const shared_ptr<T>& a, nullptr_t) _STLP_NOEXCEPT
 { return less<T*>()( a.get(), nullptr ); }
 
 template <class T>
-bool operator <(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+bool operator <(nullptr_t, const shared_ptr<T>& b) _STLP_NOEXCEPT
 { return less<T*>()( nullptr, b.get() ); }
 
 template <class T>
-bool operator <=(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+bool operator <=(const shared_ptr<T>& a, nullptr_t) _STLP_NOEXCEPT
 { return !(a > nullptr); }
 
 template <class T>
-bool operator <=(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+bool operator <=(nullptr_t, const shared_ptr<T>& b) _STLP_NOEXCEPT
 { return !(nullptr > b); }
 
 template <class T>
-bool operator >(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+bool operator >(const shared_ptr<T>& a, nullptr_t) _STLP_NOEXCEPT
 { return less<T*>()( nullptr, a.get() ); }
 
 template <class T>
-bool operator >(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+bool operator >(nullptr_t, const shared_ptr<T>& b) _STLP_NOEXCEPT
 { return less<T*>()( b.get(), nullptr ); }
 
 template <class T>
-bool operator >=(const shared_ptr<T>& a, nullptr_t) /* noexcept */
+bool operator >=(const shared_ptr<T>& a, nullptr_t) _STLP_NOEXCEPT
 { return !(a < nullptr); }
 
 template <class T>
-bool operator >=(nullptr_t, const shared_ptr<T>& b) /* noexcept */
+bool operator >=(nullptr_t, const shared_ptr<T>& b) _STLP_NOEXCEPT
 { return !(nullptr < b); }
 
 // 20.7.2.2.8, shared_ptr specialized algorithms:
 
 template <class T>
-void swap( shared_ptr<T>& a, shared_ptr<T>& b ) /* noexcept */
+void swap( shared_ptr<T>& a, shared_ptr<T>& b ) _STLP_NOEXCEPT
 { a.swap( b ); }
 
 // 20.7.2.2.9, shared_ptr casts:
 
 template <class T, class U>
-shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
+shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT
 {
   shared_ptr<T> p;
 
@@ -1617,7 +1617,7 @@ shared_ptr<T> static_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
 }
 
 template <class T, class U>
-shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
+shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT
 {
   shared_ptr<T> p;
 
@@ -1631,7 +1631,7 @@ shared_ptr<T> dynamic_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
 }
 
 template <class T, class U>
-shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
+shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) _STLP_NOEXCEPT
 {
   shared_ptr<T> p;
 
@@ -1647,7 +1647,7 @@ shared_ptr<T> const_pointer_cast( const shared_ptr<U>& r ) /* noexcept */
 // 20.7.2.2.10, shared_ptr get_deleter:
 
 template <class D, class T>
-D* get_deleter( const shared_ptr<T>& p ) /* noexcept */
+D* get_deleter( const shared_ptr<T>& p ) _STLP_NOEXCEPT
 {
   // try {
     if ( p._ref != NULL ) {
@@ -1680,13 +1680,13 @@ class weak_ptr
     typedef T element_type;
 
     // 20.7.2.3.1, constructors
-    /* constexpr */ weak_ptr() /* noexcept */ :
+    /* constexpr */ weak_ptr() _STLP_NOEXCEPT :
         _p( NULL ),
         _ref( NULL )
       { }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    weak_ptr( const shared_ptr<Y>& r ) /* noexcept */ :
+    weak_ptr( const shared_ptr<Y>& r ) _STLP_NOEXCEPT :
         _ref( r._ref == NULL ? NULL : r._ref->ref() )
       {
         if ( _ref != NULL ) {
@@ -1697,7 +1697,7 @@ class weak_ptr
         }
       }
 
-    weak_ptr( const weak_ptr& r ) /* noexcept */ :
+    weak_ptr( const weak_ptr& r ) _STLP_NOEXCEPT :
         _ref( /* r._ref == NULL ? NULL : */ r.expired() ? NULL : r._ref->ref() )
       {
         if ( _ref != NULL ) {
@@ -1709,7 +1709,7 @@ class weak_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    weak_ptr( const weak_ptr<Y>& r ) /* noexcept */ :
+    weak_ptr( const weak_ptr<Y>& r ) _STLP_NOEXCEPT :
         _ref( /* r._ref == NULL ? NULL : */ r.expired() ? NULL : r._ref->ref() )
       {
         if ( _ref != NULL ) {
@@ -1729,7 +1729,7 @@ class weak_ptr
       }
 
     // 20.7.2.3.3, assignment
-    weak_ptr& operator =( const weak_ptr& r ) /* noexcept */
+    weak_ptr& operator =( const weak_ptr& r ) _STLP_NOEXCEPT
       { // weak_ptr(r).swap(*this);
         if ( _ref != r._ref ) {
           _p = r._p;
@@ -1745,7 +1745,7 @@ class weak_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    weak_ptr& operator =( const weak_ptr<Y>& r ) /* noexcept */
+    weak_ptr& operator =( const weak_ptr<Y>& r ) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _p = static_cast<T*>(r._p);
@@ -1761,7 +1761,7 @@ class weak_ptr
       }
 
     template <class Y, class = typename enable_if<is_convertible<Y*,T*>::value>::type>
-    weak_ptr& operator =( const shared_ptr<Y>& r ) /* noexcept */
+    weak_ptr& operator =( const shared_ptr<Y>& r ) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _p = static_cast<T*>(r._p);
@@ -1777,7 +1777,7 @@ class weak_ptr
       }
 
     // 20.7.2.3.4, modifiers
-    void swap( weak_ptr& r ) /* noexcept */
+    void swap( weak_ptr& r ) _STLP_NOEXCEPT
       {
         if ( _ref != r._ref ) {
           _STLP_STD::swap( _p, r._p );
@@ -1785,7 +1785,7 @@ class weak_ptr
         }
       }
 
-    void reset() /* noexcept */
+    void reset() _STLP_NOEXCEPT
       { // weak_ptr().swap( *this );
         if ( _ref != NULL ) {
           _ref->weak_unlink();
@@ -1795,13 +1795,13 @@ class weak_ptr
       }
 
     // 20.7.2.3.5, observers
-    long use_count() const /* noexcept */
+    long use_count() const _STLP_NOEXCEPT
       { return _ref == NULL ? 0L : _ref->count(); }
 
-    bool expired() const /* noexcept */
+    bool expired() const _STLP_NOEXCEPT
       { return (_ref == NULL) || (_ref->count() == 0); }
 
-    shared_ptr<T> lock() const /* noexcept */
+    shared_ptr<T> lock() const _STLP_NOEXCEPT
       {
         if ( expired() ) {
           return shared_ptr<T>();
@@ -1825,7 +1825,7 @@ class weak_ptr
 
 // 20.7.2.3.6, specialized algorithms
 template <class T>
-void swap( weak_ptr<T>& a, weak_ptr<T>& b ) /* noexcept */
+void swap( weak_ptr<T>& a, weak_ptr<T>& b ) _STLP_NOEXCEPT
 { a.swap( b ); }
 
 // 20.7.2.3.7, Class template owner_less  [util.smartptr.ownerless]
@@ -1886,12 +1886,12 @@ template <class T>
 class enable_shared_from_this
 {
   protected:
-    /* constexpr */ enable_shared_from_this() /* noexcept */ :
+    /* constexpr */ enable_shared_from_this() _STLP_NOEXCEPT :
         w()
       { }
-    enable_shared_from_this( const enable_shared_from_this&) /* noexcept */
+    enable_shared_from_this( const enable_shared_from_this&) _STLP_NOEXCEPT
       { }
-    enable_shared_from_this& operator =( const enable_shared_from_this& ) /* noexcept */
+    enable_shared_from_this& operator =( const enable_shared_from_this& ) _STLP_NOEXCEPT
       { return *this; }
     ~enable_shared_from_this()
       { }

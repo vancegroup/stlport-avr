@@ -22,7 +22,7 @@ _STLP_BEGIN_NAMESPACE
 
 static const string bad_weak_ptr_str( "bad_weak_ptr" );
 
-bad_weak_ptr::bad_weak_ptr() : /* noexcept */
+bad_weak_ptr::bad_weak_ptr() _STLP_NOEXCEPT :
       __Named_exception( bad_weak_ptr_str )
 { }
 
