@@ -54,10 +54,10 @@ int EXAM_IMPL(istream_iterator_test::copy_n_test)
   {
     istringstream istr("aabbcd");
     string chars;
-    back_insert_iterator<string> ite = copy_n(istream_char_ite(istr), 2, back_inserter(chars));
-    ite = copy_n(istream_char_ite(istr), 2, ite);
+    copy_n(istream_char_ite(istr), 2, back_inserter(chars));
+    copy_n(istream_char_ite(istr), 2, back_inserter(chars));
     EXAM_CHECK( chars == "aabb" );
-    copy_n(istream_char_ite(istr), 2, ite);
+    copy_n(istream_char_ite(istr), 2, back_inserter(chars));
     EXAM_CHECK( chars == "aabbcd" );
   }
 
@@ -78,16 +78,6 @@ int EXAM_IMPL(istream_iterator_test::copy_n_test)
     EXAM_CHECK( strings[1] == "BB" );
     strings.clear();
     istr.clear();
-    /* The following code cannot work, '33' is extracted as a string
-     * in the previous copy_n call, this value is returned in the pair
-     * returned by copy_n but is lost as this istream_iterator is not used.
-     * copy_n and istream_iterator can only be combined safely if:
-     * - you always extract the same type of istream_iterator and you always reuse
-     * the istream_iterator returned by copy_n (see previous test with "aabbcd")
-     * - you extract different type of object and no object is convertible to an other
-     * as in this current test when you extract int and string (when you extract ints
-     * again it fails as int can be converted to strings.
-     *
     copy_n(istream_int_ite(istr), 2, back_inserter(ints));
     EXAM_CHECK( ints.size() == 2 );
     EXAM_CHECK( ints[0] == 33 );
@@ -97,7 +87,6 @@ int EXAM_IMPL(istream_iterator_test::copy_n_test)
     EXAM_CHECK( strings.size() == 2 );
     EXAM_CHECK( strings[0] == "CC" );
     EXAM_CHECK( strings[1] == "DD" );
-    */
   }
 
   {
