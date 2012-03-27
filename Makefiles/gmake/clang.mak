@@ -1,4 +1,4 @@
-# Time-stamp: <2012-03-08 09:14:12 ptr>
+# Time-stamp: <2012-03-27 15:15:57 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2012
 # Petr Ovtchenkov
@@ -175,7 +175,7 @@ endif
 #endif
 #endif
 
-CXXFLAGS += ${EXTRA_CXXFLAGS}
+CXXFLAGS += -std=gnu++0x ${EXTRA_CXXFLAGS}
 CFLAGS += ${EXTRA_CFLAGS}
 
 CDEPFLAGS = -E -M
