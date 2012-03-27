@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-14 00:45:28 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-27 14:21:37 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -744,12 +744,17 @@ int EXAM_IMPL(alg_test::equal_range1)
   return EXAM_RESULT;
 }
 
-struct Test {
-  Test(int val) : value(val) {}
-  int value;
+namespace alg_test_ns {
 
-  bool operator == (int i) const
-  { return value == i; }
+struct Test
+{
+    Test(int val) :
+        value(val)
+      { }
+    int value;
+
+    bool operator == (int i) const
+      { return value == i; }
 };
 
 bool operator < (const Test& v1, int v2)
@@ -762,6 +767,10 @@ bool operator < (int v1, const Test& v2)
 bool operator < (const Test& v1, const Test& v2)
 { return v1.value < v2.value; }
 #endif
+
+} // namespace alg_test_ns
+
+using namespace alg_test_ns;
 
 int EXAM_IMPL(alg_test::equal_range2)
 {

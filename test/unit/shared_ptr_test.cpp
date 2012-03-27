@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-12-02 10:53:43 ptr>
+// -*- C++ -*- Time-stamp: <2012-03-27 14:26:35 ptr>
 
 /*
  * Copyright (c) 2011
@@ -24,6 +24,8 @@
 using namespace std;
 #endif
 
+namespace shared_ptr_test_ns {
+
 struct P1
 {
     typedef int element_type;
@@ -39,6 +41,10 @@ struct P3
     typedef int element_type;
     typedef short difference_type;
 };
+
+} // namespace shared_ptr_test_ns
+
+using namespace shared_ptr_test_ns;
 
 int EXAM_IMPL(memory1_test::pointer_traits)
 {
@@ -98,6 +104,8 @@ int EXAM_IMPL(memory1_test::align)
   return EXAM_RESULT;
 }
 
+namespace shared_ptr_test_ns {
+
 template <class T>
 struct TAlloc
 {
@@ -111,6 +119,8 @@ struct x_selector
     template <class, class, class ... >
     static false_type __test( ... );
 };
+
+} // namespace shared_ptr_test_ns
 
 int EXAM_IMPL(memory1_test::uses_allocator)
 {
@@ -140,6 +150,8 @@ int EXAM_IMPL(memory1_test::uses_allocator)
 
   return EXAM_RESULT;
 }
+
+namespace shared_ptr_test_ns {
 
 struct Test
 {
@@ -176,6 +188,8 @@ struct Test
 };
 
 int Test::cnt = 0;
+
+} // namespace shared_ptr_test_ns
 
 int EXAM_IMPL(unique_ptr_test::base)
 {
@@ -319,10 +333,14 @@ int EXAM_IMPL(unique_ptr_test::array)
   return EXAM_RESULT;
 }
 
+namespace shared_ptr_test_ns {
+
 struct X :
     public std::enable_shared_from_this<X>
 {
 };
+
+} // namespace shared_ptr_test_ns
 
 int EXAM_IMPL(shared_ptr_test::shared_from_this)
 {
@@ -334,6 +352,8 @@ int EXAM_IMPL(shared_ptr_test::shared_from_this)
 
   return EXAM_RESULT;
 }
+
+namespace shared_ptr_test_ns {
 
 struct TestNext :
     public Test
@@ -362,6 +382,8 @@ struct my_destroyer
         delete p;
       }
 };
+
+} // namespace shared_ptr_test_ns
 
 int EXAM_IMPL(shared_ptr_test::shared_ptr_base)
 {
@@ -758,6 +780,8 @@ int EXAM_IMPL(shared_ptr_test::make)
   return EXAM_RESULT;
 }
 
+namespace shared_ptr_test_ns {
+
 struct my_allocator_counter
 {
     static int counter;
@@ -834,6 +858,8 @@ class my_allocator :
     void destroy( U* p )
       { std::detail::__destroy_selector<is_trivially_destructible<_Tp>::value>::destroy( p ); }
 };
+
+} // namespace shared_ptr_test_ns
 
 int EXAM_IMPL(shared_ptr_test::allocate)
 {
@@ -998,6 +1024,8 @@ int EXAM_IMPL(shared_ptr_test::unique_ptr)
   return EXAM_RESULT;
 }
 
+namespace shared_ptr_test_ns {
+
 struct Test2
 {
     Test2() :
@@ -1057,6 +1085,8 @@ struct TestNext2 :
 };
 
 int TestNext2::cnt_next = 0;
+
+} // namespace shared_ptr_test_ns
 
 int EXAM_IMPL(shared_ptr_test::casts)
 {
