@@ -90,10 +90,13 @@ class _Slist_iterator
     _Slist_iterator() = default;
     _Slist_iterator(const _Slist_iterator&) = default;
     _Slist_iterator(_Slist_iterator&&) = default;
+
+  private:
     explicit _Slist_iterator(_Slist_node_base* __x) :
         _M_node(static_cast<_Node*>(__x))
       { }
 
+  public:
     _Slist_iterator& operator =( const _Slist_iterator& ) = default;
 
     reference operator *() const
@@ -159,10 +162,13 @@ class _Slist_iterator<_Tp const>
     _Slist_iterator(const _Slist_iterator<value_type>& x) :
         _M_node( reinterpret_cast<_Node*>(x._M_node) )
       { }
+
+  private:
     explicit _Slist_iterator(_Slist_node_base* __x) :
         _M_node(static_cast<_Node*>(__x))
       { }
 
+  public:
     _Slist_iterator& operator =( const _Slist_iterator& ) = default;
     _Slist_iterator& operator =( const _Slist_iterator<value_type>& x )
       {
@@ -401,9 +407,9 @@ class forward_list
     const_iterator cbegin() const
       { return const_iterator(this->_M_head._M_data._M_next);}
 
-    iterator end() { return iterator(); }
-    const_iterator end() const { return const_iterator(); }
-    const_iterator cend() const { return const_iterator(); }
+    iterator end() { return iterator(0); }
+    const_iterator end() const { return const_iterator(0); }
+    const_iterator cend() const { return const_iterator(0); }
 
     size_type size() const
       {
