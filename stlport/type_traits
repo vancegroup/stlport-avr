@@ -62,16 +62,16 @@ struct __instance :
     
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
-    static const bool __value;
+    static const bool value;
 #else
-    static const bool __value = sizeof(__test<_Tp>(0)) == sizeof(__select_types::__t1);
+    static const bool value = sizeof(__test<_Tp>(0)) == sizeof(__select_types::__t1);
 #endif
 
 };
 
 #ifdef _STLP_STATIC_CONST_INIT_BUG
 template <class _Tp>
-const bool __instance<_Tp>::__value = sizeof(__instance<_Tp>::__test<_Tp>(0)) == sizeof(__select_types::__t1);
+const bool __instance<_Tp>::value = sizeof(__instance<_Tp>::__test<_Tp>(0)) == sizeof(__select_types::__t1);
 #endif
 
 template <class T>
@@ -87,15 +87,15 @@ struct __uoc_aux : // union or class
     
   public:
 #ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
-    static const bool __value;
+    static const bool value;
 #else
-    static const bool __value = sizeof(__test<T>(0)) == sizeof(__select_types::__t1);
+    static const bool value = sizeof(__test<T>(0)) == sizeof(__select_types::__t1);
 #endif
 };
 
 #ifdef __FIT_NO_INLINE_TEMPLATE_STATIC_INITIALISATION
 template <class T>
-const bool __uoc_aux<T>::__value = sizeof(__uoc_aux<T>::__test<T>(0)) == sizeof(__select_types::__t1);
+const bool __uoc_aux<T>::value = sizeof(__uoc_aux<T>::__test<T>(0)) == sizeof(__select_types::__t1);
 #endif
 
 template <class T>
@@ -121,15 +121,15 @@ struct __virtual_aux
 {
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
-    static const bool __value;
+    static const bool value;
 #else
-    static const bool __value = B ? (sizeof(__inheritance_aux<T,B>) == sizeof(T)) : false;
+    static const bool value = B ? (sizeof(__inheritance_aux<T,B>) == sizeof(T)) : false;
 #endif
 };
 
 #ifdef _STLP_STATIC_CONST_INIT_BUG
 template <class T, bool B>
-const bool __virtual_aux<T,B>::__value = B ? (sizeof(__inheritance_aux<T,B>) == sizeof(T)) : false;
+const bool __virtual_aux<T,B>::value = B ? (sizeof(__inheritance_aux<T,B>) == sizeof(T)) : false;
 #endif
 #endif
 
@@ -152,13 +152,13 @@ namespace detail {
 
 template <typename _Tp>
 struct __is_union_or_class :
-    public integral_constant<bool, __uoc_aux<_Tp>::__value>
+    public integral_constant<bool, __uoc_aux<_Tp>::value>
 { };
 
 #if 0
 template<typename _Tp>
 struct __is_vtbl : // has virtual table?
-    public integral_constant<bool, __virtual_aux<_Tp,__is_union_or_class<_Tp>::value >::__value>
+    public integral_constant<bool, __virtual_aux<_Tp,__is_union_or_class<_Tp>::value >::value>
 { };
 #endif
 
@@ -299,7 +299,7 @@ struct is_reference<_Tp&> :
 
 template <class _Tp>
 struct is_function :
-    public integral_constant<bool, !(detail::__instance<_Tp>::__value
+    public integral_constant<bool, !(detail::__instance<_Tp>::value
                                      || detail::__is_union_or_class<_Tp>::value
                                      || is_reference<_Tp>::value
                                      || is_void<_Tp>::value)>
