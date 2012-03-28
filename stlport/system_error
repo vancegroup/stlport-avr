@@ -437,7 +437,7 @@ class error_condition
     _STLP_DECLSPEC void assign( int val, const error_category& category );
     template <class ErrorConditionEnum>
     typename tr1::enable_if<is_error_condition_enum<ErrorConditionEnum>::value, error_code >::type& operator =( ErrorConditionEnum err );
-    void clear();
+    _STLP_DECLSPEC void clear();
 
     int value() const
       { return v; }
@@ -466,7 +466,7 @@ class error_code
     _STLP_DECLSPEC void assign( int val, const error_category& );
     template <class ErrorCodeEnum>
     typename tr1::enable_if<is_error_code_enum<ErrorCodeEnum>::value, error_code >::type& operator =( ErrorCodeEnum err );
-    void clear();
+    _STLP_DECLSPEC void clear();
 
     int value() const
       { return v; }

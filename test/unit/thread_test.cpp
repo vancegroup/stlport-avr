@@ -52,9 +52,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ThreadTest);
 #include <iomanip>
 #include <sstream>
 
-#include <sys/wait.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#if defined(_STLP_UNIX) || defined(__unix)
+#  include <sys/wait.h>
+#  include <sys/ipc.h>
+#  include <sys/shm.h>
+#endif
 
 #include <string>
 #include <set>
@@ -122,6 +124,8 @@ void ThreadTest::mutex_test()
   rlk.unlock();
 }
 
+#ifdef _STLP_RWLOCK
+
 namespace rw_mutex_ns {
 
 int n_threads = 3; 
@@ -145,8 +149,11 @@ void run()
 
 }
 
+#endif // _STLP_RWLOCK
+
 void ThreadTest::mutex_rw_test()
 {
+#ifdef _STLP_RWLOCK
   std::vector<std::thread*> thr(rw_mutex_ns::n_threads);
 
   for ( int i = 0;i < rw_mutex_ns::n_threads; ++i ) {
@@ -157,6 +164,7 @@ void ThreadTest::mutex_rw_test()
     thr[i]->join();
     delete thr[i];
   }
+#endif // _STLP_RWLOCK
 }
 
 static std::barrier bar;

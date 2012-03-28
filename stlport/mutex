@@ -23,7 +23,7 @@
 #include <cerrno>
 #include <system_error>
 
-#ifdef WIN32
+#ifdef _STLP_WIN32
 # include <windows.h>
 # include <memory>
 # include <limits>

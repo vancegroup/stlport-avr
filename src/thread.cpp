@@ -161,8 +161,10 @@ _STLP_DECLSPEC void thread_base::detach()
   if ( pthread_detach( _id ) ) {
     // throw system_error;
   }
-  _id = _bad_thread_id;
 #endif
+
+  _id = _bad_thread_id;
+
 }
 
 _STLP_DECLSPEC thread_base::id get_id()

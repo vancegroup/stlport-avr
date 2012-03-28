@@ -53,6 +53,12 @@ _STLP_BEGIN_NAMESPACE
 namespace this_thread
 { }
 
+#ifdef _STLP_WIN32THREADS
+#define _STLP_CALL_CONVENTION WINAPI
+#else
+#define _STLP_CALL_CONVENTION
+#endif
+
 class thread_base
 {
   public:
@@ -60,7 +66,7 @@ class thread_base
     typedef void * ret_t;
 #endif
 #ifdef _STLP_WIN32THREADS
-    typedef long ret_t;
+    typedef unsigned long ret_t;
 #endif
 
     typedef ret_t (*entrance_type)( void * );
@@ -107,7 +113,7 @@ class thread_base
         _thread_id_type _id;
 
         friend class thread_base;
-        friend id get_id(void);
+        friend _STLP_DECLSPEC id get_id(void);
         // friend __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
     };
 
@@ -298,7 +304,7 @@ class basic_thread :
     semaphore sem;
 
     template <class Entry>
-    static void *_call( void *p )
+    static ret_t _STLP_CALL_CONVENTION _call( void *p )
       {
          basic_thread<F,S>& me = *reinterpret_cast<basic_thread<F,S>*>(p);
          Entry entry( *static_cast<Entry *>(me._entry) );
@@ -321,7 +327,7 @@ class basic_thread :
       }
 
     template <class Entry, class Arg1 >
-    static void *_call( void *p )
+    static ret_t _STLP_CALL_CONVENTION _call( void *p )
       {
          basic_thread<F,S>& me = *reinterpret_cast<basic_thread<F,S>*>(p);
          Entry entry( *static_cast<Entry *>( static_cast<void **>(me._entry)[0] ) );
@@ -355,8 +361,9 @@ class basic_thread<0,0> :
     template <class Entry>
     basic_thread( Entry e )
       {
-#ifdef _STLP_PTHREADS
         _entry = static_cast<void *>( new Entry( e ) );
+
+#ifdef _STLP_PTHREADS
 #ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
@@ -367,19 +374,26 @@ class basic_thread<0,0> :
 #endif
         int err = pthread_create( &this->_id, 0, &_call<Entry>, this );
         if ( err != 0 ) {
+#endif
+
+#ifdef _STLP_WIN32THREADS
+        _id = CreateThread( NULL, 0, _call<Entry>, this, 0, NULL );
+        if ( _id == NULL ) {
+#endif
+
           // _id = id(); -- not required, already set
           delete static_cast<Entry *>(_entry);
         }
-#endif
       }
 
     template <class Entry, class Arg1 >
     basic_thread( Entry e, Arg1 arg1 )
       {
-#ifdef _STLP_PTHREADS
         _entry = static_cast<void *>(new void *[2]);
         static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
         static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
+
+#ifdef _STLP_PTHREADS
 #ifdef _STLP_CREATE_THREAD_STACK_INFO
         // _stack_on_create
         {
@@ -390,12 +404,18 @@ class basic_thread<0,0> :
 #endif
         int err = pthread_create( &this->_id, 0, &_call<Entry,Arg1>, this );
         if ( err != 0 ) {
+#endif
+
+#ifdef _STLP_WIN32THREADS
+        _id = CreateThread( NULL, 0, _call<Entry,Arg1>, this, 0, NULL );
+        if ( _id == NULL ) {
+#endif
+
           // _id = id(); -- not required, already set
           delete static_cast<Arg1 *>( static_cast<void **>(_entry)[1] );
           delete static_cast<Entry *>( static_cast<void **>(_entry)[0] );
           delete [] static_cast<void **>(_entry);
         }
-#endif
       }
 
     ~basic_thread()
@@ -412,7 +432,7 @@ class basic_thread<0,0> :
     void *_entry;
 
     template <class Entry>
-    static void *_call( void *p )
+    static ret_t _STLP_CALL_CONVENTION _call( void *p )
       {
          basic_thread<0,0>& me = *reinterpret_cast<basic_thread<0,0>*>(p);
          Entry entry( *static_cast<Entry *>(me._entry) );
@@ -430,7 +450,7 @@ class basic_thread<0,0> :
       }
 
     template <class Entry, class Arg1 >
-    static void *_call( void *p )
+    static ret_t _STLP_CALL_CONVENTION _call( void *p )
       {
          basic_thread<0,0>& me = *reinterpret_cast<basic_thread<0,0>*>(p);
          Entry entry( *static_cast<Entry *>( static_cast<void **>(me._entry)[0] ) );
@@ -530,7 +550,7 @@ class basic_thread<0,S> :
     void *_entry;
 
     template <class Entry>
-    static void *_call( void *p )
+    static ret_t _STLP_CALL_CONVENTION _call( void *p )
       {
          basic_thread<0,S>& me = *reinterpret_cast<basic_thread<0,S>*>(p);
          Entry entry( *static_cast<Entry *>(me._entry) );
@@ -548,7 +568,7 @@ class basic_thread<0,S> :
       }
 
     template <class Entry, class Arg1 >
-    static void *_call( void *p )
+    static ret_t _STLP_CALL_CONVENTION _call( void *p )
       {
          basic_thread<0,S>& me = *reinterpret_cast<basic_thread<0,S>*>(p);
          Entry entry( *static_cast<Entry *>( static_cast<void **>(me._entry)[0] ) );
@@ -600,6 +620,8 @@ inline void yield()
 // { std::this_thread::sleep( static_cast<std::tr2::nanoseconds>(rel_t) ); }
 
 } // namespace this_thread
+
+#undef _STLP_CALL_CONVENTION
 
 _STLP_END_NAMESPACE
 
