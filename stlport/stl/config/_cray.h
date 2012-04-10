@@ -38,10 +38,10 @@
 #  define _STLP_RAND48 1
 
 // Uncomment if native new-style C library headers lile <cstddef>, etc are not available.
-#   define _STLP_HAS_NO_NEW_C_HEADERS 1
+#   define _STLP_HAS_NO_NEW_C_HEADERS 1 /* unsupported more */
 
 // uncomment if new-style headers <new> is available
-#   define _STLP_NO_NEW_NEW_HEADER 1
+#   define _STLP_NO_NEW_NEW_HEADER 1 /* unsupported more */
 
 // uncomment this if <iostream> and other STD headers put their stuff in ::namespace,
 // not std::

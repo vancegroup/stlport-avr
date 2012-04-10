@@ -18,15 +18,11 @@
 
 #if !defined (_STLP_NO_TYPEINFO)
 
-#  if defined (_STLP_NO_NEW_NEW_HEADER)
-#    include <typeinfo.h>
-#  else
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <typeinfo>
 #    else
 #      include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo)
 #    endif
-#  endif
 
 #  if (defined(_STLP_MSVC) && (_STLP_MSVC >= 1300)) || (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800))
 // In .NET, <typeinfo> actually includes <typeinfo.h>

@@ -254,7 +254,7 @@
 
 // evc3 has new, but no explicit header
 #  define _STLP_NO_NEW_HEADER
-#  define _STLP_NO_NEW_NEW_HEADER
+#  define _STLP_NO_NEW_NEW_HEADER /* unsupported more */
 
 // evc3 has no bad_alloc and no typeinfo
 #  undef _STLP_NO_BAD_ALLOC

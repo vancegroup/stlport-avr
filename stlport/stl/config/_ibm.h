@@ -95,12 +95,11 @@
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 #  define _STLP_NO_EXCEPTION_HEADER 1
 
-#  define _STLP_NO_NEW_NEW_HEADER 1
+#  define _STLP_NO_NEW_NEW_HEADER 1 /* unsupported more */
 
 #  if defined (__OS2__) && (__IBMCPP__ <= 350)
 #   define _STLP_NO_TYPEINFO 1
 #  endif
-#  define _STLP_NO_NEW_NEW_HEADER 1
 
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 /* #  define _STLP_THROW_RETURN_BUG 1 */

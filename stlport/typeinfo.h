@@ -56,7 +56,7 @@ using std::bad_cast;
 
 // if <typeinfo> already included, do not import anything
 
-#    if defined (_STLP_USE_OWN_NAMESPACE) && !(defined (_STLP_TYPEINFO) && !defined (_STLP_NO_NEW_NEW_HEADER))
+#    if defined (_STLP_USE_OWN_NAMESPACE) && !defined (_STLP_TYPEINFO)
 
 _STLP_BEGIN_NAMESPACE
 

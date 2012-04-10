@@ -34,19 +34,11 @@
 #    undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #  endif
 
-#  if defined (_STLP_NO_NEW_NEW_HEADER)
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <exception.h>
-#    else
-#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
-#    endif
-#  else
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <exception>
 #    else
 #      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
 #    endif
-#  endif
 
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 

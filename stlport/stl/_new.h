@@ -27,7 +27,6 @@
 using _STLP_VENDOR_CSTD::malloc;
 #endif
 
-#if !defined (_STLP_NO_NEW_NEW_HEADER)
 // eMbedded Visual C++ .NET unfortunately uses _INC_NEW for both <new.h> and <new>
 // we undefine the symbol to get the stuff in the SDK's <new>
 #  if defined (_STLP_WCE_NET) && defined (_INC_NEW)
@@ -50,9 +49,6 @@ inline void* operator new[](size_t, void *p) { return p; }
 #  else
 #    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
 #  endif
-#else
-#  include <new.h>
-#endif
 
 #if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
@@ -126,7 +122,7 @@ _STLP_END_NAMESPACE
 #  endif
 #endif
 
-#if defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
+#if defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
 #  define _STLP_CHECK_NULL_ALLOC(__x) void* __y = __x; if (__y == 0) { _STLP_THROW_BAD_ALLOC; } return __y
 #else
 #  define _STLP_CHECK_NULL_ALLOC(__x) return __x

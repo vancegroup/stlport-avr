@@ -66,7 +66,7 @@
 #  ifndef _STLP_USE_NO_IOSTREAMS
 #    define _STLP_USE_NO_IOSTREAMS 1
 #  endif
-#  define _STLP_NO_NEW_NEW_HEADER 1
+#  define _STLP_NO_NEW_NEW_HEADER 1 /* unsupported more */
 // #  define _STLP_NO_RELOPS_NAMESPACE
 #  define _STLP_HAS_NO_NAMESPACES 1
 #  define _STLP_NEED_MUTABLE  1

@@ -7,7 +7,7 @@
 #  define _PTHREADS
 # endif
 
-#  define _STLP_NO_NEW_NEW_HEADER 1
+#  define _STLP_NO_NEW_NEW_HEADER 1 /* unsupported more */
 
 #  define _STLP_NO_BOOL
 #  define _STLP_LIMITED_DEFAULT_TEMPLATES
