@@ -31,9 +31,7 @@
 #  include <stl/_cmath.h>
 #endif
 
-#ifndef _STLP_INTERNAL_NEW
-#  include <stl/_new.h>
-#endif
+#include <new>
 
 #ifndef _STLP_INTERNAL_NUMERIC_H
 #  include <stl/_numeric.h>

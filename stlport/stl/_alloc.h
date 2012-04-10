@@ -41,9 +41,7 @@
 #  include <cstring>
 #endif
 
-#ifndef _STLP_INTERNAL_NEW_HEADER
-#  include <stl/_new.h>
-#endif
+#include <new>
 
 #ifndef __STLP_TYPE_TRAITS
 #  include <type_traits>
