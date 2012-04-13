@@ -607,9 +607,15 @@ struct __destroy_selector
     template <class _ForwardIterator>
     static void destroy( _ForwardIterator __first, _ForwardIterator __last )
       {
+#ifndef _STLP_LAMBDA_PAR_BUG
         for_each( __first, __last, []( typename iterator_traits<_ForwardIterator>::value_type& i ){
             _STLP_STD::detail::__destroy_selector<false>::destroy( &i );
           } );
+#else
+        for ( ; __first != __last; ++__first ) {
+          _STLP_STD::detail::__destroy_selector<false>::destroy( &*__first );
+        }
+#endif
       }
 };
 
