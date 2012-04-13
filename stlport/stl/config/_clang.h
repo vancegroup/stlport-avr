@@ -230,5 +230,7 @@ typedef unsigned int wint_t;
 
 #define _STLP_OPERATORS_NEW_DELETE /* use own implemenation of new and delete */
 #define _STLP_VENDOR_BAD_ALLOC /* use vendor's std::bad_alloc, but don't include vendor's header */
-#define _STLP_LAMBDA_PAR_BUG /* can't parse lambda expression with parameters */
+#if (__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 1))
+#  define _STLP_LAMBDA_PAR_BUG /* can't parse lambda expression with parameters */
+#endif /* CLang before 3.1 */
 #define _STLP_VENDOR_EXCEPTION /* use vendor's std::exception, but don't include vendor's header */
