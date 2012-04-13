@@ -54,6 +54,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+template <class _Tp, class _Alloc> class forward_list;
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 struct _Slist_node_base
@@ -132,7 +134,7 @@ class _Slist_iterator
     _Node* _M_node;
 
     template <class _TTp, class _Alloc>
-    friend class forward_list;
+    friend class _STLP_STD::forward_list;
 
     template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
     friend class hashtable;
@@ -210,7 +212,7 @@ class _Slist_iterator<_Tp const>
     _Node* _M_node;
      
     template <class _TTp, class _Alloc>
-    friend class forward_list;
+    friend class _STLP_STD::forward_list;
 
     template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
     friend class hashtable;
