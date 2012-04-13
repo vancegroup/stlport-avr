@@ -155,8 +155,7 @@ template <class _Tp, class _Integer>
 inline _Tp power(_Tp __x, _Integer __n) {
   return _STLP_PRIV __power(__x, __n, multiplies<_Tp>());
 }
-
-// iota is not part of the C++ standard.  It is an extension.
+#endif
 
 template <class _ForwardIterator, class _Tp>
 inline
@@ -165,7 +164,6 @@ void iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __val) {
   while (__first != __last)
     *__first++ = __val++;
 }
-#endif
 
 _STLP_END_NAMESPACE
 
