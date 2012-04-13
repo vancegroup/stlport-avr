@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2012-02-27 19:36:28 ptr>
+# -*- Makefile -*- Time-stamp: <2012-04-11 19:33:07 ptr>
 
 LIBNAME = stlport
 MAJOR = 6
@@ -17,6 +17,7 @@ SRC_CPP = dll_main.cpp \
           collate.cpp \
           ctype.cpp \
           monetary.cpp \
+          new.cpp \
           num_get.cpp \
           num_put.cpp \
           num_get_float.cpp \

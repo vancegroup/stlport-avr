@@ -812,6 +812,13 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_NOEXCEPT
 #endif
 
+#if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC) && !defined(_STLP_OPERATORS_NEW_DELETE)
+#  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
+#endif
+
+// #if defined(_STLP_OPERATORS_NEW_DELETE) && !defined(_STLP_NO_BAD_ALLOC)
+// #  define _STLP_NO_BAD_ALLOC /* own bad_alloc implementation */
+// #endif
 
 /*
  * Here we check _STLP_NO_EXCEPTIONS which means that the compiler has no

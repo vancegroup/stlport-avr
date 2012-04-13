@@ -178,7 +178,7 @@ typedef unsigned int wint_t;
 #  define _STLP_DONT_USE_EXCEPTIONS 1
 #endif
 
-#define _STLP_NO_EXCEPTION_HEADER
+/* #define _STLP_NO_EXCEPTION_HEADER */
 
 #define _STLP_NO_FORCE_INSTANTIATE
 
@@ -227,3 +227,8 @@ typedef unsigned int wint_t;
 /* gcc 4.5, 4.6, 4.7; see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52108 */
 /* #  define _STLP_DECLVAL_INCOMPLETE_BUG */ /* */
 /* #endif */
+
+#define _STLP_OPERATORS_NEW_DELETE /* use own implemenation of new and delete */
+#define _STLP_VENDOR_BAD_ALLOC /* use vendor's std::bad_alloc, but don't include vendor's header */
+#define _STLP_LAMBDA_PAR_BUG /* can't parse lambda expression with parameters */
+#define _STLP_VENDOR_EXCEPTION /* use vendor's std::exception, but don't include vendor's header */

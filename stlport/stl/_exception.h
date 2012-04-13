@@ -34,11 +34,49 @@
 #    undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #  endif
 
+#  ifdef _STLP_VENDOR_EXCEPTION
+
+namespace _STLP_VENDOR_STD {
+
+class exception
+{
+  public:
+    exception() throw() { }
+    virtual ~exception() throw();
+    virtual const char* what() const throw();
+};
+
+class bad_exception :
+        public exception
+{
+  public:
+    bad_exception() throw() { }
+    virtual ~bad_exception() throw();
+    virtual const char* what() const throw();
+};
+
+typedef void (*terminate_handler)();
+typedef void (*unexpected_handler)();
+
+terminate_handler set_terminate( terminate_handler ) throw();
+void terminate() throw() __attribute__ ((__noreturn__));
+
+unexpected_handler set_unexpected( unexpected_handler ) throw();
+void unexpected() __attribute__ ((__noreturn__));
+
+bool uncaught_exception() throw() __attribute__ ((__pure__));
+
+} // namespace _STLP_VENDOR_STD
+
+#  else /* _STLP_VENDOR_EXCEPTION */
+
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <exception>
 #    else
 #      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
 #    endif
+
+#  endif /* _STLP_VENDOR_EXCEPTION */
 
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 

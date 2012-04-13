@@ -40,32 +40,15 @@ using _STLP_VENDOR_CSTD::malloc;
 #    error Cannot include native new header as new is a macro.
 #  endif
 
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <new>
-#    ifdef __ANDROID__
-inline void* operator new(size_t, void* p) { return p; }
-inline void* operator new[](size_t, void *p) { return p; }
-#    endif
-#  else
-#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
-#  endif
+#if defined (_STLP_USE_EXCEPTIONS)
 
-#if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
-#  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
-#endif
-
-#if defined (_STLP_USE_EXCEPTIONS) && defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
-
-#  ifndef _STLP_INTERNAL_EXCEPTION
+//#  ifndef _STLP_INTERNAL_EXCEPTION
 #    include <stl/_exception.h>
-#  endif
+//#  endif
+
+#ifdef _STLP_NO_BAD_ALLOC
 
 _STLP_BEGIN_NAMESPACE
-
-#  if defined (_STLP_NO_BAD_ALLOC)
-struct nothrow_t {};
-#    define nothrow nothrow_t()
-#  endif
 
 /*
  * STLport own bad_alloc exception to be used if the native C++ library
@@ -83,7 +66,94 @@ public:
 
 _STLP_END_NAMESPACE
 
-#endif /* _STLP_USE_EXCEPTIONS && (_STLP_NO_BAD_ALLOC || _STLP_NEW_DONT_THROW_BAD_ALLOC) */
+#elif defined(_STLP_VENDOR_BAD_ALLOC)
+
+namespace _STLP_VENDOR_STD {
+
+class bad_alloc :
+    public exception
+{
+  public:
+    bad_alloc() throw() { }
+
+    // This declaration is not useless:
+    // http://gcc.gnu.org/onlinedocs/gcc-3.0.2/gcc_6.html#SEC118
+    virtual ~bad_alloc() throw();
+
+    // See comment in eh_exception.cc.
+    virtual const char* what() const throw();
+};
+
+} // namespace _STLP_VENDOR_STD
+
+_STLP_BEGIN_NAMESPACE
+
+using _STLP_VENDOR_STD::bad_alloc;
+
+_STLP_END_NAMESPACE
+
+#endif /* _STLP_NO_BAD_ALLOC */
+
+#endif /* _STLP_USE_EXCEPTIONS && _STLP_NO_BAD_ALLOC */
+
+#if defined(_STLP_OPERATORS_NEW_DELETE)
+
+_STLP_BEGIN_NAMESPACE
+
+class bad_array_new_length;
+
+struct nothrow_t {};
+
+extern const nothrow_t nothrow;
+
+typedef void (*new_handler)();
+
+new_handler get_new_handler() noexcept;
+new_handler set_new_handler(new_handler new_p) noexcept;
+
+_STLP_END_NAMESPACE
+
+void* operator new(_STLP_STD::size_t size) __attribute__ ((weak,visibility("default")));
+void* operator new(_STLP_STD::size_t size, const _STLP_STD::nothrow_t&) noexcept __attribute__ ((weak,visibility("default")));
+
+void operator delete(void* ptr) noexcept __attribute__ ((weak,visibility("default")));
+void operator delete(void* ptr, const _STLP_STD::nothrow_t&) noexcept __attribute__ ((weak,visibility("default")));
+
+void* operator new[](_STLP_STD::size_t size) __attribute__ ((weak,visibility("default")));
+void* operator new[](_STLP_STD::size_t size, const _STLP_STD::nothrow_t&) noexcept __attribute__ ((weak,visibility("default")));
+
+void operator delete[](void* ptr) noexcept __attribute__ ((weak,__visibility__("default")));
+void operator delete[](void* ptr, const _STLP_STD::nothrow_t&) noexcept __attribute__ ((weak,visibility("default")));
+
+inline void* operator new (_STLP_STD::size_t size, void* ptr) noexcept
+{ return ptr; }
+inline void* operator new[](_STLP_STD::size_t size, void* ptr) noexcept
+{ return ptr; }
+inline void operator delete (void* ptr, void*) noexcept
+{ }
+inline void operator delete[](void* ptr, void*) noexcept
+{ }
+
+_STLP_BEGIN_NAMESPACE
+
+inline void* _STLP_CALL __stl_new(size_t __n)   { return ::operator new(__n); }
+inline void  _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p); }
+
+_STLP_END_NAMESPACE
+
+#define _STLP_THROW_BAD_ALLOC _STLP_THROW(_STLP_STD::bad_alloc())
+
+#else /* _STLP_OPERATORS_NEW_DELETE */
+
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <new>
+#    ifdef __ANDROID__
+inline void* operator new(size_t, void* p) { return p; }
+inline void* operator new[](size_t, void *p) { return p; }
+#    endif
+#  else
+#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
+#  endif
 
 #if defined (_STLP_USE_OWN_NAMESPACE)
 
@@ -138,6 +208,8 @@ inline void* _STLP_CALL __stl_new(size_t __n)   { _STLP_CHECK_NULL_ALLOC(::opera
 inline void  _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p); }
 #endif
 _STLP_END_NAMESPACE
+
+#endif /* _STLP_OPERATORS_NEW_DELETE */
 
 #endif /* _STLP_INTERNAL_NEW */
 

@@ -84,12 +84,6 @@ underflow_error::~underflow_error() _STLP_NOTHROW_INHERENTLY {}
 
 #endif
 
-#if !defined(_STLP_WCE_EVC3)
-#  if defined (_STLP_NO_BAD_ALLOC)
-const nothrow_t nothrow /* = {} */;
-#  endif
-#endif
-
 #if !defined (_STLP_NO_FORCE_INSTANTIATE)
 
 #  if defined (_STLP_DEBUG) || defined (_STLP_ASSERTIONS)
