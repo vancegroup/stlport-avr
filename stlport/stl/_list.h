@@ -51,6 +51,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+template <class _Tp, class _Alloc> class list;
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 struct _List_node_base
@@ -156,7 +158,7 @@ class _List_iterator
     _Node* _M_node;
 
     template <class _TTp, class _Alloc>
-    friend class list;
+    friend class _STLP_STD::list;
 
     friend class _List_iterator<_Tp const>;
 };
@@ -242,7 +244,7 @@ class _List_iterator<_Tp const>
     _Node* _M_node;
 
     template <class _TTp, class _Alloc>
-    friend class list;
+    friend class _STLP_STD::list;
 
     friend class _List_iterator<_Tp>;
 };
