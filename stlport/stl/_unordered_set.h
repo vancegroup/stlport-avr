@@ -33,7 +33,7 @@ class unordered_set
 {
   typedef unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Self;
 public:
-  typedef hashtable<_Value, _Value, _HashFcn,
+  typedef _STLP_PRIV hashtable<_Value, _Value, _HashFcn,
                     _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 public:
   typedef typename _Ht::key_type key_type;
@@ -149,7 +149,7 @@ class unordered_multiset
 {
   typedef unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Self;
 public:
-  typedef hashtable<_Value, _Value, _HashFcn,
+  typedef _STLP_PRIV hashtable<_Value, _Value, _HashFcn,
                     _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 
   typedef typename _Ht::key_type key_type;

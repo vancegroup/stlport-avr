@@ -30,9 +30,9 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
+
+#if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 #  define __PRIME_LIST_BODY { \
   7ul,          23ul, \
@@ -88,13 +88,13 @@ void _STLP_CALL _Stl_prime<_Dummy>::_S_prev_sizes(size_t __n, size_t const*&__be
 
 #  undef __PRIME_LIST_BODY
 
-_STLP_MOVE_TO_STD_NAMESPACE
+// _STLP_MOVE_TO_STD_NAMESPACE
 
 #endif
 
 #if defined (_STLP_DEBUG)
 #  define hashtable _STLP_NON_DBG_NAME(hashtable)
-_STLP_MOVE_TO_PRIV_NAMESPACE
+// _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
 /*
@@ -460,8 +460,10 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::_M_copy_from(const hashtable<_Val,
 
 #if defined (_STLP_DEBUG)
 #  undef hashtable
-_STLP_MOVE_TO_STD_NAMESPACE
+// _STLP_MOVE_TO_STD_NAMESPACE
 #endif
+
+_STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 

@@ -112,9 +112,9 @@ _STLP_EXPORT_TEMPLATE_CLASS _Stl_prime<bool>;
 
 typedef _Stl_prime<bool> _Stl_prime_type;
 
-#if !defined (_STLP_DEBUG)
-_STLP_MOVE_TO_STD_NAMESPACE
-#endif
+// #if !defined (_STLP_DEBUG)
+// _STLP_MOVE_TO_STD_NAMESPACE
+// #endif
 
 /*
  * Hashtables handle allocators a bit differently than other containers
@@ -502,8 +502,10 @@ class hashtable
 
 #if defined (_STLP_DEBUG)
 #  undef hashtable
-_STLP_MOVE_TO_STD_NAMESPACE
+// _STLP_MOVE_TO_STD_NAMESPACE
 #endif
+
+_STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 
@@ -518,7 +520,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
 inline
 void _STLP_CALL
-swap( hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>& __hm1, hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>& __hm2)
+swap( _STLP_PRIV hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>& __hm1, _STLP_PRIV hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>& __hm2)
 { __hm1.swap(__hm2); }
 
 _STLP_END_NAMESPACE

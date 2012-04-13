@@ -39,7 +39,7 @@ public:
   typedef _Tp mapped_type;
   typedef pair<_STLP_CONST key_type, data_type> value_type;
 public:
-  typedef hashtable<value_type, key_type, _HashFcn,
+  typedef _STLP_PRIV hashtable<value_type, key_type, _HashFcn,
                     _STLP_SELECT1ST(value_type,  _Key), _EqualKey, _Alloc > _Ht;
 
   typedef typename _Ht::hasher hasher;
@@ -171,7 +171,7 @@ public:
   typedef _Tp mapped_type;
   typedef pair<_STLP_CONST key_type, data_type> value_type;
 public:
-  typedef hashtable<value_type, key_type, _HashFcn,
+  typedef _STLP_PRIV hashtable<value_type, key_type, _HashFcn,
                     _STLP_SELECT1ST(value_type,  _Key), _EqualKey, _Alloc > _Ht;
 
   typedef typename _Ht::hasher hasher;
