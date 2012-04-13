@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-05-02 12:33:21 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-13 18:51:52 ptr>
 
 /*
  * Copyright (c) 2002, 2006-2011
@@ -74,7 +74,7 @@ struct _duration_cast
     template <class Rep, class Period>
     static ToDuration _cast( const duration<Rep, Period>& d )
       {
-        return ToDuration(static_cast<typename ToDuration::rep>(static_cast<CR>(d.count()) * static_cast<CR>(CF::num) / static_cast<CR>(CF::den) ) );
+        return ToDuration(static_cast<typename ToDuration::rep&&>(d.count() * CF::num / CF::den) );
       }
 };
 
@@ -84,7 +84,7 @@ struct _duration_cast<ToDuration,CF,CR,true,true>
     template <class Rep, class Period>
     static ToDuration _cast( const duration<Rep, Period>& d )
       {
-        return ToDuration(static_cast<typename ToDuration::rep>(static_cast<CR>(d.count()) ) );
+        return ToDuration(static_cast<typename ToDuration::rep&&>(d.count()) );
       }
 };
 
@@ -94,7 +94,7 @@ struct _duration_cast<ToDuration,CF,CR,false,true>
     template <class Rep, class Period>
     static ToDuration _cast( const duration<Rep, Period>& d )
       {
-        return ToDuration(static_cast<typename ToDuration::rep>(static_cast<CR>(d.count()) * static_cast<CR>(CF::num) ) );
+        return ToDuration(static_cast<typename ToDuration::rep&&>(d.count() * CF::num) );
       }
 };
 
@@ -104,7 +104,7 @@ struct _duration_cast<ToDuration,CF,CR,true,false>
     template <class Rep, class Period>
     static ToDuration _cast( const duration<Rep, Period>& d )
       {
-        return ToDuration(static_cast<typename ToDuration::rep>(static_cast<CR>(d.count()) / static_cast<CR>(CF::den) ) );
+        return ToDuration(static_cast<typename ToDuration::rep&&>(d.count() / CF::den) );
       }
 };
 
