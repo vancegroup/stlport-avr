@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-26 21:31:46 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-13 22:30:53 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -1422,12 +1422,12 @@ struct __is_convertible_aux<_From,_To,false>
 
   public:
 #ifdef _STLP_STATIC_CONST_INIT_BUG
-    static const bool __value;
+    static const bool value;
 #else
 # ifdef _STLP_CPP_0X
-    static const bool __value = is_same<decltype(__test(declval<_From>())),true_type>::value;
+    static const bool value = is_same<decltype(__test(declval<_From>())),true_type>::value;
 # else // _STLP_CPP_0X
-    static const bool __value = sizeof(__test(_From())) == sizeof(__select_types::__t1);
+    static const bool value = sizeof(__test(_From())) == sizeof(__select_types::__t1);
 # endif // _STLP_CPP_0X
 #endif
 };
@@ -1447,7 +1447,7 @@ struct is_convertible :
                  is_void<_From>::value ||
                  is_void<_To>::value ||
                  is_function<_To>::value ||
-                 is_array<_To>::value>::__value>
+                 is_array<_To>::value>::value>
 #else
             integral_constant<bool, _STLP_IS_CONVERTIBLE(_From,_To)>
 #endif
