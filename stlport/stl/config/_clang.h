@@ -225,7 +225,7 @@ typedef unsigned int wint_t;
 #define _STLP_NOEXCEPT noexcept
 
 /* gcc 4.5, 4.6, 4.7; see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52108 */
-/* #  define _STLP_DECLVAL_INCOMPLETE_BUG */ /* */
+#  define _STLP_DECLVAL_INCOMPLETE_BUG /* */
 /* #endif */
 
 #define _STLP_OPERATORS_NEW_DELETE /* use own implemenation of new and delete */
