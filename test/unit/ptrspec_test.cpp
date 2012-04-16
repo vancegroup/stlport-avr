@@ -7,15 +7,15 @@
 #include <set>
 #include <iterator>
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
 
 #define TEST_INSTANCIATE_CONTAINER(cont) \
   template class cont<int*>; \
   template class cont<int const*>; \
   template class cont<int volatile*>; \
   template class cont<int const volatile*>
+
+namespace std {
 
 #if !defined(_MSC_VER) || (_MSC_VER > 1200)  // excluding MSVC 6.0
 TEST_INSTANCIATE_CONTAINER(vector);
@@ -25,6 +25,8 @@ TEST_INSTANCIATE_CONTAINER(deque);
 TEST_INSTANCIATE_CONTAINER(set);
 TEST_INSTANCIATE_CONTAINER(multiset);
 #endif
+
+} // namespace std
 
 //Function to test pointer to function support:
 void FTypeInstance() {}
