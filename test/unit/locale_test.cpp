@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-16 19:02:56 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -384,7 +384,7 @@ int EXAM_IMPL(locale_test::collate_facet)
       EXAM_CHECK( has_facet<collate<char> >(loc) );
       collate<char> const& col = use_facet<collate<char> >(loc);
 
-      string strs[] = {"abdd", "abçd", "abbd", "abcd"};
+      string strs[] = {"abdd", "ab\x0e7d", "abbd", "abcd"};
 
       string transformed[4];
       for (size_t i = 0; i < 4; ++i) {
@@ -394,7 +394,7 @@ int EXAM_IMPL(locale_test::collate_facet)
       sort(strs, strs + 4, loc);
       EXAM_CHECK( strs[0] == "abbd" );
       EXAM_CHECK( strs[1] == "abcd" );
-      EXAM_CHECK( strs[2] == "abçd" );
+      EXAM_CHECK( strs[2] == "ab\x0e7d" );
       EXAM_CHECK( strs[3] == "abdd" );
 
       sort(transformed, transformed + 4);
@@ -1003,7 +1003,7 @@ int EXAM_IMPL(locale_test::ctype_by_name)
     locale loc(locale::classic(), new ctype_byname<char>("fr_FR"));
     EXAM_CHECK( has_facet<ctype<char> >(loc) );
     ctype<char> const& ct = use_facet<ctype<char> >(loc);
-    EXAM_CHECK( ct.is(ctype_base::mask(ctype_base::print | ctype_base::lower | ctype_base::alpha), 'ç') );
+    EXAM_CHECK( ct.is(ctype_base::mask(ctype_base::print | ctype_base::lower | ctype_base::alpha), char(0xe7)) );
   }
   catch (runtime_error const& /* e */) {
     EXAM_MESSAGE( "runtime_error exception, as expected" );
