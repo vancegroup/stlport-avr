@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-20 19:24:08 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-13 21:59:32 ptr>
 
 /*
  * Copyright (c) 2008-2011
@@ -14,6 +14,8 @@
  * modified is included with the above copyright notice.
  *
  */
+
+#define __FIT_EXAM
 
 #include <exam/suite.h>
 

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2011-05-02 11:57:58 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-16 15:44:03 ptr>
 
 /*
  * Copyright (c) 2011
@@ -14,6 +14,8 @@
  * modified is included with the above copyright notice.
  *
  */
+
+#define __FIT_EXAM
 
 #include "chrono_test.h"
 
