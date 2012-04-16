@@ -543,7 +543,7 @@ struct allocator_traits
     template <class T>
     struct rebind_alloc
     {
-        typedef typename detail::__rebind_other_type<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0)),T,Alloc>::type type;
+        typedef typename detail::__rebind_other_type<typename _STLP_STD::remove_reference<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0))>::type,T,Alloc>::type type;
     };
     // template <class T> using rebind_traits = allocator_traits<rebind_alloc<T> >;
     template <class T>
