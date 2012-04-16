@@ -77,7 +77,7 @@ struct __has_type_selector
 {
     // T::element_type?
     template <class T>
-    static decltype( declval<typename T::element_type*>(), declval<true_type>()) __test( int );
+    static typename remove_reference<decltype( declval<typename T::element_type*>(), declval<true_type>())>::type __test( int );
 
     template <class>
     static false_type __test( ... );
@@ -91,14 +91,14 @@ struct __has_type_selector
 
     // T::rebind<U>?
     template <class T, class U>
-    static decltype( declval<typename T::template rebind<U>::type*>(), declval<true_type>()) __test_r( int );
+    static typename remove_reference<decltype( declval<typename T::template rebind<U>::type*>(), declval<true_type>())>::type __test_r( int );
 
     template <class, class>
     static false_type __test_r( ... );
 
     // T::allocator_type?
     template <class T>
-    static decltype( declval<typename T::allocator_type>(), declval<true_type>()) __test_a( int );
+    static typename remove_reference<decltype( declval<typename T::allocator_type>(), declval<true_type>())>::type __test_a( int );
 
     template <class>
     static false_type __test_a( ... );
@@ -106,10 +106,10 @@ struct __has_type_selector
     // T::pointer?
 #ifndef _STLP_DECLVAL_INCOMPLETE_BUG
     template <class T>
-    static decltype( declval<typename T::pointer>(), declval<true_type>()) __test_p( int );
+    static typename remove_reference<decltype( declval<typename T::pointer>(), declval<true_type>())>::type __test_p( int );
 #else
     template <class T>
-    static decltype( T::pointer(), declval<true_type>()) __test_p( int );
+    static typename remove_reference<decltype( T::pointer(), declval<true_type>())>::type __test_p( int );
 #endif
 
     template <class>
@@ -118,10 +118,10 @@ struct __has_type_selector
     // T::const_pointer?
 #ifndef _STLP_DECLVAL_INCOMPLETE_BUG
     template <class T>
-    static decltype( declval<typename T::const_pointer>(), declval<true_type>()) __test_cp( int );
+    static typename remove_reference<decltype( declval<typename T::const_pointer>(), declval<true_type>())>::type __test_cp( int );
 #else
     template <class T>
-    static decltype( T::const_pointer(), declval<true_type>()) __test_cp( int );
+    static typename remove_reference<decltype( T::const_pointer(), declval<true_type>())>::type __test_cp( int );
 #endif
 
     template <class>
@@ -129,28 +129,28 @@ struct __has_type_selector
 
     // T::void_pointer?
     template <class T>
-    static decltype( declval<typename T::void_pointer>(), declval<true_type>()) __test_vp( int );
+    static typename remove_reference<decltype( declval<typename T::void_pointer>(), declval<true_type>())>::type __test_vp( int );
 
     template <class>
     static false_type __test_vp( ... );
 
     // T::const_void_pointer?
     template <class T>
-    static decltype( declval<typename T::const_void_pointer>(), declval<true_type>()) __test_cvp( int );
+    static typename remove_reference<decltype( declval<typename T::const_void_pointer>(), declval<true_type>())>::type __test_cvp( int );
 
     template <class>
     static false_type __test_cvp( ... );
 
     // T::difference_type, another?
     template <class T>
-    static decltype( declval<typename T::difference_type>(), declval<true_type>()) __test_dp( int );
+    static typename remove_reference<decltype( declval<typename T::difference_type>(), declval<true_type>())>::type __test_dp( int );
 
     template <class>
     static false_type __test_dp( ... );
 
     // T::size_type?
     template <class T>
-    static decltype( declval<typename T::size_type>(), declval<true_type>()) __test_sz( int );
+    static typename remove_reference<decltype( declval<typename T::size_type>(), declval<true_type>())>::type __test_sz( int );
 
     template <class>
     static false_type __test_sz( ... );
@@ -164,35 +164,35 @@ struct __has_type_selector
 
     // T::propagate_on_container_move_assignment?
     template <class T>
-    static decltype( declval<typename T::propagate_on_container_move_assignment>() ) __test_pcma( int );
+    static typename remove_reference<decltype( declval<typename T::propagate_on_container_move_assignment>() )>::type __test_pcma( int );
 
     template <class>
     static false_type __test_pcma( ... );
 
     // T::propagate_on_container_swap?
     template <class T>
-    static decltype( declval<typename T::propagate_on_container_swap>() ) __test_pcs( int );
+    static typename remove_reference<decltype( declval<typename T::propagate_on_container_swap>() )>::type __test_pcs( int );
 
     template <class>
     static false_type __test_pcs( ... );
 
     // T::rebind<U>::other?
     template <class T, class U>
-    static decltype( declval<typename T::template rebind<U>::other>(), declval<true_type>()) __test_ro( int );
+    static typename remove_reference<decltype( declval<typename T::template rebind<U>::other>(), declval<true_type>())>::type __test_ro( int );
 
     template <class, class>
     static false_type __test_ro( ... );
 
     // a.allocate( 0, NULL )?
     template <class A>
-    static decltype( declval<A>().allocate(0,NULL), declval<true_type>()) __test_ah( int );
+    static typename remove_reference<decltype( declval<A>().allocate(0,NULL), declval<true_type>())>::type __test_ah( int );
 
     template <class>
     static false_type __test_ah( ... );
 
     // a.construct( p, args... )?
     template <class A, class T, class ... Args>
-    static decltype( declval<A>().construct( declval<T*>(), declval<Args>()...), declval<true_type>()) __test_construct( int );
+    static typename remove_reference<decltype( declval<A>().construct( declval<T*>(), declval<Args>()...), declval<true_type>())>::type __test_construct( int );
 
     template <class, class, class ...>
     static false_type __test_construct( ... );
@@ -206,14 +206,14 @@ struct __has_type_selector
 
     // a.max_size()?
     template <class A>
-    static decltype( declval<A>().max_size(), declval<true_type>()) __test_max_size( int );
+    static typename remove_reference<decltype( declval<A>().max_size(), declval<true_type>())>::type __test_max_size( int );
 
     template <class, class>
     static false_type __test_max_size( ... );
 
     // a.select_on_container_copy_construction()?
     template <class A>
-    static decltype( declval<A>().select_on_container_copy_construction(), declval<true_type>()) __test_soccc( int );
+    static typename remove_reference<decltype( declval<A>().select_on_container_copy_construction(), declval<true_type>())>::type __test_soccc( int );
 
     template <class, class>
     static false_type __test_soccc( ... );
@@ -543,7 +543,7 @@ struct allocator_traits
     template <class T>
     struct rebind_alloc
     {
-        typedef typename detail::__rebind_other_type<typename _STLP_STD::remove_reference<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0))>::type,T,Alloc>::type type;
+        typedef typename detail::__rebind_other_type<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0)),T,Alloc>::type type;
     };
     // template <class T> using rebind_traits = allocator_traits<rebind_alloc<T> >;
     template <class T>

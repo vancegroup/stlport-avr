@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-04-13 22:30:53 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-16 20:35:06 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -830,7 +830,7 @@ struct __is_constructible
 {
   private:
     template <class _Up, class... _UpArgs>
-    static decltype(_Up( declval<_UpArgs>()... ), declval<true_type>()) __test(int);
+    static typename remove_reference<decltype(_Up( declval<_UpArgs>()... ), declval<true_type>())>::type __test(int);
 
     template <class, class...>
     static false_type __test(...);    
@@ -881,13 +881,13 @@ struct __is_assignable
   private:
 #ifdef _STLP_CPP_0X
     template <class _U1, class _U2>
-    static decltype((detail::__declval_transparent<_U1>() = detail::__declval_transparent<_U2>()), declval<true_type>()) __test(int);
+    static typename remove_reference<decltype((detail::__declval_transparent<_U1>() = detail::__declval_transparent<_U2>()), declval<true_type>())>::type __test(int);
 
     template <class, class>
     static false_type __test(...);
 #else // _STLP_CPP_0X
     template <class _U1, class _U2>
-    static decltype((declval<_U1>() = declval<_U2>()), __select_types::__t1()) __test(int);
+    static typename remove_reference<decltype((declval<_U1>() = declval<_U2>()), __select_types::__t1())>::type __test(int);
 
     template <class, class>
     static typename __select_types::__t2 __test(...);
@@ -1528,7 +1528,7 @@ struct common_type<_Tp>
 template <class _T1, class _T2>
 struct common_type<_T1,_T2>
 {
-    typedef decltype( true ? declval<_T1>() : declval<_T2>() ) type;
+    typedef typename remove_reference<decltype( true ? declval<_T1>() : declval<_T2>() )>::type type;
 };
 
 template <class _T1, class _T2, class... _T3>

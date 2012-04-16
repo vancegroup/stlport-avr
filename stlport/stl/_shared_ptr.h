@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-27 14:49:33 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-16 20:51:04 ptr>
 
 /*
  * Copyright (c) 2011
@@ -730,9 +730,10 @@ class shared_ptr
       }
 
     template <class Y, class D,
-              class = typename enable_if<is_convertible<Y*,T*>::value && is_copy_constructible<D>::value>::type>
+              class = typename enable_if<is_convertible<Y*,T*>::value>::type>
     shared_ptr( Y* p, D d )
       {
+        static_assert( is_copy_constructible<D>::value, "deleter is not copy constructable" );
         try {
           _p = static_cast<T*>(p);
           _ref = new detail::__shared_ref_deleter<T,D>( _p, d );
@@ -746,9 +747,11 @@ class shared_ptr
       }
 
     template <class Y, class D, class A,
-              class = typename enable_if<is_convertible<Y*,T*>::value && is_copy_constructible<D>::value>::type>
+              class = typename enable_if<is_convertible<Y*,T*>::value>::type>
     shared_ptr( Y* p, D d, A a )
       {
+        static_assert( is_copy_constructible<D>::value, "deleter is not copy constructable" );
+
         typedef typename A::template rebind<detail::__shared_ref_alloc<T,D,A> >::other allocator_type;
         allocator_type _a( _STLP_STD::move(a) );
         void* m;
@@ -767,10 +770,10 @@ class shared_ptr
         }
       }
 
-    template <class D,
-              class = typename enable_if<is_copy_constructible<D>::value>::type>
+    template <class D>
     shared_ptr( nullptr_t, D d )
       {
+        static_assert( is_copy_constructible<D>::value, "deleter is not copy constructable" );
         try {
           _p = NULL;
           _ref = new detail::__shared_ref_deleter<T,D>( NULL, d );
@@ -782,10 +785,10 @@ class shared_ptr
         }
       }
 
-    template <class D, class A,
-              class = typename enable_if<is_copy_constructible<D>::value>::type>
+    template <class D, class A>
     shared_ptr( nullptr_t, D d, A a )
       {
+        static_assert( is_copy_constructible<D>::value, "deleter is not copy constructable" );
         try {
           void* m = a.allocate(1);
           _p = NULL;
