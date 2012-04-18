@@ -138,10 +138,13 @@ struct pair {
 #else // _STLP_CPP_0X
   pair( const pair& ) = default;
   pair( pair&& ) = default;
-  /* constexpr */ pair() :
+  constexpr pair() :
       first(_T1()),
       second(_T2())
-    { }
+    {
+      static_assert( _STLP_STD::is_default_constructible<first_type>::value, "first_type not default constructible" );
+      static_assert( _STLP_STD::is_default_constructible<second_type>::value, "second_type not default constructible" );
+    }
 
   pair(const _T1& __a, const _T2& __b) :
       first(__a),
