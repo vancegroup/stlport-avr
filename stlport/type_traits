@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-04-16 20:35:06 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-18 19:09:41 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -947,7 +947,7 @@ struct __is_destructible
     // template <class _Up>
     // static decltype( declval<test_<_Up> >().~test_<_Up>(), declval<true_type>() ) __test(int);
     template <class _Up>
-    static decltype( declval<_Up>().~_Up(), declval<true_type>() ) __test(int);
+    static typename _STLP_STD::remove_reference<decltype( declval<_Up>().~_Up(), declval<true_type>() )>::type __test(int);
 
     template <class>
     static false_type __test(...);

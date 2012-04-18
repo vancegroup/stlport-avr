@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-03-27 13:33:44 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-18 19:06:12 ptr>
 
 /*
  * Copyright (c) 2007, 2009-2012
@@ -755,17 +755,11 @@ int EXAM_IMPL(type_traits_test::is_destructible)
       ~Other2() = delete;
   };
 
-  typedef std::is_destructible<My> T1;
-  typedef std::is_destructible<Other> T2;
-  // typedef std::is_destructible<YetAnother> T3;
-  typedef std::is_destructible<int> T4;
-  typedef std::is_destructible<Other2> T5;
-
-  EXAM_CHECK( T1::value == true );
-  EXAM_CHECK( T2::value == false );
-  // EXAM_CHECK( T3::value == false );
-  EXAM_CHECK( T4::value == true );
-  EXAM_CHECK( T5::value == false );
+  EXAM_CHECK( (std::is_destructible<My>::value == true) );
+  EXAM_CHECK( (std::is_destructible<Other>::value == false) );
+  // EXAM_CHECK( (std::is_destructible<YetAnother>::value == false) );
+  EXAM_CHECK( (std::is_destructible<int>::value == true) );
+  EXAM_CHECK( (std::is_destructible<Other2>::value == false) );
 
   // Other x;
   // YetAnother y;
@@ -900,7 +894,8 @@ int EXAM_IMPL(type_traits_test::result_of)
   EXAM_CHECK( (std::is_same<std::result_of<PF1()>::type, bool>::value) );
   EXAM_CHECK( (std::is_same<std::result_of<PMF(std::unique_ptr<S>, int)>::type, void>::value) );
   // EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&&>::value) );
-  EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&>::value) );
+  // EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&>::value) );
+  EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char>::value) );
   EXAM_CHECK( (std::is_same<std::result_of<PMD(const S*)>::type, const char&>::value) );
 
   return EXAM_RESULT;
