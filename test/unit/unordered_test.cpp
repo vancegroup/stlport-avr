@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-01-31 16:44:33 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-18 18:05:46 ptr>
 
 /*
  * Copyright (c) 2005-2008
@@ -812,10 +812,20 @@ int EXAM_IMPL(unordered_test::move)
     int f;
   };
 
+#ifndef __clang__
   unordered_map<int,movable> m;
 
   pair<int,movable> p0;
   pair<int,movable> p1( std::move(p0) );
+#else
+  /* http://llvm.org/bugs/show_bug.cgi?id=12575
+
+     This testcase is valid depends on how to interpret
+     [class.copy] p8: clang assumes "has a copy constructor"
+     means something like "is copy constructible".
+   */
+  throw exam::skip_exception();
+#endif
 
   // m.insert( p0 );
 
