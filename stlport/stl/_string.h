@@ -19,6 +19,10 @@
 #ifndef _STLP_INTERNAL_STRING_H
 #define _STLP_INTERNAL_STRING_H
 
+#ifndef _STLP_INTERNAL_ALGOBASE_H
+#  include <stl/_algobase.h>
+#endif
+
 #ifndef _STLP_INTERNAL_ALLOC_H
 #  include <stl/_alloc.h>
 #endif
@@ -29,10 +33,6 @@
 
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
-#endif
-
-#ifndef _STLP_INTERNAL_ALGOBASE_H
-#  include <stl/_algobase.h>
 #endif
 
 #ifndef _STLP_INTERNAL_ITERATOR_H

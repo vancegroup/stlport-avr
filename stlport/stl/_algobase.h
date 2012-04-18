@@ -652,6 +652,17 @@ int lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
 
 #endif
 
+// for_each.  Apply a function to every element of a range.
+template <class _InputIter, class _Function>
+inline
+_Function for_each(_InputIter __first, _InputIter __last, _Function __f)
+{
+  for ( ; __first != __last; ++__first) {
+    __f(*__first);
+  }
+  return __f;
+}
+
 // count
 template <class _InputIter, class _Tp>
 inline typename iterator_traits<_InputIter>::difference_type

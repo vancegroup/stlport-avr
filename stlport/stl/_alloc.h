@@ -59,10 +59,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-// forward from <algorithm>
-template <class _InputIter, class _Function>
-_Function for_each(_InputIter __first, _InputIter __last, _Function __f);
-
 template <class T>
 inline T* addressof(T& r) /* noexcept */
 { return reinterpret_cast<T*>( &const_cast<char&>( reinterpret_cast<const volatile char&>(r) ) ); }

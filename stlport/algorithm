@@ -52,15 +52,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-// for_each.  Apply a function to every element of a range.
-template <class _InputIter, class _Function>
-inline _Function
-for_each(_InputIter __first, _InputIter __last, _Function __f) {
-  for ( ; __first != __last; ++__first)
-    __f(*__first);
-  return __f;
-}
-
 // count_if
 template <class _InputIter, class _Predicate>
 inline typename iterator_traits<_InputIter>::difference_type
