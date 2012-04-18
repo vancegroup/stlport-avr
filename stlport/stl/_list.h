@@ -75,10 +75,15 @@ _STLP_EXPORT_TEMPLATE_CLASS _List_global<bool>;
 typedef _List_global<bool> _List_global_inst;
 
 template <class _Tp>
-class _List_node :
+struct _List_node :
     public _List_node_base
 {
-  public:
+    _List_node() = default;
+    _List_node( const _List_node& ) = default;
+    _List_node( _List_node&& ) = default;
+    _List_node& operator =( const _List_node& ) = default;
+    ~_List_node() = default;
+
     _Tp _M_data;
 };
 

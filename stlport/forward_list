@@ -67,6 +67,12 @@ template <class _Tp>
 struct _Slist_node :
     public _Slist_node_base
 {
+    _Slist_node() = default;
+    _Slist_node( const _Slist_node& ) = default;
+    _Slist_node( _Slist_node&& ) = default;
+    _Slist_node& operator =( const _Slist_node& ) = default;
+    ~_Slist_node() = default;
+
     _Tp _M_data;
 };
 
