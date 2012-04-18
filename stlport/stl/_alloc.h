@@ -77,7 +77,7 @@ struct __has_type_selector
 {
     // T::element_type?
     template <class T>
-    static typename remove_reference<decltype( declval<typename T::element_type*>(), declval<true_type>())>::type __test( int );
+    static typename remove_reference<decltype( sizeof(typename T::element_type*), declval<true_type>())>::type __test( int );
 
     template <class>
     static false_type __test( ... );
@@ -91,7 +91,7 @@ struct __has_type_selector
 
     // T::rebind<U>?
     template <class T, class U>
-    static typename remove_reference<decltype( declval<typename T::template rebind<U>::type*>(), declval<true_type>())>::type __test_r( int );
+    static typename remove_reference<decltype( sizeof(typename T::template rebind<U>::type*), declval<true_type>())>::type __test_r( int );
 
     template <class, class>
     static false_type __test_r( ... );
@@ -104,39 +104,29 @@ struct __has_type_selector
     static false_type __test_a( ... );
 
     // T::pointer?
-#ifndef _STLP_DECLVAL_INCOMPLETE_BUG
     template <class T>
-    static typename remove_reference<decltype( declval<typename T::pointer>(), declval<true_type>())>::type __test_p( int );
-#else
-    template <class T>
-    static typename remove_reference<decltype( T::pointer(), declval<true_type>())>::type __test_p( int );
-#endif
+    static typename remove_reference<decltype( sizeof(typename T::pointer), declval<true_type>())>::type __test_p( int );
 
     template <class>
     static false_type __test_p( ... );
 
     // T::const_pointer?
-#ifndef _STLP_DECLVAL_INCOMPLETE_BUG
     template <class T>
-    static typename remove_reference<decltype( declval<typename T::const_pointer>(), declval<true_type>())>::type __test_cp( int );
-#else
-    template <class T>
-    static typename remove_reference<decltype( T::const_pointer(), declval<true_type>())>::type __test_cp( int );
-#endif
+    static typename remove_reference<decltype( sizeof(typename T::const_pointer), declval<true_type>())>::type __test_cp( int );
 
     template <class>
     static false_type __test_cp( ... );
 
     // T::void_pointer?
     template <class T>
-    static typename remove_reference<decltype( declval<typename T::void_pointer>(), declval<true_type>())>::type __test_vp( int );
+    static typename remove_reference<decltype( sizeof(typename T::void_pointer), declval<true_type>())>::type __test_vp( int );
 
     template <class>
     static false_type __test_vp( ... );
 
     // T::const_void_pointer?
     template <class T>
-    static typename remove_reference<decltype( declval<typename T::const_void_pointer>(), declval<true_type>())>::type __test_cvp( int );
+    static typename remove_reference<decltype( sizeof(typename T::const_void_pointer), declval<true_type>())>::type __test_cvp( int );
 
     template <class>
     static false_type __test_cvp( ... );

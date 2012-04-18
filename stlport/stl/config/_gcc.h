@@ -241,8 +241,6 @@ typedef unsigned int wint_t;
 #  if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))
 #    define _STLP_NOEXCEPT noexcept
 #  endif
-/* gcc 4.5, 4.6, 4.7; see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52108 */
-#  define _STLP_DECLVAL_INCOMPLETE_BUG /* */
 #  define _STLP_OPERATORS_NEW_DELETE /* use own implemenation of new and delete */
 #  define _STLP_VENDOR_BAD_ALLOC /* */
 #endif
