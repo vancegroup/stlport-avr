@@ -72,8 +72,13 @@ namespace detail {
 struct __has_type_selector
 {
     // T::element_type?
+#ifdef __clang__
     template <class T>
     static typename remove_reference<decltype( sizeof(typename T::element_type*), declval<true_type>())>::type __test( int );
+#else
+    template <class T>
+    static typename remove_reference<decltype( declval<typename T::element_type>(), declval<true_type>())>::type __test( int );
+#endif
 
     template <class>
     static false_type __test( ... );
@@ -100,29 +105,49 @@ struct __has_type_selector
     static false_type __test_a( ... );
 
     // T::pointer?
+#ifdef __clang__
     template <class T>
     static typename remove_reference<decltype( sizeof(typename T::pointer), declval<true_type>())>::type __test_p( int );
+#else
+    template <class T>
+    static typename remove_reference<decltype(T::pointer(), declval<true_type>())>::type __test_p( int );
+#endif
 
     template <class>
     static false_type __test_p( ... );
 
     // T::const_pointer?
+#ifdef __clang__
     template <class T>
     static typename remove_reference<decltype( sizeof(typename T::const_pointer), declval<true_type>())>::type __test_cp( int );
+#else
+    template <class T>
+    static typename remove_reference<decltype(T::const_pointer(), declval<true_type>())>::type __test_cp( int );
+#endif
 
     template <class>
     static false_type __test_cp( ... );
 
     // T::void_pointer?
+#ifdef __clang__
     template <class T>
     static typename remove_reference<decltype( sizeof(typename T::void_pointer), declval<true_type>())>::type __test_vp( int );
+#else
+    template <class T>
+    static typename remove_reference<decltype( declval<typename T::void_pointer>(), declval<true_type>())>::type __test_vp( int );
+#endif
 
     template <class>
     static false_type __test_vp( ... );
 
     // T::const_void_pointer?
+#ifdef __clang__
     template <class T>
     static typename remove_reference<decltype( sizeof(typename T::const_void_pointer), declval<true_type>())>::type __test_cvp( int );
+#else
+    template <class T>
+    static typename remove_reference<decltype( declval<typename T::const_void_pointer>(), declval<true_type>())>::type __test_cvp( int );
+#endif
 
     template <class>
     static false_type __test_cvp( ... );
