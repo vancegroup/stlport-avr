@@ -548,20 +548,26 @@ struct allocator_traits
     typedef decltype(detail::__has_type_selector::__test_pcca<Alloc>(0)) propagate_on_container_copy_assignment;
     typedef decltype(detail::__has_type_selector::__test_pcma<Alloc>(0)) propagate_on_container_move_assignment;
     typedef decltype(detail::__has_type_selector::__test_pcs<Alloc>(0)) propagate_on_container_swap;
-    // here should be template alias ('using'), but it not implemented yet,
-    // so workaround
-    // template <class T> using rebind_alloc = see below;
+
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    template <class T> using rebind_alloc = typename detail::__rebind_other_type<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0)),T,Alloc>::type;
+#else // _STLP_NO_ALIAS_TEMPLATES
     template <class T>
     struct rebind_alloc
     {
         typedef typename detail::__rebind_other_type<decltype(detail::__has_type_selector::__test_ro<Alloc,T>(0)),T,Alloc>::type type;
     };
-    // template <class T> using rebind_traits = allocator_traits<rebind_alloc<T> >;
+#endif // _STLP_NO_ALIAS_TEMPLATES
+
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    template <class T> using rebind_traits = allocator_traits<rebind_alloc<T> >;
+#else // _STLP_NO_ALIAS_TEMPLATES
     template <class T>
     struct rebind_traits
     {
         typedef allocator_traits<typename rebind_alloc<T>::type> type;
     };
+#endif // _STLP_NO_ALIAS_TEMPLATES
 
     static pointer allocate( Alloc& a, size_type n )
       { return a.allocate( n ); }

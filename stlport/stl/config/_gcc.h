@@ -243,4 +243,7 @@ typedef unsigned int wint_t;
 #  endif
 #  define _STLP_OPERATORS_NEW_DELETE /* use own implemenation of new and delete */
 #  define _STLP_VENDOR_BAD_ALLOC /* */
+#  if (__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ <= 6))
+#    define _STLP_NO_ALIAS_TEMPLATES /* no alias templates yet */
+#  endif
 #endif

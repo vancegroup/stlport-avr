@@ -173,9 +173,12 @@ struct my_t_alloc
 int EXAM_IMPL(allocator_test::rebind_alloc)
 {
   EXAM_CHECK( (is_same<my_alloc::rebind<int>::other,allocator<int> >::value) );
-#if defined (STLPORT)
+#if defined (STLPORT) && defined(_STLP_NO_ALIAS_TEMPLATES)
   EXAM_CHECK( (is_same<allocator_traits<my_alloc>::rebind_alloc<int>::type,allocator<int> >::value) );
   EXAM_CHECK( (is_same<allocator_traits<my_t_alloc<double> >::rebind_alloc<int>::type,my_t_alloc<int> >::value) );
+#else
+  EXAM_CHECK( (is_same<allocator_traits<my_alloc>::rebind_alloc<int>,allocator<int> >::value) );
+  EXAM_CHECK( (is_same<allocator_traits<my_t_alloc<double> >::rebind_alloc<int>,my_t_alloc<int> >::value) );
 #endif
 
   return EXAM_RESULT;
