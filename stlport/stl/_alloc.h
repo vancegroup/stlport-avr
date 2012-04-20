@@ -60,7 +60,7 @@
 _STLP_BEGIN_NAMESPACE
 
 template <class T>
-inline T* addressof(T& r) /* noexcept */
+inline T* addressof(T& r) noexcept
 { return reinterpret_cast<T*>( &const_cast<char&>( reinterpret_cast<const volatile char&>(r) ) ); }
 
 // 20.6.3, pointer traits
@@ -328,17 +328,17 @@ template <class Ptr>
 struct pointer_traits
 {
     typedef Ptr pointer;
-    // typedef typename Ptr::element_type element_type;
     typedef typename detail::__element_type<is_same<true_type,decltype(detail::__has_type_selector::__test<Ptr>(0))>::value,Ptr>::element_type element_type;
-    // typedef typename Ptr::difference_type difference_type;
     typedef decltype(detail::__has_type_selector::__test_d<Ptr>(0)) difference_type;
-    // template <class U> using rebind = see below;
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    template <class U> using rebind = typename detail::__rebind_type<is_same<true_type,decltype(detail::__has_type_selector::__test_r<Ptr,U>(0))>::value,Ptr,U>::type;
+#else // _STLP_NO_ALIAS_TEMPLATES
     template <class U>
     struct rebind
     {
-        // typedef typename Ptr::template rebind<U>::type type;
         typedef typename detail::__rebind_type<is_same<true_type,decltype(detail::__has_type_selector::__test_r<Ptr,U>(0))>::value,Ptr,U>::type type;
     };
+#endif // _STLP_NO_ALIAS_TEMPLATES
 
     static pointer pointer_to( element_type& r )
       { return Ptr::pointer_to(r); }
@@ -350,14 +350,17 @@ struct pointer_traits<T*>
     typedef T* pointer;
     typedef T element_type;
     typedef ptrdiff_t difference_type;
-    // template <class U> using rebind = U*;
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    template <class U> using rebind = U*;
+#else // _STLP_NO_ALIAS_TEMPLATES
     template <class U>
     struct rebind
     {
         typedef U* type;
     };
+#endif // _STLP_NO_ALIAS_TEMPLATES
 
-    static pointer pointer_to( T& r ) /* noexcept */
+    static pointer pointer_to( T& r ) noexcept
       { return _STLP_STD::addressof(r); }
 };
 
@@ -367,12 +370,15 @@ struct pointer_traits<void*>
     typedef void* pointer;
     typedef void element_type;
     typedef ptrdiff_t difference_type;
-    // template <class U> using rebind = U*;
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    template <class U> using rebind = U*;
+#else // _STLP_NO_ALIAS_TEMPLATES
     template <class U>
     struct rebind
     {
         typedef U* type;
     };
+#endif // _STLP_NO_ALIAS_TEMPLATES
 
     // static pointer pointer_to( void ) /* noexcept */ // unspecified
     //  { return NULL; }
@@ -385,17 +391,17 @@ _STLP_DECLSPEC void declare_reachable(void *p);
 
 namespace detail {
 
-_STLP_DECLSPEC void* __undeclare_reachable( void* ) /* noexcept */;
+_STLP_DECLSPEC void* __undeclare_reachable( void* ) noexcept;
 
 } // detail
 
 template <class T>
-T *undeclare_reachable( T* p ) /* noexcept */
+T *undeclare_reachable( T* p ) noexcept
 { return reinterpret_cast<T*>( detail::__undeclare_reachable(reinterpret_cast<void*>(p)) ); }
 
-_STLP_DECLSPEC void declare_no_pointers(char *p, size_t n) /* noexcept */;
-_STLP_DECLSPEC void undeclare_no_pointers(char *p, size_t n) /* noexcept */;
-_STLP_DECLSPEC pointer_safety get_pointer_safety() /* noexcept */;
+_STLP_DECLSPEC void declare_no_pointers(char *p, size_t n) noexcept;
+_STLP_DECLSPEC void undeclare_no_pointers(char *p, size_t n) noexcept;
+_STLP_DECLSPEC pointer_safety get_pointer_safety() noexcept;
 
 _STLP_DECLSPEC void *align( _STLP_STD::size_t alignment, _STLP_STD::size_t size, void *&ptr, _STLP_STD::size_t& space );
 
@@ -446,7 +452,11 @@ struct __pointer_type2<true,D,T>
 template <bool, class Alloc>
 struct __const_pointer_type
 {
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<typename add_const<typename Alloc::value_type>::type> const_pointer;
+#else // _STLP_NO_ALIAS_TEMPLATES
     typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<typename add_const<typename Alloc::value_type>::type>::type const_pointer;
+#endif // _STLP_NO_ALIAS_TEMPLATES
 };
 
 template <class Alloc>
@@ -458,7 +468,11 @@ struct __const_pointer_type<true,Alloc>
 template <bool, class Alloc>
 struct __void_pointer_type
 {
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<void> void_pointer;
+#else // _STLP_NO_ALIAS_TEMPLATES
     typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<void>::type void_pointer;
+#endif // _STLP_NO_ALIAS_TEMPLATES
 };
 
 template <class Alloc>
@@ -470,7 +484,11 @@ struct __void_pointer_type<true,Alloc>
 template <bool, class Alloc>
 struct __const_void_pointer_type
 {
-    typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<const void>::type const_void_pointer;
+#ifndef _STLP_NO_ALIAS_TEMPLATES
+   typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<const void> const_void_pointer;
+#else // _STLP_NO_ALIAS_TEMPLATES
+   typedef typename pointer_traits<typename __pointer_type<is_same<true_type,decltype(detail::__has_type_selector::__test_p<Alloc>(0))>::value,Alloc>::pointer>::template rebind<const void>::type const_void_pointer;
+#endif // _STLP_NO_ALIAS_TEMPLATES
 };
 
 template <class Alloc>

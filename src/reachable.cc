@@ -22,16 +22,14 @@ namespace detail {
 
 static unordered_map<void*,unsigned long> _reachable;
 
-void* __undeclare_reachable( void* p ) /* noexcept */
+void* __undeclare_reachable( void* p ) noexcept
 {
   auto i = _reachable.find( p );
   if ( i != _reachable.end() ) {
-    if ( --i->second > 0 ) {
-      return p;
-    } else {
+    if ( --i->second == 0 ) {
       _reachable.erase( i );
-      return p;
     }
+    return p;
   }
 
   return NULL;
@@ -46,15 +44,15 @@ void declare_reachable( void* p )
   }
 }
 
-void declare_no_pointers( char* /* p */, size_t /* n */ ) /* noexcept */
+void declare_no_pointers( char* /* p */, size_t /* n */ ) noexcept
 {
 }
 
-void undeclare_no_pointers( char* /* p */, size_t /* n */ ) /* noexcept */
+void undeclare_no_pointers( char* /* p */, size_t /* n */ ) noexcept
 {
 }
 
-pointer_safety get_pointer_safety() /* noexcept */
+pointer_safety get_pointer_safety() noexcept
 {
   return pointer_safety::relaxed;
 }
