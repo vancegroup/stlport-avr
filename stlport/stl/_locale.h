@@ -35,8 +35,8 @@
 #  include <stl/_threads.h>
 #endif
 
-#ifndef _STLP_STRING_FWD_H
-#  include <stl/_string_fwd.h>
+#ifndef _STLP_INTERNAL_STRING_H
+#  include <stl/_string.h>
 #endif
 
 #include <stl/_facets_fwd.h>
