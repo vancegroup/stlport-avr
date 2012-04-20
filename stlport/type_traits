@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-04-18 19:09:41 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-20 17:23:24 ptr>
 
 /*
  * Copyright (c) 2007, 2008, 2010-2011
@@ -1564,16 +1564,12 @@ template <class R, class T, class A, class ... ArgTypes>
 struct result_of_mem_function<false,R T::*,A,ArgTypes...>
 {
   private:
-    typedef R T::* _Fn;
+    static R&& __test( const T& );
 
-    template <class U>
-    static U __test( const T& );
-
-    template <class U>
-    static decltype(*declval<U>()) __test( ... );
+    static const R& __test( const T* );
 
   public:
-    typedef decltype( __test<A>(declval<A>()).*declval<_Fn>() ) type;
+    typedef decltype(__test(declval<A>())) type;
 };
 
 // pointer on member function

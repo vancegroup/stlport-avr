@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <2012-04-18 19:06:12 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-20 17:34:17 ptr>
 
 /*
  * Copyright (c) 2007, 2009-2012
@@ -558,7 +558,7 @@ int EXAM_IMPL(type_traits_test::type_traits_is_pod)
 
 int EXAM_IMPL(type_traits_test::type_traits_is_pod_compiler_supp)
 {
-#if defined(__GNUC__) && ((__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 3)) )
+#if defined(__GNUC__) && ((__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 3)) ) && !defined(__clang__)
   throw exam::skip_exception();
 #endif
 
@@ -893,10 +893,20 @@ int EXAM_IMPL(type_traits_test::result_of)
   // cerr << typeid(PF2).name() << endl;
   EXAM_CHECK( (std::is_same<std::result_of<PF1()>::type, bool>::value) );
   EXAM_CHECK( (std::is_same<std::result_of<PMF(std::unique_ptr<S>, int)>::type, void>::value) );
-  // EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&&>::value) );
-  // EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&>::value) );
-  EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char>::value) );
+  EXAM_CHECK( (std::is_same<std::result_of<PMD(S)>::type, char&&>::value) );
   EXAM_CHECK( (std::is_same<std::result_of<PMD(const S*)>::type, const char&>::value) );
+
+  /*
+    Must produce compilation error:
+
+    struct Q
+    {
+        char data;
+    };
+
+    typedef typename std::result_of<PMD(Q)>::type bad_type;
+    
+   */
 
   return EXAM_RESULT;
 }
