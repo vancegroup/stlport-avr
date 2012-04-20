@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Time-stamp: <09/01/09 12:07:46 ptr>
+# Time-stamp: <2012-04-20 19:56:24 ptr>
 
 #
-# Copyright (c) 2003-2010
+# Copyright (c) 2003-2012
 # Petr Ovtchenkov
 #
 # This material is provided "as is", with absolutely no warranty expressed# or implied. Any use is at your own risk.
@@ -73,6 +73,7 @@ Available options:
   --with-cc=<name>      use <name> as C compiler (use --target= for cross-compilation)
   --use-compiler-family=<name> use compiler family; one of:
                         gcc      GNU compilers (default)
+                        clang    CLang compilers
                         icc      Intel compilers
                         aCC      HP's aCC compilers
                         CC       SunPro's CC compilers
@@ -248,7 +249,7 @@ do
       ;;
     --use-compiler-family=*)
       case `echo $option | sed -e 's/^[^=]*=//'` in
-        gcc|icc|aCC|CC|bcc|dmc|armcc)
+        gcc|clang|icc|aCC|CC|bcc|dmc|armcc)
           target=`echo $option | sed -e 's/^[^=]*=//'`
           echo COMPILER_NAME := $target >> ${configmak}
           echo include $target.mak > ${base}/build/lib/Makefile
