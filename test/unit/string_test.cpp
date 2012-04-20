@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <10/06/02 15:17:35 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-20 18:25:41 ptr>
 
 /*
  * Copyright (c) 2004-2009
@@ -931,29 +931,29 @@ int EXAM_IMPL(string_test::template_expression)
   // check availability of [un]equality operators
   {
       // string-string
-      one == two;
-      one != two;
+    EXAM_CHECK( !(one == two) );
+    EXAM_CHECK( (one != two) );
       // string-literal
-      one == "two";
-      one != "two";
+    EXAM_CHECK( !(one == "two") );
+    EXAM_CHECK( (one != "two") );
       // literal-string
-      "one" == two;
-      "one" != two;
+    EXAM_CHECK( !("one" == two) );
+    EXAM_CHECK( ("one" != two) );
       // strsum-string
-      (one + two) == three;
-      (one + two) != three;
+    EXAM_CHECK( !((one + two) == three) );
+    EXAM_CHECK( ((one + two) != three) );
       // string-strsum
-      one == (two + three);
-      one != (two + three);
+    EXAM_CHECK( !(one == (two + three)) );
+    EXAM_CHECK( (one != (two + three)) );
       // strsum-literal
-      (one + two) == "three";
-      (one + two) != "three";
+    EXAM_CHECK( !((one + two) == "three") );
+    EXAM_CHECK( ((one + two) != "three") );
       // literal-strsum
-      "one" == (two + three);
-      "one" != (two + three);
+    EXAM_CHECK( !("one" == (two + three)) );
+    EXAM_CHECK( ("one" != (two + three)) );
       // strsum-strsum
-      (one + two) == (two + three);
-      (one + two) != (two + three);
+    EXAM_CHECK( !((one + two) == (two + three)) );
+    EXAM_CHECK( ((one + two) != (two + three)) );
   }
 
   {
