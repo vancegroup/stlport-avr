@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2012-03-08 09:47:44 ptr>
+# -*- Makefile -*- Time-stamp: <2012-04-20 18:17:51 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2012
 # Petr Ovtchenkov
@@ -202,7 +202,6 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lsupc++ ${_LGCC_EH}
 endif
 
 ifeq ($(OSNAME),windows)
-LDFLAGS += -nodefaultlibs
 ifndef USE_STATIC_LIBGCC
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
 _LGCC_S := -lgcc
@@ -222,9 +221,6 @@ else
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lm -lc -lpthread -lkernel32
 endif
 endif
-else
-#LDFLAGS += -nostdlib
-LDFLAGS += -nodefaultlibs
 endif
 
 # _USE_NOSTDLIB

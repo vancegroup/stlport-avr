@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <2012-03-08 10:53:05 ptr>
+# -*- makefile -*- Time-stamp: <2012-04-20 18:18:19 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2012
 # Petr Ovtchenkov
@@ -233,7 +233,7 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lc -lm
 endif
 endif
 #END_A_OBJ := $(shell for o in crtn.o; do ${CXX} -print-file-name=$$o; done)
-NOSTDLIB := -nodefaultlibs
+NOSTDLIB := 
 ifeq ($(OSNAME),windows)
 
 ifndef USE_STATIC_LIBGCC
