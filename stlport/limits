@@ -54,8 +54,8 @@ template <class __number>
 class _Numeric_limits_base {
 public:
 
-  static __number (_STLP_CALL min)() _STLP_NOTHROW { return __number(); }
-  static __number (_STLP_CALL max)() _STLP_NOTHROW { return __number(); }
+  static __number (_STLP_CALL min)() noexcept { return __number(); }
+  static __number (_STLP_CALL max)() noexcept { return __number(); }
 
   _STLP_STATIC_CONSTANT(int, digits = 0);
   _STLP_STATIC_CONSTANT(int, digits10 = 0);
@@ -82,13 +82,13 @@ public:
   _STLP_STATIC_CONSTANT(bool, traps = false);
   _STLP_STATIC_CONSTANT(bool, tinyness_before = false);
 
-  static __number _STLP_CALL epsilon() _STLP_NOTHROW     { return __number(); }
-  static __number _STLP_CALL round_error() _STLP_NOTHROW { return __number(); }
+  static __number _STLP_CALL epsilon() noexcept     { return __number(); }
+  static __number _STLP_CALL round_error() noexcept { return __number(); }
 
-  static __number _STLP_CALL infinity() _STLP_NOTHROW      { return __number(); }
-  static __number _STLP_CALL quiet_NaN() _STLP_NOTHROW     { return __number(); }
-  static __number _STLP_CALL signaling_NaN() _STLP_NOTHROW { return __number(); }
-  static __number _STLP_CALL denorm_min() _STLP_NOTHROW    { return __number(); }
+  static __number _STLP_CALL infinity() noexcept    { return __number(); }
+  static __number _STLP_CALL quiet_NaN() noexcept   { return __number(); }
+  static __number _STLP_CALL signaling_NaN() noexcept { return __number(); }
+  static __number _STLP_CALL denorm_min() noexcept  { return __number(); }
 };
 
 // Base class for integers.
@@ -113,8 +113,8 @@ template <class _Int,
 class _Integer_limits : public _Numeric_limits_base<_Int> {
 public:
 
-  static _Int (_STLP_CALL min) () _STLP_NOTHROW { return (_Int)__imin; }
-  static _Int (_STLP_CALL max) () _STLP_NOTHROW { return (_Int)__imax; }
+  static _Int (_STLP_CALL min) () noexcept { return (_Int)__imin; }
+  static _Int (_STLP_CALL max) () noexcept { return (_Int)__imax; }
 
   _STLP_STATIC_CONSTANT(int, digits = (__idigits < 0) ? ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1)) : (__idigits));
   _STLP_STATIC_CONSTANT(int, digits10 = (digits * 301UL) / 1000);
@@ -292,8 +292,8 @@ class numeric_limits<_STLP_LONG_LONG>
   : public _STLP_PRIV _Numeric_limits_base<_STLP_LONG_LONG> {
 public:
 
-  static _STLP_LONG_LONG (_STLP_CALL min) () _STLP_NOTHROW { return LONGLONG_MIN; }
-  static _STLP_LONG_LONG (_STLP_CALL max) () _STLP_NOTHROW { return LONGLONG_MAX; }
+  static _STLP_LONG_LONG (_STLP_CALL min) () noexcept { return LONGLONG_MIN; }
+  static _STLP_LONG_LONG (_STLP_CALL max) () noexcept { return LONGLONG_MAX; }
 
   _STLP_STATIC_CONSTANT(int, digits = ((int)((sizeof(_STLP_LONG_LONG) * (CHAR_BIT))) - 1));
   _STLP_STATIC_CONSTANT(int, digits10 = (digits * 301UL) / 1000);
@@ -311,8 +311,8 @@ class numeric_limits<unsigned _STLP_LONG_LONG>
   : public _STLP_PRIV _Numeric_limits_base<unsigned _STLP_LONG_LONG> {
 public:
 
-  static unsigned _STLP_LONG_LONG (_STLP_CALL min) () _STLP_NOTHROW { return 0ULL; }
-  static unsigned _STLP_LONG_LONG (_STLP_CALL max) () _STLP_NOTHROW { return ULONGLONG_MAX; }
+  static unsigned _STLP_LONG_LONG (_STLP_CALL min) () noexcept { return 0ULL; }
+  static unsigned _STLP_LONG_LONG (_STLP_CALL max) () noexcept { return ULONGLONG_MAX; }
 
   _STLP_STATIC_CONSTANT(int, digits = ((int)((sizeof(unsigned _STLP_LONG_LONG) * (CHAR_BIT)))));
   _STLP_STATIC_CONSTANT(int, digits10 = (digits * 301UL) / 1000);
@@ -353,7 +353,7 @@ struct _Lim<F,16>
     F    f;
   };
 
-  static F inf() _STLP_NOTHROW
+  static F inf() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7c, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -363,7 +363,7 @@ struct _Lim<F,16>
     return tmp.f;
   }
 
-  static F qnan() _STLP_NOTHROW
+  static F qnan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7e, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -373,7 +373,7 @@ struct _Lim<F,16>
     return tmp.f;
   }
 
-  static F snan() _STLP_NOTHROW
+  static F snan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7d, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -383,7 +383,7 @@ struct _Lim<F,16>
     return tmp.f;
   }
 
-  static F denorm_min() _STLP_NOTHROW
+  static F denorm_min() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0x1 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -403,7 +403,7 @@ struct _Lim<F,32>
     F    f;
   };
 
-  static F inf() _STLP_NOTHROW
+  static F inf() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0x80, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -413,7 +413,7 @@ struct _Lim<F,32>
     return tmp.f;
   }
 
-  static F qnan() _STLP_NOTHROW
+  static F qnan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xc0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -423,7 +423,7 @@ struct _Lim<F,32>
     return tmp.f;
   }
 
-  static F snan() _STLP_NOTHROW
+  static F snan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xa0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -433,7 +433,7 @@ struct _Lim<F,32>
     return tmp.f;
   }
 
-  static F denorm_min() _STLP_NOTHROW
+  static F denorm_min() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0x1 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -453,7 +453,7 @@ struct _Lim<F,64>
     F    f;
   };
 
-  static F inf() _STLP_NOTHROW
+  static F inf() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xf0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -463,7 +463,7 @@ struct _Lim<F,64>
     return tmp.f;
   }
 
-  static F qnan() _STLP_NOTHROW
+  static F qnan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xf8, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -473,7 +473,7 @@ struct _Lim<F,64>
     return tmp.f;
   }
 
-  static F snan() _STLP_NOTHROW
+  static F snan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xf4, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -483,7 +483,7 @@ struct _Lim<F,64>
     return tmp.f;
   }
 
-  static F denorm_min() _STLP_NOTHROW
+  static F denorm_min() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0x1 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -503,7 +503,7 @@ struct _Lim<F,80>
     F    f;
   };
 
-  static F inf() _STLP_NOTHROW
+  static F inf() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -521,7 +521,7 @@ struct _Lim<F,80>
     return tmp.f;
   }
 
-  static F qnan() _STLP_NOTHROW
+  static F qnan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0x80, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -531,7 +531,7 @@ struct _Lim<F,80>
     return tmp.f;
   }
 
-  static F snan() _STLP_NOTHROW
+  static F snan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0x40, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -541,7 +541,7 @@ struct _Lim<F,80>
     return tmp.f;
   }
 
-  static F denorm_min() _STLP_NOTHROW
+  static F denorm_min() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -561,7 +561,7 @@ struct _Lim<F,96>
     F    f;
   };
 
-  static F inf() _STLP_NOTHROW
+  static F inf() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -581,7 +581,7 @@ struct _Lim<F,96>
     return tmp.f;
   }
 
-  static F qnan() _STLP_NOTHROW
+  static F qnan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0xc0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -591,7 +591,7 @@ struct _Lim<F,96>
     return tmp.f;
   }
 
-  static F snan() _STLP_NOTHROW
+  static F snan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0xa0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -601,7 +601,7 @@ struct _Lim<F,96>
     return tmp.f;
   }
 
-  static F denorm_min() _STLP_NOTHROW
+  static F denorm_min() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -621,7 +621,7 @@ struct _Lim<F,128>
     F             f;
   };
 
-  static F inf() _STLP_NOTHROW
+  static F inf() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -631,7 +631,7 @@ struct _Lim<F,128>
     return tmp.f;
   }
 
-  static F qnan() _STLP_NOTHROW
+  static F qnan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0xc0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -641,7 +641,7 @@ struct _Lim<F,128>
     return tmp.f;
   }
 
-  static F snan() _STLP_NOTHROW
+  static F snan() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0x7f, 0xff, 0, 0, 0, 0, 0xa0, 0, 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -651,7 +651,7 @@ struct _Lim<F,128>
     return tmp.f;
   }
 
-  static F denorm_min() _STLP_NOTHROW
+  static F denorm_min() noexcept
   {
 #  if defined (_STLP_BIG_ENDIAN)
     _access tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
@@ -714,8 +714,8 @@ class numeric_limits<float> :
                                        round_to_nearest>
 {
   public:
-    static float (_STLP_CALL min) () _STLP_NOTHROW { return FLT_MIN; }
-    static float _STLP_CALL denorm_min() _STLP_NOTHROW
+    static float (_STLP_CALL min) () noexcept { return FLT_MIN; }
+    static float _STLP_CALL denorm_min() noexcept
       {
 #if defined (_STLP_FLT_DENORM_MIN)
         return _STLP_FLT_DENORM_MIN;
@@ -723,17 +723,17 @@ class numeric_limits<float> :
         return _STLP_FLT_DENORM_STYLE ? _STLP_PRIV _Lim<float,sizeof(float)<<3>::denorm_min() : FLT_MIN;
 #endif
       }
-    static float (_STLP_CALL max) () _STLP_NOTHROW
+    static float (_STLP_CALL max) () noexcept
       { return FLT_MAX; }
-    static float _STLP_CALL epsilon() _STLP_NOTHROW
+    static float _STLP_CALL epsilon() noexcept
       { return FLT_EPSILON; }
-    static float _STLP_CALL round_error() _STLP_NOTHROW
+    static float _STLP_CALL round_error() noexcept
       { return 0.5f; } // Units: ulps.
-    static float _STLP_CALL infinity() _STLP_NOTHROW
+    static float _STLP_CALL infinity() noexcept
       { return _STLP_PRIV _Lim<float,sizeof(float)<<3>::inf(); }
-    static float _STLP_CALL quiet_NaN() _STLP_NOTHROW 
+    static float _STLP_CALL quiet_NaN() noexcept
       { return _STLP_PRIV _Lim<float,sizeof(float)<<3>::qnan(); }
-    static float _STLP_CALL signaling_NaN() _STLP_NOTHROW
+    static float _STLP_CALL signaling_NaN() noexcept
       { return _STLP_PRIV _Lim<float,sizeof(float)<<3>::snan(); }
 };
 
@@ -754,9 +754,9 @@ class numeric_limits<double> :
                                        round_to_nearest>
 {
   public:
-    static double (_STLP_CALL min)() _STLP_NOTHROW
+    static double (_STLP_CALL min)() noexcept
       { return DBL_MIN; }
-    static double _STLP_CALL denorm_min() _STLP_NOTHROW
+    static double _STLP_CALL denorm_min() noexcept
       {
 #if defined (_STLP_DBL_DENORM_MIN)
         return _STLP_DBL_DENORM_MIN;
@@ -764,17 +764,17 @@ class numeric_limits<double> :
         return _STLP_DBL_DENORM_STYLE ? _STLP_PRIV _Lim<double,sizeof(double)<<3>::denorm_min() : DBL_MIN;
 #endif
       }
-    static double (_STLP_CALL max)() _STLP_NOTHROW
+    static double (_STLP_CALL max)() noexcept
       { return DBL_MAX; }
-    static double _STLP_CALL epsilon() _STLP_NOTHROW
+    static double _STLP_CALL epsilon() noexcept
       { return DBL_EPSILON; }
-    static double _STLP_CALL round_error() _STLP_NOTHROW
+    static double _STLP_CALL round_error() noexcept
       { return 0.5; } // Units: ulps.
-    static double _STLP_CALL infinity() _STLP_NOTHROW
+    static double _STLP_CALL infinity() noexcept
       { return _STLP_PRIV _Lim<double,sizeof(double)<<3>::inf(); }
-    static double _STLP_CALL quiet_NaN() _STLP_NOTHROW
+    static double _STLP_CALL quiet_NaN() noexcept
       { return _STLP_PRIV _Lim<double,sizeof(double)<<3>::qnan(); }
-    static double _STLP_CALL signaling_NaN() _STLP_NOTHROW
+    static double _STLP_CALL signaling_NaN() noexcept
       { return _STLP_PRIV _Lim<double,sizeof(double)<<3>::snan(); }
 };
 
@@ -794,9 +794,9 @@ class numeric_limits<long double> :
                                        round_to_nearest>
 {
   public:
-    static long double (_STLP_CALL min) () _STLP_NOTHROW
+    static long double (_STLP_CALL min) () noexcept
       { return LDBL_MIN; }
-    static long double _STLP_CALL denorm_min() _STLP_NOTHROW
+    static long double _STLP_CALL denorm_min() noexcept
       {
 #if defined (_STLP_LDBL_DENORM_MIN)
         return _STLP_LDBL_DENORM_MIN;
@@ -805,19 +805,19 @@ class numeric_limits<long double> :
 #endif
       }
     _STLP_STATIC_CONSTANT(bool, is_iec559 = false);
-    static long double (_STLP_CALL max) () _STLP_NOTHROW
+    static long double (_STLP_CALL max) () noexcept
       { return LDBL_MAX; }
-    static long double _STLP_CALL epsilon() _STLP_NOTHROW
+    static long double _STLP_CALL epsilon() noexcept
       { return LDBL_EPSILON; }
-    static long double _STLP_CALL round_error() _STLP_NOTHROW
+    static long double _STLP_CALL round_error() noexcept
       { return 0.5l; }
-    static long double _STLP_CALL infinity() _STLP_NOTHROW
+    static long double _STLP_CALL infinity() noexcept
       {
         return _STLP_PRIV _Lim<long double,sizeof(long double)<<3>::inf();
       }
-    static long double _STLP_CALL quiet_NaN() _STLP_NOTHROW
+    static long double _STLP_CALL quiet_NaN() noexcept
       { return _STLP_PRIV _Lim<long double,sizeof(long double)<<3>::qnan(); }
-    static long double _STLP_CALL signaling_NaN() _STLP_NOTHROW
+    static long double _STLP_CALL signaling_NaN() noexcept
       { return _STLP_PRIV _Lim<long double,sizeof(long double)<<3>::snan(); }
 };
 

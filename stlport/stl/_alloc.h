@@ -930,12 +930,12 @@ class allocator
         typedef allocator<_Tp1> other;
     };
 
-    allocator() _STLP_NOTHROW
+    allocator() noexcept
       { }
     template <class _Tp1>
-    allocator(const allocator<_Tp1>&) _STLP_NOTHROW
+    allocator(const allocator<_Tp1>&) noexcept
       { }
-    allocator(const allocator<_Tp>&) _STLP_NOTHROW
+    allocator(const allocator<_Tp>&) noexcept
       { }
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW
@@ -943,9 +943,9 @@ class allocator
 #endif
     ~allocator()
       { }
-    pointer address( reference __x ) const _STLP_NOTHROW
+    pointer address( reference __x ) const noexcept
       { return addressof(__x); }
-    const_pointer address( const_reference __x ) const _STLP_NOTHROW
+    const_pointer address( const_reference __x ) const noexcept
       { return addressof(__x); }
     // __n is permitted to be 0.  The C++ standard says nothing about what the return value is when __n == 0.
     pointer allocate(size_type __n, allocator<void>::const_pointer /* hint */ = 0)
@@ -985,8 +985,8 @@ class allocator
       }
 #endif
 
-    size_type max_size() const _STLP_NOTHROW
-      { return _STLP_STD::numeric_limits<size_type>::max() / sizeof(value_type); }
+    size_type max_size() const noexcept
+      { return sizeof(value_type) ? _STLP_STD::numeric_limits<size_type>::max() / sizeof(value_type) : _STLP_STD::numeric_limits<size_type>::max(); }
 
     template<class U, class... Args>
     void construct( U* p, Args&&... args )
@@ -998,11 +998,11 @@ class allocator
 };
 
 template <class _T1, class _T2>
-inline bool _STLP_CALL operator ==(const allocator<_T1>&, const allocator<_T2>&) _STLP_NOTHROW
+inline bool _STLP_CALL operator ==(const allocator<_T1>&, const allocator<_T2>&) noexcept
 { return true; }
 
 template <class _T1, class _T2>
-inline bool _STLP_CALL operator!=(const allocator<_T1>&, const allocator<_T2>&) _STLP_NOTHROW
+inline bool _STLP_CALL operator !=(const allocator<_T1>&, const allocator<_T2>&) noexcept
 { return false; }
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
