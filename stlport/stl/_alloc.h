@@ -937,10 +937,6 @@ class allocator
       { }
     allocator(const allocator<_Tp>&) noexcept
       { }
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-    allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW
-      { }
-#endif
     ~allocator()
       { }
     pointer address( reference __x ) const noexcept
