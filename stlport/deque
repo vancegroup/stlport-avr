@@ -409,20 +409,46 @@ class _Deque_base
         _M_map_size(__a, (size_t)0)
       { }
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-    _Deque_base(__move_source<_Self> src) :
-        _M_start(src.get()._M_start),
-        _M_finish(src.get()._M_finish),
-        _M_map(__move_source<_Map_alloc_proxy>(src.get()._M_map)),
-        _M_map_size(__move_source<_Alloc_proxy>(src.get()._M_map_size))
+    _Deque_base(_Deque_base&& __x) :
+        _M_start(__x._M_start),
+        _M_finish(__x._M_finish),
+        _M_map(__x.get_allocator(), (value_type**)(0)),
+        _M_map_size(__x.get_allocator(), (size_t)0)
       {
-        src.get()._M_map._M_data = 0;
-        src.get()._M_map_size._M_data = 0;
-        src.get()._M_finish = src.get()._M_start;
+        _STLP_STD::swap( _M_map._M_data, __x._M_map._M_data);
+        _STLP_STD::swap( _M_map_size._M_data, __x._M_map_size._M_data);
+        __x._M_finish = __x._M_start;
       }
-#endif
+
+    _Deque_base(_Deque_base&& __x, const allocator_type& __a) :
+        _M_start(),
+        _M_finish(),
+        _M_map(__a, (value_type**)(0)),
+        _M_map_size(__a, (size_t)0)
+      {
+        if ( __x.get_allocator() == __a ) {
+          _M_start = __x._M_start;
+          _M_finish = __x._M_finish;
+          _STLP_STD::swap( _M_map._M_data, __x._M_map._M_data);
+          _STLP_STD::swap( _M_map_size._M_data, __x._M_map_size._M_data);
+          __x._M_finish = __x._M_start;          
+        } else {
+          _M_initialize_map(__x._M_finish - __x._M_start);
+          uninitialized_copy(__x._M_start, __x._M_finish, this->_M_start);
+          if (__x._M_map._M_data) {
+            __x._M_destroy_nodes(_M_start._M_node, this->_M_finish._M_node + 1);
+            __x._M_map.deallocate(__x._M_map._M_data, __x._M_map_size._M_data);
+            __x._M_finish = __x._M_start;
+            __x._M_map._M_data = 0;
+            __x._M_map_size._M_data = 0;
+          }
+        }
+      }
 
     ~_Deque_base();
+
+    allocator_type get_allocator() const noexcept
+      { return this->_M_map_size; }
 
   protected:
     void _M_initialize_map(size_t);
@@ -445,7 +471,7 @@ class _Deque_base
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
-template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
+template <class _Tp, class _Alloc = allocator<_Tp> >
 class deque :
     protected _STLP_PRIV _Deque_base<_Tp, _Alloc>
 {
@@ -470,9 +496,6 @@ class deque :
 
   protected:                      // Internal typedefs
     typedef pointer* _Map_pointer;
-#if defined (_STLP_NO_MOVE_SEMANTIC)
-    typedef false_type _Movable;
-#endif
 
   public:                         // Basic accessors
     iterator begin()
@@ -544,7 +567,10 @@ class deque :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__x.get_allocator(), __x.size())
       { uninitialized_copy(__x.begin(), __x.end(), this->_M_start); }
 
-  public:
+    deque(const _Self& __x, const allocator_type& __a ) :
+        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __x.size())
+      { uninitialized_copy(__x.begin(), __x.end(), this->_M_start); }
+
     explicit deque(size_type __n) :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
       { /* _M_initialize(__n); */ _M_fill_initialize( _STLP_DEFAULT_CONSTRUCTED(_Tp) ); }
@@ -571,16 +597,19 @@ class deque :
         _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a)
       { _M_initialize_dispatch(__first, __last, typename is_integral<_InputIterator>::type() ); }
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-    deque(__move_source<_Self> src) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__move_source<_Base>(src.get()))
+    deque( deque&& src ) :
+        _STLP_PRIV _Deque_base<_Tp, _Alloc>( _STLP_STD::move(src) )
       { }
-#endif
+
+    deque( deque&& src, const allocator_type& __a ) :
+        _STLP_PRIV _Deque_base<_Tp, _Alloc>( _STLP_STD::move(src), __a )
+      { }
 
     ~deque()
       { _STLP_STD::detail::_Destroy_Range(this->_M_start, this->_M_finish); }
 
-    _Self& operator= (const _Self& __x);
+    _Self& operator =(const _Self& __x);
+    _Self& operator =(_Self&& __x);
 
     void swap(_Self& __x)
       {
@@ -993,35 +1022,7 @@ class deque :
 
 #if defined (deque)
 _STLP_MOVE_TO_STD_NAMESPACE
-#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-
-template <class _Tp, class _Alloc>
-struct __has_trivial_move<_STLP_PRIV deque<_Tp, _Alloc> > :
-  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
-{ };
-
-template <class _Tp, class _Alloc>
-struct __has_move_constructor<_STLP_PRIV deque<_Tp, _Alloc> > :
-    public true_type
-{ };
-
-#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
 #  undef deque
-#else // deque
-#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-
-template <class _Tp, class _Alloc>
-struct __has_trivial_move<deque<_Tp, _Alloc> > :
-  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
-{ };
-
-template <class _Tp, class _Alloc>
-struct __has_move_constructor<deque<_Tp, _Alloc> > :
-    public true_type
-{ };
-
-#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 #endif // deque
 
 _STLP_END_NAMESPACE
