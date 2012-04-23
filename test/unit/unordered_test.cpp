@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <2012-04-18 18:05:46 ptr>
+// -*- C++ -*- Time-stamp: <2012-04-21 08:34:10 ptr>
 
 /*
- * Copyright (c) 2005-2008
+ * Copyright (c) 2005-2012
  * Petr Ovtchenkov
  *
  * Copyright (c) 2005-2008
@@ -671,7 +671,6 @@ int EXAM_IMPL(unordered_test::template_methods)
 
 #if defined (STLPORT) && \
     (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))
-#  if !defined (__DMC__)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.
@@ -688,12 +687,10 @@ class IncompleteClass
   unordered_multimap<IncompleteClass, IncompleteClass> umminstances;
   typedef unordered_multimap<IncompleteClass, IncompleteClass>::iterator ummit;
 };
-#  endif
 #endif
 
 int EXAM_IMPL(unordered_test::remains)
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef unordered_map<int, int> hmap;
 
   hmap m;
@@ -788,9 +785,6 @@ int EXAM_IMPL(unordered_test::remains)
 
   EXAM_CHECK( sz == 100 );
   EXAM_CHECK( m.size() == 0 );
-#else
-  throw exam::skip_exception();
-#endif
 
   return EXAM_RESULT;
 }
@@ -812,7 +806,8 @@ int EXAM_IMPL(unordered_test::move)
     int f;
   };
 
-#ifndef __clang__
+#if !defined(__clang__) || (__clang_major__ > 3) || ((__clang_major__ == 3) && (__clang_minor__ > 1))
+  /* CLang 3.0, 3.1 has this problem. CLang pre-3.2 (svn) has not. */
   unordered_map<int,movable> m;
 
   pair<int,movable> p0;
