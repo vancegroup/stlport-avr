@@ -83,7 +83,6 @@ struct _DequeIteCast {
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<size_t, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void***, allocator<void**> >;
 _STLP_EXPORT template struct _STLP_CLASS_DECLSPEC _Deque_iterator<void*, _Nonconst_traits<void*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Deque_base<void*,allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS DEQUE_IMPL<void*,allocator<void*> >;
 #endif
 

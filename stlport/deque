@@ -370,99 +370,6 @@ inline bool  _STLP_CALL operator <=( const _Deque_iterator_base<_Tp>& __x,
                                      const _Deque_iterator_base<_Tp>& __y )
 { return !(__y < __x); }
 
-/* Deque base class.  It has two purposes.  First, its constructor
- *  and destructor allocate (but don't initialize) storage.  This makes
- *  exception safety easier.  Second, the base class encapsulates all of
- *  the differences between SGI-style allocators and standard-conforming
- *  allocators.
- */
-
-template <class _Tp, class _Alloc>
-class _Deque_base
-{
-    typedef _Deque_base<_Tp, _Alloc> _Self;
-  public:
-    typedef _Tp value_type;
-    typedef _Alloc allocator_type;
-    typedef _STLP_alloc_proxy<size_t, allocator_type> _Alloc_proxy;
-
-    typedef typename _Alloc::template rebind<_Tp*>::other _Map_alloc_type;
-    typedef _STLP_alloc_proxy<value_type**, _Map_alloc_type> _Map_alloc_proxy;
-
-    typedef _Deque_iterator<typename remove_const<_Tp>::type> iterator;
-    typedef _Deque_iterator<typename add_const<_Tp>::type>    const_iterator;
-
-    static size_t _STLP_CALL buffer_size()
-      { return _Deque_iterator_base<_Tp>::_S_buffer_size(); }
-
-    _Deque_base(const allocator_type& __a, size_t __num_elements) :
-        _M_start(),
-        _M_finish(),
-        _M_map(__a, (value_type**)(0)),
-        _M_map_size(__a, (size_t)0)
-      { _M_initialize_map(__num_elements); }
-
-    _Deque_base(const allocator_type& __a) :
-        _M_start(),
-        _M_finish(),
-        _M_map(__a, (value_type**)(0)),
-        _M_map_size(__a, (size_t)0)
-      { }
-
-    _Deque_base(_Deque_base&& __x) :
-        _M_start(__x._M_start),
-        _M_finish(__x._M_finish),
-        _M_map(__x.get_allocator(), (value_type**)(0)),
-        _M_map_size(__x.get_allocator(), (size_t)0)
-      {
-        _STLP_STD::swap( _M_map._M_data, __x._M_map._M_data);
-        _STLP_STD::swap( _M_map_size._M_data, __x._M_map_size._M_data);
-        __x._M_finish = __x._M_start;
-      }
-
-    _Deque_base(_Deque_base&& __x, const allocator_type& __a) :
-        _M_start(),
-        _M_finish(),
-        _M_map(__a, (value_type**)(0)),
-        _M_map_size(__a, (size_t)0)
-      {
-        if ( __x.get_allocator() == __a ) {
-          _M_start = __x._M_start;
-          _M_finish = __x._M_finish;
-          _STLP_STD::swap( _M_map._M_data, __x._M_map._M_data);
-          _STLP_STD::swap( _M_map_size._M_data, __x._M_map_size._M_data);
-          __x._M_finish = __x._M_start;          
-        } else {
-          _M_initialize_map(__x._M_finish - __x._M_start);
-          uninitialized_copy(__x._M_start, __x._M_finish, this->_M_start);
-          if (__x._M_map._M_data) {
-            __x._M_destroy_nodes(_M_start._M_node, this->_M_finish._M_node + 1);
-            __x._M_map.deallocate(__x._M_map._M_data, __x._M_map_size._M_data);
-            __x._M_finish = __x._M_start;
-            __x._M_map._M_data = 0;
-            __x._M_map_size._M_data = 0;
-          }
-        }
-      }
-
-    ~_Deque_base();
-
-    allocator_type get_allocator() const noexcept
-      { return this->_M_map_size; }
-
-  protected:
-    void _M_initialize_map(size_t);
-    void _M_create_nodes(_Tp** __nstart, _Tp** __nfinish);
-    void _M_destroy_nodes(_Tp** __nstart, _Tp** __nfinish);
-    enum { _S_initial_map_size = 8 };
-
-  protected:
-    iterator _M_start;
-    iterator _M_finish;
-    _Map_alloc_proxy  _M_map;
-    _Alloc_proxy      _M_map_size;
-};
-
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 #  define deque _STLP_PTR_IMPL_NAME(deque)
 #elif defined (_STLP_DEBUG)
@@ -472,10 +379,9 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Tp, class _Alloc = allocator<_Tp> >
-class deque :
-    protected _STLP_PRIV _Deque_base<_Tp, _Alloc>
+class deque
 {
-    typedef _STLP_PRIV _Deque_base<_Tp, _Alloc> _Base;
+  private:
     typedef deque<_Tp, _Alloc> _Self;
   public:                         // Basic types
     typedef _Tp value_type;
@@ -486,16 +392,34 @@ class deque :
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
     typedef random_access_iterator_tag _Iterator_category;
-    typedef typename _Base::allocator_type allocator_type;
+    typedef _Alloc allocator_type;
+
+  private:
+    typedef _STLP_PRIV _STLP_alloc_proxy<size_t, allocator_type> _Alloc_proxy;
+
+    typedef typename _Alloc::template rebind<_Tp*>::other _Map_alloc_type;
+    typedef _STLP_PRIV _STLP_alloc_proxy<value_type**, _Map_alloc_type> _Map_alloc_proxy;
 
   public:                         // Iterators
-    typedef typename _Base::iterator       iterator;
-    typedef typename _Base::const_iterator const_iterator;
+    typedef _STLP_PRIV _Deque_iterator<typename remove_const<_Tp>::type> iterator;
+    typedef _STLP_PRIV _Deque_iterator<typename add_const<_Tp>::type>    const_iterator;
 
     _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
   protected:                      // Internal typedefs
     typedef pointer* _Map_pointer;
+    iterator _M_start;
+    iterator _M_finish;
+    _Map_alloc_proxy  _M_map;
+    _Alloc_proxy      _M_map_size;
+
+    static size_t _STLP_CALL buffer_size()
+      { return _STLP_PRIV _Deque_iterator_base<_Tp>::_S_buffer_size(); }
+
+    void _M_initialize_map(size_t);
+    void _M_create_nodes(_Tp** __nstart, _Tp** __nfinish);
+    void _M_destroy_nodes(_Tp** __nstart, _Tp** __nfinish);
+    enum { _S_initial_map_size = 8 };
 
   public:                         // Basic accessors
     iterator begin()
@@ -560,23 +484,50 @@ class deque :
 
   public:                         // Constructor, destructor.
     explicit deque(const allocator_type& __a = allocator_type()) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, 0)
-      { }
+        _M_start(),
+        _M_finish(),
+        _M_map(__a, (value_type**)(0)),
+        _M_map_size(__a, (size_t)0)
+      { _M_initialize_map(0); }
 
     deque(const _Self& __x) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__x.get_allocator(), __x.size())
-      { uninitialized_copy(__x.begin(), __x.end(), this->_M_start); }
+        _M_start(),
+        _M_finish(),
+        _M_map(__x.get_allocator(), (value_type**)(0)),
+        _M_map_size(__x.get_allocator(), (size_t)0)
+      {
+        _M_initialize_map(__x.size());
+        uninitialized_copy(__x.begin(), __x.end(), this->_M_start);
+      }
 
     deque(const _Self& __x, const allocator_type& __a ) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __x.size())
-      { uninitialized_copy(__x.begin(), __x.end(), this->_M_start); }
+        _M_start(),
+        _M_finish(),
+        _M_map(__a, (value_type**)(0)),
+        _M_map_size(__a, (size_t)0)
+      {
+        _M_initialize_map(__x.size());
+        uninitialized_copy(__x.begin(), __x.end(), this->_M_start);
+      }
 
     explicit deque(size_type __n) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
-      { /* _M_initialize(__n); */ _M_fill_initialize( _STLP_DEFAULT_CONSTRUCTED(_Tp) ); }
+        _M_start(),
+        _M_finish(),
+        _M_map(allocator_type(), (value_type**)(0)),
+        _M_map_size(allocator_type(), (size_t)0)
+      {
+        _M_initialize_map(__n);
+        /* _M_initialize(__n); */ _M_fill_initialize( _STLP_DEFAULT_CONSTRUCTED(_Tp) );
+      }
     deque( size_type __n, const value_type& __val, const allocator_type& __a = allocator_type()) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __n)
-      { _M_fill_initialize( __val ); }
+        _M_start(),
+        _M_finish(),
+        _M_map(__a, (value_type**)(0)),
+        _M_map_size(__a, (size_t)0)
+      {
+        _M_initialize_map(__n);
+        _M_fill_initialize( __val );
+      }
 
   protected:
     template <class _Integer>
@@ -594,19 +545,56 @@ class deque :
     // Check whether it's an integral type.  If so, it's not an iterator.
     template <class _InputIterator>
     deque( _InputIterator __first, _InputIterator __last, const allocator_type& __a = allocator_type() ) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a)
+        _M_start(),
+        _M_finish(),
+        _M_map(__a, (value_type**)(0)),
+        _M_map_size(__a, (size_t)0)
       { _M_initialize_dispatch(__first, __last, typename is_integral<_InputIterator>::type() ); }
 
-    deque( deque&& src ) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>( _STLP_STD::move(src) )
-      { }
+    deque( deque&& __x ) :
+        _M_start(__x._M_start),
+        _M_finish(__x._M_finish),
+        _M_map(__x.get_allocator(), (value_type**)(0)),
+        _M_map_size(__x.get_allocator(), (size_t)0)
+      {
+        _STLP_STD::swap( _M_map._M_data, __x._M_map._M_data);
+        _STLP_STD::swap( _M_map_size._M_data, __x._M_map_size._M_data);
+        __x._M_finish = __x._M_start;
+      }
 
-    deque( deque&& src, const allocator_type& __a ) :
-        _STLP_PRIV _Deque_base<_Tp, _Alloc>( _STLP_STD::move(src), __a )
-      { }
+    deque( deque&& __x, const allocator_type& __a ) :
+        _M_start(),
+        _M_finish(),
+        _M_map(__a, (value_type**)(0)),
+        _M_map_size(__a, (size_t)0)
+      {
+        if ( __x.get_allocator() == __a ) {
+          _M_start = __x._M_start;
+          _M_finish = __x._M_finish;
+          _STLP_STD::swap( _M_map._M_data, __x._M_map._M_data);
+          _STLP_STD::swap( _M_map_size._M_data, __x._M_map_size._M_data);
+          __x._M_finish = __x._M_start;          
+        } else {
+          _M_initialize_map(__x._M_finish - __x._M_start);
+          uninitialized_copy(__x._M_start, __x._M_finish, this->_M_start);
+          if (__x._M_map._M_data) {
+            __x._M_destroy_nodes(_M_start._M_node, this->_M_finish._M_node + 1);
+            __x._M_map.deallocate(__x._M_map._M_data, __x._M_map_size._M_data);
+            __x._M_finish = __x._M_start;
+            __x._M_map._M_data = 0;
+            __x._M_map_size._M_data = 0;
+          }
+        }
+      }
 
     ~deque()
-      { _STLP_STD::detail::_Destroy_Range(this->_M_start, this->_M_finish); }
+      {
+        _STLP_STD::detail::_Destroy_Range(this->_M_start, this->_M_finish);
+        if (_M_map._M_data) {
+          _M_destroy_nodes(_M_start._M_node, this->_M_finish._M_node + 1);
+          _M_map.deallocate(_M_map._M_data, _M_map_size._M_data);
+        }
+      }
 
     _Self& operator =(const _Self& __x);
     _Self& operator =(_Self&& __x);
@@ -795,7 +783,7 @@ class deque :
   public:                         // Erase
     iterator erase(iterator __pos)
       {
-        return _M_erase(__pos, /* _Movable() */ typename __has_trivial_move<value_type>::type() );
+        return _M_erase(__pos, /* _Movable() */ typename is_trivially_move_constructible<value_type>::type() );
       }
     iterator erase(iterator __first, iterator __last)
       {

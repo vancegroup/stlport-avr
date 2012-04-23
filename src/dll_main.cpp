@@ -171,7 +171,6 @@ template class _STLP_CLASS_DECLSPEC _STLP_PTR_IMPL_NAME(forward_list)<void*, all
 template class  _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<size_t, allocator<void*> >;
 template class  _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<void***, allocator<void**> >;
 template struct _STLP_CLASS_DECLSPEC _Deque_iterator<void*, _Nonconst_traits<void*> >;
-template class  _STLP_CLASS_DECLSPEC _Deque_base<void*, allocator<void*> >;
 template class  _STLP_CLASS_DECLSPEC _STLP_PTR_IMPL_NAME(deque)<void*, allocator<void*> >;
 
 _STLP_MOVE_TO_STD_NAMESPACE

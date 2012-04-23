@@ -32,21 +32,27 @@
 
 _STLP_BEGIN_NAMESPACE
 
+#if defined (_STLP_USE_PTR_SPECIALIZATIONS)
+#  define deque _STLP_PTR_IMPL_NAME(deque)
 _STLP_MOVE_TO_PRIV_NAMESPACE
+#elif defined (_STLP_DEBUG)
+#  define deque _STLP_NON_DBG_NAME(deque)
+_STLP_MOVE_TO_PRIV_NAMESPACE
+#endif
 
-// Non-inline member functions from _Deque_base.
+#if defined (_STLP_NESTED_TYPE_PARAM_BUG)
+// qualified references
+#  define __iterator__   _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >
+#  define const_iterator _Deque_iterator<_Tp, _Const_traits<_Tp>  >
+#  define iterator       __iterator__
+#  define size_type      size_t
+#  define value_type     _Tp
+#else
+#  define __iterator__   _STLP_TYPENAME_ON_RETURN_TYPE deque<_Tp, _Alloc>::iterator
+#endif
 
 template <class _Tp, class _Alloc >
-_Deque_base<_Tp,_Alloc >::~_Deque_base()
-{
-  if (_M_map._M_data) {
-    _M_destroy_nodes(_M_start._M_node, this->_M_finish._M_node + 1);
-    _M_map.deallocate(_M_map._M_data, _M_map_size._M_data);
-  }
-}
-
-template <class _Tp, class _Alloc >
-void _Deque_base<_Tp,_Alloc>::_M_initialize_map(size_t __num_elements)
+void deque<_Tp,_Alloc>::_M_initialize_map(size_t __num_elements)
 {
   size_t __num_nodes = __num_elements / this->buffer_size() + 1 ;
 
@@ -68,7 +74,7 @@ void _Deque_base<_Tp,_Alloc>::_M_initialize_map(size_t __num_elements)
 }
 
 template <class _Tp, class _Alloc >
-void _Deque_base<_Tp,_Alloc>::_M_create_nodes(_Tp** __nstart, _Tp** __nfinish )
+void deque<_Tp,_Alloc>::_M_create_nodes(_Tp** __nstart, _Tp** __nfinish )
 {
   _Tp** __cur = __nstart;
   _STLP_TRY {
@@ -80,31 +86,12 @@ void _Deque_base<_Tp,_Alloc>::_M_create_nodes(_Tp** __nstart, _Tp** __nfinish )
 }
 
 template <class _Tp, class _Alloc >
-void _Deque_base<_Tp,_Alloc>::_M_destroy_nodes( _Tp** __nstart, _Tp** __nfinish )
+void deque<_Tp,_Alloc>::_M_destroy_nodes( _Tp** __nstart, _Tp** __nfinish )
 {
   for ( _Tp** __n = __nstart; __n < __nfinish; ++__n ) {
     _M_map_size.deallocate(*__n, this->buffer_size());
   }
 }
-
-#if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-#  define deque _STLP_PTR_IMPL_NAME(deque)
-#elif defined (_STLP_DEBUG)
-#  define deque _STLP_NON_DBG_NAME(deque)
-#else
-_STLP_MOVE_TO_STD_NAMESPACE
-#endif
-
-#if defined (_STLP_NESTED_TYPE_PARAM_BUG)
-// qualified references
-#  define __iterator__   _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >
-#  define const_iterator _Deque_iterator<_Tp, _Const_traits<_Tp>  >
-#  define iterator       __iterator__
-#  define size_type      size_t
-#  define value_type     _Tp
-#else
-#  define __iterator__   _STLP_TYPENAME_ON_RETURN_TYPE deque<_Tp, _Alloc>::iterator
-#endif
 
 template <class _Tp, class _Alloc >
 deque<_Tp, _Alloc >& deque<_Tp, _Alloc >::operator =( const deque<_Tp, _Alloc >& __x )
@@ -140,7 +127,7 @@ void deque<_Tp, _Alloc >::_M_fill_insert(iterator __pos, size_type __n, const va
     _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node+1, __new_finish._M_node+1))
     this->_M_finish = __new_finish;
   } else {
-    _M_fill_insert_aux(__pos, __n, __x, /* typename __has_trivial_move<_Tp>::type() */ true_type() );
+    _M_fill_insert_aux(__pos, __n, __x, /* typename is_trivially_move_constructible<value_type>::type() */ true_type() );
   }
 }
 
