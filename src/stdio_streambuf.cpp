@@ -63,8 +63,8 @@ stdio_streambuf_base::~stdio_streambuf_base() {
 }
 
 _STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n) {
-#ifdef _STLP_WCE
-  // no buffering in windows ce .NET
+#if defined(_STLP_WCE) || defined(_STLP_AVR)
+  // no buffering in windows ce .NET or AVR
 #else
   size_t __n_size_t = (sizeof(streamsize) > sizeof(size_t)) ? __STATIC_CAST(size_t, (min)(__STATIC_CAST(streamsize, (numeric_limits<size_t>::max)()), n))
                                                             : __STATIC_CAST(size_t, n);
@@ -76,6 +76,9 @@ _STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n) {
 stdio_streambuf_base::pos_type
 stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
                               ios_base::openmode /* mode */) {
+#if defined(_STLP_AVR)
+  return 0; // no seeking in AVR
+#else
   int whence;
   switch (dir) {
   case ios_base::beg:
@@ -108,11 +111,15 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
   }
   else
     return pos_type(-1);
+#endif
 }
 
 
 stdio_streambuf_base::pos_type
 stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
+#if defined(_STLP_AVR)
+  return 0;
+#else
   // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
   // of a primitive type
 #if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
@@ -143,6 +150,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
 #endif
 
   return FSETPOS(_M_file, &p) == 0 ? pos : pos_type(-1);
+#endif
 }
 
 int stdio_streambuf_base::sync() {
