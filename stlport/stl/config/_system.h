@@ -185,6 +185,14 @@
 #  include <stl/config/_windows.h>
 #  elif defined ( __ARMCC_VERSION) 
 #    include <stl/config/_armcc.h>
+
+#elif defined (__AVR__)
+#  include <stl/config/_avr.h>
+#  ifdef __GNUC__
+#    include <stl/config/_gcc.h>
+#  endif
+//#  undef _STLP_LONG_LONG
+//#  define  _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #else
 #  error Unknown platform !!
 #endif
