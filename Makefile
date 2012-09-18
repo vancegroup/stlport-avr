@@ -25,10 +25,10 @@ all install depend clean clobber distclean check::
 distclean clean depend clobber::
 	+$(call doinsubdirs,build/test/unit)
 
-release-shared install-release-shared:
+release-shared release-static install-release-shared install-release-static:
 	+$(call doinsubdirs,${SUBDIRS})
 
 install::
 	${MAKE} -C build/lib install-headers
 
-.PHONY: all install depend clean clobber distclean check release-shared install-release-shared
+.PHONY: all install depend clean clobber distclean check release-shared release-static install-release-shared install-release-static
