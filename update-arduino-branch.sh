@@ -1,19 +1,17 @@
-#!/bin/bash
+#!/bin/bash -x
 set -e
 
-devbranch=STLport-5.2-avr
 installbranch=STLport-5.2-arduino-installed
 builddir=build/lib
 
 basedir=$(cd $(dirname 0) && pwd)
 TMPDIR=$(mktemp -d)
 
-trap EXIT "rm -rf $TMPDIR"
+trap "rm -rf $TMPDIR"  EXIT 
 
-git clone $basedir $tmpdir/repo
+git clone $basedir $TMPDIR/repo
 (
-	cd $tmpdir/repo
-	git checkout -b $devbranch origin/$devbranch
+	cd $TMPDIR/repo
 	make -C $builddir SKETCHBOOK=$tmpdir install-arduino
 	git checkout -b $installbranch origin/$installbranch
 	git merge --no-ff --no-commit $devbranch || true
