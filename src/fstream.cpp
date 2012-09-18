@@ -18,6 +18,8 @@
 
 #include "stlport_prefix.h"
 
+#ifndef _STLP_NO_FSTREAM
+
 #ifdef _STLP_USE_UNIX_IO
 # include "details/fstream_unistd.cpp"
 #elif defined(_STLP_USE_STDIO_IO)
@@ -112,3 +114,4 @@ template class basic_fstream<wchar_t, char_traits<wchar_t> >;
 #endif
 
 _STLP_END_NAMESPACE
+#endif // _STLP_NO_FSTREAM
