@@ -17,6 +17,7 @@
 
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_THREADS)
 #include <sys/types.h>
 #ifndef _WIN32
 # include <unistd.h>
@@ -229,3 +230,5 @@ void sleep( const std::tr2::nanoseconds& rel_t )
 } // namespace this_thread
 
 _STLP_END_NAMESPACE
+
+#endif // #if !defined(_STLP_NO_THREADS)
