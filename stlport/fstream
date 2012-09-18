@@ -22,6 +22,7 @@
 // streambufs and streams whose sources or destinations are files.
 
 #ifndef _STLP_FSTREAM
+#  define _STLP_FSTREAM
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1025
@@ -31,6 +32,8 @@
 #    define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 #  endif
 #endif
+
+#ifndef _STLP_NO_FSTREAM
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1025) && \
    !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
@@ -47,7 +50,9 @@
 #  else
 #    include _STLP_NATIVE_HEADER(fstream)
 #  endif
-#endif
+#endif /* _STLP_USE_TEMPLATE_EXPORT */
+
+#endif // _STLP_NO_FSTREAM
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1025)
 #  include <stl/_epilog.h>
@@ -59,7 +64,6 @@
 #endif
 
 #endif /* _STLP_FSTREAM */
-
 
 // Local Variables:
 // mode:C++
