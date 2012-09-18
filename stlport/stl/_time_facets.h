@@ -23,6 +23,8 @@
 #ifndef _STLP_INTERNAL_TIME_FACETS_H
 #define _STLP_INTERNAL_TIME_FACETS_H
 
+#if !defined(_STLP_AVR)
+
 #ifndef _STLP_INTERNAL_CTIME
 #  include <stl/_ctime.h>                // Needed (for struct tm) by time facets
 #endif
@@ -321,6 +323,8 @@ _STLP_END_NAMESPACE
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_time_facets.c>
 #endif
+
+#endif // !defined(_STLP_AVR)
 
 #endif /* _STLP_INTERNAL_TIME_FACETS_H */
 
