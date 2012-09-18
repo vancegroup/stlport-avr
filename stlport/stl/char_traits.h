@@ -68,6 +68,8 @@ typedef _STLP_LONG_LONG streamoff;
 #  else
 typedef ptrdiff_t streamoff;
 #  endif
+#elif defined(_STLP_AVR)
+typedef ptrdiff_t streamoff;
 #else // __unix
 #  ifdef _STLP_USE_DEFAULT_FILE_OFFSET
 typedef off_t streamoff;
