@@ -47,6 +47,27 @@ new_handler set_new_handler( new_handler new_p ) noexcept
 
 _STLP_END_NAMESPACE
 
+#ifdef _STLP_NO_EXCEPTIONS
+
+__attribute__ ((weak,visibility("default")))
+void* operator new(_STLP_STD::size_t size, const _STLP_STD::nothrow_t&) noexcept
+{
+  void* p;
+  _STLP_STD::new_handler h;
+
+  while ( (p = malloc(size)) == 0 ) {
+    h = _STLP_STD::get_new_handler();
+    if ( h != 0 ) {
+      h();
+    } else {
+      return 0;
+    }
+  }
+  return p;
+}
+
+#else
+
  __attribute__ ((weak,visibility("default")))
 void* operator new(_STLP_STD::size_t size)
 {
@@ -78,6 +99,7 @@ void* operator new(_STLP_STD::size_t size, const _STLP_STD::nothrow_t&) noexcept
     return 0;
   }
 }
+#endif // _STLP_NO_EXCEPTIONS
 
 __attribute__ ((weak,visibility("default")))
 void operator delete(void* ptr) noexcept
@@ -100,16 +122,21 @@ void* operator new[](_STLP_STD::size_t size)
 __attribute__ ((weak,visibility("default")))
 void* operator new[](_STLP_STD::size_t size, const _STLP_STD::nothrow_t&) noexcept
 {
+
+#ifndef _STLP_NO_EXCEPTIONS
    try {
     /* This nothrow version of operator new returns a pointer obtained
        as if acquired from the (possibly replaced) ordinary version.
        This requirement is binding on a replacement version of this function.
      */
+#endif
     return ::operator new[]( size );
+#ifndef _STLP_NO_EXCEPTIONS
   }
   catch ( const _STLP_STD::bad_alloc& ) {
     return 0;
   } 
+#endif
 }
 
 __attribute__ ((weak,visibility("default")))
