@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_LOCALES)
+
 #include <unordered_map>
 #include <string>
 
@@ -286,3 +288,5 @@ void _STLP_CALL __release_messages(_Locale_messages* cat)
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
+
+#endif // !defined(_STLP_NO_LOCALES)

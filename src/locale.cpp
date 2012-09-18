@@ -18,6 +18,7 @@
 
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_LOCALES)
 #include <locale>
 #include <stdexcept>
 
@@ -440,4 +441,6 @@ const locale::category locale::all;
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif // !defined(_STLP_NO_LOCALES)
 
