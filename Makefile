@@ -25,7 +25,7 @@ all uninstall:
 depend clean distclean mostlyclean maintainer-clean::
 	+$(call doinsubdirs,${SUBDIRS} test/exam test/misc test/cmp_unit test/unit)
 
-release-shared install-release-shared dbg-shared install-dbg-shared stldbg-shared install-stldbg-shared:
+release-shared release-static install-release-shared install-release-static dbg-shared install-dbg-shared stldbg-shared install-stldbg-shared:
 	+$(call doinsubdirs,${SUBDIRS})
 
 check:	release-shared dbg-shared stldbg-shared
@@ -33,6 +33,10 @@ check:	release-shared dbg-shared stldbg-shared
 
 check-release-shared:	release-shared
 	+$(call dotaginsubdirs,release-shared,test/exam test/misc test/cmp_unit test/unit)
+	+$(call doinsubdirs,test/cmp_unit test/unit)
+
+check-release-static:	release-static
+	+$(call dotaginsubdirs,release-static,test/exam test/misc test/cmp_unit test/unit)
 	+$(call doinsubdirs,test/cmp_unit test/unit)
 
 check-dbg-shared:	dbg-shared
@@ -53,5 +57,7 @@ PHONY += all install depend \
          install-release-shared install-dbg-shared install-stldbg-shared \
          clean distclean mostlyclean maintainer-clean uninstall \
          release-shared dbg-shared stldbg-shared \
+         release-static install-release-static \
          install-headers \
-         check check-release-shared check-dbg-shared check-stldbg-shared
+         check check-release-shared check-dbg-shared check-stldbg-shared \
+         check-release-static
