@@ -16,7 +16,7 @@
 #ifndef _STLP_INTERNAL_CTIME
 #define _STLP_INTERNAL_CTIME
 
-#if !defined (_STLP_WCE_EVC3)
+#if !defined (_STLP_WCE_EVC3) && !defined(_STLP_AVR)
 
 #  include <time.h>
 
