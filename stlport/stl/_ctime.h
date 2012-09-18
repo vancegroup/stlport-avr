@@ -16,7 +16,7 @@
 #ifndef _STLP_INTERNAL_CTIME
 #define _STLP_INTERNAL_CTIME
 
-#if !defined (_STLP_WCE_EVC3)
+#if !defined (_STLP_WCE_EVC3) && !defined(_STLP_AVR)
 
 #  if defined (_STLP_USE_NEW_C_HEADERS)
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
