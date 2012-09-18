@@ -58,18 +58,20 @@ using _STLP_VENDOR_CSTD::ldiv_t;
 using _STLP_VENDOR_CSTD::size_t;
 
 #  ifndef _STLP_NO_CSTD_FUNCTION_IMPORTS
-#    ifndef _STLP_WCE
-// these functions just don't exist on Windows CE
+#    if !defined(_STLP_WCE) && !defined(_STLP_AVR)
+// these functions just don't exist on Windows CE or AVR
 using _STLP_VENDOR_CSTD::abort;
 using _STLP_VENDOR_CSTD::system;
 using _STLP_VENDOR_CSTD::bsearch;
 #    endif
-#    if !defined(_STLP_WCE) || defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
+#    if (!defined(_STLP_WCE) || defined(_STLP_USE_WINCE_CRT_FUNCTIONS)) && !defined(_STLP_AVR)
 using _STLP_VENDOR_CSTD::getenv;
 using _STLP_VENDOR_CSTD::mblen;
 using _STLP_VENDOR_CSTD::mbtowc;
 #    endif
+#    if !defined(_STLP_AVR)
 using _STLP_VENDOR_CSTD::atexit;
+#    endif
 using _STLP_VENDOR_CSTD::exit;
 using _STLP_VENDOR_CSTD::calloc;
 using _STLP_VENDOR_CSTD::free;
@@ -78,7 +80,9 @@ using _STLP_VENDOR_CSTD::realloc;
 using _STLP_VENDOR_CSTD::atof;
 using _STLP_VENDOR_CSTD::atoi;
 using _STLP_VENDOR_CSTD::atol;
+#    if !defined(_STLP_AVR)
 using _STLP_VENDOR_CSTD::mbstowcs;
+#    endif
 using _STLP_VENDOR_CSTD::strtod;
 using _STLP_VENDOR_CSTD::strtol;
 using _STLP_VENDOR_CSTD::strtoul;
