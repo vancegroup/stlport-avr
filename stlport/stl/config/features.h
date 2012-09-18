@@ -209,6 +209,8 @@
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
 #  define _STLP_LONGEST_FLOAT_TYPE long double
+#elif defined (__AVR__)
+#  define _STLP_LONGEST_FLOAT_TYPE float
 #else
 #  define _STLP_LONGEST_FLOAT_TYPE double
 #endif
