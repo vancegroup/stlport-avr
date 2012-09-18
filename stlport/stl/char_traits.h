@@ -51,6 +51,10 @@ typedef unsigned int off_t;
 #  include <stl/_cwchar.h>
 #endif
 
+#ifdef _STLP_AVR
+#  include <stl/_mbstate_t.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp> class allocator;
