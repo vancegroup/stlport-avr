@@ -84,6 +84,12 @@ ifdef STLP_BUILD
 # gcc do not define any macro to signal that there is no rtti support:
 DEFS += -D_STLP_NO_RTTI
 endif
+
+WITHOUT_EXCEPTIONS = 1
+endif
+
+ifdef WITHOUT_EXCEPTIONS
+CXX += -fno-exceptions
 endif
 
 ifeq ($(OSNAME), cygming)
