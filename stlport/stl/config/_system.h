@@ -191,8 +191,7 @@
 #  ifdef __GNUC__
 #    include <stl/config/_gcc.h>
 #  endif
-//#  undef _STLP_LONG_LONG
-//#  define  _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#  undef _STLP_USE_NEW_C_HEADERS
 #else
 #  error Unknown platform !!
 #endif

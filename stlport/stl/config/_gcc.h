@@ -153,7 +153,7 @@ typedef unsigned int wint_t;
 #  define _STLP_NO_VENDOR_MATH_F
 #endif
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__AVR__)
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 #endif
 
