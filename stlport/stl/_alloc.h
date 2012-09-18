@@ -57,6 +57,10 @@
 
 #include <limits>
 
+#ifdef _STLP_AVR
+#  undef max
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class T>
