@@ -25,6 +25,8 @@
 #include "c_locale.h"
 #include "acquire_release.h"
 
+#if !defined(_STLP_NO_CHRONO)
+
 _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -576,3 +578,5 @@ template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif // !defined(_STLP_NO_CHRONO)

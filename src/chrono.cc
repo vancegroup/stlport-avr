@@ -21,6 +21,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_CHRONO)
+
 #include <chrono>
 
 _STLP_BEGIN_NAMESPACE
@@ -92,3 +94,4 @@ steady_clock::time_point steady_clock::now() /* nothrow */ throw()
 
 _STLP_END_NAMESPACE
 
+#endif // #if !defined(_STLP_NO_CHRONO)
