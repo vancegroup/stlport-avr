@@ -158,11 +158,11 @@
 
 #if !defined (_STLP_BIG_ENDIAN) && !defined (_STLP_LITTLE_ENDIAN)
 #  if defined (_MIPSEB) || defined (__sparc) || defined (_AIX) || \
-      defined (__hpux) || defined (macintosh) || defined (_MAC) 
+      defined (__hpux) || defined (macintosh) || defined (_MAC)
 #    define _STLP_BIG_ENDIAN 1
 #  elif defined (__i386) || defined (_M_IX86) || defined (_M_ARM) || \
         defined (__amd64__) || defined (_M_AMD64) || defined (__x86_64__) || \
-        defined (__alpha__) || defined (__ARMCC_VERSION)
+        defined (__alpha__) || defined (__ARMCC_VERSION) || defined (__AVR__)
 #    define _STLP_LITTLE_ENDIAN 1
 #  elif defined (__ia64__)
     /* itanium allows both settings (for instance via gcc -mbig-endian) - hence a seperate check is required */
