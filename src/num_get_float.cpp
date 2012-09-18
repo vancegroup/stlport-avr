@@ -18,6 +18,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_64_BIT_UINT)
+
 #include <limits>
 #include <locale>
 #include <istream>
@@ -879,6 +881,7 @@ __string_to_float(const __iostring& v, long double& val) {
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
+#endif
 // Local Variables:
 // mode:C++
 // End:
