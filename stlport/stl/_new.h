@@ -117,7 +117,7 @@ _STLP_END_NAMESPACE
 #    ifndef _STLP_INTERNAL_CSTDIO
 #      include <stl/_cstdio.h>
 #    endif
-#    ifdef __ANDROID__
+#    if defined(__ANDROID__) || defined(_STLP_AVR)
 #      include <stdlib.h> /* for exit() in _STLP_THROW_BAD_ALLOC */
 #    endif
 #    define _STLP_THROW_BAD_ALLOC puts("out of memory\n"); exit(1)

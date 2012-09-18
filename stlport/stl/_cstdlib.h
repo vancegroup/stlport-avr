@@ -133,7 +133,8 @@ inline _STLP_VENDOR_CSTD::div_t div(int __x, int __y) { return _STLP_VENDOR_CSTD
 
 //MSVC starting with .Net 2003 already define all math functions in global namespace:
 #  if !defined (__WATCOMC__) && !defined (__ARMCC_VERSION) && \
-     (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310) || defined (UNDER_CE))
+     (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310) || defined (UNDER_CE)) \
+     && !defined(_STLP_AVR)
 inline long abs(long __x) { return _STLP_VENDOR_CSTD::labs(__x); }
 #  endif
 

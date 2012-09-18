@@ -20,6 +20,10 @@
 #  ifndef _STLP_INTERNAL_MBSTATE_T
 #    include <stl/_mbstate_t.h>
 #  endif
+
+#elif defined (_STLP_AVR)
+#  include <stl/_cstddef.h>
+
 #else
 #  if defined (__GNUC__)
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
