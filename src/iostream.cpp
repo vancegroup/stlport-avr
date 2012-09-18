@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_DEFAULT_STREAMS)
+
 #include <memory>
 #include <istream>
 #include <fstream>
@@ -144,7 +146,9 @@ ios_base::Init::Init() {
   if (_S_count++ == 0) {
     _Locale_init();
     ios_base::_S_initialize();
+#ifndef _STLP_NO_FSTREAM
     _Filebuf_base::_S_initialize();
+#endif
   }
 }
 
@@ -165,6 +169,8 @@ const char* _Stl_extract_open_param(const char* name)
 #endif
 } // end anonymous namespace
 
+
+#ifndef _STLP_NO_FSTREAM
 template <class _Tp>
 static filebuf*
 _Stl_create_filebuf(_Tp x, ios_base::openmode mode ) {
@@ -176,6 +182,7 @@ _Stl_create_filebuf(_Tp x, ios_base::openmode mode ) {
 
   return 0;
 }
+#endif
 
 #if !defined (_STLP_NO_WCHAR_T)
 static wfilebuf*
@@ -350,6 +357,8 @@ bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
 }
 
 _STLP_END_NAMESPACE
+
+#endif // #if !defined(_STLP_NO_DEFAULT_STREAMS)
 
 // Local Variables:
 // mode:C++

@@ -23,6 +23,8 @@
  * representation of struct FILE, from the C stdio library, and
  * the C++ I/O library. */
 
+#ifndef _STLP_NO_FSTREAM
+
 #ifndef _STLP_CSTDIO
 #  include <cstdio>
 #endif
@@ -113,6 +115,8 @@ inline int _FILE_fd(const FILE *__f) { return __f->_file; }
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif
 
 #endif /* _STLP_STDIO_FILE_H */
 
