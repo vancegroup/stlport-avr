@@ -50,27 +50,16 @@ inline void* operator new[](size_t, void *p) { return p; }
 #  else
 #    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
 #  endif
-#elif defined(_STLP_AVR)
-#  include <stdlib.h>
-void * operator new(size_t size) _STLP_WEAK;
-void operator delete(void * ptr) _STLP_WEAK;
+#else
+#  include <new.h>
+#endif
+
+#if defined(_STLP_AVR)
 void* operator new(size_t, void* p) _STLP_WEAK;
 void* operator new[](size_t, void *p) _STLP_WEAK;
 
-inline void * operator new(size_t size)
-{
-  return malloc(size);
-}
-
-inline void operator delete(void * ptr)
-{
-  free(ptr);
-} 
-
 inline void* operator new(size_t, void* p) { return p; }
 inline void* operator new[](size_t, void *p) { return p; }
-#else
-#  include <new.h>
 #endif
 
 #if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
