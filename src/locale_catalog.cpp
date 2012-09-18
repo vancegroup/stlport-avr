@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_NO_LOCALES)
+
 #include <hash_map>
 #include <string>
 
