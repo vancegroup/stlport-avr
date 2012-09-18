@@ -21,7 +21,7 @@
 #endif
 
 /* evc3 doesn't have wctype.h */
-#if !defined(_STLP_WCE_EVC3)
+#if !defined(_STLP_WCE_EVC3) && !defined(_STLP_AVR)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    if defined (__hpux)
 #      include_next <stdarg.h>
