@@ -33,8 +33,10 @@ inline int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
 
 #if defined (_STLP_IMPORT_VENDOR_CSTD )
 _STLP_BEGIN_NAMESPACE
+#if !defined(_STLP_AVR)
 using _STLP_VENDOR_CSTD::FILE;
 using _STLP_VENDOR_CSTD::fpos_t;
+#endif
 using _STLP_VENDOR_CSTD::size_t;
 
 // undef obsolete macros
@@ -52,20 +54,26 @@ using _STLP_VENDOR_CSTD::feof;
 using _STLP_VENDOR_CSTD::ferror;
 using _STLP_VENDOR_CSTD::fflush;
 using _STLP_VENDOR_CSTD::fgetc;
+#    if !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::fgetpos;
+#    endif
 using _STLP_VENDOR_CSTD::fgets;
+#    if !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::fopen;
+#    endif
 using _STLP_VENDOR_CSTD::fprintf;
 using _STLP_VENDOR_CSTD::fputc;
 using _STLP_VENDOR_CSTD::fputs;
 using _STLP_VENDOR_CSTD::fread;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400)
+#    if (!defined (_WIN32_WCE) || (_WIN32_WCE < 400)) && !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::freopen;
 #    endif
 using _STLP_VENDOR_CSTD::fscanf;
+#    if !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::fseek;
 using _STLP_VENDOR_CSTD::fsetpos;
 using _STLP_VENDOR_CSTD::ftell;
+#    endif
 using _STLP_VENDOR_CSTD::fwrite;
 
 #    if  !(defined (__IBMCPP__) && (__IBMCPP__ >= 500))
@@ -78,12 +86,12 @@ using _STLP_VENDOR_CSTD::fwrite;
 #    endif
 
 using _STLP_VENDOR_CSTD::gets;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400)
+#    if (!defined (_WIN32_WCE) || (_WIN32_WCE < 400)) && !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::perror;
 #    endif
 using _STLP_VENDOR_CSTD::printf;
 using _STLP_VENDOR_CSTD::puts;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400)
+#    if (!defined (_WIN32_WCE) || (_WIN32_WCE < 400)) && !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::remove;
 using _STLP_VENDOR_CSTD::rename;
 using _STLP_VENDOR_CSTD::rewind;
@@ -92,7 +100,9 @@ using _STLP_VENDOR_CSTD::tmpfile;
 using _STLP_VENDOR_CSTD::tmpnam;
 #    endif
 using _STLP_VENDOR_CSTD::scanf;
+#    if !defined (_STLP_AVR)
 using _STLP_VENDOR_CSTD::setvbuf;
+#    endif
 using _STLP_VENDOR_CSTD::sprintf;
 using _STLP_VENDOR_CSTD::sscanf;
 using _STLP_VENDOR_CSTD::ungetc;
