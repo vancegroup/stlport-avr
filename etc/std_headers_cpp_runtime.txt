@@ -1,0 +1,4 @@
+exception
+new
+type_traits
+typeinfo
