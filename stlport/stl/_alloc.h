@@ -51,7 +51,12 @@
 #  include <stl/_construct.h>
 #endif
 
+#ifdef _STLP_AVR
+#  undef max
+#endif
+
 _STLP_BEGIN_NAMESPACE
+
 
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
