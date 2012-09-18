@@ -25,7 +25,9 @@
 #  endif
 #else
 #  include <cstdlib>
-#  include <cstdio>
+#    ifndef _STLP_INTERNAL_CSTDIO
+#      include <stl/_cstdio.h>
+#    endif
 #  define _STLP_THROW_MSG(ex,msg)  puts(msg),_STLP_ABORT()
 #endif
 
