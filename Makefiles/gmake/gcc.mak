@@ -119,6 +119,12 @@ CXXFLAGS = -mandroid --sysroot=$(SYSROOT) -fno-exceptions -fno-rtti $(OPT)
 # CXXFLAGS = -mandroid --sysroot=$(SYSROOT) $(OPT)
 endif
 
+ifeq ($(TARGET_OS),avr)
+CFLAGS = -g -Os -w -Wall -ffunction-sections -fdata-sections $(OPT)
+CCFLAGS = -g -Os -w -Wall -ffunction-sections -fdata-sections $(OPT)
+CXXFLAGS = -g -Os -w -Wall -ffunction-sections -fdata-sections $(OPT)
+endif
+
 ifeq ($(OSNAME),openbsd)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
@@ -153,6 +159,15 @@ CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
 CXXFLAGS = -pthread -fexceptions $(OPT)
+endif
+
+ifdef WITHOUT_RTTI
+CXXFLAGS += -fno-rtti
+WITHOUT_EXCEPTIONS = 1
+endif
+
+ifdef WITHOUT_EXCEPTIONS
+CXXFLAGS += -fno-exceptions
 endif
 
 #ifeq ($(CXX_VERSION_MAJOR),3)
