@@ -66,6 +66,10 @@ inline void* operator new[](size_t, void *p) { return p; }
 
 inline void operator delete(void*, void*) _STLP_NOTHROW  {}
 inline void operator delete[](void*, void*) _STLP_NOTHROW {}
+
+_STLP_BEGIN_NAMESPACE
+struct nothrow_t;
+_STLP_END_NAMESPACE
 #endif
 
 #if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
