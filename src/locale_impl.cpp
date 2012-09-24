@@ -17,7 +17,7 @@
  */
 #include "stlport_prefix.h"
 
-#if !defined(_STLP_NO_LOCALES)
+#if !defined(_STLP_NO_LOCALE_SUPPORT)
 
 #include <locale>
 #include <algorithm>
@@ -765,4 +765,4 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-#endif // !defined(_STLP_NO_LOCALES)
+#endif // !defined(_STLP_NO_LOCALE_SUPPORT)

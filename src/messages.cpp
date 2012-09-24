@@ -22,7 +22,7 @@
 #include "message_facets.h"
 #include "acquire_release.h"
 
-#ifndef _STLP_NO_LOCALES
+#ifndef _STLP_NO_LOCALE_SUPPORT
 
 _STLP_BEGIN_NAMESPACE
 
@@ -244,7 +244,7 @@ void messages_byname<wchar_t>::do_close(catalog cat) const
 
 _STLP_END_NAMESPACE
 
-#endif // #ifndef _STLP_NO_LOCALES
+#endif // #ifndef _STLP_NO_LOCALE_SUPPORT
 // Local Variables:
 // mode:C++
 // End:

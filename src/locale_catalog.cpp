@@ -17,7 +17,7 @@
  */
 #include "stlport_prefix.h"
 
-#if !defined(_STLP_NO_LOCALES)
+#if !defined(_STLP_NO_LOCALE_SUPPORT)
 
 #include <hash_map>
 #include <string>
@@ -289,4 +289,4 @@ void _STLP_CALL __release_messages(_Locale_messages* cat)
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
-#endif // #ifndef _STLP_NO_LOCALES
+#endif // #ifndef _STLP_NO_LOCALE_SUPPORT

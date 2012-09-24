@@ -18,7 +18,7 @@
 
 #include "stlport_prefix.h"
 
-#ifndef _STLP_NO_LOCALES
+#ifndef _STLP_NO_LOCALE_SUPPORT
 
 #include <cstdio>
 #include <locale>
@@ -579,4 +579,4 @@ template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_
 
 _STLP_END_NAMESPACE
 
-#endif // _STLP_NO_LOCALES
+#endif // _STLP_NO_LOCALE_SUPPORT
