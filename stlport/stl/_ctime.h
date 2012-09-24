@@ -16,7 +16,7 @@
 #ifndef _STLP_INTERNAL_CTIME
 #define _STLP_INTERNAL_CTIME
 
-#if !defined (_STLP_WCE_EVC3) && !defined(_STLP_AVR)
+#if !defined (_STLP_NO_TIME_SUPPORT)
 
 #  if defined (_STLP_USE_NEW_C_HEADERS)
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
@@ -51,6 +51,6 @@ using _STLP_VENDOR_CSTD::time;
 _STLP_END_NAMESPACE
 #  endif /* _STLP_IMPORT_VENDOR_CSTD */
 
-#endif
+#endif /* _STLP_NO_TIME_SUPPORT */
 
 #endif /* _STLP_INTERNAL_CTIME */

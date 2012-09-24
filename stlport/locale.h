@@ -25,7 +25,7 @@
 #endif
 
 /* evc3 doesn't have locale.h */
-#ifndef _STLP_WCE_EVC3
+#if !defined(_STLP_NO_LOCALE_SUPPORT)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <locale.h>
 #  else

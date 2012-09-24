@@ -19,6 +19,7 @@
 #define _STLP_NO_EXCEPTION_HEADER 1 // creates a minimal exception base class
 #define _STLP_NO_FSTREAM 1 // disable file streams
 #define _STLP_NO_LOCALES 1 // disable locale support
+#define _STLP_NO_LOCALE_SUPPORT
 #define _STLP_NO_LONG_DOUBLE 1 // architecture has no long double support
 #define _STLP_NO_NATIVE_MBSTATE_T 1 // No mbstate_t defined by base library
 #define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
@@ -26,6 +27,7 @@
 #define _STLP_NO_NEW_NEW_HEADER 1 // base library has no <new> header
 #define _STLP_NO_RTTI 1 // compiler has no rtti support or if it has been disabled
 #define _STLP_NO_THREADS 1
+#define _STLP_NO_TIME_SUPPORT 1
 #define _STLP_NO_TYPEINFO 1 // there is no native type_info definition
 #define _STLP_NO_VENDOR_MATH_L // No long definitions in math.h
 #define _STLP_NO_VENDOR_STDLIB_L // No long definitions in stdlib.h

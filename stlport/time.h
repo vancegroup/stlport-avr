@@ -20,10 +20,10 @@
 #  define _STLP_DONT_POP_HEADER_ID
 #endif
 
-#if defined(_STLP_WCE_EVC3) || defined(_STLP_AVR)
+#if defined(_STLP_NO_TIME_SUPPORT)
 /* only show message when directly including this file in a non-library build */
 #  if !defined(__BUILDING_STLPORT) && (_STLP_OUTERMOST_HEADER_ID == 0x272)
-#    pragma message("eMbedded Visual C++ 3 doesn't have a time.h header; STLport won't include native time.h here")
+#    pragma message("Your platform doesn't have a time.h header; STLport won't include native time.h here")
 #  endif
 #elif defined(_STLP_WCE) && defined(_STLP_USE_WINCE_CRT_FUNCTIONS)
 #  include <wince/time.h>
