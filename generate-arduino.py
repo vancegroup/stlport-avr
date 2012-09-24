@@ -47,7 +47,6 @@ headerFilters = [
 		'fstream.h',
 	]),
 	filenameDoesNotBeginWith('wince'),
-	filenameDoesNotBeginWith(path.join('stl','debug')),
 	filenameDoesNotBeginWith(path.join('using','h')),
 	fileDoesNotInclude([
 		'Please remove it', #workaround headers for sun
