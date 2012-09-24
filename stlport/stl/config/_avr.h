@@ -19,6 +19,7 @@
 #define _STLP_NO_FSTREAM 1 // disable file streams
 #define _STLP_NO_LOCALE_SUPPORT
 #define _STLP_NO_LONG_DOUBLE 1 // architecture has no long double support
+#define _STLP_NO_OWN_NAMESPACE
 #define _STLP_NO_NATIVE_MBSTATE_T 1 // No mbstate_t defined by base library
 #define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #define _STLP_NO_NATIVE_WIDE_STREAMS 1
