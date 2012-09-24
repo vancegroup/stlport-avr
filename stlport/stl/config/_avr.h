@@ -16,7 +16,6 @@
 #define _STLP_NO_BAD_ALLOC
 #define _STLP_NO_DEFAULT_STREAMS 1 // disable creation of cout/cerr/cin
 #define _STLP_NO_EXCEPTION_HEADER 1 // compiler lacks <exception> header
-#define _STLP_NO_EXCEPTION_HEADER 1 // creates a minimal exception base class
 #define _STLP_NO_FSTREAM 1 // disable file streams
 #define _STLP_NO_LOCALE_SUPPORT
 #define _STLP_NO_LONG_DOUBLE 1 // architecture has no long double support
