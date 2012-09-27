@@ -55,6 +55,17 @@ inline void* operator new[](size_t, void *p) { return p; }
 #endif
 
 #if defined(_STLP_AVR)
+
+#  if !defined(ARDUINO) || (ARDUINO < 101)
+// No operator new by default with old or no Arduino core lib
+// so these minimal definitions are "better than nothing"
+void * operator new(size_t size) _STLP_WEAK;
+void operator delete(void * ptr) _STLP_WEAK;
+
+inline void * operator new(size_t s) { return malloc(size); }
+inline void operator delete(void * p) { if (p) {free p;} }
+#  endif
+
 void* operator new(size_t, void* p) _STLP_WEAK;
 void* operator new[](size_t, void *p) _STLP_WEAK;
 
