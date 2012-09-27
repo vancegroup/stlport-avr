@@ -341,14 +341,16 @@ locale::locale(const locale& L1, const locale& L2, category c)
     impl->insert( i2, _STLP_STD::num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 # endif
   }
+# ifndef _STLP_NO_TIME_SUPPORT
   if (c & time) {
     impl->insert( i2, _STLP_STD::time_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
     impl->insert( i2, _STLP_STD::time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
     impl->insert( i2, _STLP_STD::time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
     impl->insert( i2, _STLP_STD::time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
-# endif
+#  endif
   }
+# endif // STLP_NO_TIME_SUPPORT
   if (c & messages) {
     impl->insert( i2, _STLP_STD::messages<char>::id);
 # ifndef _STLP_NO_WCHAR_T

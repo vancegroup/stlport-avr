@@ -288,6 +288,7 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* &name, char *
 }
 
 _Locale_name_hint* _Locale_impl::insert_time_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+#ifndef _STLP_NO_TIME_SUPPORT
   if (name[0] == 0)
     name = _Locale_time_default(buf);
 
@@ -347,6 +348,7 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* &name, char *buf
 #endif
   }
   return hint;
+#endif
 }
 
 _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
@@ -578,8 +580,10 @@ static void _Stl_loc_assign_ids() {
   money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index          = 9;
   num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index            = 10;
   num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index            = 11;
+#ifndef _STLP_NO_TIME_SUPPORT
   time_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index           = 12;
   time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index           = 13;
+#endif
 
 #ifndef _STLP_NO_WCHAR_T
   money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 21;
@@ -642,8 +646,10 @@ void _Locale_impl::make_classic_locale() {
     new money_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
     new num_get<char, istreambuf_iterator<char, char_traits<char> > >(1),
     new num_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
+#ifndef _STLP_NO_TIME_SUPPORT
     new time_get<char, istreambuf_iterator<char, char_traits<char> > >(1),
     new time_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
+#endif
 #ifndef _STLP_NO_WCHAR_T
     new collate<wchar_t>(1),
     new ctype<wchar_t>(1),
@@ -750,6 +756,7 @@ _STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<wchar_t, ostream
 { return num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
 #endif
 
+#ifndef _STLP_NO_TIME_SUPPORT
 _STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_get<char, istreambuf_iterator<char, char_traits<char> > >*)
 { return time_get<char, istreambuf_iterator<char, char_traits<char> > >::id; }
 _STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
@@ -759,6 +766,7 @@ _STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_get<wchar_t, istrea
 { return time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
 _STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
 { return time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
 #endif
 
 _STLP_MOVE_TO_STD_NAMESPACE

@@ -23,7 +23,7 @@
 #ifndef _STLP_INTERNAL_TIME_FACETS_H
 #define _STLP_INTERNAL_TIME_FACETS_H
 
-#if !defined(_STLP_AVR)
+#if !defined(_STLP_NO_TIME_SUPPORT)
 
 #ifndef _STLP_INTERNAL_CTIME
 #  include <stl/_ctime.h>                // Needed (for struct tm) by time facets

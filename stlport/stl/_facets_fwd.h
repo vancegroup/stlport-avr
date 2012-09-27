@@ -34,6 +34,7 @@ template <class _CharT, class _OutputIter = ostreambuf_iterator<_CharT, char_tra
 #endif
 class num_put;
 
+#if !defined(STLP_NO_TIME_SUPPORT)
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _Ch, class _InIt>
 #else
@@ -47,6 +48,7 @@ template <class _Ch, class _OutIt>
 template <class _Ch, class _OutIt = ostreambuf_iterator<_Ch, char_traits<_Ch> > >
 #endif
 class time_put;
+#endif
 
 _STLP_END_NAMESPACE
 
