@@ -36,6 +36,10 @@
 #  undef complex
 #endif
 
+#ifdef _STLP_AVR
+#  undef abs
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
