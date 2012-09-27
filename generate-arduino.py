@@ -61,6 +61,9 @@ sources = [
 #	'ios.cpp'
 ]
 
+flatten_files = [
+]
+
 def allFiltersInList(filterList):
 	def closure(fn, full):
 		for n, f in enumerate(filterList):
@@ -120,6 +123,13 @@ def main(rootpath, dest):
 			'rel_name' : fn
 		}
 		for fn in sources ])
+	files.extend([
+		{
+			'full_source' : path.join(rootpath, fn),
+			'old_root' : rootpath,
+			'rel_name' : path.basename(fn)
+		}
+		for fn in flatten_files ])
 	doCopy(files, dest)
 	touchFile(path.join(dest, 'stlport.h'))
 
