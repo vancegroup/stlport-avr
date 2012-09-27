@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include <wctype.h>
 #include <limits.h>
+#include "../c_locale.h"
 
 #if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #  define _STLP_STRNCPY(D, DS, S, C) strncpy_s(D, DS, S, C)

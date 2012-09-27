@@ -25,12 +25,19 @@
 #endif
 
 /* evc3 doesn't have locale.h */
-#if !defined(_STLP_NO_LOCALE_SUPPORT)
+#if !defined(_STLP_NO_LOCALE_SUPPORT) && !defined(_STLP_NO_NATIVE_LOCALE_H)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <locale.h>
 #  else
 #    include _STLP_NATIVE_C_HEADER(locale.h)
 #  endif
+#endif
+
+#if defined(_STLP_NO_NATIVE_LOCALE_H)
+#include <stl/_locale_stubs.h>
+inline const char * setlocale ( int, const char * ) {
+	return "C";
+}
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x242)
