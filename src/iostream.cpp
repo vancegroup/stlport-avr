@@ -54,7 +54,7 @@ _STLP_BEGIN_NAMESPACE
 //  (3) Create streambufs for the global stream objects, and initialize
 //      the stream objects by calling the init() member function.
 
-
+#ifndef _STLP_NO_DEFAULT_STREAMS
 #if defined (_STLP_USE_NOT_INIT_SEGMENT)
 
 // Definitions of the eight global I/O objects that are declared in
@@ -135,6 +135,8 @@ _Stl_aligned_buffer<wostream> wclog;
 #    endif
 #  endif
 #endif /* STL_MSVC || __MWERKS__ */
+
+#endif
 
 // Member functions from class ios_base and ios_base::Init
 
