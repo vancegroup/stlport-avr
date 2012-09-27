@@ -55,10 +55,37 @@ headerFilters = [
 ]
 
 sources = [
-#	'stlport_prefix.h',
-#	'aligned_buffer.h',
-#	'locale.cpp',
-#	'ios.cpp'
+	'stlport_prefix.h',
+	'aligned_buffer.h',
+	'acquire_release.h',
+	'locale.cpp',
+	'ios.cpp',
+	'c_locale.h',
+	'c_locale.c',
+	'locale_impl.cpp',
+	'locale_impl.h',
+	'c_locale_dummy/c_locale_dummy.c',
+	'num_get.cpp',
+	'num_get_float.cpp',
+	'num_put.cpp',
+	'num_put_float.cpp',
+	'locale_catalog.cpp',
+	'collate.cpp',
+	'codecvt.cpp',
+	'allocators.cpp',
+	'lock_free_slist.h',
+	'messages.cpp',
+	'monetary.cpp',
+	'message_facets.h',
+	'numpunct.cpp',
+	'dll_main.cpp',
+	'facets_byname.cpp',
+	'ctype.cpp',
+	'iostream.cpp'
+]
+
+flatten_sources = [
+
 ]
 
 def allFiltersInList(filterList):
@@ -120,6 +147,13 @@ def main(rootpath, dest):
 			'rel_name' : fn
 		}
 		for fn in sources ])
+	files.extend([
+		{
+			'full_source' : path.join(srcRoot, fn),
+			'old_root' : srcRoot,
+			'rel_name' : path.basename(fn)
+		}
+		for fn in flatten_sources ])
 	doCopy(files, dest)
 	touchFile(path.join(dest, 'stlport.h'))
 
