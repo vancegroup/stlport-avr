@@ -8,6 +8,7 @@ obj
 /build/test/unit/test.txt
 /build/test/unit/test_file.txt
 /build/test/unit/win32_file_format.tmp
+/build/Arduino/stlport/
 /src/Makefile
 /test/unit/Makefile
 /test/eh/Makefile
