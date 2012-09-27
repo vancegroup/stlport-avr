@@ -221,15 +221,15 @@ if __name__ == '__main__':
 	from os import makedirs, error
 	# Find out where this source file is, so we know the STLport root dir.
 	if hasattr(sys.modules['__main__'], '__file__'):
-		myself = path.abspath(sys.modules['__main__'].__file__)
-		rootpath = path.dirname(myself)
+		mypath = path.abspath(path.dirname(sys.modules['__main__'].__file__))
+		rootpath = path.abspath(path.join(mypath, '..'))
 
 		# A passed argument is assumed to be a destination directory
 		if len(sys.argv) > 1:
 			dest = path.dirname(sys.argv[1])
 		else:
 			# No argument: defaults to build/Arduino/stlport in the STLport tree
-			dest = path.join(rootpath, 'build', 'Arduino', 'stlport')
+			dest = path.join(mypath, 'Arduino', 'stlport')
 
 		# Ensure the destination directory exists.
 		try:
