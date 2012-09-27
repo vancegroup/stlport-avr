@@ -99,6 +99,8 @@ sources = [
 # List of files to be copied relative to the STLport root directory, directly
 # into the destination root (directory structure flattened)
 flatten_files = [
+	'etc/avrarduino/keywords.txt',
+	'etc/avrarduino/README.txt',
 ]
 
 
